@@ -1,6 +1,6 @@
 # Asset manifest
 
-Generated 2026-10-18T13:44:53 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
+Generated 2026-10-18T15:14:55 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable 2.0.6. 16 texels per block; items 16x16.
 
@@ -10,7 +10,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 |---|---|---|---|---|---|
 | `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up.<br>Integrity crack overlays are not made, because vessel integrity is not implemented. |
 | `criticalmass:circulation_pump` | `block/circulation_pump.png` 64x64<br>`block/circulation_pump_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes, stops_when_overstressed: yes |  |
-| `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Does not generate power yet (getGeneratedSpeed() = 0). |
+| `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Prototype: powered by hot primary coolant, not steam. The steam circuit, heat exchanger and condenser come later (tsk-017 onward). |
 | `criticalmass:instrumentation_panel` | `block/instrumentation_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet. |
 | `criticalmass:reactor_controller` | `block/reactor_controller.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:fuel_channel` | `block/fuel_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -19,7 +19,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 | `criticalmass:coolant_channel` | `block/coolant_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:reactor_service_port` | `block/reactor_service_port.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:primary_coolant_port` | `block/primary_coolant_port.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:reinforced_pipe` | `block/reinforced_pipe.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes | Connections are visual only; no fluid transport. |
+| `criticalmass:reinforced_pipe` | `block/reinforced_pipe.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes | Carries coolant for a pump loop (prototype): pipes hold no fluid of their own and a loop must be a single path without branches. |
 | `criticalmass:heat_exchanger` | `block/heat_exchanger.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:condenser` | `block/condenser.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:cooling_tower_packing` | `block/cooling_tower_packing.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
@@ -95,8 +95,8 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 ### `criticalmass:steam_turbine`
 
-- **role**: generator (GeneratingKineticBlockEntity); getGeneratedSpeed() returns 0 until the steam system exists, so it currently behaves as a pass-through shaft section
-- **impact su**: capacity 0 (not registered until steam delivery is implemented)
+- **role**: generator (GeneratingKineticBlockEntity). Prototype: runs on hot primary coolant passing through it (steam circuit not built yet); 16 RPM whenever it has heat
+- **impact su**: capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat
 - **block class**: HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)
 - **shaft faces**: both end plates on the axis
 - **axis**: horizontal X or Z

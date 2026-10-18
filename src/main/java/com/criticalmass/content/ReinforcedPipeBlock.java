@@ -37,7 +37,7 @@ public class ReinforcedPipeBlock extends PipeBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return connections(context.getLevel(), context.getClickedPos(), defaultBlockState());
+        return withConnections(context.getLevel(), context.getClickedPos(), defaultBlockState());
     }
 
     @Override
@@ -45,7 +45,7 @@ public class ReinforcedPipeBlock extends PipeBlock {
         return state.setValue(PROPERTY_BY_DIRECTION.get(direction), connectsTo(neighbor, direction));
     }
 
-    private BlockState connections(BlockGetter level, BlockPos pos, BlockState state) {
+    public static BlockState withConnections(BlockGetter level, BlockPos pos, BlockState state) {
         for (Direction d : Direction.values()) {
             state = state.setValue(PROPERTY_BY_DIRECTION.get(d), connectsTo(level.getBlockState(pos.relative(d)), d));
         }

@@ -30,6 +30,21 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
 - Generated art and its provenance (prompts, raw outputs, processing): `art/SOURCES.md`, `art/generated/`. The scripts that drew blockouts and finalized textures: `art/tools/`.
 - Fluid textures live in `textures/fluid/` and are added to the block atlas by `assets/minecraft/atlases/blocks.json`.
 
+## Prototype coolant loop (milestone 1)
+
+The first playable loop proves the heat path: vessel, pump, turbine. Values live in `content/thermal/CMThermal.java`.
+
+1. Build a vessel: a Reactor Controller touching Reactor Vessel Casing and two Primary Coolant Ports. Set one port to outlet and one to inlet with Create's wrench.
+2. Fill the controller with water or primary coolant (right-click with a bucket, or pipe it in with Create). It holds 8,000 mB.
+3. Run Reinforced Pipe from the outlet port to the back of a Circulation Pump. Run it from the pump's front up into the bottom of a Steam Turbine, then from the turbine's top back to the inlet port. The loop must be a single path with no branches.
+4. Turn the pump's shaft. It moves 2 mB/t per RPM, up to 256 mB/t, and stops when the shaft stops or the network is overstressed.
+5. Give the controller a redstone signal to run the test heater (+2,000 HU/t while it holds coolant).
+6. The turbine extracts heat from the coolant passing through it and supplies 4 SU of stress capacity per HU/t, at a fixed 16 RPM.
+
+Wear Create's goggles to read coolant, temperature, stored heat, flow, loop status and stress capacity on each block.
+Game tests in `com.criticalmass.gametest` check save/load, the heater rate, volume and heat conservation, stopping without rotation, and turbine capacity (`./gradlew runGameTestServer`).
+`src/inspect/scenes/make_loop.py` builds the same loop in game for screenshots.
+
 ## In-game inspection harness
 
 `src/inspect/` is a client-only helper mod (`criticalmass_inspect`) that is loaded only by the `runInspect` task.

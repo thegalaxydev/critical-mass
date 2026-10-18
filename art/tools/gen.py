@@ -307,6 +307,11 @@ def write_assets():
     for k, v in getattr(specs, "FLUID_LANG", {}).items():
         lang["fluid.criticalmass." + k] = v
         lang["fluid_type.criticalmass." + k] = v
+    lp = os.path.join(RES, "lang", "en_us.json")
+    if os.path.exists(lp):
+        for k, v in json.load(open(lp, encoding="utf8")).items():
+            if k.startswith("criticalmass."):
+                lang.setdefault(k, v)
     assets.write(RES, os.path.join("lang", "en_us.json"), lang)
     print("assets written:", len(specs.BLOCK_DEFS), "blocks,", len(specs.ITEM_DEFS), "items")
 

@@ -14,6 +14,8 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.slf4j.Logger;
 
 @Mod(CriticalMass.MODID)
@@ -30,6 +32,7 @@ public class CriticalMass {
         CMFluids.TYPES.register(modEventBus);
         CMFluids.FLUIDS.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(CriticalMass::registerCapabilities);
     }
 
     public static ResourceLocation asResource(String path) {
@@ -41,6 +44,11 @@ public class CriticalMass {
         ModList mods = ModList.get();
         LOGGER.info("Critical Mass loaded. Dependencies present: create={}, sable={}, aeronautics={}",
                 describe(mods, "create"), describe(mods, "sable"), describe(mods, "aeronautics"));
+    }
+
+    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());
     }
 
     private static String describe(ModList mods, String modId) {

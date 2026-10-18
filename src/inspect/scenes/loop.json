@@ -1,0 +1,159 @@
+{
+ "name": "loop",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/setblock 13 -59 13 criticalmass:reactor_vessel_casing",
+    "/setblock 13 -58 13 criticalmass:reactor_vessel_casing",
+    "/setblock 12 -58 12 criticalmass:reactor_vessel_casing",
+    "/setblock 12 -58 14 criticalmass:reactor_vessel_casing",
+    "/setblock 13 -58 12 criticalmass:reactor_vessel_casing",
+    "/setblock 13 -58 14 criticalmass:reactor_vessel_casing",
+    "/setblock 13 -59 12 criticalmass:reactor_vessel_casing",
+    "/setblock 13 -59 14 criticalmass:reactor_vessel_casing",
+    "/setblock 12 -58 13 criticalmass:reactor_vessel_casing",
+    "/setblock 12 -59 13 criticalmass:reactor_controller[facing=west]",
+    "/setblock 12 -59 14 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 12 -59 12 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/setblock 13 -59 15 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 14 -57 15 criticalmass:steam_turbine[axis=x]",
+    "/setblock 12 -59 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -59 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -58 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 14 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 13 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 12 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 13 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -57 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -58 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -59 11 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10,
+   "gui": true,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/setblock 12 -59 15 minecraft:air",
+    "/setblock 14 -59 15 minecraft:air",
+    "/setblock 14 -58 15 minecraft:air",
+    "/setblock 14 -56 15 minecraft:air",
+    "/setblock 14 -56 14 minecraft:air",
+    "/setblock 14 -56 13 minecraft:air",
+    "/setblock 14 -56 12 minecraft:air",
+    "/setblock 14 -56 11 minecraft:air",
+    "/setblock 13 -56 11 minecraft:air",
+    "/setblock 12 -56 11 minecraft:air",
+    "/setblock 12 -57 11 minecraft:air",
+    "/setblock 12 -58 11 minecraft:air",
+    "/setblock 12 -59 11 minecraft:air",
+    "/setblock 12 -59 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -59 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -58 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 15 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 14 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 13 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 12 criticalmass:reinforced_pipe",
+    "/setblock 14 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 13 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -56 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -57 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -58 11 criticalmass:reinforced_pipe",
+    "/setblock 12 -59 11 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 12 -59 13 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/item replace entity @p armor.head with create:goggles",
+    "/setblock 15 -57 15 create:shaft[axis=x]",
+    "/setblock 16 -57 15 create:stressometer[facing=south,axis_along_first=true]"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/tp @p 9.5 -59.6 13.5 facing 12.5 -60.1 13.5"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "controller_cold",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 13 -60 15 create:creative_motor[facing=up]",
+    "/setblock 12 -60 13 minecraft:redstone_block"
+   ],
+   "wait": 300
+  },
+  {
+   "shot": "controller_hot",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 13.5 -59.6 18.0 facing 13.5 -60.1 15.5"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "pump_running",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 14 -58 18 minecraft:barrier",
+    "/tp @p 14.5 -57.0 18.0 facing 14.5 -58.1 15.5"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "turbine_running",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 16 -58 18 minecraft:barrier",
+    "/tp @p 16.5 -57.0 18.0 facing 16.5 -58.1 15.5"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "stressometer",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 13 -60 15 minecraft:air",
+    "/tp @p 13.5 -59.6 18.0 facing 13.5 -60.1 15.5"
+   ],
+   "wait": 60
+  },
+  {
+   "shot": "pump_stopped",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 19 -57 21 minecraft:barrier",
+    "/tp @p 19.5 -56.0 21.0 facing 13.0 -59.6 13.0"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "overview"
+  },
+  {
+   "wait": 5
+  }
+ ]
+}
