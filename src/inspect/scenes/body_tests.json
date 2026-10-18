@@ -1,0 +1,804 @@
+{
+ "name": "body_tests",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode spectator",
+    "/fill 80 -61 -40 260 -61 40 minecraft:smooth_stone"
+   ],
+   "wait": 10,
+   "gui": false
+  },
+  {
+   "cmds": [
+    "/fill 108 -60 -3 115 -60 4 create:andesite_casing",
+    "/setblock 111 -58 0 criticalmass:reactor_vessel_casing",
+    "/setblock 111 -57 0 criticalmass:reactor_vessel_casing",
+    "/setblock 110 -57 -1 criticalmass:reactor_vessel_casing",
+    "/setblock 110 -57 1 criticalmass:reactor_vessel_casing",
+    "/setblock 111 -57 -1 criticalmass:reactor_vessel_casing",
+    "/setblock 111 -57 1 criticalmass:reactor_vessel_casing",
+    "/setblock 111 -58 -1 criticalmass:reactor_vessel_casing",
+    "/setblock 111 -58 1 criticalmass:reactor_vessel_casing",
+    "/setblock 110 -57 0 criticalmass:reactor_vessel_casing",
+    "/setblock 110 -58 0 criticalmass:reactor_controller[facing=west]",
+    "/setblock 110 -58 1 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 110 -58 -1 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/setblock 111 -58 2 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 112 -56 2 criticalmass:steam_turbine[axis=x]",
+    "/setblock 110 -58 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -58 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -57 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 1 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 0 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 -1 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 111 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -56 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -57 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -58 -2 criticalmass:reinforced_pipe",
+    "/setblock 114 -59 3 simulated:physics_assembler"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 110 -58 2 minecraft:air",
+    "/setblock 112 -58 2 minecraft:air",
+    "/setblock 112 -57 2 minecraft:air",
+    "/setblock 112 -55 2 minecraft:air",
+    "/setblock 112 -55 1 minecraft:air",
+    "/setblock 112 -55 0 minecraft:air",
+    "/setblock 112 -55 -1 minecraft:air",
+    "/setblock 112 -55 -2 minecraft:air",
+    "/setblock 111 -55 -2 minecraft:air",
+    "/setblock 110 -55 -2 minecraft:air",
+    "/setblock 110 -56 -2 minecraft:air",
+    "/setblock 110 -57 -2 minecraft:air",
+    "/setblock 110 -58 -2 minecraft:air",
+    "/setblock 110 -58 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -58 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -57 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 2 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 1 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 0 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 -1 criticalmass:reinforced_pipe",
+    "/setblock 112 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 111 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -55 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -56 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -57 -2 criticalmass:reinforced_pipe",
+    "/setblock 110 -58 -2 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 110 -58 0 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/setblock 111 -59 2 create:creative_motor[facing=up]",
+    "/setblock 110 -59 0 minecraft:redstone_block"
+   ],
+   "wait": 100
+  },
+  {
+   "cmds": [
+    "/tp @p 104 -50 -12 -30 35"
+   ],
+   "wait": 20
+  },
+  {
+   "note": "SECTION tsk-006 cycles"
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "start"
+  },
+  {
+   "note": "cycle 0 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 0 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 1 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 1 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 2 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 2 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 3 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 3 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 4 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 4 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 5 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 5 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 6 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 6 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 7 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 7 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 8 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 8 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 9 assemble"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "cycle 9 disassemble"
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "after_cycles"
+  },
+  {
+   "note": "SECTION tsk-005 moving"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 108 -60 -3 115 -54 4"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 112 -45 1",
+    "/tp @p 100 -42 -14 -40 15"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/sable paused false",
+    "/sable physics impulse @n angular 0 0 60 global",
+    "/sable physics impulse @n angular 40 0 0 global"
+   ],
+   "wait": 3
+  },
+  {
+   "shot": "moving_a"
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "wait": 6
+  },
+  {
+   "shot": "moving_b"
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 104 -54 -10 -30 25"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "landed"
+  },
+  {
+   "note": "SECTION tsk-008 chunks"
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 127 -58 15"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 143 -58 -1"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 159 -58 15"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 175 -58 -1"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 191 -58 15"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 207 -58 -1"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 223 -58 15"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 215 -52 -12 -30 30"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "far_chunks"
+  },
+  {
+   "note": "SECTION tsk-007 reload assembled"
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 1
+  },
+  {
+   "rejoin": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "SECTION tsk-007 reload disassembled"
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 112 -59 1"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 60
+  },
+  {
+   "invoke": {
+    "offset": [
+     4,
+     -1,
+     3
+    ],
+    "method": "assembleOrDisassemble",
+    "far": true
+   },
+   "wait": 120
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "rejoin": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 5
+  },
+  {
+   "wait": 5
+  }
+ ]
+}

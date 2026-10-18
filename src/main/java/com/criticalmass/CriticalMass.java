@@ -1,5 +1,6 @@
 package com.criticalmass;
 
+import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
@@ -16,6 +17,8 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 
 @Mod(CriticalMass.MODID)
@@ -33,6 +36,7 @@ public class CriticalMass {
         CMFluids.FLUIDS.register(modEventBus);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
+        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
     }
 
     public static ResourceLocation asResource(String path) {

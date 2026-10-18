@@ -26,6 +26,18 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
+    }
+
+    @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
     }
 

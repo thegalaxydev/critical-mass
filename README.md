@@ -45,6 +45,18 @@ Wear Create's goggles to read coolant, temperature, stored heat, flow, loop stat
 Game tests in `com.criticalmass.gametest` check save/load, the heater rate, volume and heat conservation, stopping without rotation, and turbine capacity (`./gradlew runGameTestServer`).
 `src/inspect/scenes/make_loop.py` builds the same loop in game for screenshots.
 
+`/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
+
+### Moving bodies
+
+`src/inspect/scenes/make_body_tests.py` checks the loop on a Sable sub-level:
+- 10 assemble/disassemble cycles, with no duplicated blocks, coolant or heat
+- running while the body moves and rotates
+- teleporting across chunk borders
+- a save/quit/reload while assembled and after disassembly
+
+Results are in the console's Create Aeronautics compatibility entry.
+
 ## In-game inspection harness
 
 `src/inspect/` is a client-only helper mod (`criticalmass_inspect`) that is loaded only by the `runInspect` task.
@@ -57,6 +69,9 @@ It creates a flat creative world, runs a JSON scene of commands, waits, camera m
 
 `src/inspect/scenes/make_showroom.py` generates `showroom.json`: every block state, kinetic blocks on creative motors, an overstress test,
 fluids in Create tanks, items, the worn outfit in several poses, a small reactor installation, and a Sable sub-level that falls and comes to rest tilted.
+
+Besides commands, waits and screenshots, scenes can use `"rejoin": true` (save, quit and reopen the same world) and
+`"invoke": {"offset": [x, y, z], "method": "name", "far": true}` (call a public no-argument method on the block entity at that offset from the loaded Reactor Controller; `far` picks the controller on a sub-level).
 
 ## Target and dependency versions
 

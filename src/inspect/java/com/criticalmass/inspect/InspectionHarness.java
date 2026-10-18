@@ -1,5 +1,7 @@
 package com.criticalmass.inspect;
 
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
+import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,8 +17,11 @@ import java.util.List;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
+import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
@@ -24,6 +29,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
 import net.minecraft.world.level.WorldDataConfiguration;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
 import net.neoforged.api.distmarker.Dist;
@@ -42,6 +48,7 @@ public class InspectionHarness {
     private boolean worldRequested = false;
     private int inWorldTicks = 0;
     private String scriptName = "inspect";
+    private String worldName;
     private final StringBuilder log = new StringBuilder();
 
     public InspectionHarness(IEventBus modBus) {
@@ -105,6 +112,7 @@ public class InspectionHarness {
         rules.getRule(GameRules.RULE_DO_PATROL_SPAWNING).set(false, null);
         rules.getRule(GameRules.RULE_DO_TRADER_SPAWNING).set(false, null);
         String name = "ccm_inspect_" + System.currentTimeMillis();
+        worldName = name;
         LevelSettings settings = new LevelSettings(name, GameType.CREATIVE, false, Difficulty.PEACEFUL, true, rules, WorldDataConfiguration.DEFAULT);
         WorldOptions options = new WorldOptions(1234L, false, false);
         mc.createWorldOpenFlows().createFreshLevel(name, settings, options,
@@ -147,6 +155,12 @@ public class InspectionHarness {
         if (step.has("note")) {
             note(step.get("note").getAsString());
         }
+        if (step.has("invoke")) {
+            invoke(mc, step.getAsJsonObject("invoke"));
+        }
+        if (step.has("rejoin") && step.get("rejoin").getAsBoolean()) {
+            rejoin(mc);
+        }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";
             Screenshot.grab(mc.gameDirectory, name, mc.getMainRenderTarget(), msg -> {
@@ -156,6 +170,53 @@ public class InspectionHarness {
         if (step.has("wait")) {
             waitTicks = step.get("wait").getAsInt();
         }
+    }
+
+    private void rejoin(Minecraft mc) {
+        note("rejoin " + worldName);
+        inWorldTicks = 0;
+        mc.tell(() -> {
+            if (mc.level != null) {
+                mc.level.disconnect();
+            }
+            mc.disconnect(new GenericMessageScreen(Component.translatable("menu.savingLevel")));
+            mc.createWorldOpenFlows().openWorld(worldName, () -> note("rejoin failed"));
+        });
+    }
+
+    private void invoke(Minecraft mc, JsonObject spec) {
+        MinecraftServer server = mc.getSingleplayerServer();
+        JsonArray off = spec.getAsJsonArray("offset");
+        String method = spec.get("method").getAsString();
+        boolean far = spec.has("far") && spec.get("far").getAsBoolean();
+        server.execute(() -> {
+            ReactorControllerBlockEntity anchor = null;
+            for (BlockEntity be : LoadedThermalBlocks.snapshot()) {
+                if (be instanceof ReactorControllerBlockEntity c && (anchor == null || (far ? reach(c) > reach(anchor) : reach(c) < reach(anchor)))) {
+                    anchor = c;
+                }
+            }
+            if (anchor == null) {
+                note("invoke: no controller loaded");
+                return;
+            }
+            BlockPos target = anchor.getBlockPos().offset(off.get(0).getAsInt(), off.get(1).getAsInt(), off.get(2).getAsInt());
+            BlockEntity be = anchor.getLevel().getBlockEntity(target);
+            if (be == null) {
+                note("invoke: no block entity at " + target.toShortString());
+                return;
+            }
+            try {
+                be.getClass().getMethod(method).invoke(be);
+                note("invoke " + method + " on " + be.getClass().getSimpleName() + " at " + target.toShortString());
+            } catch (ReflectiveOperationException ex) {
+                note("invoke failed: " + ex);
+            }
+        });
+    }
+
+    private static long reach(BlockEntity be) {
+        return Math.abs((long) be.getBlockPos().getX()) + Math.abs((long) be.getBlockPos().getZ());
     }
 
     private void command(Minecraft mc, String cmd) {

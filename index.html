@@ -1861,6 +1861,16 @@ const PROGRESS_SETS = [
     ["tsk-004", "Done", "Prototype in the mod: the turbine runs on hot coolant as a stand-in for steam, extracts 2% of its stored heat per tick and provides 4 SU per HU/t at a fixed 16 RPM. Capacity is zero without delivered heat and doubles when delivered heat doubles (unheatedLoopGivesNoCapacity, turbineCapacityScalesWithHeatNotSpeed)."]
   ]]
 ];
+const RECORD_PATCHES = [
+  ["progress-moving-body-1", [
+    ["tasks", "tsk-005", "Todo", { status: "Done", notes: "Checked in game (inspection scene body_tests): the loop assembled onto a Sable sub-level with /sable assemble kept circulating at 32 mB/t while the body was lifted, spun with angular impulses, fell and landed. The heat ledger balance stayed at zero. Rotation in that run was about 5 degrees; an earlier scene rested the body tilted 19 degrees with rotors turning." }],
+    ["tasks", "tsk-006", "Todo", { status: "Done", notes: "Ten assemble/disassemble cycles (assembly by /sable assemble, disassembly through a Physics Assembler) kept exactly one controller, pump and turbine, 6,000 mB of coolant and a heat balance of 0.000 HU. Blocks returned to their original world positions. Fuel and inventories do not exist yet and still need the same test." }],
+    ["tasks", "tsk-007", "Todo", { status: "Done", notes: "Save, quit and reload with the body assembled and again after disassembly: coolant, stored heat and the heat ledger continued from their saved values (181.48 to 181.58 degrees C with the heater running), nothing reset or duplicated." }],
+    ["tasks", "tsk-008", "Todo", { status: "Done", notes: "The loop was built straddling four chunks, assembled, and teleported across chunk borders seven times while running. Flow continued and the ledger stayed balanced. On the body, blocks live at sub-level storage coordinates (around x 20,481,034)." }],
+    ["tasks", "tsk-009", "Todo", { status: "Done", notes: "Findings recorded in the Create Aeronautics compatibility evidence. Go: block entities on Sable sub-levels tick, keep state through assembly, disassembly and reload, and need no special handling for the prototype loop. Milestone 2 should still cover body splitting (aer-02), cross-body pipes (aer-04) and world-space positions for radiation (aer-06). The versions decision is still open for you." }],
+    ["compat", "cmp-aero", "Untested", { status: "In progress", versions: "Create 6.0.10-280, Create Aeronautics 1.3.2 (Simulated 1.3.2), Sable 2.0.6, NeoForge 21.1.262, Minecraft 1.21.1", evidence: "Milestone 1 prototype loop (controller, pump, pipes, turbine) on a Sable sub-level: runs while moving and rotating; 10 assemble/disassemble cycles with no duplication (1 controller, 1 pump, 1 turbine, 6,000 mB, heat balance 0); state kept across reload both assembled and disassembled; keeps running across chunk borders. Kinetic rotors render and turn on a tilted body. Evidence: run-inspect scenes body_tests, ship_probe and showroom; /criticalmass ledger output.", issues: "Not yet tested: body splitting, cross-body connections, docking, world-space radiation positions, sustained powered flight, fuel and inventories." }]
+  ]]
+];
 function applyProgressSets(raw) {
   if (!raw || !Array.isArray(raw.tasks) || !raw.meta || typeof raw.meta !== "object" || Array.isArray(raw.meta)) return;
   const applied = Array.isArray(raw.meta.appliedSeeds) ? raw.meta.appliedSeeds.filter(x => typeof x === "string") : [];
@@ -1871,6 +1881,18 @@ function applyProgressSets(raw) {
       if (!t || t.status !== "Todo" || t.updatedAt) continue;
       t.status = status;
       t.notes = typeof t.notes === "string" && t.notes ? t.notes + String.fromCharCode(10) + note : note;
+    }
+    applied.push(setId);
+  }
+  for (const [setId, entries] of RECORD_PATCHES) {
+    if (applied.includes(setId)) continue;
+    for (const [coll, id, expected, patch] of entries) {
+      const list = raw[coll];
+      const rec = Array.isArray(list) ? list.find(x => x && x.id === id) : null;
+      if (!rec || rec.status !== expected || rec.updatedAt) continue;
+      for (const [k, v] of Object.entries(patch)) {
+        rec[k] = k === "notes" && typeof rec.notes === "string" && rec.notes ? rec.notes + String.fromCharCode(10) + v : v;
+      }
     }
     applied.push(setId);
   }

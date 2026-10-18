@@ -2,7 +2,9 @@ package com.criticalmass.content.kinetics;
 
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantCircuit;
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ThermalTooltips;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -11,7 +13,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 
 public class CirculationPumpBlockEntity extends KineticBlockEntity {
     private CoolantCircuit circuit;
@@ -24,6 +25,18 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
 
     public CirculationPumpBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
     }
 
     public int flow() {

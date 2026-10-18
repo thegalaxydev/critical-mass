@@ -2,6 +2,7 @@ package com.criticalmass.content.kinetics;
 
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -26,6 +27,18 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
     public SteamTurbineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
     }
 
     @Override
