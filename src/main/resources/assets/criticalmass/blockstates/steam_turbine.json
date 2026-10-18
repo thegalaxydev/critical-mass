@@ -1,0 +1,11 @@
+{
+ "variants": {
+  "axis=x": {
+   "model": "criticalmass:block/steam_turbine"
+  },
+  "axis=z": {
+   "model": "criticalmass:block/steam_turbine",
+   "y": 90
+  }
+ }
+}

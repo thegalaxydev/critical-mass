@@ -1,0 +1,50 @@
+{
+ "variants": {
+  "facing=north,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet"
+  },
+  "facing=north,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet"
+  },
+  "facing=east,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet",
+   "y": 90
+  },
+  "facing=east,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet",
+   "y": 90
+  },
+  "facing=south,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet",
+   "y": 180
+  },
+  "facing=south,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet",
+   "y": 180
+  },
+  "facing=west,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet",
+   "y": 270
+  },
+  "facing=west,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet",
+   "y": 270
+  },
+  "facing=up,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet",
+   "x": 270
+  },
+  "facing=up,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet",
+   "x": 270
+  },
+  "facing=down,mode=inlet": {
+   "model": "criticalmass:block/primary_coolant_port_inlet",
+   "x": 90
+  },
+  "facing=down,mode=outlet": {
+   "model": "criticalmass:block/primary_coolant_port_outlet",
+   "x": 90
+  }
+ }
+}

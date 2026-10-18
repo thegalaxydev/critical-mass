@@ -1,0 +1,16 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+license="All Rights Reserved"
+
+[[mods]]
+modId="criticalmass_inspect"
+version="0.0.0"
+displayName="Critical Mass Inspection Harness (dev only)"
+description='''Development-only scripted screenshot harness. Not part of the release jar.'''
+
+[[dependencies.criticalmass_inspect]]
+    modId="criticalmass"
+    type="required"
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="CLIENT"

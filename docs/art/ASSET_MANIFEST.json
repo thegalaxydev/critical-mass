@@ -1,0 +1,3475 @@
+{
+ "generated": "2026-10-18T13:44:53",
+ "minecraft": "1.21.1",
+ "neoforge": "21.1.262",
+ "create": "6.0.10-280",
+ "aeronautics": "1.3.2",
+ "sable": "2.0.6",
+ "flywheel": "1.0.6",
+ "density": "16 texels per block; items 16x16",
+ "records": [
+  {
+   "key": "reactor_vessel_casing",
+   "registry_id": "criticalmass:reactor_vessel_casing",
+   "type": "block",
+   "console_id": "blk-vessel-casing",
+   "name": "Reactor Vessel Casing",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_vessel_casing.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "reactor_vessel_casing-v2.png",
+     "uv_regions": {
+      "face": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/reactor_vessel_casing.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reactor_vessel_casing.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_vessel_casing.json",
+   "inventory_icon": "item model reactor_vessel_casing (parent: block model)",
+   "placed_appearance": "blockstate reactor_vessel_casing (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/andesite_casing",
+    "simulated:block/iron_gearbox"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true
+   },
+   "issues": [
+    "No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up.",
+    "Integrity crack overlays are not made, because vessel integrity is not implemented."
+   ],
+   "related_tasks": [
+    "tsk-002",
+    "tsk-020",
+    "tsk-036",
+    "tsk-068",
+    "tsk-092",
+    "tsk-097"
+   ],
+   "icon": "docs/art/icons/block_reactor_vessel_casing.png"
+  },
+  {
+   "key": "circulation_pump",
+   "registry_id": "criticalmass:circulation_pump",
+   "type": "block",
+   "console_id": "blk-circulation-pump",
+   "name": "Circulation Pump",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/circulation_pump.png",
+     "exists": true,
+     "size": [
+      64,
+      64
+     ],
+     "generated_source": "circulation_pump-v3.png",
+     "uv_regions": {
+      "flange_out": [
+       12,
+       12,
+       8,
+       8
+      ],
+      "flange_edge_v": [
+       28,
+       12,
+       2,
+       8
+      ],
+      "flange_edge_h": [
+       42,
+       12,
+       8,
+       2
+      ],
+      "flange_in": [
+       20,
+       12,
+       8,
+       8
+      ],
+      "pipe_h": [
+       30,
+       12,
+       12,
+       6
+      ],
+      "pipe_v": [
+       28,
+       0,
+       6,
+       12
+      ],
+      "housing_socket": [
+       12,
+       0,
+       8,
+       12
+      ],
+      "housing_top": [
+       34,
+       0,
+       12,
+       8
+      ],
+      "housing_bottom": [
+       46,
+       0,
+       12,
+       8
+      ],
+      "housing_front": [
+       0,
+       0,
+       12,
+       12
+      ],
+      "housing_socket_v": [
+       0,
+       12,
+       12,
+       8
+      ],
+      "housing_side_v": [
+       20,
+       0,
+       8,
+       12
+      ]
+     }
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/circulation_pump_rotor.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "circulation_pump_rotor-v2.png",
+     "uv_regions": {
+      "hub": [
+       0,
+       0,
+       8,
+       8
+      ],
+      "hub_edge": [
+       8,
+       0,
+       8,
+       2
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/circulation_pump_rotor.json",
+    "src/main/resources/assets/criticalmass/models/block/circulation_pump.json",
+    "src/main/resources/assets/criticalmass/models/block/circulation_pump_vertical.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/circulation_pump.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/circulation_pump.json",
+   "inventory_icon": "item model circulation_pump (merged housing + rotor, static)",
+   "placed_appearance": "blockstate circulation_pump (dir_axis)",
+   "state_notes": "",
+   "partials": [
+    "circulation_pump_rotor"
+   ],
+   "kinetic": {
+    "role": "consumer",
+    "impact_su": "4.0 per RPM (CMStress.CIRCULATION_PUMP_IMPACT, provisional)",
+    "block_class": "DirectionalAxisKineticBlock (facing = outlet, axis_along_first selects the shaft axis perpendicular to facing)",
+    "shaft_faces": "both faces on the rotation axis (hasShaftTowards: face.axis == rotation axis)",
+    "axis": "perpendicular to the fluid axis; 2 options per facing",
+    "placement": "6 facings x 2 shaft orientations; facing defaults to looking direction, shift reverses",
+    "rotating": "circulation_pump_rotor partial: Create shaft (create:block/axis) plus two brass drive hubs on the shaft faces",
+    "stationary": "housing, copper pipe body, red outlet and blue inlet flanges",
+    "direction": "rotor turns exactly with network speed and direction (Create SingleAxisRotatingVisual / KineticBlockEntityRenderer); 1:1 with input shaft",
+    "renderer": "Flywheel visual SingleAxisRotatingVisual.of(CIRCULATION_PUMP_ROTOR); fallback BER AxialRotorRenderer when visualization is unsupported"
+   },
+   "references": [
+    "create:block/pump",
+    "create:block/pipes",
+    "create:block/gearbox"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true,
+    "rotation_with_network": true,
+    "rotation_on_tilted_body": true,
+    "stops_when_overstressed": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-003",
+    "tsk-016",
+    "tsk-033",
+    "tsk-068",
+    "tsk-094"
+   ],
+   "icon": "docs/art/icons/block_circulation_pump.png"
+  },
+  {
+   "key": "steam_turbine",
+   "registry_id": "criticalmass:steam_turbine",
+   "type": "block",
+   "console_id": "blk-steam-turbine",
+   "name": "Steam Turbine",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/steam_turbine.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "steam_turbine-v2.png",
+     "uv_regions": {
+      "end_plate": [
+       0,
+       0,
+       14,
+       14
+      ],
+      "end_inner": [
+       14,
+       0,
+       14,
+       14
+      ],
+      "end_edge_v": [
+       28,
+       0,
+       2,
+       14
+      ],
+      "end_edge_h": [
+       30,
+       0,
+       2,
+       14
+      ],
+      "drum_side": [
+       12,
+       14,
+       5,
+       12
+      ],
+      "drum_top": [
+       17,
+       14,
+       5,
+       12
+      ],
+      "drum_inner": [
+       0,
+       14,
+       12,
+       12
+      ],
+      "window": [
+       22,
+       14,
+       2,
+       12
+      ],
+      "steam_inlet": [
+       24,
+       14,
+       6,
+       6
+      ],
+      "port_edge": [
+       6,
+       26,
+       6,
+       2
+      ],
+      "exhaust": [
+       0,
+       26,
+       6,
+       6
+      ],
+      "port_edge_out": [
+       12,
+       26,
+       6,
+       2
+      ]
+     }
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/steam_turbine_rotor.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "steam_turbine_rotor-v2.png",
+     "uv_regions": {
+      "blade_disc": [
+       0,
+       0,
+       12,
+       12
+      ],
+      "disc_edge": [
+       0,
+       12,
+       12,
+       2
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/steam_turbine.json",
+    "src/main/resources/assets/criticalmass/models/block/steam_turbine_rotor.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/steam_turbine.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/steam_turbine.json",
+   "inventory_icon": "item model steam_turbine (merged housing + rotor, static)",
+   "placed_appearance": "blockstate steam_turbine (h_axis)",
+   "state_notes": "",
+   "partials": [
+    "steam_turbine_rotor"
+   ],
+   "kinetic": {
+    "role": "generator (GeneratingKineticBlockEntity); getGeneratedSpeed() returns 0 until the steam system exists, so it currently behaves as a pass-through shaft section",
+    "impact_su": "capacity 0 (not registered until steam delivery is implemented)",
+    "block_class": "HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)",
+    "shaft_faces": "both end plates on the axis",
+    "axis": "horizontal X or Z",
+    "placement": "axis follows player look; prefers adjoining shafts",
+    "rotating": "steam_turbine_rotor partial: Create shaft plus bladed disc visible through the slotted window",
+    "stationary": "end plates, riveted drum, slotted window band, steam inlet (top) and exhaust (bottom) flanges",
+    "direction": "rotor follows network speed and direction 1:1",
+    "renderer": "Flywheel visual SingleAxisRotatingVisual.of(STEAM_TURBINE_ROTOR); fallback BER AxialRotorRenderer"
+   },
+   "references": [
+    "create:block/engine",
+    "aeronautics:block/propeller_bearing",
+    "create:block/axis"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true,
+    "rotation_with_network": true,
+    "rotation_on_tilted_body": true
+   },
+   "issues": [
+    "Does not generate power yet (getGeneratedSpeed() = 0)."
+   ],
+   "related_tasks": [
+    "tsk-004",
+    "tsk-021",
+    "tsk-022",
+    "tsk-068",
+    "tsk-094"
+   ],
+   "icon": "docs/art/icons/block_steam_turbine.png"
+  },
+  {
+   "key": "instrumentation_panel",
+   "registry_id": "criticalmass:instrumentation_panel",
+   "type": "block",
+   "console_id": "blk-instrument-panel",
+   "name": "Instrumentation Panel",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/instrumentation_panel.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "instrumentation_panel-v2.png",
+     "uv_regions": {
+      "panel_face": [
+       0,
+       0,
+       14,
+       14
+      ],
+      "panel_edge_v": [
+       28,
+       0,
+       3,
+       14
+      ],
+      "panel_edge_h": [
+       0,
+       14,
+       14,
+       3
+      ],
+      "panel_back": [
+       14,
+       0,
+       14,
+       14
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/instrumentation_panel.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/instrumentation_panel.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/instrumentation_panel.json",
+   "inventory_icon": "item model instrumentation_panel (parent: block model)",
+   "placed_appearance": "blockstate instrumentation_panel (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/gauge",
+    "create:block/boiler_gauge"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true
+   },
+   "issues": [
+    "Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet."
+   ],
+   "related_tasks": [
+    "tsk-047",
+    "tsk-068",
+    "tsk-096"
+   ],
+   "icon": "docs/art/icons/block_instrumentation_panel.png"
+  },
+  {
+   "key": "reactor_controller",
+   "registry_id": "criticalmass:reactor_controller",
+   "type": "block",
+   "console_id": "blk-controller",
+   "name": "Reactor Controller",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_controller.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "reactor_controller-v1.png",
+     "uv_regions": {
+      "front": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/reactor_controller.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reactor_controller.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_controller.json",
+   "inventory_icon": "item model reactor_controller (parent: block model)",
+   "placed_appearance": "blockstate reactor_controller (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-002",
+    "tsk-010",
+    "tsk-011",
+    "tsk-029",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_reactor_controller.png"
+  },
+  {
+   "key": "fuel_channel",
+   "registry_id": "criticalmass:fuel_channel",
+   "type": "block",
+   "console_id": "blk-fuel-channel",
+   "name": "Fuel Channel",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/fuel_channel.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "fuel_channel-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/fuel_channel.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/fuel_channel.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/fuel_channel.json",
+   "inventory_icon": "item model fuel_channel (parent: block model)",
+   "placed_appearance": "blockstate fuel_channel (raw)",
+   "state_notes": "rotated pillar (axis)",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-012",
+    "tsk-039",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_fuel_channel.png"
+  },
+  {
+   "key": "control_channel",
+   "registry_id": "criticalmass:control_channel",
+   "type": "block",
+   "console_id": "blk-control-channel",
+   "name": "Control Channel",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/control_channel.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "control_channel-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/control_channel.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/control_channel.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/control_channel.json",
+   "inventory_icon": "item model control_channel (parent: block model)",
+   "placed_appearance": "blockstate control_channel (raw)",
+   "state_notes": "rotated pillar (axis)",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-013",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_control_channel.png"
+  },
+  {
+   "key": "control_rod_drive",
+   "registry_id": "criticalmass:control_rod_drive",
+   "type": "block",
+   "console_id": "blk-rod-drive",
+   "name": "Control Rod Drive",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/control_rod_drive.png",
+     "exists": true,
+     "size": [
+      64,
+      64
+     ],
+     "generated_source": "control_rod_drive-v1.png",
+     "uv_regions": {
+      "base_top": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "base_down": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "base_side": [
+       12,
+       16,
+       16,
+       3
+      ],
+      "housing_side": [
+       42,
+       0,
+       10,
+       9
+      ],
+      "housing_front": [
+       52,
+       0,
+       10,
+       9
+      ],
+      "housing_back": [
+       0,
+       16,
+       10,
+       9
+      ],
+      "housing_top": [
+       32,
+       0,
+       10,
+       10
+      ],
+      "rack": [
+       10,
+       16,
+       2,
+       4
+      ],
+      "rack_top": [
+       28,
+       16,
+       2,
+       2
+      ]
+     }
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/control_rod_drive_pinion.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "control_rod_drive_pinion-v1.png",
+     "uv_regions": {
+      "pinion": [
+       0,
+       0,
+       6,
+       6
+      ],
+      "pinion_edge": [
+       6,
+       0,
+       6,
+       2
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/control_rod_drive.json",
+    "src/main/resources/assets/criticalmass/models/block/control_rod_drive_pinion.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/control_rod_drive.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/control_rod_drive.json",
+   "inventory_icon": "item model control_rod_drive (parent: block model)",
+   "placed_appearance": "blockstate control_rod_drive (horizontal)",
+   "state_notes": "",
+   "partials": [
+    "control_rod_drive_pinion"
+   ],
+   "kinetic": {
+    "role": "consumer",
+    "impact_su": "1.0 per RPM (CMStress.CONTROL_ROD_DRIVE_IMPACT, provisional)",
+    "block_class": "HorizontalKineticBlock (blockstate 'facing'; front = latch lever, faces the player when placed)",
+    "shaft_faces": "back face only (hasShaftTowards: face == facing.getOpposite())",
+    "axis": "facing axis",
+    "placement": "4 horizontal facings",
+    "rotating": "control_rod_drive_pinion partial: half shaft from the back face plus the pinion gear",
+    "stationary": "base plate, brass housing, red latch, rack (drawn at the stored full-insertion position; rod movement is not implemented)",
+    "direction": "pinion follows network speed and direction 1:1; the rack does not move because insertion control is not implemented (M4 tasks)",
+    "renderer": "Flywheel OrientedRotatingVisual (UP to input side); fallback BER InputSideRotorRenderer"
+   },
+   "references": [
+    "aeronautics:block/gyroscopic_propeller_bearing",
+    "create:block/gearbox"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true,
+    "rotation_with_network": true,
+    "rotation_on_tilted_body": true
+   },
+   "issues": [
+    "The rack is static: rod insertion control is not implemented."
+   ],
+   "related_tasks": [
+    "tsk-030",
+    "tsk-031",
+    "tsk-068",
+    "tsk-094"
+   ],
+   "icon": "docs/art/icons/block_control_rod_drive.png"
+  },
+  {
+   "key": "coolant_channel",
+   "registry_id": "criticalmass:coolant_channel",
+   "type": "block",
+   "console_id": "blk-coolant-channel",
+   "name": "Coolant Channel",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/coolant_channel.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "coolant_channel-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/coolant_channel.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/coolant_channel.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/coolant_channel.json",
+   "inventory_icon": "item model coolant_channel (parent: block model)",
+   "placed_appearance": "blockstate coolant_channel (raw)",
+   "state_notes": "rotated pillar (axis)",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-014",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_coolant_channel.png"
+  },
+  {
+   "key": "reactor_service_port",
+   "registry_id": "criticalmass:reactor_service_port",
+   "type": "block",
+   "console_id": "blk-service-port",
+   "name": "Reactor Service Port",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_service_port.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "reactor_service_port-v1.png",
+     "uv_regions": {
+      "front": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/reactor_service_port.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reactor_service_port.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_service_port.json",
+   "inventory_icon": "item model reactor_service_port (parent: block model)",
+   "placed_appearance": "blockstate reactor_service_port (facing)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-040",
+    "tsk-042",
+    "tsk-068",
+    "tsk-085"
+   ],
+   "icon": "docs/art/icons/block_reactor_service_port.png"
+  },
+  {
+   "key": "primary_coolant_port",
+   "registry_id": "criticalmass:primary_coolant_port",
+   "type": "block",
+   "console_id": "blk-coolant-port",
+   "name": "Primary Coolant Port",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/primary_coolant_port.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "primary_coolant_port-v1.png",
+     "uv_regions": {
+      "front_in": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "front_out": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "nozzle": [
+       0,
+       16,
+       8,
+       8
+      ],
+      "nozzle_side": [
+       8,
+       16,
+       2,
+       8
+      ],
+      "nozzle_side_8x2": [
+       10,
+       16,
+       8,
+       2
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/primary_coolant_port_inlet.json",
+    "src/main/resources/assets/criticalmass/models/block/primary_coolant_port_outlet.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/primary_coolant_port.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/primary_coolant_port.json",
+   "inventory_icon": "item model primary_coolant_port (parent: block model)",
+   "placed_appearance": "blockstate primary_coolant_port (raw)",
+   "state_notes": "mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/pipes"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-015",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_primary_coolant_port.png"
+  },
+  {
+   "key": "reinforced_pipe",
+   "registry_id": "criticalmass:reinforced_pipe",
+   "type": "block",
+   "console_id": "blk-reinforced-pipe",
+   "name": "Reinforced Pipe",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reinforced_pipe.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "reinforced_pipe-v1.png",
+     "uv_regions": {
+      "core": [
+       0,
+       0,
+       10,
+       10
+      ],
+      "arm_end": [
+       10,
+       0,
+       10,
+       10
+      ],
+      "arm_h": [
+       20,
+       0,
+       3,
+       10
+      ],
+      "arm_v": [
+       0,
+       10,
+       10,
+       3
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe_core.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe_arm.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reinforced_pipe.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reinforced_pipe.json",
+   "inventory_icon": "item model reinforced_pipe (parent: block model)",
+   "placed_appearance": "blockstate reinforced_pipe (raw)",
+   "state_notes": "six connection booleans from real neighbours (pipes, coolant port fronts, pump fluid axis, turbine top/bottom, relief valve back, PipeConnectable blocks); multipart core + arms. Does not transport fluid yet.",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/pipes"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [
+    "Connections are visual only; no fluid transport."
+   ],
+   "related_tasks": [
+    "tsk-003",
+    "tsk-015",
+    "tsk-018",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_reinforced_pipe.png"
+  },
+  {
+   "key": "heat_exchanger",
+   "registry_id": "criticalmass:heat_exchanger",
+   "type": "block",
+   "console_id": "blk-heat-exchanger",
+   "name": "Heat Exchanger",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/heat_exchanger.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "heat_exchanger-v1.png",
+     "uv_regions": {
+      "primary": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "secondary": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "shell": [
+       0,
+       16,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       16,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/heat_exchanger.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/heat_exchanger.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/heat_exchanger.json",
+   "inventory_icon": "item model heat_exchanger (parent: block model)",
+   "placed_appearance": "blockstate heat_exchanger (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/fluid_tank_top",
+    "create:block/pipes"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-017",
+    "tsk-056",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_heat_exchanger.png"
+  },
+  {
+   "key": "condenser",
+   "registry_id": "criticalmass:condenser",
+   "type": "block",
+   "console_id": "blk-condenser",
+   "name": "Condenser",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/condenser.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "condenser-v1.png",
+     "uv_regions": {
+      "front": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "back": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "side": [
+       0,
+       16,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       16,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/condenser.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/condenser.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/condenser.json",
+   "inventory_icon": "item model condenser (parent: block model)",
+   "placed_appearance": "blockstate condenser (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-023",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_condenser.png"
+  },
+  {
+   "key": "cooling_tower_packing",
+   "registry_id": "criticalmass:cooling_tower_packing",
+   "type": "block",
+   "console_id": "blk-cooling-tower",
+   "name": "Cooling Tower Packing",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/cooling_tower_packing.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "cooling_tower_packing-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/cooling_tower_packing.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cooling_tower_packing.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/cooling_tower_packing.json",
+   "inventory_icon": "item model cooling_tower_packing (parent: block model)",
+   "placed_appearance": "blockstate cooling_tower_packing (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-024",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_cooling_tower_packing.png"
+  },
+  {
+   "key": "radiator_panel",
+   "registry_id": "criticalmass:radiator_panel",
+   "type": "block",
+   "console_id": "blk-radiator",
+   "name": "Radiator Panel",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/radiator_panel.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "radiator_panel-v1.png",
+     "uv_regions": {
+      "fins": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "back": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "edge_v": [
+       0,
+       16,
+       4,
+       16
+      ],
+      "edge_h": [
+       4,
+       16,
+       16,
+       4
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/radiator_panel.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/radiator_panel.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/radiator_panel.json",
+   "inventory_icon": "item model radiator_panel (parent: block model)",
+   "placed_appearance": "blockstate radiator_panel (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-026",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_radiator_panel.png"
+  },
+  {
+   "key": "emergency_coolant_tank",
+   "registry_id": "criticalmass:emergency_coolant_tank",
+   "type": "block",
+   "console_id": "blk-emergency-tank",
+   "name": "Emergency Coolant Tank",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/emergency_coolant_tank.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "emergency_coolant_tank-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/emergency_coolant_tank.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/emergency_coolant_tank.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/emergency_coolant_tank.json",
+   "inventory_icon": "item model emergency_coolant_tank (parent: block model)",
+   "placed_appearance": "blockstate emergency_coolant_tank (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "create:block/fluid_tank",
+    "create:block/fluid_tank_window"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-034",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_emergency_coolant_tank.png"
+  },
+  {
+   "key": "relief_valve",
+   "registry_id": "criticalmass:relief_valve",
+   "type": "block",
+   "console_id": "blk-relief-valve",
+   "name": "Relief Valve",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/relief_valve.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "relief_valve-v1.png",
+     "uv_regions": {
+      "flange": [
+       0,
+       0,
+       10,
+       10
+      ],
+      "flange_front": [
+       10,
+       0,
+       10,
+       10
+      ],
+      "flange_edge": [
+       20,
+       0,
+       4,
+       10
+      ],
+      "flange_edge_10x4": [
+       14,
+       10,
+       10,
+       4
+      ],
+      "body_front": [
+       24,
+       0,
+       8,
+       8
+      ],
+      "body": [
+       0,
+       10,
+       6,
+       8
+      ],
+      "body_8x6": [
+       6,
+       10,
+       8,
+       6
+      ],
+      "cap": [
+       24,
+       10,
+       4,
+       4
+      ],
+      "spring": [
+       28,
+       10,
+       4,
+       4
+      ],
+      "horn_mouth": [
+       4,
+       18,
+       2,
+       2
+      ],
+      "horn": [
+       0,
+       18,
+       2,
+       4
+      ],
+      "horn_s": [
+       2,
+       18,
+       2,
+       4
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/relief_valve.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/relief_valve.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/relief_valve.json",
+   "inventory_icon": "item model relief_valve (parent: block model)",
+   "placed_appearance": "blockstate relief_valve (facing)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "aeronautics:block/steam_vent",
+    "create:block/fluid_valve"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-028",
+    "tsk-035",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_relief_valve.png"
+  },
+  {
+   "key": "steam_bypass_valve",
+   "registry_id": "criticalmass:steam_bypass_valve",
+   "type": "block",
+   "console_id": "blk-bypass-valve",
+   "name": "Steam Bypass Valve",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/steam_bypass_valve.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "steam_bypass_valve-v1.png",
+     "uv_regions": {
+      "body_side": [
+       0,
+       0,
+       10,
+       10
+      ],
+      "body_back": [
+       10,
+       0,
+       10,
+       10
+      ],
+      "body_top": [
+       20,
+       0,
+       10,
+       10
+      ],
+      "fl": [
+       0,
+       10,
+       8,
+       8
+      ],
+      "fl_edge": [
+       0,
+       18,
+       3,
+       8
+      ],
+      "fl_edge_t": [
+       3,
+       18,
+       3,
+       8
+      ],
+      "fl_bypass": [
+       8,
+       10,
+       8,
+       8
+      ],
+      "fl_edge_b": [
+       6,
+       18,
+       3,
+       8
+      ],
+      "fl_edge_bt": [
+       9,
+       18,
+       8,
+       3
+      ],
+      "stem": [
+       17,
+       18,
+       2,
+       2
+      ],
+      "wheel": [
+       16,
+       10,
+       8,
+       8
+      ],
+      "wheel_d": [
+       24,
+       10,
+       8,
+       8
+      ],
+      "wheel_e": [
+       19,
+       18,
+       8,
+       1
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/steam_bypass_valve.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/steam_bypass_valve.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/steam_bypass_valve.json",
+   "inventory_icon": "item model steam_bypass_valve (parent: block model)",
+   "placed_appearance": "blockstate steam_bypass_valve (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-027",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_steam_bypass_valve.png"
+  },
+  {
+   "key": "boiler_heating_plate",
+   "registry_id": "criticalmass:boiler_heating_plate",
+   "type": "block",
+   "console_id": "blk-boiler-plate",
+   "name": "Boiler Heating Plate",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/boiler_heating_plate.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "boiler_heating_plate-v1.png",
+     "uv_regions": {
+      "top": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "bottom": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "port": [
+       0,
+       16,
+       16,
+       6
+      ],
+      "side": [
+       16,
+       16,
+       16,
+       6
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/boiler_heating_plate.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/boiler_heating_plate.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/boiler_heating_plate.json",
+   "inventory_icon": "item model boiler_heating_plate (parent: block model)",
+   "placed_appearance": "blockstate boiler_heating_plate (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-022",
+    "tsk-025",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_boiler_heating_plate.png"
+  },
+  {
+   "key": "shielding_concrete",
+   "registry_id": "criticalmass:shielding_concrete",
+   "type": "block",
+   "console_id": "blk-shield-concrete",
+   "name": "Shielding Concrete",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/shielding_concrete.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "shielding_concrete-v2.png",
+     "uv_regions": {
+      "face": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/shielding_concrete.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/shielding_concrete.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/shielding_concrete.json",
+   "inventory_icon": "item model shielding_concrete (parent: block model)",
+   "placed_appearance": "blockstate shielding_concrete (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-044",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_shielding_concrete.png"
+  },
+  {
+   "key": "shielded_glass",
+   "registry_id": "criticalmass:shielded_glass",
+   "type": "block",
+   "console_id": "blk-shield-glass",
+   "name": "Shielded Glass",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/shielded_glass.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "shielded_glass-v1.png",
+     "uv_regions": {
+      "face": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/shielded_glass.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/shielded_glass.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/shielded_glass.json",
+   "inventory_icon": "item model shielded_glass (parent: block model)",
+   "placed_appearance": "blockstate shielded_glass (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [
+    "Translucent; depth sorting against other translucent blocks has not been checked."
+   ],
+   "related_tasks": [
+    "tsk-045",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_shielded_glass.png"
+  },
+  {
+   "key": "shielded_hatch",
+   "registry_id": "criticalmass:shielded_hatch",
+   "type": "block",
+   "console_id": "blk-shield-hatch",
+   "name": "Shielded Hatch",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/shielded_hatch.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "shielded_hatch-v1.png",
+     "uv_regions": {
+      "face": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/shielded_hatch.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/shielded_hatch.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/shielded_hatch.json",
+   "inventory_icon": "item model shielded_hatch (parent: block model)",
+   "placed_appearance": "blockstate shielded_hatch (raw)",
+   "state_notes": "vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-045",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_shielded_hatch.png"
+  },
+  {
+   "key": "fuel_assembly_bench",
+   "registry_id": "criticalmass:fuel_assembly_bench",
+   "type": "block",
+   "console_id": "blk-assembly-bench",
+   "name": "Fuel Assembly Bench",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/fuel_assembly_bench.png",
+     "exists": true,
+     "size": [
+      64,
+      64
+     ],
+     "generated_source": "fuel_assembly_bench-v1.png",
+     "uv_regions": {
+      "top": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "under": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "front": [
+       35,
+       0,
+       16,
+       6
+      ],
+      "side": [
+       0,
+       16,
+       16,
+       6
+      ],
+      "leg": [
+       32,
+       0,
+       3,
+       10
+      ],
+      "foot": [
+       32,
+       16,
+       3,
+       3
+      ],
+      "jig_top": [
+       16,
+       16,
+       6,
+       4
+      ],
+      "jig_side": [
+       22,
+       16,
+       6,
+       3
+      ],
+      "jig_end": [
+       28,
+       16,
+       4,
+       3
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/fuel_assembly_bench.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/fuel_assembly_bench.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/fuel_assembly_bench.json",
+   "inventory_icon": "item model fuel_assembly_bench (parent: block model)",
+   "placed_appearance": "blockstate fuel_assembly_bench (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-038",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_fuel_assembly_bench.png"
+  },
+  {
+   "key": "spent_fuel_rack",
+   "registry_id": "criticalmass:spent_fuel_rack",
+   "type": "block",
+   "console_id": "blk-spent-rack",
+   "name": "Spent Fuel Rack",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/spent_fuel_rack.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "spent_fuel_rack-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "top": [
+       16,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/spent_fuel_rack.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/spent_fuel_rack.json",
+   "inventory_icon": "item model spent_fuel_rack (parent: block model)",
+   "placed_appearance": "blockstate spent_fuel_rack (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-041",
+    "tsk-042",
+    "tsk-068",
+    "tsk-086"
+   ],
+   "icon": "docs/art/icons/block_spent_fuel_rack.png"
+  },
+  {
+   "key": "shielded_cask",
+   "registry_id": "criticalmass:shielded_cask",
+   "type": "block",
+   "console_id": "blk-cask",
+   "name": "Shielded Cask",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/shielded_cask.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "shielded_cask-v1.png",
+     "uv_regions": {
+      "side": [
+       0,
+       14,
+       12,
+       13
+      ],
+      "base": [
+       12,
+       14,
+       12,
+       12
+      ],
+      "lid": [
+       0,
+       0,
+       14,
+       14
+      ],
+      "lid_side": [
+       0,
+       27,
+       14,
+       2
+      ],
+      "lid_under": [
+       14,
+       0,
+       14,
+       14
+      ],
+      "lug": [
+       14,
+       27,
+       4,
+       2
+      ],
+      "lug_4x1": [
+       18,
+       27,
+       4,
+       1
+      ],
+      "lug_e": [
+       22,
+       27,
+       2,
+       1
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/shielded_cask.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/shielded_cask.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/shielded_cask.json",
+   "inventory_icon": "item model shielded_cask (parent: block model)",
+   "placed_appearance": "blockstate shielded_cask (simple)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-043",
+    "tsk-068",
+    "tsk-077",
+    "tsk-086"
+   ],
+   "icon": "docs/art/icons/block_shielded_cask.png"
+  },
+  {
+   "key": "reactor_signal_interface",
+   "registry_id": "criticalmass:reactor_signal_interface",
+   "type": "block",
+   "console_id": "blk-signal-interface",
+   "name": "Reactor Signal Interface",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_signal_interface.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "reactor_signal_interface-v1.png",
+     "uv_regions": {
+      "front": [
+       0,
+       0,
+       16,
+       16
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/reactor_signal_interface.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reactor_signal_interface.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_signal_interface.json",
+   "inventory_icon": "item model reactor_signal_interface (parent: block model)",
+   "placed_appearance": "blockstate reactor_signal_interface (horizontal)",
+   "state_notes": "",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-048",
+    "tsk-051",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_reactor_signal_interface.png"
+  },
+  {
+   "key": "alarm_siren",
+   "registry_id": "criticalmass:alarm_siren",
+   "type": "block",
+   "console_id": "blk-alarm-siren",
+   "name": "Alarm Siren",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/alarm_siren.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "alarm_siren-v1.png",
+     "uv_regions": {
+      "base": [
+       0,
+       0,
+       10,
+       10
+      ],
+      "base_edge": [
+       10,
+       0,
+       2,
+       10
+      ],
+      "base_edge_h": [
+       16,
+       10,
+       10,
+       2
+      ],
+      "horn_side": [
+       18,
+       0,
+       8,
+       6
+      ],
+      "horn_side_6x8": [
+       12,
+       0,
+       6,
+       8
+      ],
+      "horn_mouth": [
+       26,
+       0,
+       6,
+       6
+      ],
+      "lamp_off": [
+       0,
+       10,
+       4,
+       4
+      ],
+      "lamp_off_4x3": [
+       8,
+       10,
+       4,
+       3
+      ],
+      "lamp_on": [
+       4,
+       10,
+       4,
+       4
+      ],
+      "lamp_on_4x3": [
+       12,
+       10,
+       4,
+       3
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/alarm_siren.json",
+    "src/main/resources/assets/criticalmass/models/block/alarm_siren_powered.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/alarm_siren.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/alarm_siren.json",
+   "inventory_icon": "item model alarm_siren (parent: block model)",
+   "placed_appearance": "blockstate alarm_siren (raw)",
+   "state_notes": "powered=true when the block receives redstone; powered model uses a lit, unshaded lamp",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "see docs/art/REFERENCES.md"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "installation": true,
+    "moving_body": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-049",
+    "tsk-068"
+   ],
+   "icon": "docs/art/icons/block_alarm_siren.png"
+  },
+  {
+   "key": "docking_service_connector",
+   "registry_id": "criticalmass:docking_service_connector",
+   "type": "block",
+   "console_id": "blk-docking-connector",
+   "name": "Docking Service Connector",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/docking_service_connector.png",
+     "exists": true,
+     "size": [
+      32,
+      32
+     ],
+     "generated_source": "docking_service_connector-v1.png",
+     "uv_regions": {
+      "face_amber": [
+       0,
+       0,
+       16,
+       16
+      ],
+      "side": [
+       16,
+       0,
+       16,
+       16
+      ],
+      "face_green": [
+       0,
+       16,
+       16,
+       16
+      ],
+      "clamp": [
+       16,
+       16,
+       2,
+       4
+      ],
+      "clamp_e": [
+       18,
+       16,
+       1,
+       4
+      ],
+      "clamp_t": [
+       19,
+       16,
+       2,
+       1
+      ]
+     }
+    }
+   ],
+   "block_models": [
+    "src/main/resources/assets/criticalmass/models/block/docking_service_connector.json",
+    "src/main/resources/assets/criticalmass/models/block/docking_service_connector_connected.json"
+   ],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/docking_service_connector.json",
+   "item_model": "src/main/resources/assets/criticalmass/models/item/docking_service_connector.json",
+   "inventory_icon": "item model docking_service_connector (parent: block model)",
+   "placed_appearance": "blockstate docking_service_connector (raw)",
+   "state_notes": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
+   "partials": [],
+   "kinetic": null,
+   "references": [
+    "simulated:block/dock",
+    "simulated:block/dock_powered"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [
+    "Connected state exists only as a blockstate; docking behaviour is not implemented."
+   ],
+   "related_tasks": [
+    "tsk-053",
+    "tsk-068",
+    "tsk-098"
+   ],
+   "icon": "docs/art/icons/block_docking_service_connector.png"
+  },
+  {
+   "key": "fuel_assembly",
+   "registry_id": "criticalmass:fuel_assembly",
+   "type": "item",
+   "console_id": "itm-fresh-assembly",
+   "name": "Fresh Fuel Assembly",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/fuel_assembly.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__fuel_assembly-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/fuel_assembly.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [
+    "No remaining-fuel overlay: fuel item data is not implemented yet (tsk-070)."
+   ],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-070",
+    "tsk-071",
+    "tsk-072",
+    "tsk-082",
+    "tsk-084",
+    "tsk-085",
+    "tsk-087",
+    "tsk-088",
+    "tsk-089"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/fuel_assembly.png"
+  },
+  {
+   "key": "survey_meter",
+   "registry_id": "criticalmass:survey_meter",
+   "type": "item",
+   "console_id": "itm-survey-meter",
+   "name": "Survey Meter",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/survey_meter.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__survey_meter-v3.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/survey_meter.json",
+   "presentation": "flat sprite, item/handheld",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [
+    "Item has no behaviour yet (measurement is task tsk-073)."
+   ],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-073"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/survey_meter.png"
+  },
+  {
+   "key": "protective_hood",
+   "registry_id": "criticalmass:protective_hood",
+   "type": "item",
+   "console_id": "itm-hood",
+   "name": "Protective Hood",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/protective_hood.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__protective_hood-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/protective_hood.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/goggles",
+    "create:item/copper_diving_helmet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "worn": true,
+    "worn_poses_front_back_sneak_walk_ride_swim": true,
+    "armor_stand": true,
+    "slim_model_same_layers_in_code": true
+   },
+   "issues": [
+    "First-person sleeves are not applicable: vanilla does not render armor on first-person arms.",
+    "Slim (Alex) model: checked in the 1.21.1 client code, not with an Alex skin in game. PlayerRenderer bakes PLAYER_SLIM_INNER/OUTER_ARMOR for slim players, and LayerDefinitions registers them with the same layer definitions as the wide model, so the outfit geometry and texture are identical."
+   ],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-075",
+    "tsk-093"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/protective_hood.png",
+   "equipment": {
+    "texture": "src/main/resources/assets/criticalmass/textures/models/armor/protective_layer_1.png",
+    "size": [
+     64,
+     32
+    ],
+    "registration": "ArmorMaterial 'criticalmass:protective' (Registries.ARMOR_MATERIAL) with Layer('criticalmass:protective'); 1.21.1 humanoid armor layers"
+   }
+  },
+  {
+   "key": "protective_suit",
+   "registry_id": "criticalmass:protective_suit",
+   "type": "item",
+   "console_id": "itm-suit",
+   "name": "Protective Suit",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/protective_suit.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__protective_suit-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/protective_suit.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/goggles",
+    "create:item/copper_diving_helmet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "worn": true,
+    "worn_poses_front_back_sneak_walk_ride_swim": true,
+    "armor_stand": true,
+    "slim_model_same_layers_in_code": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-075",
+    "tsk-093"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/protective_suit.png",
+   "equipment": {
+    "texture": "src/main/resources/assets/criticalmass/textures/models/armor/protective_layer_1.png",
+    "size": [
+     64,
+     32
+    ],
+    "registration": "ArmorMaterial 'criticalmass:protective' (Registries.ARMOR_MATERIAL) with Layer('criticalmass:protective'); 1.21.1 humanoid armor layers"
+   }
+  },
+  {
+   "key": "protective_leggings",
+   "registry_id": "criticalmass:protective_leggings",
+   "type": "item",
+   "console_id": "itm-leggings",
+   "name": "Protective Leggings",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/protective_leggings.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__protective_leggings-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/protective_leggings.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/goggles",
+    "create:item/copper_diving_helmet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "worn": true,
+    "worn_poses_front_back_sneak_walk_ride_swim": true,
+    "armor_stand": true,
+    "slim_model_same_layers_in_code": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-075",
+    "tsk-093"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/protective_leggings.png",
+   "equipment": {
+    "texture": "src/main/resources/assets/criticalmass/textures/models/armor/protective_layer_2.png",
+    "size": [
+     64,
+     32
+    ],
+    "registration": "ArmorMaterial 'criticalmass:protective' (Registries.ARMOR_MATERIAL) with Layer('criticalmass:protective'); 1.21.1 humanoid armor layers"
+   }
+  },
+  {
+   "key": "protective_boots",
+   "registry_id": "criticalmass:protective_boots",
+   "type": "item",
+   "console_id": "itm-boots",
+   "name": "Protective Boots",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/protective_boots.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__protective_boots-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/protective_boots.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/goggles",
+    "create:item/copper_diving_helmet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true,
+    "worn": true,
+    "worn_poses_front_back_sneak_walk_ride_swim": true,
+    "armor_stand": true,
+    "slim_model_same_layers_in_code": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-075",
+    "tsk-093"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/protective_boots.png",
+   "equipment": {
+    "texture": "src/main/resources/assets/criticalmass/textures/models/armor/protective_layer_1.png",
+    "size": [
+     64,
+     32
+    ],
+    "registration": "ArmorMaterial 'criticalmass:protective' (Registries.ARMOR_MATERIAL) with Layer('criticalmass:protective'); 1.21.1 humanoid armor layers"
+   }
+  },
+  {
+   "key": "raw_uranium",
+   "registry_id": "criticalmass:raw_uranium",
+   "type": "item",
+   "console_id": "itm-raw-uranium",
+   "name": "Raw Uranium",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/raw_uranium.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__raw_uranium-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/raw_uranium.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/raw_uranium.png"
+  },
+  {
+   "key": "crushed_uranium",
+   "registry_id": "criticalmass:crushed_uranium",
+   "type": "item",
+   "console_id": "itm-crushed-uranium",
+   "name": "Crushed Uranium",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/crushed_uranium.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__crushed_uranium-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/crushed_uranium.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [
+    "Create already ships create:crushed_raw_uranium (enabled by uranium tags); this addon item may be redundant. Needs a design decision."
+   ],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/crushed_uranium.png"
+  },
+  {
+   "key": "uranium_concentrate",
+   "registry_id": "criticalmass:uranium_concentrate",
+   "type": "item",
+   "console_id": "itm-concentrate",
+   "name": "Uranium Concentrate",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/uranium_concentrate.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__uranium_concentrate-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/uranium_concentrate.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/uranium_concentrate.png"
+  },
+  {
+   "key": "ceramic_fuel_pellet",
+   "registry_id": "criticalmass:ceramic_fuel_pellet",
+   "type": "item",
+   "console_id": "itm-pellet",
+   "name": "Ceramic Fuel Pellet",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/ceramic_fuel_pellet.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__ceramic_fuel_pellet-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/ceramic_fuel_pellet.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/ceramic_fuel_pellet.png"
+  },
+  {
+   "key": "fuel_cladding",
+   "registry_id": "criticalmass:fuel_cladding",
+   "type": "item",
+   "console_id": "itm-cladding",
+   "name": "Fuel Cladding",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/fuel_cladding.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__fuel_cladding-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/fuel_cladding.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/fuel_cladding.png"
+  },
+  {
+   "key": "empty_fuel_assembly",
+   "registry_id": "criticalmass:empty_fuel_assembly",
+   "type": "item",
+   "console_id": "itm-empty-assembly",
+   "name": "Empty Fuel Assembly",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/empty_fuel_assembly.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__empty_fuel_assembly-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/empty_fuel_assembly.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/empty_fuel_assembly.png"
+  },
+  {
+   "key": "spent_fuel_assembly",
+   "registry_id": "criticalmass:spent_fuel_assembly",
+   "type": "item",
+   "console_id": "itm-spent-assembly",
+   "name": "Spent Fuel Assembly",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/spent_fuel_assembly.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__spent_fuel_assembly-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/spent_fuel_assembly.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-070",
+    "tsk-071",
+    "tsk-086",
+    "tsk-087"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/spent_fuel_assembly.png"
+  },
+  {
+   "key": "damaged_fuel_assembly",
+   "registry_id": "criticalmass:damaged_fuel_assembly",
+   "type": "item",
+   "console_id": "itm-damaged-assembly",
+   "name": "Damaged Fuel Assembly",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/damaged_fuel_assembly.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__damaged_fuel_assembly-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/damaged_fuel_assembly.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-070",
+    "tsk-087",
+    "tsk-091"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/damaged_fuel_assembly.png"
+  },
+  {
+   "key": "reactor_alloy_ingot",
+   "registry_id": "criticalmass:reactor_alloy_ingot",
+   "type": "item",
+   "console_id": "itm-alloy-ingot",
+   "name": "Reactor Alloy Ingot",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/reactor_alloy_ingot.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__reactor_alloy_ingot-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_alloy_ingot.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/reactor_alloy_ingot.png"
+  },
+  {
+   "key": "reactor_alloy_sheet",
+   "registry_id": "criticalmass:reactor_alloy_sheet",
+   "type": "item",
+   "console_id": "itm-alloy-sheet",
+   "name": "Reactor Alloy Sheet",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/reactor_alloy_sheet.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__reactor_alloy_sheet-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_alloy_sheet.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/reactor_alloy_sheet.png"
+  },
+  {
+   "key": "shielding_plate",
+   "registry_id": "criticalmass:shielding_plate",
+   "type": "item",
+   "console_id": "itm-shielding-plate",
+   "name": "Shielding Plate",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/shielding_plate.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__shielding_plate-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/shielding_plate.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/shielding_plate.png"
+  },
+  {
+   "key": "control_rod",
+   "registry_id": "criticalmass:control_rod",
+   "type": "item",
+   "console_id": "itm-control-rod",
+   "name": "Control Rod",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/control_rod.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__control_rod-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/control_rod.json",
+   "presentation": "flat sprite, item/handheld",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/control_rod.png"
+  },
+  {
+   "key": "turbine_blade",
+   "registry_id": "criticalmass:turbine_blade",
+   "type": "item",
+   "console_id": "itm-turbine-blade",
+   "name": "Turbine Blade",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/turbine_blade.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__turbine_blade-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/turbine_blade.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/turbine_blade.png"
+  },
+  {
+   "key": "sealing_gasket",
+   "registry_id": "criticalmass:sealing_gasket",
+   "type": "item",
+   "console_id": "itm-gasket",
+   "name": "Sealing Gasket",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/sealing_gasket.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__sealing_gasket-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/sealing_gasket.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/sealing_gasket.png"
+  },
+  {
+   "key": "dosimeter",
+   "registry_id": "criticalmass:dosimeter",
+   "type": "item",
+   "console_id": "itm-dosimeter",
+   "name": "Dosimeter",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/dosimeter.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__dosimeter-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/dosimeter.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [
+    "Item has no behaviour yet (task tsk-074)."
+   ],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-072",
+    "tsk-074"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/dosimeter.png"
+  },
+  {
+   "key": "decontamination_compound",
+   "registry_id": "criticalmass:decontamination_compound",
+   "type": "item",
+   "console_id": "itm-decon-compound",
+   "name": "Decontamination Compound",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/decontamination_compound.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__decontamination_compound-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/decontamination_compound.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-076"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/decontamination_compound.png"
+  },
+  {
+   "key": "repair_kit",
+   "registry_id": "criticalmass:repair_kit",
+   "type": "item",
+   "console_id": "itm-repair-kit",
+   "name": "Repair Kit",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/repair_kit.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__repair_kit-v1.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/repair_kit.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-090"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/repair_kit.png"
+  },
+  {
+   "key": "sealed_waste_canister",
+   "registry_id": "criticalmass:sealed_waste_canister",
+   "type": "item",
+   "console_id": "itm-waste-canister",
+   "name": "Sealed Waste Canister",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/sealed_waste_canister.png",
+     "exists": true,
+     "size": [
+      16,
+      16
+     ],
+     "generated_source": "item__sealed_waste_canister-v2.png"
+    }
+   ],
+   "item_model": "src/main/resources/assets/criticalmass/models/item/sealed_waste_canister.json",
+   "presentation": "flat sprite, item/generated",
+   "references": [
+    "create:item/precision_mechanism",
+    "create:item/brass_sheet"
+   ],
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "iso": true,
+    "in_game": true
+   },
+   "issues": [],
+   "related_tasks": [
+    "tsk-067",
+    "tsk-068",
+    "tsk-071",
+    "tsk-072",
+    "tsk-077",
+    "tsk-084",
+    "tsk-089",
+    "tsk-091"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/item/sealed_waste_canister.png"
+  },
+  {
+   "key": "contaminated_filter",
+   "registry_id": "TBD",
+   "type": "item",
+   "console_id": "itm-filter",
+   "name": "Contaminated Filter",
+   "textures": [],
+   "generation": "deferred",
+   "integration": "deferred",
+   "verification": {},
+   "issues": [
+    "Deferred: depends on a filter/purification system that is not designed. No art made on purpose."
+   ],
+   "related_tasks": [],
+   "icon": null
+  },
+  {
+   "key": "primary_coolant",
+   "registry_id": "criticalmass:primary_coolant",
+   "type": "fluid",
+   "console_id": "fld-primary-coolant",
+   "name": "Primary Coolant",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/primary_coolant_still.png",
+     "exists": true,
+     "size": [
+      16,
+      256
+     ],
+     "animated": "16 frames, frametime 3, interpolated"
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/primary_coolant_flow.png",
+     "exists": true,
+     "size": [
+      32,
+      512
+     ],
+     "animated": "16 frames scrolling, frametime 2"
+    }
+   ],
+   "registration": "FluidType + BaseFlowingFluid source/flowing, no world block, no bucket; IClientFluidTypeExtensions still/flow textures",
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "in_game_create_tank": true,
+    "animated": true
+   },
+   "issues": [
+    "No world block or bucket by design; it is only visible inside Create tanks and pipes (animation confirmed in a tank in game). Textures are stitched into the block atlas through assets/minecraft/atlases/blocks.json (directory source fluid/)."
+   ],
+   "related_tasks": [
+    "tsk-078",
+    "tsk-079",
+    "tsk-080"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/fluid/primary_coolant_still.png"
+  },
+  {
+   "key": "steam",
+   "registry_id": "criticalmass:steam",
+   "type": "fluid",
+   "console_id": "fld-steam",
+   "name": "Steam",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/steam_still.png",
+     "exists": true,
+     "size": [
+      16,
+      256
+     ],
+     "animated": "16 frames, frametime 3, interpolated"
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/steam_flow.png",
+     "exists": true,
+     "size": [
+      32,
+      512
+     ],
+     "animated": "16 frames scrolling, frametime 2"
+    }
+   ],
+   "registration": "FluidType + BaseFlowingFluid source/flowing, no world block, no bucket; IClientFluidTypeExtensions still/flow textures",
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "in_game_create_tank": true,
+    "animated": true
+   },
+   "issues": [
+    "No world block or bucket by design; it is only visible inside Create tanks and pipes (animation confirmed in a tank in game). Textures are stitched into the block atlas through assets/minecraft/atlases/blocks.json (directory source fluid/)."
+   ],
+   "related_tasks": [
+    "tsk-078",
+    "tsk-079",
+    "tsk-080"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/fluid/steam_still.png"
+  },
+  {
+   "key": "contaminated_coolant",
+   "registry_id": "criticalmass:contaminated_coolant",
+   "type": "fluid",
+   "console_id": "fld-contaminated-coolant",
+   "name": "Contaminated Coolant",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/contaminated_coolant_still.png",
+     "exists": true,
+     "size": [
+      16,
+      256
+     ],
+     "animated": "16 frames, frametime 3, interpolated"
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/contaminated_coolant_flow.png",
+     "exists": true,
+     "size": [
+      32,
+      512
+     ],
+     "animated": "16 frames scrolling, frametime 2"
+    }
+   ],
+   "registration": "FluidType + BaseFlowingFluid source/flowing, no world block, no bucket; IClientFluidTypeExtensions still/flow textures",
+   "generation": "generated",
+   "integration": "integrated",
+   "verification": {
+    "in_game_create_tank": true,
+    "animated": true
+   },
+   "issues": [
+    "No world block or bucket by design; it is only visible inside Create tanks and pipes (animation confirmed in a tank in game). Textures are stitched into the block atlas through assets/minecraft/atlases/blocks.json (directory source fluid/)."
+   ],
+   "related_tasks": [
+    "tsk-078",
+    "tsk-079",
+    "tsk-080"
+   ],
+   "icon": "src/main/resources/assets/criticalmass/textures/fluid/contaminated_coolant_still.png"
+  },
+  {
+   "key": "water",
+   "registry_id": "minecraft:water",
+   "type": "fluid",
+   "console_id": "fld-water",
+   "name": "Water",
+   "textures": [],
+   "generation": "vanilla",
+   "integration": "vanilla",
+   "verification": {},
+   "issues": [],
+   "related_tasks": [],
+   "icon": null
+  }
+ ]
+}

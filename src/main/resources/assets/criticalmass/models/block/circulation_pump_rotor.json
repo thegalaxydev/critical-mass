@@ -1,0 +1,218 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/circulation_pump_rotor",
+  "particle": "criticalmass:block/circulation_pump_rotor",
+  "e0": "create:block/axis",
+  "e1": "create:block/axis_top"
+ },
+ "elements": [
+  {
+   "from": [
+    6,
+    0,
+    6
+   ],
+   "to": [
+    10,
+    16,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "south": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "east": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "west": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "up": {
+     "uv": [
+      6,
+      6,
+      10,
+      10
+     ],
+     "texture": "#e1"
+    },
+    "down": {
+     "uv": [
+      6,
+      6,
+      10,
+      10
+     ],
+     "texture": "#e1"
+    }
+   },
+   "name": "shaft"
+  },
+  {
+   "from": [
+    4,
+    0,
+    4
+   ],
+   "to": [
+    12,
+    2,
+    12
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0.0,
+      0.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0.0,
+      0.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "north": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "name": "hub"
+  },
+  {
+   "from": [
+    4,
+    14,
+    4
+   ],
+   "to": [
+    12,
+    16,
+    12
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0.0,
+      0.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0.0,
+      0.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "north": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      2.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "name": "hub"
+  }
+ ]
+}

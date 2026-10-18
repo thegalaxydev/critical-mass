@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/boiler_heating_plate"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/boiler_heating_plate",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/boiler_heating_plate",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/boiler_heating_plate",
+   "y": 270
+  }
+ }
+}

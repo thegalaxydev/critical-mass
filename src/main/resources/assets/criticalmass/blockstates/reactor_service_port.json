@@ -1,0 +1,27 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/reactor_service_port"
+  },
+  "facing=south": {
+   "model": "criticalmass:block/reactor_service_port",
+   "y": 180
+  },
+  "facing=east": {
+   "model": "criticalmass:block/reactor_service_port",
+   "y": 90
+  },
+  "facing=west": {
+   "model": "criticalmass:block/reactor_service_port",
+   "y": 270
+  },
+  "facing=up": {
+   "model": "criticalmass:block/reactor_service_port",
+   "x": 270
+  },
+  "facing=down": {
+   "model": "criticalmass:block/reactor_service_port",
+   "x": 90
+  }
+ }
+}

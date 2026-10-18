@@ -1,0 +1,150 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/steam_turbine_rotor",
+  "particle": "criticalmass:block/steam_turbine_rotor",
+  "e0": "create:block/axis",
+  "e1": "create:block/axis_top"
+ },
+ "elements": [
+  {
+   "from": [
+    6,
+    0,
+    6
+   ],
+   "to": [
+    10,
+    16,
+    10
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "south": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "east": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "west": {
+     "uv": [
+      6,
+      0,
+      10,
+      16
+     ],
+     "texture": "#e0"
+    },
+    "up": {
+     "uv": [
+      6,
+      6,
+      10,
+      10
+     ],
+     "texture": "#e1"
+    },
+    "down": {
+     "uv": [
+      6,
+      6,
+      10,
+      10
+     ],
+     "texture": "#e1"
+    }
+   },
+   "name": "shaft"
+  },
+  {
+   "from": [
+    2,
+    7,
+    2
+   ],
+   "to": [
+    14,
+    9,
+    14
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0.0,
+      0.0,
+      12.0,
+      12.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0.0,
+      0.0,
+      12.0,
+      12.0
+     ],
+     "texture": "#0"
+    },
+    "north": {
+     "uv": [
+      0.0,
+      12.0,
+      12.0,
+      14.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0.0,
+      12.0,
+      12.0,
+      14.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0.0,
+      12.0,
+      12.0,
+      14.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0.0,
+      12.0,
+      12.0,
+      14.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "name": "disc"
+  }
+ ],
+ "render_type": "minecraft:cutout"
+}

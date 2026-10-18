@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/heat_exchanger"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/heat_exchanger",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/heat_exchanger",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/heat_exchanger",
+   "y": 270
+  }
+ }
+}

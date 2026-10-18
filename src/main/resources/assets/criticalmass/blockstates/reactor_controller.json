@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/reactor_controller"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/reactor_controller",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/reactor_controller",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/reactor_controller",
+   "y": 270
+  }
+ }
+}

@@ -1,0 +1,79 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/radiator_panel",
+  "particle": "criticalmass:block/radiator_panel"
+ },
+ "elements": [
+  {
+   "from": [
+    0,
+    0,
+    12
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0.0,
+      0.0,
+      8.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8.0,
+      0.0,
+      16.0,
+      8.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0.0,
+      8.0,
+      2.0,
+      16.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0.0,
+      8.0,
+      2.0,
+      16.0
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      2.0,
+      8.0,
+      10.0,
+      10.0
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      2.0,
+      8.0,
+      10.0,
+      10.0
+     ],
+     "texture": "#0"
+    }
+   },
+   "name": "panel"
+  }
+ ],
+ "render_type": "minecraft:cutout"
+}

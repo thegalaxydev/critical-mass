@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/reactor_signal_interface"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/reactor_signal_interface",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/reactor_signal_interface",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/reactor_signal_interface",
+   "y": 270
+  }
+ }
+}

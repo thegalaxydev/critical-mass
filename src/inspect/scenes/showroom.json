@@ -1,0 +1,804 @@
+{
+ "name": "showroom",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/weather clear",
+    "/fill -20 -61 -30 140 -61 40 minecraft:smooth_stone"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/setblock 0 -60 0 criticalmass:reactor_vessel_casing",
+    "/setblock 3 -60 0 criticalmass:reactor_controller[facing=north]",
+    "/setblock 6 -60 0 criticalmass:fuel_channel[axis=y]",
+    "/setblock 9 -60 0 criticalmass:control_channel[axis=y]",
+    "/setblock 12 -60 0 criticalmass:coolant_channel[axis=y]",
+    "/setblock 15 -60 0 criticalmass:reactor_service_port[facing=north]",
+    "/setblock 18 -60 0 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/setblock 21 -60 0 criticalmass:primary_coolant_port[facing=north,mode=outlet]",
+    "/setblock 24 -60 0 criticalmass:heat_exchanger[facing=north]",
+    "/setblock 27 -60 0 criticalmass:condenser[facing=north]",
+    "/setblock 30 -60 0 criticalmass:cooling_tower_packing",
+    "/setblock 33 -60 1 criticalmass:reactor_vessel_casing",
+    "/setblock 33 -60 0 criticalmass:radiator_panel[facing=north]",
+    "/setblock 36 -60 0 criticalmass:emergency_coolant_tank",
+    "/setblock 39 -60 0 criticalmass:relief_valve[facing=north]",
+    "/setblock 42 -60 0 criticalmass:steam_bypass_valve[facing=north]",
+    "/setblock 45 -60 0 criticalmass:boiler_heating_plate[facing=north]",
+    "/setblock 48 -60 0 criticalmass:shielding_concrete",
+    "/setblock 51 -60 0 criticalmass:shielded_glass",
+    "/setblock 54 -60 0 criticalmass:shielded_hatch[facing=north,half=bottom,open=false]",
+    "/setblock 57 -60 0 criticalmass:fuel_assembly_bench[facing=north]",
+    "/setblock 60 -60 0 criticalmass:spent_fuel_rack",
+    "/setblock 63 -60 0 criticalmass:shielded_cask",
+    "/setblock 66 -60 1 criticalmass:reactor_vessel_casing",
+    "/setblock 66 -60 0 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 69 -60 0 criticalmass:reactor_signal_interface[facing=north]",
+    "/setblock 72 -60 0 criticalmass:alarm_siren[facing=north,powered=false]",
+    "/setblock 75 -60 1 minecraft:redstone_block",
+    "/setblock 75 -60 0 criticalmass:alarm_siren[facing=north,powered=true]",
+    "/setblock 78 -60 0 criticalmass:docking_service_connector[facing=north,connected=false]",
+    "/setblock 81 -60 0 criticalmass:docking_service_connector[facing=north,connected=true]",
+    "/setblock 84 -60 0 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 87 -60 0 criticalmass:steam_turbine[axis=x]",
+    "/setblock 90 -60 0 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 93 -60 0 criticalmass:reinforced_pipe[east=true,west=true]"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/setblock 0 -60 -10 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock -1 -60 -10 create:creative_motor[facing=east]",
+    "/setblock 4 -60 -10 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 4 -61 -10 create:creative_motor[facing=up]",
+    "/setblock 8 -60 -10 criticalmass:circulation_pump[facing=up,axis_along_first=false]",
+    "/setblock 8 -60 -11 create:creative_motor[facing=south]",
+    "/setblock 12 -60 -10 criticalmass:steam_turbine[axis=x]",
+    "/setblock 11 -60 -10 create:creative_motor[facing=east]",
+    "/setblock 16 -60 -10 criticalmass:steam_turbine[axis=z]",
+    "/setblock 16 -60 -11 create:creative_motor[facing=south]",
+    "/setblock 20 -60 -10 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 20 -60 -9 create:creative_motor[facing=north]",
+    "/setblock 24 -60 -10 criticalmass:control_rod_drive[facing=east]",
+    "/setblock 23 -60 -10 create:creative_motor[facing=east]",
+    "/setblock 28 -60 -10 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 27 -60 -10 create:creative_motor[facing=east]",
+    "/setblock 28 -60 -9 criticalmass:reinforced_pipe",
+    "/setblock 28 -60 -8 criticalmass:reinforced_pipe",
+    "/setblock 28 -60 -7 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/setblock 28 -60 -11 criticalmass:reinforced_pipe",
+    "/setblock 28 -60 -12 criticalmass:reinforced_pipe",
+    "/setblock 29 -60 -12 criticalmass:reinforced_pipe",
+    "/setblock 30 -60 -12 criticalmass:reinforced_pipe",
+    "/setblock 30 -59 -12 criticalmass:reinforced_pipe"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/summon minecraft:item 0.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:raw_uranium\",count:1}}",
+    "/summon minecraft:item 1.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:crushed_uranium\",count:1}}",
+    "/summon minecraft:item 2.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:uranium_concentrate\",count:1}}",
+    "/summon minecraft:item 3.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:ceramic_fuel_pellet\",count:1}}",
+    "/summon minecraft:item 4.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:fuel_cladding\",count:1}}",
+    "/summon minecraft:item 5.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:empty_fuel_assembly\",count:1}}",
+    "/summon minecraft:item 6.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:fuel_assembly\",count:1}}",
+    "/summon minecraft:item 7.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:spent_fuel_assembly\",count:1}}",
+    "/summon minecraft:item 8.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:damaged_fuel_assembly\",count:1}}",
+    "/summon minecraft:item 9.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:reactor_alloy_ingot\",count:1}}",
+    "/summon minecraft:item 10.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:reactor_alloy_sheet\",count:1}}",
+    "/summon minecraft:item 11.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:shielding_plate\",count:1}}",
+    "/summon minecraft:item 0.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:control_rod\",count:1}}",
+    "/summon minecraft:item 1.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:turbine_blade\",count:1}}",
+    "/summon minecraft:item 2.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:sealing_gasket\",count:1}}",
+    "/summon minecraft:item 3.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:survey_meter\",count:1}}",
+    "/summon minecraft:item 4.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:dosimeter\",count:1}}",
+    "/summon minecraft:item 5.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_hood\",count:1}}",
+    "/summon minecraft:item 6.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_suit\",count:1}}",
+    "/summon minecraft:item 7.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_leggings\",count:1}}",
+    "/summon minecraft:item 8.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_boots\",count:1}}",
+    "/summon minecraft:item 9.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:decontamination_compound\",count:1}}",
+    "/summon minecraft:item 10.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:repair_kit\",count:1}}",
+    "/summon minecraft:item 11.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:sealed_waste_canister\",count:1}}",
+    "/summon minecraft:armor_stand 16 -60 9 {ShowArms:1b,NoBasePlate:1b,Rotation:[180f,0f],ArmorItems:[{id:\"criticalmass:protective_boots\",count:1},{id:\"criticalmass:protective_leggings\",count:1},{id:\"criticalmass:protective_suit\",count:1},{id:\"criticalmass:protective_hood\",count:1}],HandItems:[{id:\"criticalmass:survey_meter\",count:1},{id:\"criticalmass:dosimeter\",count:1}]}",
+    "/summon minecraft:armor_stand 19 -60 9 {ShowArms:1b,NoBasePlate:1b,Rotation:[0f,0f],ArmorItems:[{id:\"criticalmass:protective_boots\",count:1},{id:\"criticalmass:protective_leggings\",count:1},{id:\"criticalmass:protective_suit\",count:1},{id:\"criticalmass:protective_hood\",count:1}]}"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/gamemode spectator"
+   ],
+   "gui": false,
+   "fov": 60,
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/tp @p 4.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_00"
+  },
+  {
+   "cmds": [
+    "/tp @p 4.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_00_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 16.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_01"
+  },
+  {
+   "cmds": [
+    "/tp @p 16.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_01_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 28.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_02"
+  },
+  {
+   "cmds": [
+    "/tp @p 28.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_02_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 40.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_03"
+  },
+  {
+   "cmds": [
+    "/tp @p 40.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_03_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 52.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_04"
+  },
+  {
+   "cmds": [
+    "/tp @p 52.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_04_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 64.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_05"
+  },
+  {
+   "cmds": [
+    "/tp @p 64.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_05_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 76.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_06"
+  },
+  {
+   "cmds": [
+    "/tp @p 76.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_06_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 88.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_07"
+  },
+  {
+   "cmds": [
+    "/tp @p 88.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_07_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 4.5 -58.2 -14.6 0 22"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "kin_pumps_a",
+   "wait": 6
+  },
+  {
+   "shot": "kin_pumps_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 14.5 -58.4 -14.2 0 22"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "kin_turbines_a",
+   "wait": 6
+  },
+  {
+   "shot": "kin_turbines_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 22.5 -58.3 -13.6 0 25"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "kin_roddrives_a",
+   "wait": 6
+  },
+  {
+   "shot": "kin_roddrives_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 29.0 -57.5 -15.0 0 30"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "kin_pipes_a",
+   "wait": 6
+  },
+  {
+   "shot": "kin_pipes_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 6.0 -58.4 5.6 0 32"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "items_dropped"
+  },
+  {
+   "cmds": [
+    "/tp @p 17.5 -58.6 6.2 0 8"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "outfit_front"
+  },
+  {
+   "cmds": [
+    "/tp @p 17.5 -58.6 12.0 180 8"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "outfit_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 14.0 -58.6 9.0 -90 8"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "outfit_left"
+  },
+  {
+   "cmds": [
+    "/tp @p 21.5 -58.6 9.0 90 8"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "outfit_right"
+  },
+  {
+   "cmds": [
+    "/gamemode creative",
+    "/tp @p 40.5 -60 10.5 180 0",
+    "/item replace entity @p armor.head with criticalmass:protective_hood",
+    "/item replace entity @p armor.chest with criticalmass:protective_suit",
+    "/item replace entity @p armor.legs with criticalmass:protective_leggings",
+    "/item replace entity @p armor.feet with criticalmass:protective_boots",
+    "/item replace entity @p weapon.mainhand with criticalmass:survey_meter",
+    "/item replace entity @p weapon.offhand with criticalmass:dosimeter"
+   ],
+   "wait": 20
+  },
+  {
+   "camera": "front",
+   "wait": 30
+  },
+  {
+   "shot": "worn_front"
+  },
+  {
+   "camera": "back",
+   "wait": 15
+  },
+  {
+   "shot": "worn_back"
+  },
+  {
+   "camera": "front",
+   "sneak": true,
+   "wait": 15
+  },
+  {
+   "shot": "worn_sneak"
+  },
+  {
+   "sneak": false,
+   "forward": true,
+   "wait": 8
+  },
+  {
+   "shot": "worn_walk"
+  },
+  {
+   "forward": false,
+   "cmds": [
+    "/summon minecraft:minecart 44.5 -60 10.5",
+    "/ride @p mount @e[type=minecraft:minecart,limit=1,sort=nearest]"
+   ],
+   "wait": 25
+  },
+  {
+   "shot": "worn_ride"
+  },
+  {
+   "cmds": [
+    "/ride @p dismount",
+    "/fill 48 -61 8 52 -60 12 minecraft:water",
+    "/tp @p 50.5 -60.4 10.5 180 0"
+   ],
+   "wait": 20
+  },
+  {
+   "sprint": true,
+   "forward": true,
+   "wait": 12
+  },
+  {
+   "shot": "worn_swim"
+  },
+  {
+   "sprint": false,
+   "forward": false,
+   "cmds": [
+    "/tp @p 40.5 -60 10.5 180 20"
+   ],
+   "camera": "first",
+   "gui": true,
+   "wait": 25
+  },
+  {
+   "shot": "fp_meter_dosimeter"
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:fuel_assembly",
+    "/item replace entity @p weapon.offhand with criticalmass:spent_fuel_assembly"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "fp_fuel"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:raw_uranium",
+    "/item replace entity @p hotbar.1 with criticalmass:crushed_uranium",
+    "/item replace entity @p hotbar.2 with criticalmass:uranium_concentrate",
+    "/item replace entity @p hotbar.3 with criticalmass:ceramic_fuel_pellet",
+    "/item replace entity @p hotbar.4 with criticalmass:fuel_cladding",
+    "/item replace entity @p hotbar.5 with criticalmass:empty_fuel_assembly",
+    "/item replace entity @p hotbar.6 with criticalmass:fuel_assembly",
+    "/item replace entity @p hotbar.7 with criticalmass:spent_fuel_assembly",
+    "/item replace entity @p hotbar.8 with criticalmass:damaged_fuel_assembly"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_items_0"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:reactor_alloy_ingot",
+    "/item replace entity @p hotbar.1 with criticalmass:reactor_alloy_sheet",
+    "/item replace entity @p hotbar.2 with criticalmass:shielding_plate",
+    "/item replace entity @p hotbar.3 with criticalmass:control_rod",
+    "/item replace entity @p hotbar.4 with criticalmass:turbine_blade",
+    "/item replace entity @p hotbar.5 with criticalmass:sealing_gasket",
+    "/item replace entity @p hotbar.6 with criticalmass:survey_meter",
+    "/item replace entity @p hotbar.7 with criticalmass:dosimeter",
+    "/item replace entity @p hotbar.8 with criticalmass:protective_hood"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_items_1"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:protective_suit",
+    "/item replace entity @p hotbar.1 with criticalmass:protective_leggings",
+    "/item replace entity @p hotbar.2 with criticalmass:protective_boots",
+    "/item replace entity @p hotbar.3 with criticalmass:decontamination_compound",
+    "/item replace entity @p hotbar.4 with criticalmass:repair_kit",
+    "/item replace entity @p hotbar.5 with criticalmass:sealed_waste_canister"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_items_2"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:alarm_siren",
+    "/item replace entity @p hotbar.1 with criticalmass:boiler_heating_plate",
+    "/item replace entity @p hotbar.2 with criticalmass:circulation_pump",
+    "/item replace entity @p hotbar.3 with criticalmass:condenser",
+    "/item replace entity @p hotbar.4 with criticalmass:control_channel",
+    "/item replace entity @p hotbar.5 with criticalmass:control_rod_drive",
+    "/item replace entity @p hotbar.6 with criticalmass:coolant_channel",
+    "/item replace entity @p hotbar.7 with criticalmass:cooling_tower_packing",
+    "/item replace entity @p hotbar.8 with criticalmass:docking_service_connector"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_blocks_0"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:emergency_coolant_tank",
+    "/item replace entity @p hotbar.1 with criticalmass:fuel_assembly_bench",
+    "/item replace entity @p hotbar.2 with criticalmass:fuel_channel",
+    "/item replace entity @p hotbar.3 with criticalmass:heat_exchanger",
+    "/item replace entity @p hotbar.4 with criticalmass:instrumentation_panel",
+    "/item replace entity @p hotbar.5 with criticalmass:primary_coolant_port",
+    "/item replace entity @p hotbar.6 with criticalmass:radiator_panel",
+    "/item replace entity @p hotbar.7 with criticalmass:reactor_controller",
+    "/item replace entity @p hotbar.8 with criticalmass:reactor_service_port"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_blocks_1"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:reactor_signal_interface",
+    "/item replace entity @p hotbar.1 with criticalmass:reactor_vessel_casing",
+    "/item replace entity @p hotbar.2 with criticalmass:reinforced_pipe",
+    "/item replace entity @p hotbar.3 with criticalmass:relief_valve",
+    "/item replace entity @p hotbar.4 with criticalmass:shielded_cask",
+    "/item replace entity @p hotbar.5 with criticalmass:shielded_glass",
+    "/item replace entity @p hotbar.6 with criticalmass:shielded_hatch",
+    "/item replace entity @p hotbar.7 with criticalmass:shielding_concrete",
+    "/item replace entity @p hotbar.8 with criticalmass:spent_fuel_rack"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_blocks_2"
+  },
+  {
+   "cmds": [
+    "/clear @p",
+    "/item replace entity @p hotbar.0 with criticalmass:steam_bypass_valve",
+    "/item replace entity @p hotbar.1 with criticalmass:steam_turbine"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "hotbar_blocks_3"
+  },
+  {
+   "cmds": [
+    "/setblock 70 -58 -20 create:water_wheel[axis=x]",
+    "/setblock 70 -57 -21 minecraft:water",
+    "/setblock 70 -57 -19 minecraft:water",
+    "/setblock 71 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 72 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 73 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 74 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 75 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 76 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 77 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 78 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 79 -58 -20 criticalmass:circulation_pump[facing=north,axis_along_first=true]"
+   ],
+   "wait": 60
+  },
+  {
+   "cmds": [
+    "/gamemode spectator",
+    "/tp @p 74.5 -56.8 -25.5 0 22"
+   ],
+   "gui": false,
+   "camera": "first",
+   "wait": 40
+  },
+  {
+   "shot": "overstress_a",
+   "wait": 8
+  },
+  {
+   "shot": "overstress_b"
+  },
+  {
+   "cmds": [
+    "/fill 74 -58 -20 79 -58 -20 minecraft:air"
+   ],
+   "wait": 60
+  },
+  {
+   "shot": "relieved_a",
+   "wait": 8
+  },
+  {
+   "shot": "relieved_b"
+  },
+  {
+   "cmds": [
+    "/setblock 36 -60 -10 create:fluid_tank{Size:1,Height:1,Window:1b,Controller:[I;36,-60,-10],TankContent:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000}}}",
+    "/setblock 39 -60 -10 create:fluid_tank{Size:1,Height:1,Window:1b,Controller:[I;39,-60,-10],TankContent:{Fluid:{id:\"criticalmass:steam\",amount:6000}}}",
+    "/setblock 42 -60 -10 create:fluid_tank{Size:1,Height:1,Window:1b,Controller:[I;42,-60,-10],TankContent:{Fluid:{id:\"criticalmass:contaminated_coolant\",amount:6000}}}"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/gamemode spectator",
+    "/tp @p 39.5 -58.6 -13.6 0 25"
+   ],
+   "gui": false,
+   "camera": "first",
+   "wait": 40
+  },
+  {
+   "shot": "fluid_tanks_a",
+   "wait": 10
+  },
+  {
+   "shot": "fluid_tanks_b"
+  },
+  {
+   "cmds": [
+    "/fill 2 -60 22 6 -57 26 criticalmass:reactor_vessel_casing",
+    "/fill 3 -60 23 5 -57 25 minecraft:air",
+    "/fill 4 -60 24 4 -57 24 criticalmass:fuel_channel[axis=y]",
+    "/fill 3 -60 24 3 -57 24 criticalmass:control_channel[axis=y]",
+    "/fill 5 -60 24 5 -57 24 criticalmass:control_channel[axis=y]",
+    "/fill 4 -60 23 4 -57 23 criticalmass:coolant_channel[axis=y]",
+    "/fill 4 -60 25 4 -57 25 criticalmass:coolant_channel[axis=y]",
+    "/fill 3 -59 22 5 -58 22 criticalmass:shielded_glass",
+    "/setblock 4 -60 22 criticalmass:reactor_controller[facing=north]",
+    "/setblock 2 -59 21 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 6 -60 22 criticalmass:reactor_signal_interface[facing=north]",
+    "/setblock 2 -60 22 criticalmass:reactor_service_port[facing=north]",
+    "/setblock 6 -59 24 criticalmass:primary_coolant_port[facing=east,mode=outlet]",
+    "/setblock 7 -59 24 criticalmass:reinforced_pipe[east=true,west=true]",
+    "/setblock 8 -59 24 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 8 -60 24 create:creative_motor[facing=up]",
+    "/setblock 9 -59 24 criticalmass:reinforced_pipe[east=true,west=true]",
+    "/setblock 10 -59 24 criticalmass:heat_exchanger[facing=north]",
+    "/setblock 2 -59 24 criticalmass:primary_coolant_port[facing=west,mode=inlet]",
+    "/setblock 1 -59 24 criticalmass:reinforced_pipe[east=true,west=true]",
+    "/setblock 3 -56 24 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 3 -56 25 create:creative_motor[facing=north]",
+    "/setblock 5 -56 24 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 5 -56 25 create:creative_motor[facing=north]",
+    "/setblock 4 -56 23 criticalmass:relief_valve[facing=north]",
+    "/setblock 6 -57 21 criticalmass:alarm_siren[facing=north,powered=false]",
+    "/setblock 7 -57 21 minecraft:redstone_block",
+    "/setblock 13 -59 24 criticalmass:steam_turbine[axis=x]",
+    "/setblock 12 -59 24 create:shaft[axis=x]",
+    "/setblock 14 -59 24 create:shaft[axis=x]",
+    "/setblock 15 -59 24 create:creative_motor[facing=west]",
+    "/setblock 0 -60 27 criticalmass:emergency_coolant_tank",
+    "/setblock 9 -60 27 criticalmass:spent_fuel_rack",
+    "/setblock 11 -60 27 criticalmass:shielded_cask",
+    "/setblock 13 -60 27 criticalmass:fuel_assembly_bench[facing=north]",
+    "/fill -1 -60 29 15 -58 29 criticalmass:shielding_concrete"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/gamemode spectator",
+    "/tp @p 17.5 -53.0 13.5 48 20"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "install_a",
+   "wait": 7
+  },
+  {
+   "shot": "install_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 4.5 -56.5 14.5 0 15"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "install_front_a",
+   "wait": 7
+  },
+  {
+   "shot": "install_front_b"
+  },
+  {
+   "cmds": [
+    "/gamemode spectator",
+    "/fill 100 -58 0 106 -58 4 create:andesite_casing",
+    "/setblock 102 -57 2 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 101 -57 2 create:creative_motor[facing=east]",
+    "/setblock 104 -57 2 criticalmass:steam_turbine[axis=x]",
+    "/setblock 103 -57 2 create:shaft[axis=x]",
+    "/setblock 105 -57 2 create:shaft[axis=x]",
+    "/setblock 102 -57 0 criticalmass:reactor_vessel_casing",
+    "/setblock 103 -57 0 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 103 -57 1 criticalmass:reactor_vessel_casing",
+    "/setblock 100 -57 4 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 100 -57 5 create:creative_motor[facing=north]",
+    "/setblock 106 -57 4 criticalmass:alarm_siren[facing=north,powered=false]"
+   ],
+   "wait": 30,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/tp @p 103.0 -54.5 -6.0 0 25"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "ship_before_a",
+   "wait": 6
+  },
+  {
+   "shot": "ship_before_b"
+  },
+  {
+   "cmds": [
+    "/sable assemble area 100 -58 0 106 -57 5"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/fill 98 -60 6 108 -58 6 minecraft:stone_bricks",
+    "/sable paused true",
+    "/sable teleport @n 103 -50 3",
+    "/tp @p 113 -50 -8 40 20"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/sable paused false",
+    "/sable physics impulse @n angular 30 0 0 global"
+   ],
+   "wait": 4
+  },
+  {
+   "shot": "ship_air_a",
+   "wait": 4
+  },
+  {
+   "shot": "ship_air_b",
+   "wait": 100
+  },
+  {
+   "cmds": [
+    "/sable info @n",
+    "/tp @p 110.5 -55.5 -5.5 40 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "ship_tilted_a",
+   "wait": 7
+  },
+  {
+   "shot": "ship_tilted_b"
+  },
+  {
+   "cmds": [
+    "/tp @p 99.5 -55.0 -4.5 -30 20"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "ship_tilted_side_a",
+   "wait": 7
+  },
+  {
+   "shot": "ship_tilted_side_b"
+  },
+  {
+   "wait": 10
+  }
+ ]
+}

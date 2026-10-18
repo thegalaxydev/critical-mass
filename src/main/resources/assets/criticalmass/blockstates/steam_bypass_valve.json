@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/steam_bypass_valve"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/steam_bypass_valve",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/steam_bypass_valve",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/steam_bypass_valve",
+   "y": 270
+  }
+ }
+}

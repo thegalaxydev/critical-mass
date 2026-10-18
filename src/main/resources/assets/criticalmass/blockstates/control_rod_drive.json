@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/control_rod_drive"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/control_rod_drive",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/control_rod_drive",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/control_rod_drive",
+   "y": 270
+  }
+ }
+}

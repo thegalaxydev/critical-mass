@@ -1,0 +1,6 @@
+{
+ "parent": "minecraft:item/generated",
+ "textures": {
+  "layer0": "criticalmass:item/ceramic_fuel_pellet"
+ }
+}

@@ -1,0 +1,16 @@
+{
+ "variants": {
+  "axis=y": {
+   "model": "criticalmass:block/fuel_channel"
+  },
+  "axis=x": {
+   "model": "criticalmass:block/fuel_channel",
+   "x": 90,
+   "y": 90
+  },
+  "axis=z": {
+   "model": "criticalmass:block/fuel_channel",
+   "x": 90
+  }
+ }
+}
