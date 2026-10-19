@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "item": "create:gearbox"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "A": {
+      "item": "create:andesite_casing"
+    }
+  },
+  "pattern": [
+    "G",
+    "P",
+    "A"
+  ],
+  "result": {
+    "id": "criticalmass:control_rod_drive"
+  }
+}

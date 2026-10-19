@@ -1,0 +1,16 @@
+{
+  "type": "create:compacting",
+  "ingredients": [
+    {
+      "tag": "c:plates/reactor_alloy"
+    },
+    {
+      "tag": "c:plates/iron"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:shielding_plate"
+    }
+  ]
+}

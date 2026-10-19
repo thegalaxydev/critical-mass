@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "M": {
+      "item": "create:mechanical_press"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    },
+    "C": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "M",
+    "P",
+    "C"
+  ],
+  "result": {
+    "id": "criticalmass:fuel_assembly_bench"
+  }
+}

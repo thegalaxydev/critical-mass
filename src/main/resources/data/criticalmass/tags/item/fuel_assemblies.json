@@ -1,0 +1,7 @@
+{
+  "values": [
+    "criticalmass:fuel_assembly",
+    "criticalmass:spent_fuel_assembly",
+    "criticalmass:damaged_fuel_assembly"
+  ]
+}

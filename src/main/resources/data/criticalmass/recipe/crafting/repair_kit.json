@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "tag": "c:plates/reactor_alloy"
+    },
+    {
+      "tag": "c:plates/reactor_alloy"
+    },
+    {
+      "item": "criticalmass:sealing_gasket"
+    },
+    {
+      "item": "criticalmass:sealing_gasket"
+    },
+    {
+      "item": "create:andesite_alloy"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:repair_kit"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "T": {
+      "item": "create:fluid_tank"
+    },
+    "F": {
+      "item": "create:encased_fan"
+    }
+  },
+  "pattern": [
+    "CTC",
+    "CFC"
+  ],
+  "result": {
+    "id": "criticalmass:condenser"
+  }
+}

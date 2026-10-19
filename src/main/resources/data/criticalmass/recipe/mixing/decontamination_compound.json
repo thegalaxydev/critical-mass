@@ -1,0 +1,22 @@
+{
+  "type": "create:mixing",
+  "ingredients": [
+    {
+      "item": "create:limestone"
+    },
+    {
+      "item": "minecraft:dried_kelp"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 250,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:decontamination_compound",
+      "count": 2
+    }
+  ]
+}

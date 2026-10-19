@@ -1,0 +1,25 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "P": {
+      "item": "criticalmass:reinforced_pipe"
+    },
+    "T": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "CPC",
+    "CTC",
+    "CPC"
+  ],
+  "result": {
+    "id": "criticalmass:heat_exchanger"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:mechanical_pump"
+    },
+    {
+      "item": "criticalmass:reinforced_pipe"
+    },
+    {
+      "item": "create:brass_casing"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:circulation_pump"
+  }
+}

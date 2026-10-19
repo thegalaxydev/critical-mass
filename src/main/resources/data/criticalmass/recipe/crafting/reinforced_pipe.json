@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:plates/iron"
+    },
+    "F": {
+      "item": "create:fluid_pipe"
+    }
+  },
+  "pattern": [
+    "S",
+    "F",
+    "S"
+  ],
+  "result": {
+    "id": "criticalmass:reinforced_pipe",
+    "count": 2
+  }
+}

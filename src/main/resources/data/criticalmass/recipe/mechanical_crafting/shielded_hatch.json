@@ -1,0 +1,25 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "criticalmass:shielding_plate"
+    },
+    "C": {
+      "item": "criticalmass:shielding_concrete"
+    },
+    "D": {
+      "item": "minecraft:iron_door"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "PDP",
+    " C "
+  ],
+  "result": {
+    "id": "criticalmass:shielded_hatch"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

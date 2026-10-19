@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "R": {
+      "item": "criticalmass:control_rod"
+    },
+    "P": {
+      "item": "criticalmass:reinforced_pipe"
+    }
+  },
+  "pattern": [
+    " R ",
+    "RPR",
+    " R "
+  ],
+  "result": {
+    "id": "criticalmass:control_channel"
+  }
+}

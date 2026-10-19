@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:plates/brass"
+    },
+    "N": {
+      "item": "minecraft:note_block"
+    },
+    "L": {
+      "item": "minecraft:redstone_lamp"
+    }
+  },
+  "pattern": [
+    "S",
+    "N",
+    "L"
+  ],
+  "result": {
+    "id": "criticalmass:alarm_siren"
+  }
+}

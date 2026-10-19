@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:iron_bars"
+    },
+    "V": {
+      "item": "criticalmass:reactor_vessel_casing"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "BVB",
+    "BBB"
+  ],
+  "result": {
+    "id": "criticalmass:spent_fuel_rack"
+  }
+}

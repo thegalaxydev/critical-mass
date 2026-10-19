@@ -1,0 +1,25 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "CEC",
+    "EPE",
+    "CEC"
+  ],
+  "result": {
+    "id": "criticalmass:reactor_controller"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

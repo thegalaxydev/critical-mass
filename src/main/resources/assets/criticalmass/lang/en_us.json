@@ -36,7 +36,6 @@
   "item.criticalmass.protective_leggings": "Protective Leggings",
   "item.criticalmass.protective_boots": "Protective Boots",
   "item.criticalmass.raw_uranium": "Raw Uranium",
-  "item.criticalmass.crushed_uranium": "Crushed Uranium",
   "item.criticalmass.uranium_concentrate": "Uranium Concentrate",
   "item.criticalmass.ceramic_fuel_pellet": "Ceramic Fuel Pellet",
   "item.criticalmass.fuel_cladding": "Fuel Cladding",
@@ -230,5 +229,16 @@
   "criticalmass.cask.not_allowed": "Only fuel assemblies and waste canisters fit the cask",
   "criticalmass.cask.damaged": "Damaged fuel must be sealed in a waste canister first",
   "criticalmass.cask.too_hot": "Too hot for the cask: cool it in a spent fuel rack",
-  "criticalmass.cask.full": "Cask is full"
+  "criticalmass.cask.full": "Cask is full",
+  "block.criticalmass.uranium_ore": "Uranium Ore",
+  "block.criticalmass.deepslate_uranium_ore": "Deepslate Uranium Ore",
+  "item.criticalmass.incomplete_fuel_assembly": "Incomplete Fuel Assembly",
+  "criticalmass.bench.empty": "Place an empty fuel assembly or damaged fuel here",
+  "criticalmass.bench.next_deploy": "Next: apply %s",
+  "criticalmass.bench.next_press": "Next: press (sneak-use with an empty hand, or a Mechanical Press above)",
+  "criticalmass.bench.recovery": "Recovery: step %s of %s",
+  "criticalmass.bench.too_hot": "Too hot to recover: cool it in a spent fuel rack first",
+  "criticalmass.canister.empty_record": "No recorded contents",
+  "criticalmass.canister.source": "Contains: %s",
+  "criticalmass.canister.store": "Store in a Shielded Cask"
 }

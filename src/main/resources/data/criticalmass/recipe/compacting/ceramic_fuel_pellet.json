@@ -1,0 +1,17 @@
+{
+  "type": "create:compacting",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "criticalmass:uranium_concentrate"
+    },
+    {
+      "item": "criticalmass:uranium_concentrate"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:ceramic_fuel_pellet"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:fluid_valve"
+    },
+    {
+      "item": "criticalmass:reinforced_pipe"
+    },
+    {
+      "tag": "c:plates/brass"
+    },
+    {
+      "item": "create:electron_tube"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:steam_bypass_valve"
+  }
+}

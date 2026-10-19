@@ -1,0 +1,462 @@
+{
+ "name": "production",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode survival",
+    "/difficulty peaceful",
+    "/tp @p 41.5 -60 43.5"
+   ],
+   "wait": 40,
+   "gui": true,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/setblock 41 -60 41 criticalmass:fuel_assembly_bench[facing=south]",
+    "/item replace entity @p hotbar.0 with criticalmass:empty_fuel_assembly",
+    "/item replace entity @p hotbar.1 with criticalmass:fuel_cladding 4",
+    "/item replace entity @p hotbar.2 with criticalmass:ceramic_fuel_pellet 8",
+    "/item replace entity @p hotbar.3 with minecraft:air",
+    "/item replace entity @p hotbar.4 with criticalmass:shielding_plate 2",
+    "/item replace entity @p hotbar.5 with criticalmass:sealing_gasket 1",
+    "/item replace entity @p hotbar.6 with criticalmass:damaged_fuel_assembly[criticalmass:fuel_state={id:[I;11,22,33,44],remaining:0.42d,condition:0.0d,burned:52000.0d,damage_cause:\"overheat\"}]",
+    "/item replace entity @p armor.head with create:goggles",
+    "/tp @p 41.50 -60.00 43.50 facing 41.50 -60.62 41.50"
+   ],
+   "wait": 10
+  },
+  {
+   "slot": 0,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "bench_empty",
+   "wait": 2
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 2,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 3,
+   "sneak": true,
+   "wait": 4
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 4
+  },
+  {
+   "cmds": [
+    "/tp @p 41.50 -60.00 43.50 facing 41.50 -60.62 41.50"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "bench_loop1",
+   "wait": 2
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 2,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 3,
+   "sneak": true,
+   "wait": 4
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 4
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 2,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 3,
+   "sneak": true,
+   "wait": 4
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 4
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 2,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 3,
+   "sneak": true,
+   "wait": 4
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 4
+  },
+  {
+   "cmds": [
+    "/tp @p 41.50 -60.00 43.50 facing 41.50 -60.62 41.50"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "bench_done",
+   "wait": 2
+  },
+  {
+   "slot": 3,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 5,
+   "inventory": true
+  },
+  {
+   "slot": 6,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 41.50 -60.00 43.50 facing 41.50 -60.62 41.50"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "bench_damaged",
+   "wait": 2
+  },
+  {
+   "slot": 5,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "shot": "bench_gasket_first",
+   "wait": 2
+  },
+  {
+   "slot": 4,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 5,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 41.50 -60.00 43.50 facing 41.50 -60.62 41.50"
+   ],
+   "wait": 5
+  },
+  {
+   "shot": "bench_canister",
+   "wait": 2
+  },
+  {
+   "slot": 3,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -60,
+    41,
+    "up"
+   ],
+   "wait": 5,
+   "inventory": true
+  },
+  {
+   "jei": "criticalmass:fuel_assembly",
+   "wait": 30
+  },
+  {
+   "shot": "jei_fuel_assembly",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "criticalmass:uranium_concentrate",
+   "wait": 30
+  },
+  {
+   "shot": "jei_concentrate",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "criticalmass:ceramic_fuel_pellet",
+   "wait": 30
+  },
+  {
+   "shot": "jei_pellet",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "create:crushed_raw_uranium",
+   "wait": 30
+  },
+  {
+   "shot": "jei_crushed",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/gamemode creative",
+    "/fill 46 -60 34 54 -52 42 minecraft:stone",
+    "/fill 46 -60 34 54 -58 42 minecraft:deepslate",
+    "/place feature criticalmass:uranium_ore 50 -59 38",
+    "/place feature criticalmass:uranium_ore 50 -54 38",
+    "/fill 46 -60 34 54 -52 42 minecraft:air replace minecraft:stone",
+    "/fill 46 -60 34 54 -58 42 minecraft:air replace minecraft:deepslate",
+    "/setblock 44 -60 39 criticalmass:uranium_ore",
+    "/setblock 45 -60 39 criticalmass:deepslate_uranium_ore",
+    "/tp @p 43.50 -60.00 46.50 facing 49.00 -59.12 38.00"
+   ],
+   "wait": 40,
+   "gui": false
+  },
+  {
+   "shot": "ore",
+   "wait": 2
+  }
+ ]
+}

@@ -1,0 +1,14 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "tag": "c:plates/reactor_alloy"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:fuel_cladding",
+      "count": 2
+    }
+  ]
+}

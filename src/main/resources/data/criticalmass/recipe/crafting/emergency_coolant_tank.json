@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "V": {
+      "item": "create:fluid_valve"
+    },
+    "T": {
+      "item": "create:fluid_tank"
+    },
+    "P": {
+      "item": "criticalmass:reinforced_pipe"
+    }
+  },
+  "pattern": [
+    "V",
+    "T",
+    "P"
+  ],
+  "result": {
+    "id": "criticalmass:emergency_coolant_tank"
+  }
+}

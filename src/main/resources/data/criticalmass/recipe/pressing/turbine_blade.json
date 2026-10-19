@@ -1,0 +1,13 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "item": "criticalmass:fuel_cladding"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:turbine_blade"
+    }
+  ]
+}

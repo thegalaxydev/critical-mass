@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "P": {
+      "item": "criticalmass:reinforced_pipe"
+    },
+    "M": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "C",
+    "P",
+    "M"
+  ],
+  "result": {
+    "id": "criticalmass:docking_service_connector"
+  }
+}

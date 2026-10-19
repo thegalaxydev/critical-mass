@@ -1,0 +1,13 @@
+{
+  "type": "create:pressing",
+  "ingredients": [
+    {
+      "tag": "c:ingots/reactor_alloy"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:reactor_alloy_sheet"
+    }
+  ]
+}

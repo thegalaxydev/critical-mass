@@ -2,7 +2,9 @@ package com.criticalmass.registry;
 
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
+import com.criticalmass.content.fuel.WasteCanisterItem;
 import com.criticalmass.content.thermal.RepairKitItem;
+import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -18,7 +20,6 @@ public final class CMItems {
     public static final List<Supplier<? extends Item>> TAB_ORDER = new ArrayList<>();
 
     public static final DeferredItem<Item> RAW_URANIUM = simple("raw_uranium", new Item.Properties());
-    public static final DeferredItem<Item> CRUSHED_URANIUM = simple("crushed_uranium", new Item.Properties());
     public static final DeferredItem<Item> URANIUM_CONCENTRATE = simple("uranium_concentrate", new Item.Properties());
     public static final DeferredItem<Item> CERAMIC_FUEL_PELLET = simple("ceramic_fuel_pellet", new Item.Properties());
     public static final DeferredItem<Item> FUEL_CLADDING = simple("fuel_cladding", new Item.Properties());
@@ -40,7 +41,8 @@ public final class CMItems {
     public static final DeferredItem<ArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<Item> DECONTAMINATION_COMPOUND = simple("decontamination_compound", new Item.Properties().stacksTo(16));
     public static final DeferredItem<RepairKitItem> REPAIR_KIT = custom("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<Item> SEALED_WASTE_CANISTER = simple("sealed_waste_canister", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_FUEL_ASSEMBLY = ITEMS.register("incomplete_fuel_assembly", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
 
     private CMItems() {
     }

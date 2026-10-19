@@ -1,0 +1,22 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "criticalmass:shielding_plate"
+    },
+    "C": {
+      "item": "criticalmass:shielding_concrete"
+    }
+  },
+  "pattern": [
+    "PCP",
+    "P P",
+    "PCP"
+  ],
+  "result": {
+    "id": "criticalmass:shielded_cask"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

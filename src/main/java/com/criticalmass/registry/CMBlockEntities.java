@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
@@ -59,6 +60,9 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new SpentFuelRackBlockEntity(CMBlockEntities.SPENT_FUEL_RACK.get(), pos, state), CMBlocks.SPENT_FUEL_RACK.get()).build(null));
     public static final Supplier<BlockEntityType<ShieldedCaskBlockEntity>> SHIELDED_CASK = BLOCK_ENTITIES.register("shielded_cask",
             () -> BlockEntityType.Builder.of((pos, state) -> new ShieldedCaskBlockEntity(CMBlockEntities.SHIELDED_CASK.get(), pos, state), CMBlocks.SHIELDED_CASK.get()).build(null));
+
+    public static final Supplier<BlockEntityType<FuelAssemblyBenchBlockEntity>> FUEL_ASSEMBLY_BENCH = BLOCK_ENTITIES.register("fuel_assembly_bench",
+            () -> BlockEntityType.Builder.of((pos, state) -> new FuelAssemblyBenchBlockEntity(CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), pos, state), CMBlocks.FUEL_ASSEMBLY_BENCH.get()).build(null));
 
     private CMBlockEntities() {
     }

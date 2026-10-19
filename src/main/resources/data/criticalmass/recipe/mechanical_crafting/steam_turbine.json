@@ -1,0 +1,27 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "C": {
+      "item": "create:brass_casing"
+    },
+    "B": {
+      "item": "criticalmass:turbine_blade"
+    },
+    "S": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    " C ",
+    "BBB",
+    "BSB",
+    "BBB",
+    " C "
+  ],
+  "result": {
+    "id": "criticalmass:steam_turbine"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

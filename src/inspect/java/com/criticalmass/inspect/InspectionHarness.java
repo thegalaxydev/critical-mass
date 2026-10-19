@@ -181,6 +181,12 @@ public class InspectionHarness {
             InteractionResult r = mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hit);
             note("use " + p.toShortString() + " " + face + " -> " + r);
         }
+        if (step.has("jei")) {
+            note("jei " + step.get("jei").getAsString() + " -> " + InspectJeiPlugin.showRecipes(step.get("jei").getAsString()));
+        }
+        if (step.has("closeScreen") && step.get("closeScreen").getAsBoolean()) {
+            mc.setScreen(null);
+        }
         if (step.has("inventory") && mc.getSingleplayerServer() != null) {
             MinecraftServer server = mc.getSingleplayerServer();
             server.execute(() -> {

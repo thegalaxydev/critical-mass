@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "P": {
+      "item": "criticalmass:reinforced_pipe"
+    },
+    "R": {
+      "tag": "c:rods/blaze"
+    }
+  },
+  "pattern": [
+    "CCC",
+    "PRP"
+  ],
+  "result": {
+    "id": "criticalmass:boiler_heating_plate"
+  }
+}

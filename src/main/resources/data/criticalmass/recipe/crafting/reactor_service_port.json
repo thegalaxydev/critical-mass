@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "criticalmass:reactor_vessel_casing"
+    },
+    {
+      "item": "create:brass_casing"
+    },
+    {
+      "item": "minecraft:iron_trapdoor"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:reactor_service_port"
+  }
+}

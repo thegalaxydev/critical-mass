@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:ingots/reactor_alloy"
+    },
+    "R": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "A",
+    "R",
+    "A"
+  ],
+  "result": {
+    "id": "criticalmass:control_rod"
+  }
+}

@@ -9,6 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +33,7 @@ public class FuelAssemblyItem extends Item {
     private final Form form;
 
     public FuelAssemblyItem(Form form, Properties properties) {
-        super(properties);
+        super(properties.fireResistant());
         this.form = form;
     }
 
@@ -78,6 +79,19 @@ public class FuelAssemblyItem extends Item {
         if (!level.isClientSide && state(stack) == null) {
             ensure(stack);
         }
+    }
+
+    @Override
+    public int getEntityLifespan(ItemStack stack, Level level) {
+        return Integer.MAX_VALUE;
+    }
+
+    @Override
+    public boolean onEntityItemUpdate(ItemStack stack, ItemEntity entity) {
+        if (entity.getAge() > 0 && !entity.level().isClientSide) {
+            entity.setUnlimitedLifetime();
+        }
+        return false;
     }
 
     @Override

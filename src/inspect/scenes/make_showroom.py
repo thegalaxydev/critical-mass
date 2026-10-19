@@ -13,7 +13,7 @@ BLOCKS = [
     ("docking_service_connector", "[facing=north,connected=true]"), ("circulation_pump", "[facing=north,axis_along_first=true]"),
     ("steam_turbine", "[axis=x]"), ("control_rod_drive", "[facing=north]"), ("reinforced_pipe", "[east=true,west=true]"),
 ]
-ITEMS = ["raw_uranium", "crushed_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "empty_fuel_assembly", "fuel_assembly",
+ITEMS = ["raw_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "empty_fuel_assembly", "fuel_assembly",
          "spent_fuel_assembly", "damaged_fuel_assembly", "reactor_alloy_ingot", "reactor_alloy_sheet", "shielding_plate", "control_rod", "turbine_blade",
          "sealing_gasket", "survey_meter", "dosimeter", "protective_hood", "protective_suit", "protective_leggings", "protective_boots",
          "decontamination_compound", "repair_kit", "sealed_waste_canister"]

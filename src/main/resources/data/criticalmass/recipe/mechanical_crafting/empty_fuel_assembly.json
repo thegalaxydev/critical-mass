@@ -1,0 +1,22 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:plates/reactor_alloy"
+    },
+    "G": {
+      "item": "criticalmass:sealing_gasket"
+    }
+  },
+  "pattern": [
+    " S ",
+    "SGS",
+    " S "
+  ],
+  "result": {
+    "id": "criticalmass:empty_fuel_assembly"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

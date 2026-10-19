@@ -9,6 +9,7 @@ import com.criticalmass.content.PipeConnectableBlocks;
 import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.ReliefValveBlock;
 import com.criticalmass.content.WallPanelBlock;
+import com.criticalmass.content.fuel.FuelAssemblyBenchBlock;
 import com.criticalmass.content.fuel.ServicePortBlock;
 import com.criticalmass.content.fuel.ShieldedCaskBlock;
 import com.criticalmass.content.fuel.SpentFuelRackBlock;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.phys.shapes.Shapes;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -62,13 +62,16 @@ public final class CMBlocks {
     public static final DeferredBlock<Block> SHIELDING_CONCRETE = register("shielding_concrete", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(6.0f, 12.0f).sound(SoundType.STONE).requiresCorrectToolForDrops());
     public static final DeferredBlock<TransparentBlock> SHIELDED_GLASS = register("shielded_glass", TransparentBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.NONE).strength(2.5f, 8.0f).sound(SoundType.GLASS).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
     public static final DeferredBlock<TrapDoorBlock> SHIELDED_HATCH = register("shielded_hatch", p -> new TrapDoorBlock(BlockSetType.IRON, p), metal(6.0f).noOcclusion());
-    public static final DeferredBlock<HorizontalBlock> FUEL_ASSEMBLY_BENCH = register("fuel_assembly_bench", p -> new HorizontalBlock(p, Shapes.or(Block.box(0, 10, 0, 16, 16, 16), Block.box(1, 0, 1, 15, 10, 15)), false), metal(3.0f).noOcclusion());
+    public static final DeferredBlock<FuelAssemblyBenchBlock> FUEL_ASSEMBLY_BENCH = register("fuel_assembly_bench", FuelAssemblyBenchBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<SpentFuelRackBlock> SPENT_FUEL_RACK = register("spent_fuel_rack", SpentFuelRackBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<ShieldedCaskBlock> SHIELDED_CASK = register("shielded_cask", ShieldedCaskBlock::new, metal(6.0f).noOcclusion());
     public static final DeferredBlock<WallPanelBlock> INSTRUMENTATION_PANEL = register("instrumentation_panel", WallPanelBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", HorizontalBlock::new, metal(4.0f));
     public static final DeferredBlock<AlarmSirenBlock> ALARM_SIREN = register("alarm_siren", AlarmSirenBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<DockingConnectorBlock> DOCKING_SERVICE_CONNECTOR = register("docking_service_connector", DockingConnectorBlock::new, metal(4.0f));
+
+    public static final DeferredBlock<Block> URANIUM_ORE = register("uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0f, 3.0f).sound(SoundType.STONE).requiresCorrectToolForDrops());
+    public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = register("deepslate_uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 3.0f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
 
     private CMBlocks() {
     }

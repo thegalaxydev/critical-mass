@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "create:redstone_link"
+    },
+    {
+      "item": "create:brass_casing"
+    },
+    {
+      "item": "create:electron_tube"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:reactor_signal_interface"
+  }
+}

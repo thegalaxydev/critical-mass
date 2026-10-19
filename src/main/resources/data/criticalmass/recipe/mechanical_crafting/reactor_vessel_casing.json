@@ -1,0 +1,23 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:plates/iron"
+    },
+    "B": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "SSS",
+    "SBS",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:reactor_vessel_casing",
+    "count": 4
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}
