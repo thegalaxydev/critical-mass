@@ -48,7 +48,7 @@ def pump_rotor():
     hub = ("hub", "hub", {"mat": "brass"})
     edge = ("hub_edge", "edge", {"mat": "brass", "base": 2})
     for y0, y1 in ((0, 2), (14, 16)):
-        m.box([4, y0, 4], [12, y1, 12], {"up": hub, "down": hub, "north": edge, "south": edge, "east": edge, "west": edge}, name="hub")
+        m.box([5.5, y0, 5.5], [10.5, y1, 10.5], {"up": hub, "down": hub, "north": edge, "south": edge, "east": edge, "west": edge}, name="hub")
     return m
 
 
@@ -79,7 +79,7 @@ def turbine_rotor():
     shaft_y(m)
     disc = ("blade_disc", "blade_disc", {"mat": "brass", "blade": "iron"})
     de = ("disc_edge", "edge", {"mat": "iron", "base": 4})
-    m.box([2, 7, 2], [14, 9, 14], {"up": disc, "down": disc, "north": de, "south": de, "east": de, "west": de}, name="disc")
+    m.box([4, 7, 4], [12, 9, 12], {"up": disc, "down": disc, "north": de, "south": de, "east": de, "west": de}, name="disc")
     return m
 
 

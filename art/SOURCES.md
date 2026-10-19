@@ -5,6 +5,10 @@ Model: `generator` via the image tool built-in `generate` tool (`image_tool.py -
 All art is a candidate for replacement by hand-made art later.
 
 
+
+## Block texture passover (2026-10-19)
+
+All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
 ## reinforced_pipe and reinforced_pipe_connected (not generated)
 
 - Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
