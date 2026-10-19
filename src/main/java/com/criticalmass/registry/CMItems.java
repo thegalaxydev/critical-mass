@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.thermal.RepairKitItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +23,9 @@ public final class CMItems {
     public static final DeferredItem<Item> CERAMIC_FUEL_PELLET = simple("ceramic_fuel_pellet", new Item.Properties());
     public static final DeferredItem<Item> FUEL_CLADDING = simple("fuel_cladding", new Item.Properties());
     public static final DeferredItem<Item> EMPTY_FUEL_ASSEMBLY = simple("empty_fuel_assembly", new Item.Properties().stacksTo(16));
-    public static final DeferredItem<Item> FRESH_FUEL_ASSEMBLY = simple("fuel_assembly", new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> SPENT_FUEL_ASSEMBLY = simple("spent_fuel_assembly", new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> DAMAGED_FUEL_ASSEMBLY = simple("damaged_fuel_assembly", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<FuelAssemblyItem> FRESH_FUEL_ASSEMBLY = custom("fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.FRESH, new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<FuelAssemblyItem> SPENT_FUEL_ASSEMBLY = custom("spent_fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.SPENT, new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<FuelAssemblyItem> DAMAGED_FUEL_ASSEMBLY = custom("damaged_fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.DAMAGED, new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> REACTOR_ALLOY_INGOT = simple("reactor_alloy_ingot", new Item.Properties());
     public static final DeferredItem<Item> REACTOR_ALLOY_SHEET = simple("reactor_alloy_sheet", new Item.Properties());
     public static final DeferredItem<Item> SHIELDING_PLATE = simple("shielding_plate", new Item.Properties());

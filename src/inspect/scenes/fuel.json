@@ -1,0 +1,417 @@
+{
+ "name": "fuel",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 38 -59 43"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 41 -59 41 45 -55 45 criticalmass:reactor_vessel_casing hollow",
+    "/setblock 41 -57 43 criticalmass:reactor_controller[facing=west]",
+    "/setblock 43 -55 43 criticalmass:reactor_service_port[facing=up]",
+    "/setblock 43 -57 45 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 43 -57 41 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/fill 42 -58 42 42 -56 42 criticalmass:coolant_channel",
+    "/fill 43 -58 42 43 -56 42 criticalmass:control_channel",
+    "/fill 44 -58 42 44 -56 42 criticalmass:coolant_channel",
+    "/fill 42 -58 43 42 -56 43 criticalmass:fuel_channel",
+    "/fill 43 -58 43 43 -56 43 criticalmass:fuel_channel",
+    "/fill 44 -58 43 44 -56 43 criticalmass:fuel_channel",
+    "/fill 42 -58 44 42 -56 44 criticalmass:coolant_channel",
+    "/fill 43 -58 44 43 -56 44 criticalmass:control_channel",
+    "/fill 44 -58 44 44 -56 44 criticalmass:coolant_channel",
+    "/criticalmass fuel 41 -57 43 fill",
+    "/setblock 44 -57 46 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 46 -55 46 criticalmass:steam_turbine[axis=x]",
+    "/setblock 43 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 45 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -56 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 44 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 43 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 42 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 41 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 45 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 44 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -55 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -57 40 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 43 -57 46 minecraft:air",
+    "/setblock 45 -57 46 minecraft:air",
+    "/setblock 46 -57 46 minecraft:air",
+    "/setblock 46 -56 46 minecraft:air",
+    "/setblock 46 -54 46 minecraft:air",
+    "/setblock 46 -54 45 minecraft:air",
+    "/setblock 46 -54 44 minecraft:air",
+    "/setblock 46 -54 43 minecraft:air",
+    "/setblock 46 -54 42 minecraft:air",
+    "/setblock 46 -54 41 minecraft:air",
+    "/setblock 46 -54 40 minecraft:air",
+    "/setblock 45 -54 40 minecraft:air",
+    "/setblock 44 -54 40 minecraft:air",
+    "/setblock 43 -54 40 minecraft:air",
+    "/setblock 43 -55 40 minecraft:air",
+    "/setblock 43 -56 40 minecraft:air",
+    "/setblock 43 -57 40 minecraft:air",
+    "/setblock 43 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 45 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -56 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 44 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 43 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 42 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 41 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 45 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 44 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -55 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -57 40 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 41 -57 43 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/setblock 44 -58 46 create:creative_motor[facing=up]",
+    "/setblock 40 -57 43 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/criticalmass fuel 41 -57 43 fill"
+   ],
+   "wait": 300
+  },
+  {
+   "cmds": [
+    "/item replace entity @p armor.head with create:goggles",
+    "/tp @p 38.40 -60.00 43.20 facing 41.00 -57.69 43.12"
+   ],
+   "wait": 30,
+   "gui": true
+  },
+  {
+   "shot": "running",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/criticalmass fuel 41 -57 43 burn 0.0002"
+   ],
+   "wait": 80
+  },
+  {
+   "cmds": [
+    "/tp @p 38.40 -60.00 43.20 facing 41.00 -57.69 43.12"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "spent",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 40 -57 43 minecraft:lever[face=wall,facing=west,powered=false]"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 43.50 -55.62 43.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "port_waiting",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:fuel_assembly"
+   ],
+   "slot": 0,
+   "wait": 5
+  },
+  {
+   "use": [
+    43,
+    -55,
+    43
+   ],
+   "wait": 3
+  },
+  {
+   "shot": "refuel_blocked",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with minecraft:air"
+   ],
+   "wait": 5
+  },
+  {
+   "use": [
+    43,
+    -55,
+    43
+   ],
+   "wait": 25
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    43,
+    -55,
+    43
+   ],
+   "wait": 25
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 43.50 -55.62 43.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "port_ready",
+   "inventory": true,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 41 -54 41 criticalmass:spent_fuel_rack",
+    "/setblock 41 -54 45 criticalmass:spent_fuel_rack",
+    "/data merge block 41 -54 41 {Buffer:{Fluid:{id:\"minecraft:water\",amount:4000},Heat:0.0d}}"
+   ],
+   "wait": 5
+  },
+  {
+   "slot": 0,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -54,
+    41
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -54,
+    45
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 41.50 -55.12 41.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "rack_wet",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 41.50 -55.12 45.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "rack_dry",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tick sprint 2400"
+   ],
+   "wait": 300
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 41.50 -55.12 45.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "rack_dry_later",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 41.50 -55.12 41.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "rack_wet_later",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 42.50 -21.62 44.50"
+   ],
+   "wait": 5
+  },
+  {
+   "rejoin": true,
+   "wait": 300
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 41.50 -55.12 41.50"
+   ],
+   "wait": 20,
+   "gui": true
+  },
+  {
+   "shot": "rack_after_rejoin",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tick sprint 4800"
+   ],
+   "wait": 500
+  },
+  {
+   "cmds": [
+    "/setblock 45 -54 43 criticalmass:shielded_cask"
+   ],
+   "slot": 0,
+   "wait": 5
+  },
+  {
+   "use": [
+    41,
+    -54,
+    41
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -54,
+    45
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 0,
+   "wait": 2
+  },
+  {
+   "use": [
+    45,
+    -54,
+    43
+   ],
+   "wait": 3
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    45,
+    -54,
+    43
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 45.50 -55.12 43.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "cask_loaded",
+   "inventory": true,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 45 -54 43 minecraft:air destroy",
+    "/tp @p 45.50 -54.00 43.50"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 45.50 -55.12 43.50"
+   ],
+   "slot": 0,
+   "inventory": true,
+   "wait": 10
+  },
+  {
+   "use": [
+    45,
+    -55,
+    43,
+    "up"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/tp @p 42.50 -54.00 43.50 facing 45.50 -55.12 43.50"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "cask_placed",
+   "inventory": true,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  }
+ ]
+}

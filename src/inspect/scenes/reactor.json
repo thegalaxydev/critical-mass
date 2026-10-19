@@ -28,6 +28,7 @@
     "/fill 12 -59 14 12 -57 14 criticalmass:coolant_channel",
     "/fill 13 -59 14 13 -57 14 criticalmass:control_channel",
     "/fill 14 -59 14 14 -57 14 criticalmass:coolant_channel",
+    "/criticalmass fuel 11 -58 13 fill",
     "/setblock 12 -56 14 minecraft:air",
     "/setblock 14 -56 11 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
     "/setblock 12 -57 14 minecraft:stone"
@@ -131,7 +132,8 @@
    "cmds": [
     "/data merge block 11 -58 13 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
     "/setblock 14 -59 16 create:creative_motor[facing=up]",
-    "/setblock 10 -58 13 minecraft:lever[face=wall,facing=west,powered=true]"
+    "/setblock 10 -58 13 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/criticalmass fuel 11 -58 13 fill"
    ],
    "wait": 300
   },

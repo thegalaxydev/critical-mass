@@ -97,10 +97,25 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Boiler Heating Plate:** sits in the primary loop (front/back) under a Create boiler tank. It heats the boiler (level 1 from 120 °C, level 2 from 200 °C) and draws heat only while that boiler runs with water. A redstone signal turns it off.
 - **Heat accounting:** every unit of heat is stored, turned into stress by a turbine, sent to a Create boiler, rejected to the air, or vented. `/criticalmass ledger` shows each.
 
+**Fuel.**
+- **Assemblies:** each fuel column holds one Fuel Assembly and produces heat only while it is loaded. Assemblies keep their state on the item: lifecycle ID, remaining fuel, condition, residual heat, burn history and damage cause. They stack to 1. Advanced tooltips (F3+H) show the lifecycle ID.
+- **Burnup:** remaining fuel falls with the heat the column produces. An assembly lasts 120,000 ticks of full-power operation by default (`fuel.lifetimeTicks` in the server config) and then becomes a Spent Fuel Assembly.
+- **Wear and damage:** a full burn costs 25% condition (`fuel.normalWear`). Above 800 °C the column loses condition much faster. At zero the assembly fails, becomes a Damaged Fuel Assembly, and trips a running reactor (cause: fuel failure).
+- **Service Port:** loads and unloads fuel from the vessel top.
+  - Insert a fresh assembly by hand, hopper or funnel. It goes straight into a free fuel channel.
+  - Spent and damaged assemblies come out automatically once the reactor stops, one at a time, and wait in the port until taken by hand or extracted by a funnel. A redstone signal on the port unloads everything.
+  - Insertion is refused while the reactor runs or starts, while an assembly is waiting in the port, or when every channel is loaded. Goggles and the action bar give the reason.
+  - Damaged and spent assemblies can never be reinserted.
+- **Residual heat:** an unloaded assembly takes its column's decay heat with it.
+- **Spent Fuel Rack:** holds 4 assemblies and 4,000 mB of water (bucket or pipe). Residual heat decays into the water. A dry rack heats up instead, and above 300 °C it damages the fuel it holds. Cooling progress is kept on each item.
+- **Shielded Cask:** holds 4 cooled spent assemblies (residual heat 0.5 HU/t or less), fresh assemblies or waste canisters. It refuses hot or damaged fuel. Breaking it drops the cask with its contents, and placing it restores them.
+- **Waste is never deleted:** breaking a port, controller, rack or cask drops what it holds.
+- `/criticalmass fuel <controller> fill` loads fresh fuel into every empty channel, and `/criticalmass fuel <controller> burn <fraction>` sets the remaining fuel. Both are operator commands for testing.
+
 **Chunk unloading.** An unloaded reactor freezes. It keeps its exact state and does nothing until it reloads, and a vessel that is only partly loaded waits instead of tripping.
 
-Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, a 10,000-tick conservation run of the full two-loop plant, steam phase and pressure, turbine admission, bypass, condenser, cooling tower, radiator, boiler plate, relief and rupture, and turbine-trip handling (`./gradlew runGameTestServer`).
-`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking. `make_steam_plant.py` builds all three circuits (primary, steam, cooling) and trips the turbine. `make_operation.py` walks a reactor with rod drives through start-up, a lost-flow trip with emergency injection, and a breach; `make_ops_body.py` scrams a reactor tipped over on a Sable body.
+Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, a 10,000-tick conservation run of the full two-loop plant, steam phase and pressure, turbine admission, bypass, condenser, cooling tower, radiator, boiler plate, relief and rupture, turbine-trip handling, and the fuel lifecycle (burnup, overheating damage, service port round trips and refusals, waste retention, rack cooling, cask pickup and reload) (`./gradlew runGameTestServer`).
+`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking. `make_steam_plant.py` builds all three circuits (primary, steam, cooling) and trips the turbine. `make_operation.py` walks a reactor with rod drives through start-up, a lost-flow trip with emergency injection, and a breach; `make_ops_body.py` scrams a reactor tipped over on a Sable body. `make_fuel.py` burns a core out, unloads it through the service port by hand, cools the assemblies in a flooded and a dry rack across a rejoin, then casks them and picks the cask up and places it again.
 
 `/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
 
@@ -129,6 +144,7 @@ fluids in Create tanks, items, the worn outfit in several poses, a small reactor
 
 Besides commands, waits and screenshots, scenes can use `"rejoin": true` (save, quit and reopen the same world) and
 `"invoke": {"offset": [x, y, z], "method": "name", "far": true}` (call a public no-argument method on the block entity at that offset from the loaded Reactor Controller; `far` picks the controller on a sub-level).
+`"slot": n` selects a hotbar slot, `"use": [x, y, z, "face"]` right-clicks that block face with the held item, and `"inventory": true` logs every inventory item with its components.
 
 ## Target and dependency versions
 

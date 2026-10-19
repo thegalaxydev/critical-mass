@@ -119,6 +119,7 @@ public final class ReactorCoreTests {
         h.assertTrue(s.valid(), "Layout should be valid: " + s.problems);
         ReactorCore core = new ReactorCore();
         core.rebuild(s, h.absolutePos(TestVessels.CONTROLLER));
+        core.fillFresh();
         return core;
     }
 

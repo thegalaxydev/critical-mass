@@ -4,6 +4,8 @@ import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.ReinforcedPipeBlock;
+import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
@@ -74,6 +76,10 @@ final class TestVessels {
     }
 
     static void standardVessel(GameTestHelper h, char[][] columns) {
+        standardVessel(h, columns, true);
+    }
+
+    static void standardVessel(GameTestHelper h, char[][] columns, boolean fuel) {
         shell(h, MIN, 5, 5, 5);
         h.setBlock(CONTROLLER, CMBlocks.REACTOR_CONTROLLER.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.WEST));
         h.setBlock(SERVICE, CMBlocks.REACTOR_SERVICE_PORT.get().defaultBlockState().setValue(FacingBlock.FACING, Direction.UP));
@@ -92,6 +98,9 @@ final class TestVessels {
                 }
                 for (int y = 2; y <= 4; y++) {
                     h.setBlock(new BlockPos(2 + i, y, 2 + k), b);
+                }
+                if (fuel && columns[k][i] == 'f' && h.getBlockEntity(CONTROLLER) instanceof ReactorControllerBlockEntity c) {
+                    c.loadFuel(2 + i - CONTROLLER.getX(), 2 + k - CONTROLLER.getZ(), FuelState.fresh());
                 }
             }
         }

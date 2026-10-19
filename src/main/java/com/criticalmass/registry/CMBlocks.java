@@ -4,12 +4,14 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.AlarmSirenBlock;
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.DockingConnectorBlock;
-import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.PipeConnectableBlocks;
 import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.ReliefValveBlock;
 import com.criticalmass.content.WallPanelBlock;
+import com.criticalmass.content.fuel.ServicePortBlock;
+import com.criticalmass.content.fuel.ShieldedCaskBlock;
+import com.criticalmass.content.fuel.SpentFuelRackBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.ControlRodDriveBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlock;
@@ -44,7 +46,7 @@ public final class CMBlocks {
     public static final DeferredBlock<RotatedPillarBlock> CONTROL_CHANNEL = register("control_channel", RotatedPillarBlock::new, metal(4.0f));
     public static final DeferredBlock<ControlRodDriveBlock> CONTROL_ROD_DRIVE = register("control_rod_drive", ControlRodDriveBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<RotatedPillarBlock> COOLANT_CHANNEL = register("coolant_channel", RotatedPillarBlock::new, metal(4.0f));
-    public static final DeferredBlock<FacingBlock> REACTOR_SERVICE_PORT = register("reactor_service_port", FacingBlock::new, metal(5.0f));
+    public static final DeferredBlock<ServicePortBlock> REACTOR_SERVICE_PORT = register("reactor_service_port", ServicePortBlock::new, metal(5.0f));
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
@@ -61,8 +63,8 @@ public final class CMBlocks {
     public static final DeferredBlock<TransparentBlock> SHIELDED_GLASS = register("shielded_glass", TransparentBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.NONE).strength(2.5f, 8.0f).sound(SoundType.GLASS).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
     public static final DeferredBlock<TrapDoorBlock> SHIELDED_HATCH = register("shielded_hatch", p -> new TrapDoorBlock(BlockSetType.IRON, p), metal(6.0f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> FUEL_ASSEMBLY_BENCH = register("fuel_assembly_bench", p -> new HorizontalBlock(p, Shapes.or(Block.box(0, 10, 0, 16, 16, 16), Block.box(1, 0, 1, 15, 10, 15)), false), metal(3.0f).noOcclusion());
-    public static final DeferredBlock<Block> SPENT_FUEL_RACK = register("spent_fuel_rack", Block::new, metal(4.0f).noOcclusion());
-    public static final DeferredBlock<Block> SHIELDED_CASK = register("shielded_cask", ShieldedCaskShape::new, metal(6.0f).noOcclusion());
+    public static final DeferredBlock<SpentFuelRackBlock> SPENT_FUEL_RACK = register("spent_fuel_rack", SpentFuelRackBlock::new, metal(4.0f).noOcclusion());
+    public static final DeferredBlock<ShieldedCaskBlock> SHIELDED_CASK = register("shielded_cask", ShieldedCaskBlock::new, metal(6.0f).noOcclusion());
     public static final DeferredBlock<WallPanelBlock> INSTRUMENTATION_PANEL = register("instrumentation_panel", WallPanelBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", HorizontalBlock::new, metal(4.0f));
     public static final DeferredBlock<AlarmSirenBlock> ALARM_SIREN = register("alarm_siren", AlarmSirenBlock::new, metal(2.0f).noOcclusion());
@@ -79,18 +81,5 @@ public final class CMBlocks {
         DeferredBlock<B> block = BLOCKS.register(name, () -> factory.apply(properties));
         CMItems.blockItem(name, block);
         return block;
-    }
-
-    static final class ShieldedCaskShape extends Block {
-        private static final net.minecraft.world.phys.shapes.VoxelShape SHAPE = Shapes.or(Block.box(2, 0, 2, 14, 13, 14), Block.box(1, 13, 1, 15, 16, 15));
-
-        ShieldedCaskShape(Properties properties) {
-            super(properties);
-        }
-
-        @Override
-        protected net.minecraft.world.phys.shapes.VoxelShape getShape(net.minecraft.world.level.block.state.BlockState state, net.minecraft.world.level.BlockGetter level, net.minecraft.core.BlockPos pos, net.minecraft.world.phys.shapes.CollisionContext context) {
-            return SHAPE;
-        }
     }
 }

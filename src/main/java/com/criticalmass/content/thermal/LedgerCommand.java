@@ -1,14 +1,19 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.DoubleArgumentType;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -19,7 +24,32 @@ public final class LedgerCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("criticalmass").requires(s -> s.hasPermission(2))
-                .then(Commands.literal("ledger").executes(ctx -> report(ctx.getSource()))));
+                .then(Commands.literal("ledger").executes(ctx -> report(ctx.getSource())))
+                .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
+                        .then(Commands.literal("fill").executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), -1)))
+                        .then(Commands.literal("burn").then(Commands.argument("remaining", DoubleArgumentType.doubleArg(0, 1))
+                                .executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "remaining"))))))));
+    }
+
+    private static int fuel(CommandSourceStack source, BlockPos pos, double remaining) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        c.revalidate();
+        int n = 0;
+        if (remaining < 0) {
+            n = c.core().fillFresh();
+        } else {
+            for (Map.Entry<Long, FuelState> e : new ArrayList<>(c.core().assemblies().entrySet())) {
+                c.core().setAssembly(e.getKey(), e.getValue().withRemaining(remaining));
+                n++;
+            }
+        }
+        c.setChanged();
+        int count = n;
+        source.sendSuccess(() -> Component.literal((remaining < 0 ? "Loaded " : "Set remaining fuel on ") + count + " assemblies"), true);
+        return n;
     }
 
     private static String fmt(double v) {
@@ -59,7 +89,8 @@ public final class LedgerCommand {
             if (be instanceof SingleBufferNodeBlockEntity n) {
                 others++;
                 coolant += n.coolant().amount();
-                stored += n.coolant().heat();
+                stored += n.coolant().heat() + n.extraStoredHeat();
+                added += n.heatSourced();
                 source.sendSuccess(() -> Component.literal(n.getBlockState().getBlock().getName().getString() + " " + where(n) + " " + n.coolant().amount() + "mB "
                         + fmt(n.coolant().temperature()) + "C p=" + fmt(n.coolant().pressure()) + " status=" + n.status() + " sunk=" + fmt(n.sinks().totalHeat())), false);
                 continue;
@@ -72,7 +103,7 @@ public final class LedgerCommand {
                 source.sendSuccess(() -> Component.literal("controller " + where(c) + " status=" + c.status() + " coolant=" + c.coolant().amount() + " heat=" + fmt(c.coolant().heat())
                         + " temp=" + fmt(c.coolant().temperature()) + " core=" + fmt(c.core().storedHeat()) + " coreMax=" + fmt(c.core().maxTemperature())
                         + " hotSpots=" + c.core().hotSpots() + " added=" + fmt(c.heatAdded()) + " insertion=" + fmt(c.insertion()) + " flow=" + c.effectiveFlow()
-                        + " problems=" + c.problemPositions().size() + " missing=" + c.missing().size()), false);
+                        + " problems=" + c.problemPositions().size() + " missing=" + c.missing().size() + " fuel=" + c.core().assemblies().size() + " active=" + c.core().activeAssemblies()), false);
             } else if (be instanceof SteamTurbineBlockEntity t) {
                 turbines++;
                 coolant += t.coolant().amount();

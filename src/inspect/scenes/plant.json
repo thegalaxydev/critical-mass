@@ -35,6 +35,7 @@
     "/fill 602 -58 604 602 -56 604 criticalmass:coolant_channel",
     "/fill 603 -58 604 603 -56 604 criticalmass:control_channel",
     "/fill 604 -58 604 604 -56 604 criticalmass:coolant_channel",
+    "/criticalmass fuel 601 -57 603 fill",
     "/setblock 604 -57 606 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
     "/setblock 606 -57 606 criticalmass:heat_exchanger[facing=east]",
     "/setblock 607 -59 606 criticalmass:circulation_pump[facing=west,axis_along_first=true]",
@@ -138,6 +139,7 @@
     "/data merge block 601 -57 603 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
     "/setblock 604 -58 606 create:creative_motor[facing=up]",
     "/setblock 600 -57 603 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/criticalmass fuel 601 -57 603 fill",
     "/data merge block 606 -57 606 {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}",
     "/data merge block 606 -54 606 {Coolant:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}",
     "/setblock 607 -60 606 create:creative_motor[facing=up]"

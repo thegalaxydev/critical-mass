@@ -1,6 +1,8 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.client.VesselHighlighter;
+import com.criticalmass.content.fuel.FuelAssemblyItem;
+import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -20,6 +22,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Containers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,6 +51,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private double clientFission;
     private int clientDrives;
     private double clientDriveInsertion = 1;
+    private int clientAssemblies;
+    private int clientActive;
+    private double clientBurnup;
+    private double clientCondition = 1;
     private double heatAdded;
     private int flowAccum;
     private int lastTickFlow;
@@ -293,6 +300,90 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return !isBreached() || core.residualPower() <= CMThermal.REPAIR_RESIDUAL_LIMIT;
     }
 
+    @Nullable
+    public String refuelBlocker() {
+        if (frozen) {
+            return "criticalmass.service.frozen";
+        }
+        if (reacting || startingUp) {
+            return "criticalmass.service.running";
+        }
+        if (structure == null || !structure.valid()) {
+            return "criticalmass.service.invalid";
+        }
+        if (core.freeColumn() == null) {
+            return "criticalmass.service.no_channel";
+        }
+        return null;
+    }
+
+    public boolean canRefuel(FuelState state) {
+        return state != null && !state.damaged() && refuelBlocker() == null;
+    }
+
+    public boolean insertFuel(FuelState state) {
+        if (!canRefuel(state)) {
+            return false;
+        }
+        Long k = core.freeColumn();
+        if (k == null || !core.insert(k, state)) {
+            return false;
+        }
+        syncPending = true;
+        setChanged();
+        return true;
+    }
+
+    public boolean defuelAllowed() {
+        return !frozen && !reacting && !startingUp;
+    }
+
+    @Nullable
+    public Long nextDischarge(boolean everything) {
+        if (!defuelAllowed()) {
+            return null;
+        }
+        for (Map.Entry<Long, FuelState> e : core.assemblies().entrySet()) {
+            if (everything || !e.getValue().active() || !core.hasColumn(e.getKey())) {
+                return e.getKey();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public FuelState discharge(long key) {
+        if (!defuelAllowed()) {
+            return null;
+        }
+        FuelState s = core.remove(key);
+        if (s != null) {
+            syncPending = true;
+            setChanged();
+        }
+        return s;
+    }
+
+    public void loadFuel(int dx, int dz, FuelState state) {
+        core.setAssembly(ReactorCore.key(dx, dz), state);
+        syncPending = true;
+        setChanged();
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (level == null || level.isClientSide) {
+            return;
+        }
+        for (long k : new ArrayList<>(core.assemblies().keySet())) {
+            FuelState s = core.remove(k);
+            if (s != null) {
+                Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, FuelAssemblyItem.stackFor(s));
+            }
+        }
+    }
+
     public void noteFlow(int amount) {
         flowAccum += amount;
     }
@@ -354,8 +445,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 demand = true;
             }
         }
+        int failures = core.takeFailures();
         if (reacting) {
-            if (!canRun) {
+            if (failures > 0) {
+                trip("fuel_failure");
+            } else if (!canRun) {
                 trip(breached ? "breach" : damaged ? "damaged" : "invalid");
             } else if (core.maxTemperature() >= CMThermal.TRIP_TEMPERATURE) {
                 trip("overtemp");
@@ -438,10 +532,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (tripped) {
             return "criticalmass.reactor.status.tripped";
         }
+        if (core.activeAssemblies() == 0 && core.residualPower() <= CMThermal.RESIDUAL_COLD_LIMIT && core.maxTemperature() <= CMThermal.COLD_TEMPERATURE) {
+            return "criticalmass.reactor.status.unfueled";
+        }
         if (reacting && startingUp) {
             return "criticalmass.reactor.status.starting";
         }
-        if (reacting && core.lastOutput() > core.residualPower() + 1e-6) {
+        if (reacting && core.lastFission() > 0) {
             return "criticalmass.reactor.status.running";
         }
         if (core.residualPower() > CMThermal.RESIDUAL_COLD_LIMIT || core.maxTemperature() > CMThermal.COLD_TEMPERATURE) {
@@ -522,7 +619,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         tag.putDouble("LowestIntegrity", lowestIntegrity());
         tag.putDouble("Residual", core.residualPower());
-        tag.putDouble("Fission", core.lastReacting() ? core.lastOutput() : 0);
+        tag.putDouble("Fission", core.lastFission());
         Map<Long, ControlRodDriveBlockEntity> drives = findDrives();
         double sum = 0;
         for (ControlRodDriveBlockEntity d : drives.values()) {
@@ -531,6 +628,16 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putInt("Drives", drives.size());
         tag.putDouble("DriveInsertion", drives.isEmpty() ? 1 : sum / drives.size());
         tag.putInt("Damaged", damagedBlocks());
+        double burn = 0;
+        double cond = 1;
+        for (FuelState a : core.assemblies().values()) {
+            burn += 1 - a.remaining();
+            cond = Math.min(cond, a.condition());
+        }
+        tag.putInt("Assemblies", core.assemblies().size());
+        tag.putInt("ActiveFuel", core.activeAssemblies());
+        tag.putDouble("Burnup", core.assemblies().isEmpty() ? 0 : burn / core.assemblies().size());
+        tag.putDouble("FuelCondition", cond);
         tag.putString("Status", status);
         if (sizeError != null) {
             tag.putString("SizeError", sizeError);
@@ -615,13 +722,17 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         clientFission = tag.getDouble("Fission");
         clientDrives = tag.getInt("Drives");
         clientDriveInsertion = tag.getDouble("DriveInsertion");
+        clientAssemblies = tag.getInt("Assemblies");
+        clientActive = tag.getInt("ActiveFuel");
+        clientBurnup = tag.getDouble("Burnup");
+        clientCondition = tag.contains("FuelCondition") ? tag.getDouble("FuelCondition") : 1;
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.controller")));
         boolean running = status.endsWith("running") || status.endsWith("starting");
-        boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down");
+        boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down") || status.endsWith("unfueled");
         tooltip.add(ThermalTooltips.line(status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED));
         if (status.endsWith("tripped") && !tripReason.isEmpty()) {
             tooltip.add(ThermalTooltips.line("criticalmass.reactor.trip." + tripReason, ChatFormatting.RED));
@@ -651,6 +762,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.residual", ChatFormatting.GOLD, ThermalTooltips.number(clientResidual)));
         }
         if (fuelColumns > 0) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.fuel_loaded", clientActive > 0 ? ChatFormatting.GRAY : ChatFormatting.GOLD, clientAssemblies, fuelColumns, clientActive));
+            if (clientAssemblies > 0) {
+                tooltip.add(ThermalTooltips.line("criticalmass.goggles.fuel_burnup", clientCondition < 0.5 ? ChatFormatting.RED : ChatFormatting.GRAY,
+                        Math.round(clientBurnup * 100), Math.round(clientCondition * 100)));
+            }
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientFission)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.extracted", ChatFormatting.GRAY, ThermalTooltips.number(clientExtracted)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.core_temp", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));

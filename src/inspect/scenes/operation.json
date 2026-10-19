@@ -35,6 +35,7 @@
     "/fill 302 -58 304 302 -56 304 criticalmass:coolant_channel",
     "/fill 303 -58 304 303 -56 304 criticalmass:control_channel",
     "/fill 304 -58 304 304 -56 304 criticalmass:coolant_channel",
+    "/criticalmass fuel 301 -57 303 fill",
     "/setblock 304 -57 306 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
     "/setblock 306 -55 306 criticalmass:steam_turbine[axis=x]",
     "/setblock 303 -57 306 criticalmass:reinforced_pipe",
@@ -105,7 +106,8 @@
   {
    "cmds": [
     "/data merge block 301 -57 303 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
-    "/setblock 304 -58 306 create:creative_motor[facing=up]"
+    "/setblock 304 -58 306 create:creative_motor[facing=up]",
+    "/criticalmass fuel 301 -57 303 fill"
    ],
    "wait": 40
   },

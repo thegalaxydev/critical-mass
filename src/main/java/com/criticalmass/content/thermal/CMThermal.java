@@ -72,6 +72,18 @@ public final class CMThermal {
     public static final int MAX_PIPE_LENGTH = 256;
     public static final int MAX_VESSEL_BLOCKS = 2048;
 
+    public static final double FUEL_OVERHEAT_WEAR = 0.0005;
+    public static final double CASK_RESIDUAL_LIMIT = 0.5;
+    public static final int RACK_SLOTS = 4;
+    public static final int RACK_CAPACITY = 4000;
+    public static final double RACK_POOL_RATE = 0.0005;
+    public static final double RACK_DRY_HEAT_CAPACITY = 20.0;
+    public static final double RACK_DRY_RATE = 0.002;
+    public static final double RACK_DRY_DAMAGE_TEMPERATURE = 300.0;
+    public static final double RACK_DRY_WEAR = 0.0005;
+    public static final int CASK_SLOTS = 4;
+    public static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / DECAY_HALF_LIFE_TICKS);
+
     private CMThermal() {
     }
 

@@ -23,7 +23,11 @@ def vessel(o, columns=None):
     for k, row in enumerate(columns or COLUMNS):
         for i, ch in enumerate(row):
             cmds.append("/fill %s %s criticalmass:%s" % (w(2 + i, 2, 2 + k), w(2 + i, 4, 2 + k), KIND[ch]))
-    return cmds
+    return cmds + [fuel(o)]
+
+
+def fuel(o):
+    return "/criticalmass fuel %s fill" % at(o)(*CONTROLLER)
 
 
 def loop(o):
@@ -42,7 +46,7 @@ def start(o, coolant=6000, motor=True, power=True):
         cmds.append("/setblock %s create:creative_motor[facing=up]" % w(*MOTOR))
     if power:
         cmds.append("/setblock %s minecraft:lever[face=wall,facing=west,powered=true]" % w(*REDSTONE))
-    return cmds
+    return cmds + [fuel(o)]
 
 
 PRIMARY = [(3, 3, 6), (5, 3, 6), (7, 3, 6), (7, 3, 5), (7, 3, 4), (7, 3, 3), (7, 3, 2), (7, 3, 1), (7, 3, 0), (6, 3, 0), (5, 3, 0), (4, 3, 0), (3, 3, 0)]

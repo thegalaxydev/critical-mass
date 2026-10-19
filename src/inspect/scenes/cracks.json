@@ -27,7 +27,8 @@
     "/fill 44 -58 43 44 -56 43 criticalmass:fuel_channel",
     "/fill 42 -58 44 42 -56 44 criticalmass:coolant_channel",
     "/fill 43 -58 44 43 -56 44 criticalmass:control_channel",
-    "/fill 44 -58 44 44 -56 44 criticalmass:coolant_channel"
+    "/fill 44 -58 44 44 -56 44 criticalmass:coolant_channel",
+    "/criticalmass fuel 41 -57 43 fill"
    ],
    "wait": 10
   },

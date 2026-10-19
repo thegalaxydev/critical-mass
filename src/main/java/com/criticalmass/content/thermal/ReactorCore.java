@@ -1,8 +1,11 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.registry.CMConfig;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -10,7 +13,9 @@ import java.util.function.ToDoubleFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import org.jetbrains.annotations.Nullable;
 
 public final class ReactorCore {
     private static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / CMThermal.DECAY_HALF_LIFE_TICKS);
@@ -18,7 +23,10 @@ public final class ReactorCore {
     private final Set<Long> control = new HashSet<>();
     private final Set<Long> coolant = new HashSet<>();
     private final Map<Long, double[]> pending = new HashMap<>();
+    private final Map<Long, FuelState> assemblies = new LinkedHashMap<>();
+    private int failures;
     private double lastOutput;
+    private double lastFission;
     private double lastExtracted;
     private boolean lastReacting;
 
@@ -151,8 +159,13 @@ public final class ReactorCore {
 
     public double tick(boolean reacting, ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant) {
         double output = 0;
+        double fission = 0;
+        double lifetime = CMConfig.fuelLifetime();
+        double wear = CMConfig.fuelWear();
         for (FuelColumn f : fuel.values()) {
-            if (reacting) {
+            long k = key(f.dx, f.dz);
+            FuelState a = assemblies.get(k);
+            if (reacting && a != null && a.active()) {
                 double suppression = 1;
                 for (long c : f.controlNeighbours) {
                     suppression *= Math.max(0, Math.min(1, 1 - insertion.applyAsDouble(c)));
@@ -161,6 +174,13 @@ public final class ReactorCore {
                 f.heat += q;
                 f.decay += (CMThermal.DECAY_FRACTION * q - f.decay) / CMThermal.DECAY_BUILDUP_TICKS;
                 output += q;
+                double burn = q / (CMThermal.FUEL_BASE_OUTPUT * Math.max(1, f.height)) / lifetime;
+                fission += q;
+                a = a.withRemaining(a.remaining() - burn).withBurned(a.burned() + q).withCondition(a.condition() - wear * burn, "wear");
+                if (a.damaged()) {
+                    failures++;
+                }
+                assemblies.put(k, a);
             } else if (f.decay > 0) {
                 double r = f.decay;
                 f.heat += r;
@@ -170,6 +190,19 @@ public final class ReactorCore {
                     f.decay = 0;
                 }
             }
+        }
+        for (FuelColumn f : fuel.values()) {
+            long k = key(f.dx, f.dz);
+            FuelState a = assemblies.get(k);
+            double t = f.temperature();
+            if (a == null || a.damaged() || t <= CMThermal.HOT_SPOT_TEMPERATURE) {
+                continue;
+            }
+            a = a.withCondition(a.condition() - CMThermal.FUEL_OVERHEAT_WEAR * (t - CMThermal.HOT_SPOT_TEMPERATURE) / CMThermal.HOT_SPOT_TEMPERATURE, "overheat");
+            if (a.damaged()) {
+                failures++;
+            }
+            assemblies.put(k, a);
         }
         double extracted = 0;
         if (flow > 0 && vesselCoolant.amount() > 0) {
@@ -187,9 +220,87 @@ public final class ReactorCore {
             }
         }
         lastOutput = output;
+        lastFission = fission;
         lastExtracted = extracted;
         lastReacting = reacting;
         return output;
+    }
+
+    public Map<Long, FuelState> assemblies() {
+        return assemblies;
+    }
+
+    @Nullable
+    public FuelState assembly(long key) {
+        return assemblies.get(key);
+    }
+
+    public int activeAssemblies() {
+        int n = 0;
+        for (FuelState a : assemblies.values()) {
+            if (a.active()) {
+                n++;
+            }
+        }
+        return n;
+    }
+
+    public int takeFailures() {
+        int n = failures;
+        failures = 0;
+        return n;
+    }
+
+    @Nullable
+    public Long freeColumn() {
+        for (FuelColumn f : fuel.values()) {
+            long k = key(f.dx, f.dz);
+            if (!assemblies.containsKey(k)) {
+                return k;
+            }
+        }
+        return null;
+    }
+
+    public boolean insert(long key, FuelState state) {
+        FuelColumn f = fuel.get(key);
+        if (f == null || assemblies.containsKey(key) || state.damaged()) {
+            return false;
+        }
+        f.decay += state.residual();
+        assemblies.put(key, state.withResidual(0));
+        return true;
+    }
+
+    @Nullable
+    public FuelState remove(long key) {
+        FuelState a = assemblies.remove(key);
+        if (a == null) {
+            return null;
+        }
+        double residual = 0;
+        FuelColumn f = fuel.get(key);
+        if (f != null) {
+            residual += f.decay;
+            f.decay = 0;
+        }
+        double[] p = pending.get(key);
+        if (p != null) {
+            residual += p[1];
+            p[1] = 0;
+            if (p[0] == 0) {
+                pending.remove(key);
+            }
+        }
+        return a.discharged(residual);
+    }
+
+    public boolean hasColumn(long key) {
+        return fuel.containsKey(key);
+    }
+
+    public void setAssembly(long key, FuelState state) {
+        assemblies.put(key, state);
     }
 
     public double residualPower() {
@@ -244,6 +355,19 @@ public final class ReactorCore {
         return lastOutput;
     }
 
+    public double lastFission() {
+        return lastFission;
+    }
+
+    public int fillFresh() {
+        int n = 0;
+        Long k;
+        while ((k = freeColumn()) != null && insert(k, FuelState.fresh())) {
+            n++;
+        }
+        return n;
+    }
+
     public double lastExtracted() {
         return lastExtracted;
     }
@@ -295,6 +419,15 @@ public final class ReactorCore {
             list.add(c);
         }
         tag.put("Fuel", list);
+        ListTag loaded = new ListTag();
+        for (Map.Entry<Long, FuelState> e : assemblies.entrySet()) {
+            CompoundTag c = new CompoundTag();
+            c.putInt("X", keyX(e.getKey()));
+            c.putInt("Z", keyZ(e.getKey()));
+            FuelState.CODEC.encodeStart(NbtOps.INSTANCE, e.getValue()).result().ifPresent(t -> c.put("State", t));
+            loaded.add(c);
+        }
+        tag.put("Assemblies", loaded);
         return tag;
     }
 
@@ -303,9 +436,16 @@ public final class ReactorCore {
         fuel.clear();
         control.clear();
         coolant.clear();
+        failures = 0;
         for (Tag t : tag.getList("Fuel", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) t;
             pending.put(key(c.getInt("X"), c.getInt("Z")), new double[]{c.getDouble("Heat"), c.getDouble("Decay")});
+        }
+        assemblies.clear();
+        for (Tag t : tag.getList("Assemblies", Tag.TAG_COMPOUND)) {
+            CompoundTag c = (CompoundTag) t;
+            long k = key(c.getInt("X"), c.getInt("Z"));
+            FuelState.CODEC.parse(NbtOps.INSTANCE, c.get("State")).result().ifPresent(st -> assemblies.put(k, st));
         }
     }
 }

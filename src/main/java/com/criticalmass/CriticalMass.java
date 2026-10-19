@@ -6,6 +6,8 @@ import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
+import com.criticalmass.registry.CMComponents;
+import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMCreativeTabs;
 import com.criticalmass.registry.CMFluids;
 import com.criticalmass.registry.CMItems;
@@ -17,6 +19,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -37,6 +40,8 @@ public class CriticalMass {
         CMCreativeTabs.TABS.register(modEventBus);
         CMFluids.TYPES.register(modEventBus);
         CMFluids.FLUIDS.register(modEventBus);
+        CMComponents.COMPONENTS.register(modEventBus);
+        modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
@@ -66,6 +71,10 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());
     }
 

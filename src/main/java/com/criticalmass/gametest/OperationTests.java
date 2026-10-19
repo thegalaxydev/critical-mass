@@ -118,6 +118,7 @@ public final class OperationTests {
         VesselStructure s = VesselStructure.scan(h.getLevel(), h.absolutePos(TestVessels.CONTROLLER));
         ReactorCore core = new ReactorCore();
         core.rebuild(s, h.absolutePos(TestVessels.CONTROLLER));
+        core.fillFresh();
         CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
         for (int i = 0; i < 2400; i++) {
             core.tick(true, 0, 0, buffer);

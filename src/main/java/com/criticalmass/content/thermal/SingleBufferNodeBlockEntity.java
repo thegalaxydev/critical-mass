@@ -51,6 +51,14 @@ public abstract class SingleBufferNodeBlockEntity extends SmartBlockEntity imple
         return sinks;
     }
 
+    public double heatSourced() {
+        return 0;
+    }
+
+    public double extraStoredHeat() {
+        return 0;
+    }
+
     public String status() {
         return status;
     }

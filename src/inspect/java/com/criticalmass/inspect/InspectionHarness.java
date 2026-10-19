@@ -15,16 +15,21 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.client.CameraType;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;
 import net.minecraft.client.gui.screens.GenericMessageScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Difficulty;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.LevelSettings;
@@ -32,6 +37,8 @@ import net.minecraft.world.level.WorldDataConfiguration;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.WorldOptions;
 import net.minecraft.world.level.levelgen.presets.WorldPresets;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -86,6 +93,7 @@ public class InspectionHarness {
         }
         inWorldTicks++;
         if (inWorldTicks < 60) {
+            KeyMapping.releaseAll();
             return;
         }
         if (waitTicks > 0) {
@@ -161,6 +169,30 @@ public class InspectionHarness {
         }
         if (step.has("rejoin") && step.get("rejoin").getAsBoolean()) {
             rejoin(mc);
+        }
+        if (step.has("slot") && mc.player != null) {
+            mc.player.getInventory().selected = step.get("slot").getAsInt();
+        }
+        if (step.has("use") && mc.player != null && mc.gameMode != null) {
+            JsonArray u = step.getAsJsonArray("use");
+            BlockPos p = new BlockPos(u.get(0).getAsInt(), u.get(1).getAsInt(), u.get(2).getAsInt());
+            Direction face = u.size() > 3 ? Direction.byName(u.get(3).getAsString()) : Direction.UP;
+            BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(p).relative(face, 0.5), face, p, false);
+            InteractionResult r = mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hit);
+            note("use " + p.toShortString() + " " + face + " -> " + r);
+        }
+        if (step.has("inventory") && mc.getSingleplayerServer() != null) {
+            MinecraftServer server = mc.getSingleplayerServer();
+            server.execute(() -> {
+                for (ServerPlayer sp : server.getPlayerList().getPlayers()) {
+                    for (int i = 0; i < sp.getInventory().getContainerSize(); i++) {
+                        ItemStack st = sp.getInventory().getItem(i);
+                        if (!st.isEmpty()) {
+                            note("inventory " + i + " " + st.getItem() + " " + st.getComponentsPatch());
+                        }
+                    }
+                }
+            });
         }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";

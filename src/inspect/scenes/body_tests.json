@@ -28,6 +28,7 @@
     "/fill 110 -58 1 110 -56 1 criticalmass:coolant_channel",
     "/fill 111 -58 1 111 -56 1 criticalmass:control_channel",
     "/fill 112 -58 1 112 -56 1 criticalmass:coolant_channel",
+    "/criticalmass fuel 109 -57 0 fill",
     "/setblock 112 -57 3 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
     "/setblock 114 -55 3 criticalmass:steam_turbine[axis=x]",
     "/setblock 111 -57 3 criticalmass:reinforced_pipe",
@@ -94,7 +95,8 @@
    "cmds": [
     "/data merge block 109 -57 0 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
     "/setblock 112 -58 3 create:creative_motor[facing=up]",
-    "/setblock 108 -57 0 minecraft:lever[face=wall,facing=west,powered=true]"
+    "/setblock 108 -57 0 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/criticalmass fuel 109 -57 0 fill"
    ],
    "wait": 100
   },

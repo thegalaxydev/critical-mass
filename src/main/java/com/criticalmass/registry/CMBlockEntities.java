@@ -1,6 +1,9 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.fuel.ServicePortBlockEntity;
+import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
+import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
@@ -49,6 +52,13 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<EmergencyTankBlockEntity>> EMERGENCY_TANK = BLOCK_ENTITIES.register("emergency_coolant_tank",
             () -> BlockEntityType.Builder.of((pos, state) -> new EmergencyTankBlockEntity(CMBlockEntities.EMERGENCY_TANK.get(), pos, state), CMBlocks.EMERGENCY_COOLANT_TANK.get()).build(null));
+
+    public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<SpentFuelRackBlockEntity>> SPENT_FUEL_RACK = BLOCK_ENTITIES.register("spent_fuel_rack",
+            () -> BlockEntityType.Builder.of((pos, state) -> new SpentFuelRackBlockEntity(CMBlockEntities.SPENT_FUEL_RACK.get(), pos, state), CMBlocks.SPENT_FUEL_RACK.get()).build(null));
+    public static final Supplier<BlockEntityType<ShieldedCaskBlockEntity>> SHIELDED_CASK = BLOCK_ENTITIES.register("shielded_cask",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ShieldedCaskBlockEntity(CMBlockEntities.SHIELDED_CASK.get(), pos, state), CMBlocks.SHIELDED_CASK.get()).build(null));
 
     private CMBlockEntities() {
     }
