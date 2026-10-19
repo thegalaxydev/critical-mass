@@ -1,3 +1,4 @@
+import colorsys
 import io
 import os
 import sys
@@ -35,6 +36,18 @@ def palette():
     return ranked
 
 
+def brighten(ramp, value=1.3, sat=1.35):
+    out = []
+    for i, c in enumerate(ramp):
+        if i == 0:
+            out.append(c)
+            continue
+        h, s, v = colorsys.rgb_to_hsv(*[x / 255 for x in c])
+        r, g, b = colorsys.hsv_to_rgb(h, min(1, s * sat), min(1, v * value))
+        out.append((round(r * 255), round(g * 255), round(b * 255)))
+    return out
+
+
 def paint(z, name, base_name, mask_name, ramp):
     base = vanilla(z, base_name)
     mask = vanilla(z, mask_name)
@@ -51,7 +64,7 @@ def paint(z, name, base_name, mask_name, ramp):
 
 
 def main():
-    ramp = palette()
+    ramp = brighten(palette())
     with zipfile.ZipFile(VANILLA) as z:
         for name, (base, mask) in PAIRS.items():
             print(name, paint(z, name, base, mask, ramp), "ore pixels")
