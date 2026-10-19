@@ -12,6 +12,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,7 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
     private ItemStack output = ItemStack.EMPTY;
     private String status = "criticalmass.service.no_vessel";
     private final IItemHandler handler = new Handler();
@@ -229,5 +230,10 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
         public boolean isItemValid(int slot, ItemStack stack) {
             return slot == 0 && stack.getItem() instanceof FuelAssemblyItem a && a.form() == FuelAssemblyItem.Form.FRESH;
         }
+    }
+
+    @Override
+    public void clearContent() {
+        output = ItemStack.EMPTY;
     }
 }

@@ -1,9 +1,11 @@
 package com.criticalmass;
 
+import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
+import com.criticalmass.registry.CMAttachments;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
@@ -41,11 +43,14 @@ public class CriticalMass {
         CMFluids.TYPES.register(modEventBus);
         CMFluids.FLUIDS.register(modEventBus);
         CMComponents.COMPONENTS.register(modEventBus);
+        CMAttachments.ATTACHMENTS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
+        NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
+        NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }
 
     public static ResourceLocation asResource(String path) {

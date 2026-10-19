@@ -181,6 +181,9 @@ public class InspectionHarness {
             InteractionResult r = mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hit);
             note("use " + p.toShortString() + " " + face + " -> " + r);
         }
+        if (step.has("useItem") && step.get("useItem").getAsBoolean() && mc.player != null && mc.gameMode != null) {
+            note("useItem " + mc.player.getMainHandItem().getItem() + " -> " + mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND));
+        }
         if (step.has("jei")) {
             note("jei " + step.get("jei").getAsString() + " -> " + InspectJeiPlugin.showRecipes(step.get("jei").getAsString()));
         }

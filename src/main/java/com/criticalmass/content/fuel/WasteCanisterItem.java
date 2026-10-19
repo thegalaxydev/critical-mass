@@ -40,7 +40,7 @@ public class WasteCanisterItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         FuelState s = stack.get(CMComponents.FUEL_STATE.get());
         if (s == null) {
-            tooltip.add(Component.translatable("criticalmass.canister.empty_record").withStyle(ChatFormatting.GRAY));
+            tooltip.add(Component.translatable("criticalmass.canister.solidified").withStyle(ChatFormatting.GRAY));
         } else {
             tooltip.add(Component.translatable("criticalmass.canister.source", Component.translatable("item.criticalmass.damaged_fuel_assembly")).withStyle(ChatFormatting.GRAY));
             tooltip.add(Component.translatable("criticalmass.fuel.burned", ThermalTooltips.number(s.burned())).withStyle(ChatFormatting.DARK_GRAY));

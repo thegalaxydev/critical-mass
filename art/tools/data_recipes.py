@@ -91,6 +91,7 @@ processing("sealing_gasket", "compacting", ["minecraft:dried_kelp", "minecraft:d
 processing("shielding_plate", "compacting", ["#c:plates/reactor_alloy", "#c:plates/iron"], [out("shielding_plate")])
 processing("shielding_concrete", "mixing", ["minecraft:gravel", "minecraft:gravel", "#c:nuggets/iron", "#c:nuggets/iron", "#c:nuggets/iron", fluid("minecraft:water", 250)], [out("shielding_concrete", 2)])
 processing("primary_coolant", "mixing", ["minecraft:lapis_lazuli", fluid("minecraft:water", 1000)], [{"amount": 1000, "id": M + "primary_coolant"}])
+processing("sealed_waste_canister", "mixing", [fluid(M + "contaminated_coolant", 1000), "shielding_plate", "sealing_gasket"], [out("sealed_waste_canister")], heat="heated")
 processing("decontamination_compound", "mixing", ["create:limestone", "minecraft:dried_kelp", fluid("minecraft:water", 250)], [out("decontamination_compound", 2)])
 
 RECIPES["sequenced_assembly/fuel_assembly"] = {

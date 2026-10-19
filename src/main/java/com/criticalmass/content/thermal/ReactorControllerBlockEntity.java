@@ -3,10 +3,12 @@ package com.criticalmass.content.thermal;
 import com.criticalmass.client.VesselHighlighter;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import dev.ryanhcode.sable.companion.SableCompanion;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,13 +24,17 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class ReactorControllerBlockEntity extends SmartBlockEntity implements ThermalNode, IHaveGoggleInformation {
+public class ReactorControllerBlockEntity extends SmartBlockEntity implements ThermalNode, IHaveGoggleInformation, Clearable {
     private final CoolantBuffer coolant = new CoolantBuffer(CMThermal.CONTROLLER_CAPACITY, this::markCoolantChanged);
     private final ReactorCore core = new ReactorCore();
     private VesselStructure structure;
@@ -384,6 +390,56 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
     }
 
+    @Nullable
+    public Vec3 coreCenter() {
+        VesselStructure layout = structure != null && structure.valid() ? structure : lastValid;
+        if (layout == null) {
+            return null;
+        }
+        return new Vec3((layout.min.getX() + layout.max.getX() + 1) / 2.0, (layout.min.getY() + layout.max.getY() + 1) / 2.0, (layout.min.getZ() + layout.max.getZ() + 1) / 2.0);
+    }
+
+    @Nullable
+    public AABB coreInterior() {
+        VesselStructure layout = structure != null && structure.valid() ? structure : lastValid;
+        if (layout == null) {
+            return null;
+        }
+        return new AABB(layout.min.getX() + 1, layout.min.getY() + 1, layout.min.getZ() + 1, layout.max.getX(), layout.max.getY(), layout.max.getZ());
+    }
+
+    private void spill(CoolantBuffer.Packet leak) {
+        if (!(level instanceof ServerLevel server) || leak.isEmpty() || structure == null) {
+            return;
+        }
+        List<BlockPos> holes = new ArrayList<>();
+        for (Map.Entry<Long, Double> e : integrity.entrySet()) {
+            if (e.getValue() <= 0) {
+                holes.add(worldPosition.offset(BlockPos.of(e.getKey())));
+            }
+        }
+        if (holes.isEmpty()) {
+            return;
+        }
+        double amount = leak.amount() * (CMThermal.isContaminated(leak.fluid()) ? CMThermal.CONTAMINATED_SPILL : CMThermal.CLEAN_SPILL) / holes.size();
+        ContaminationData data = ContaminationData.get(server);
+        for (BlockPos hole : holes) {
+            List<BlockPos> outside = new ArrayList<>();
+            for (Direction d : Direction.values()) {
+                BlockPos n = hole.relative(d);
+                if (!structure.contains(n, 0) && !level.getBlockState(n).isSolidRender(level, n)) {
+                    outside.add(n);
+                }
+            }
+            if (outside.isEmpty()) {
+                outside.add(hole);
+            }
+            for (BlockPos n : outside) {
+                data.add(BlockPos.containing(SableCompanion.INSTANCE.projectOutOfSubLevel(level, n.getCenter())), amount / outside.size());
+            }
+        }
+    }
+
     public void noteFlow(int amount) {
         flowAccum += amount;
     }
@@ -485,8 +541,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             ControlRodDriveBlockEntity d = drives.get(k);
             return d != null ? d.insertion() : fallback;
         }, effectiveFlow, coolant);
+        if (failures > 0) {
+            coolant.contaminate();
+        }
         if (breached && coolant.amount() > 0) {
-            sinks.vent(coolant.take(CMThermal.BREACH_LEAK_RATE));
+            CoolantBuffer.Packet leak = coolant.take(CMThermal.BREACH_LEAK_RATE);
+            sinks.vent(leak);
+            spill(leak);
         }
         startingUp = false;
         for (ControlRodDriveBlockEntity d : drives.values()) {
@@ -780,5 +841,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         ThermalTooltips.coolant(tooltip, coolant);
         return true;
+    }
+
+    @Override
+    public void clearContent() {
+        core.assemblies().clear();
     }
 }

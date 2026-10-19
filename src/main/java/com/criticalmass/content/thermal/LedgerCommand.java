@@ -1,6 +1,8 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.radiation.ContaminationData;
+import com.criticalmass.content.radiation.Radiation;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
@@ -14,9 +16,11 @@ import java.util.Map;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
+import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 public final class LedgerCommand {
     private LedgerCommand() {
@@ -25,10 +29,36 @@ public final class LedgerCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("criticalmass").requires(s -> s.hasPermission(2))
                 .then(Commands.literal("ledger").executes(ctx -> report(ctx.getSource())))
+                .then(Commands.literal("radiation").then(Commands.argument("pos", Vec3Argument.vec3())
+                        .executes(ctx -> probe(ctx.getSource(), Vec3Argument.getVec3(ctx, "pos")))))
+                .then(Commands.literal("contaminate").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
+                        .executes(ctx -> contaminate(ctx.getSource(), BlockPosArgument.getBlockPos(ctx, "pos"), DoubleArgumentType.getDouble(ctx, "amount"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
                         .then(Commands.literal("fill").executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), -1)))
                         .then(Commands.literal("burn").then(Commands.argument("remaining", DoubleArgumentType.doubleArg(0, 1))
                                 .executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "remaining"))))))));
+    }
+
+    private static int probe(CommandSourceStack source, Vec3 pos) {
+        double rate = Radiation.ambientRate(source.getLevel(), pos);
+        double contamination = ContaminationData.get(source.getLevel()).near(pos, 2);
+        for (Radiation.Source s : Radiation.sourcesNear(source.getLevel(), pos, Radiation.blockSources(source.getLevel()))) {
+            Vec3 local = s.body() != null ? s.body().logicalPose().transformPositionInverse(pos) : pos;
+            double part = Radiation.fromSources(source.getLevel(), pos, List.of(s), null);
+            if (part > 0.01) {
+                source.sendSuccess(() -> Component.literal("  source " + fmt(s.pos().x) + " " + fmt(s.pos().y) + " " + fmt(s.pos().z) + " strength=" + fmt(s.strength())
+                        + (s.body() != null ? " body=" + s.body().getName() + " local=" + fmt(local.x) + " " + fmt(local.y) + " " + fmt(local.z) : "") + " gives=" + fmt(part)), false);
+            }
+        }
+        source.sendSuccess(() -> Component.literal("radiation " + fmt(pos.x) + " " + fmt(pos.y) + " " + fmt(pos.z) + " rate=" + fmt(rate) + " contamination=" + fmt(contamination)
+                + " cells=" + ContaminationData.get(source.getLevel()).size() + " total=" + fmt(ContaminationData.get(source.getLevel()).total())), false);
+        return (int) Math.round(rate);
+    }
+
+    private static int contaminate(CommandSourceStack source, BlockPos pos, double amount) {
+        ContaminationData.get(source.getLevel()).add(pos, amount);
+        source.sendSuccess(() -> Component.literal("Contaminated " + pos.toShortString() + " by " + fmt(amount)), true);
+        return 1;
     }
 
     private static int fuel(CommandSourceStack source, BlockPos pos, double remaining) {

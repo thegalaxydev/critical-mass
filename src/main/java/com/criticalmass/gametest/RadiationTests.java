@@ -1,0 +1,243 @@
+package com.criticalmass.gametest;
+
+import com.criticalmass.CriticalMass;
+import com.criticalmass.content.fuel.FuelAssemblyItem;
+import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
+import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
+import com.criticalmass.content.radiation.ContaminationData;
+import com.criticalmass.content.radiation.DecontaminationCompoundItem;
+import com.criticalmass.content.radiation.Radiation;
+import com.criticalmass.content.radiation.RadiationData;
+import com.criticalmass.content.radiation.RadiationEvents;
+import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.CoolantBuffer;
+import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
+import com.criticalmass.content.thermal.ReactorCore;
+import com.criticalmass.registry.CMAttachments;
+import com.criticalmass.registry.CMBlocks;
+import com.criticalmass.registry.CMComponents;
+import com.criticalmass.registry.CMConfig;
+import com.criticalmass.registry.CMFluids;
+import com.criticalmass.registry.CMItems;
+import com.simibubi.create.AllBlocks;
+import java.util.List;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.gametest.GameTestHolder;
+import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
+
+@GameTestHolder(CriticalMass.MODID)
+@PrefixGameTestTemplate(false)
+public final class RadiationTests {
+    private static final String EMPTY = "empty";
+    private static final String LARGE = "empty_large";
+
+    private RadiationTests() {
+    }
+
+    private static List<Radiation.Source> local(GameTestHelper h) {
+        Vec3 origin = Vec3.atLowerCornerOf(h.absolutePos(BlockPos.ZERO));
+        return Radiation.blockSources(h.getLevel()).stream().filter(s -> s.pos().distanceTo(origin.add(8, 8, 8)) < 14).toList();
+    }
+
+    private static ItemStack spent(double residual) {
+        return FuelAssemblyItem.stackFor(FuelState.fresh().withRemaining(0).discharged(residual));
+    }
+
+    @GameTest(template = LARGE)
+    public static void doseFallsWithDistanceAndShielding(GameTestHelper h) {
+        Vec3 src = Vec3.atCenterOf(h.absolutePos(new BlockPos(2, 2, 8)));
+        List<Radiation.Source> one = List.of(new Radiation.Source(src, 100, null, null, null));
+        double r2 = Radiation.fromSources(h.getLevel(), src.add(2, 0, 0), one, null);
+        double r4 = Radiation.fromSources(h.getLevel(), src.add(4, 0, 0), one, null);
+        double r8 = Radiation.fromSources(h.getLevel(), src.add(8, 0, 0), one, null);
+        h.assertTrue(r2 > r4 && r4 > r8 && Math.abs(r4 - 100 / 17.0) < 1e-6, "Dose should fall with distance: " + r2 + " " + r4 + " " + r8);
+        BlockPos wall = new BlockPos(5, 2, 8);
+        Vec3 to = src.add(6, 0, 0);
+        BlockState hatch = CMBlocks.SHIELDED_HATCH.get().defaultBlockState();
+        Block[] materials = {Blocks.AIR, CMBlocks.SHIELDED_GLASS.get(), CMBlocks.REACTOR_VESSEL_CASING.get(), CMBlocks.SHIELDING_CONCRETE.get()};
+        double[] t = new double[materials.length];
+        for (int i = 0; i < materials.length; i++) {
+            h.setBlock(wall, materials[i]);
+            t[i] = Radiation.transmission(h.getLevel(), src, to, null);
+        }
+        h.setBlock(wall, hatch.setValue(TrapDoorBlock.OPEN, true));
+        double open = Radiation.transmission(h.getLevel(), src, to, null);
+        h.setBlock(wall, hatch.setValue(TrapDoorBlock.OPEN, false));
+        double closed = Radiation.transmission(h.getLevel(), src, to, null);
+        h.assertTrue(t[0] == 1, "Air does not shield: " + t[0]);
+        h.assertTrue(Math.abs(t[1] - Math.exp(-CMConfig.get(CMConfig.SHIELD_GLASS))) < 1e-6, "One block of glass: " + t[1]);
+        h.assertTrue(t[1] > t[3] && t[2] > t[3], "Glass and casing are weaker than concrete: " + t[1] + " " + t[2] + " " + t[3]);
+        h.assertTrue(open > 0.9 && closed < 0.1, "An open hatch shields almost nothing, a closed one shields: " + open + " " + closed);
+        h.succeed();
+    }
+
+    @GameTest(template = LARGE)
+    public static void caskAndFloodedRackCutTheDose(GameTestHelper h) {
+        BlockPos rackPos = new BlockPos(2, 1, 2);
+        BlockPos wetPos = new BlockPos(2, 1, 14);
+        BlockPos caskPos = new BlockPos(14, 1, 14);
+        h.setBlock(rackPos, CMBlocks.SPENT_FUEL_RACK.get());
+        h.setBlock(wetPos, CMBlocks.SPENT_FUEL_RACK.get());
+        h.setBlock(caskPos, CMBlocks.SHIELDED_CASK.get());
+        SpentFuelRackBlockEntity rack = h.getBlockEntity(rackPos);
+        SpentFuelRackBlockEntity wet = h.getBlockEntity(wetPos);
+        ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
+        wet.coolant().set(new FluidStack(Fluids.WATER, CMThermal.RACK_CAPACITY), 0);
+        for (int i = 0; i < 4; i++) {
+            rack.insert(spent(0.4));
+            wet.insert(spent(0.4));
+            cask.insert(spent(0.4));
+        }
+        h.startSequence()
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = local(h);
+                    double dry = Radiation.fromSources(h.getLevel(), Vec3.atCenterOf(h.absolutePos(rackPos)).add(1.5, 0, 0), sources, null);
+                    double flooded = Radiation.fromSources(h.getLevel(), Vec3.atCenterOf(h.absolutePos(wetPos)).add(1.5, 0, 0), sources, null);
+                    double sealed = Radiation.fromSources(h.getLevel(), Vec3.atCenterOf(h.absolutePos(caskPos)).add(1.5, 0, 0), sources, null);
+                    h.assertTrue(dry > 10, "A dry rack of spent fuel is a strong source: " + dry);
+                    h.assertTrue(flooded < dry * 0.2, "Water cuts the rack dose: " + flooded + " vs " + dry);
+                    h.assertTrue(sealed < 1, "A sealed cask stays below 1 mSv/min next to it: " + sealed);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void contaminationPersistsAndCleanupNeedsRunoff(GameTestHelper h) {
+        HolderLookup.Provider reg = h.getLevel().registryAccess();
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        BlockPos spot = h.absolutePos(new BlockPos(2, 2, 2));
+        data.add(spot, 40);
+        data.add(spot.east(), 10);
+        ContaminationData copy = ContaminationData.load(data.save(new CompoundTag(), reg), reg);
+        h.assertTrue(copy.get(spot) == 40 && copy.get(spot.east()) == 10, "Contamination survives save and load");
+        h.assertTrue(!DecontaminationCompoundItem.cleanArea(h.getLevel(), spot), "Cleanup is refused without a runoff tank");
+        h.assertTrue(data.get(spot) == 40, "Refused cleanup leaves contamination in place");
+        BlockPos tank = new BlockPos(5, 1, 2);
+        h.setBlock(tank, AllBlocks.FLUID_TANK.getDefaultState());
+        h.assertTrue(DecontaminationCompoundItem.cleanArea(h.getLevel(), spot), "Cleanup works with a tank nearby");
+        IFluidHandler handler = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(tank), null);
+        FluidStack runoff = handler.getFluidInTank(0);
+        h.assertTrue(runoff.getAmount() == DecontaminationCompoundItem.RUNOFF && CMThermal.isContaminated(runoff), "Cleanup produces 250 mB of contaminated runoff: " + runoff);
+        h.assertTrue(data.get(spot) == 0 && data.get(spot.east()) == 0, "Cleanup removes the contamination");
+        h.succeed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void breachSpillsContamination(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.COOLED);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        BlockPos hole = new BlockPos(5, 2, 2);
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> c.setIntegrity(h.absolutePos(hole), 0))
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    double near = ContaminationData.get(h.getLevel()).near(Vec3.atCenterOf(h.absolutePos(hole.east())), 1);
+                    h.assertTrue(c.isBreached() && near > 0, "A breach leaves contamination outside the hole: " + near);
+                    h.assertTrue(c.sinks().ventedVolume > 0, "The leak is logged");
+                    for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(hole).offset(-1, -1, -1), h.absolutePos(hole).offset(1, 1, 1))) {
+                        ContaminationData.get(h.getLevel()).clear(p);
+                    }
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void claddingFailureContaminatesCoolant(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.COOLED);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        long column = ReactorCore.key(2, -1);
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    c.core().setAssembly(column, c.core().assembly(column).withCondition(1e-7, "overheat"));
+                    c.core().setColumnHeat(2, -1, (900 - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3);
+                })
+                .thenIdle(4)
+                .thenExecute(() -> {
+                    h.assertTrue(CMThermal.isContaminated(c.coolant().fluid()) && c.coolant().amount() == 6000, "Cladding failure contaminates the vessel coolant: " + c.coolant().fluid());
+                    CoolantBuffer clean = new CoolantBuffer(2000, () -> { });
+                    clean.set(CoolantLoopTests.coolant(1000), 0);
+                    clean.give(c.coolant().take(100));
+                    h.assertTrue(CMThermal.isContaminated(clean.fluid()) && clean.amount() == 1100, "Contaminated coolant carries its contamination into clean coolant");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void gearCutsContaminationNotDose(GameTestHelper h) {
+        Player bare = h.makeMockPlayer(GameType.SURVIVAL);
+        Player suited = h.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 a = Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(1, 1, 1)));
+        Vec3 b = Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(6, 1, 6)));
+        bare.setPos(a);
+        suited.setPos(b);
+        suited.setItemSlot(EquipmentSlot.HEAD, new ItemStack(CMItems.PROTECTIVE_HOOD.get()));
+        suited.setItemSlot(EquipmentSlot.CHEST, new ItemStack(CMItems.PROTECTIVE_SUIT.get()));
+        suited.setItemSlot(EquipmentSlot.LEGS, new ItemStack(CMItems.PROTECTIVE_LEGGINGS.get()));
+        suited.setItemSlot(EquipmentSlot.FEET, new ItemStack(CMItems.PROTECTIVE_BOOTS.get()));
+        bare.getInventory().add(spent(5));
+        suited.getInventory().add(spent(5));
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        data.add(BlockPos.containing(a), 50);
+        data.add(BlockPos.containing(b), 50);
+        double rBare = RadiationEvents.exposeOnce(bare, h.getLevel(), List.of());
+        double rSuit = RadiationEvents.exposeOnce(suited, h.getLevel(), List.of());
+        RadiationData dBare = RadiationEvents.data(bare);
+        RadiationData dSuit = RadiationEvents.data(suited);
+        double full = CMConfig.get(CMConfig.GEAR_CONTAMINATION_PROTECTION);
+        h.assertTrue(dBare.contamination > 0 && Math.abs(dSuit.contamination - dBare.contamination * (1 - full)) < 1e-9, "Full set blocks its share of contamination: " + dSuit.contamination + " vs " + dBare.contamination);
+        h.assertTrue(suited.getItemBySlot(EquipmentSlot.CHEST).getOrDefault(CMComponents.CONTAMINATION.get(), 0.0) > 0, "The suit itself picks up contamination");
+        double directBare = rBare - dBare.contamination * Radiation.SKIN_DOSE;
+        double directSuit = rSuit - dSuit.contamination * Radiation.SKIN_DOSE - RadiationEvents.gearContamination(suited) * Radiation.GEAR_DOSE;
+        h.assertTrue(Math.abs(directSuit / directBare - (1 - CMConfig.get(CMConfig.GEAR_DOSE_PROTECTION))) < 1e-6, "Gear barely reduces direct dose: " + directSuit + " vs " + directBare);
+        data.clear(BlockPos.containing(a));
+        data.clear(BlockPos.containing(b));
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void dosimeterDoseLivesOnThePlayer(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        p.setPos(Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3))));
+        p.getInventory().add(spent(10));
+        RadiationEvents.exposeOnce(p, h.getLevel(), List.of());
+        RadiationEvents.exposeOnce(p, h.getLevel(), List.of());
+        RadiationData d = RadiationEvents.data(p);
+        h.assertTrue(d.total > 0 && d.dosimeter() == d.total, "Exposure accumulates: " + d.total);
+        RadiationData copy = new RadiationData();
+        copy.deserializeNBT(h.getLevel().registryAccess(), d.serializeNBT(h.getLevel().registryAccess()));
+        h.assertTrue(copy.total == d.total && copy.body == d.body, "Dose survives save and load");
+        ItemStack dosimeter = new ItemStack(CMItems.DOSIMETER.get());
+        h.assertTrue(dosimeter.getComponentsPatch().isEmpty() && dosimeter.copy().getComponentsPatch().isEmpty(), "The dosimeter carries no dose that could be copied");
+        double before = d.total;
+        d.baseline = d.total;
+        p.setData(CMAttachments.RADIATION.get(), d);
+        h.assertTrue(RadiationEvents.data(p).dosimeter() == 0 && RadiationEvents.data(p).total == before, "Resetting the reading keeps the lifetime dose");
+        h.assertTrue(h.getLevel().getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath(CriticalMass.MODID, "mixing/sealed_waste_canister")).isPresent(), "Solidification recipe loads");
+        h.assertTrue(new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), 1).getFluid() != null, "Contaminated coolant exists");
+        h.succeed();
+    }
+}

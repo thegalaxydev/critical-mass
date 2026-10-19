@@ -82,13 +82,23 @@ public final class CMThermal {
     public static final double RACK_DRY_DAMAGE_TEMPERATURE = 300.0;
     public static final double RACK_DRY_WEAR = 0.0005;
     public static final int CASK_SLOTS = 4;
+    public static final double CLEAN_SPILL = 0.05;
+    public static final double CONTAMINATED_SPILL = 0.2;
     public static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / DECAY_HALF_LIFE_TICKS);
 
     private CMThermal() {
     }
 
     public static boolean isCoolant(FluidStack stack) {
-        return stack.is(CMFluids.PRIMARY_COOLANT.source.get()) || stack.is(Fluids.WATER);
+        return stack.is(CMFluids.PRIMARY_COOLANT.source.get()) || stack.is(Fluids.WATER) || isContaminated(stack);
+    }
+
+    public static boolean isContaminated(FluidStack stack) {
+        return stack.is(CMFluids.CONTAMINATED_COOLANT.source.get());
+    }
+
+    public static boolean isPrimaryMedium(FluidStack stack) {
+        return stack.is(CMFluids.PRIMARY_COOLANT.source.get()) || isContaminated(stack);
     }
 
     public static float pumpCapRpm() {

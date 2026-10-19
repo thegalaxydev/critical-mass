@@ -1,0 +1,382 @@
+{
+ "name": "radiation",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 52 -60 44"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 41 -59 41 45 -55 45 criticalmass:reactor_vessel_casing hollow",
+    "/setblock 41 -57 43 criticalmass:reactor_controller[facing=west]",
+    "/setblock 43 -55 43 criticalmass:reactor_service_port[facing=up]",
+    "/setblock 43 -57 45 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 43 -57 41 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/fill 42 -58 42 42 -56 42 criticalmass:coolant_channel",
+    "/fill 43 -58 42 43 -56 42 criticalmass:control_channel",
+    "/fill 44 -58 42 44 -56 42 criticalmass:coolant_channel",
+    "/fill 42 -58 43 42 -56 43 criticalmass:fuel_channel",
+    "/fill 43 -58 43 43 -56 43 criticalmass:fuel_channel",
+    "/fill 44 -58 43 44 -56 43 criticalmass:fuel_channel",
+    "/fill 42 -58 44 42 -56 44 criticalmass:coolant_channel",
+    "/fill 43 -58 44 43 -56 44 criticalmass:control_channel",
+    "/fill 44 -58 44 44 -56 44 criticalmass:coolant_channel",
+    "/criticalmass fuel 41 -57 43 fill",
+    "/setblock 44 -57 46 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 46 -55 46 criticalmass:steam_turbine[axis=x]",
+    "/setblock 43 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 45 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -56 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 44 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 43 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 42 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 41 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 45 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 44 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -55 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -57 40 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 43 -57 46 minecraft:air",
+    "/setblock 45 -57 46 minecraft:air",
+    "/setblock 46 -57 46 minecraft:air",
+    "/setblock 46 -56 46 minecraft:air",
+    "/setblock 46 -54 46 minecraft:air",
+    "/setblock 46 -54 45 minecraft:air",
+    "/setblock 46 -54 44 minecraft:air",
+    "/setblock 46 -54 43 minecraft:air",
+    "/setblock 46 -54 42 minecraft:air",
+    "/setblock 46 -54 41 minecraft:air",
+    "/setblock 46 -54 40 minecraft:air",
+    "/setblock 45 -54 40 minecraft:air",
+    "/setblock 44 -54 40 minecraft:air",
+    "/setblock 43 -54 40 minecraft:air",
+    "/setblock 43 -55 40 minecraft:air",
+    "/setblock 43 -56 40 minecraft:air",
+    "/setblock 43 -57 40 minecraft:air",
+    "/setblock 43 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 45 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -57 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -56 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 46 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 44 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 43 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 42 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 41 criticalmass:reinforced_pipe",
+    "/setblock 46 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 45 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 44 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -54 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -55 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 43 -57 40 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 41 -57 43 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/setblock 44 -58 46 create:creative_motor[facing=up]",
+    "/setblock 40 -57 43 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/criticalmass fuel 41 -57 43 fill"
+   ],
+   "wait": 300
+  },
+  {
+   "note": "SECTION distance"
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 46.50 -56.50 43.50",
+    "/criticalmass radiation 48.50 -56.50 43.50",
+    "/criticalmass radiation 52.50 -56.50 43.50",
+    "/criticalmass radiation 60.50 -56.50 43.50",
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "SECTION shielding"
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 50.50 -56.50 43.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 48 -60 40 48 -53 47 criticalmass:shielding_concrete",
+    "/criticalmass radiation 50.50 -56.50 43.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 48 -60 40 48 -53 47 criticalmass:shielded_glass",
+    "/criticalmass radiation 50.50 -56.50 43.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 48 -60 40 48 -53 47 criticalmass:shielded_hatch[open=false]",
+    "/criticalmass radiation 50.50 -56.50 43.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 48 -60 40 48 -53 47 criticalmass:shielded_hatch[open=true]",
+    "/criticalmass radiation 50.50 -56.50 43.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 48 -60 40 48 -53 47 minecraft:air"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:survey_meter",
+    "/item replace entity @p armor.head with create:goggles",
+    "/tp @p 47.50 -60.00 43.50 facing 44.00 -58.62 43.50"
+   ],
+   "wait": 40,
+   "gui": true
+  },
+  {
+   "shot": "meter_near",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 46 -60 40 46 -53 47 criticalmass:shielding_concrete",
+    "/tp @p 47.50 -60.00 43.50 facing 44.00 -58.62 43.50"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "meter_behind_concrete",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/fill 46 -60 40 46 -53 47 minecraft:air"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "SECTION storage"
+  },
+  {
+   "cmds": [
+    "/setblock 40 -60 64 criticalmass:spent_fuel_rack{Items:[{Slot:0b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;1,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:1b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;2,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:2b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;3,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:3b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;4,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}}]}",
+    "/setblock 48 -60 64 criticalmass:spent_fuel_rack{Items:[{Slot:0b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;1,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:1b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;2,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:2b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;3,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:3b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;4,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}}],Buffer:{Fluid:{id:\"minecraft:water\",amount:4000},Heat:0.0d}}",
+    "/setblock 56 -60 64 criticalmass:shielded_cask{Items:[{Slot:0b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;1,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:1b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;2,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:2b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;3,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}},{Slot:3b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;4,7,7,7],remaining:0.0d,condition:0.9d,residual:0.40d,discharge_residual:0.40d}}}]}"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 42.00 -59.50 64.50",
+    "/criticalmass radiation 50.00 -59.50 64.50",
+    "/criticalmass radiation 58.00 -59.50 64.50"
+   ],
+   "wait": 5
+  },
+  {
+   "note": "SECTION breach"
+  },
+  {
+   "cmds": [
+    "/data merge block 41 -57 43 {Integrity:[{P:[I;4,-1,-1],V:0.0d}]}"
+   ],
+   "wait": 100
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 46.50 -57.50 42.50",
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 47.50 -60.00 42.50 facing 45.00 -60.12 42.50"
+   ],
+   "useItem": true,
+   "wait": 40
+  },
+  {
+   "shot": "contamination_meter",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:dosimeter"
+   ],
+   "wait": 60
+  },
+  {
+   "shot": "dosimeter",
+   "inventory": true,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p armor.head with criticalmass:protective_hood",
+    "/item replace entity @p armor.chest with criticalmass:protective_suit",
+    "/item replace entity @p armor.legs with criticalmass:protective_leggings",
+    "/item replace entity @p armor.feet with criticalmass:protective_boots"
+   ],
+   "wait": 100
+  },
+  {
+   "inventory": true,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 49 -60 42 create:fluid_tank",
+    "/item replace entity @p weapon.mainhand with criticalmass:decontamination_compound 4"
+   ],
+   "wait": 5
+  },
+  {
+   "useItem": true,
+   "wait": 5,
+   "inventory": true
+  },
+  {
+   "use": [
+    45,
+    -58,
+    42,
+    "east"
+   ],
+   "wait": 5
+  },
+  {
+   "use": [
+    45,
+    -57,
+    42,
+    "east"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 46.50 -57.50 42.50",
+    "/item replace entity @p armor.head with create:goggles",
+    "/tp @p 47.50 -60.00 41.50 facing 49.50 -61.12 42.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "runoff_tank",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:dosimeter"
+   ],
+   "wait": 5
+  },
+  {
+   "useItem": true,
+   "wait": 10
+  },
+  {
+   "shot": "dosimeter_summary",
+   "wait": 2
+  },
+  {
+   "note": "SECTION moving body"
+  },
+  {
+   "cmds": [
+    "/fill 80 -60 0 82 -60 2 create:andesite_casing",
+    "/setblock 81 -59 1 criticalmass:spent_fuel_rack{Items:[{Slot:0b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;1,7,7,7],remaining:0.0d,condition:0.9d,residual:5.00d,discharge_residual:5.00d}}},{Slot:1b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;2,7,7,7],remaining:0.0d,condition:0.9d,residual:5.00d,discharge_residual:5.00d}}},{Slot:2b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;3,7,7,7],remaining:0.0d,condition:0.9d,residual:5.00d,discharge_residual:5.00d}}},{Slot:3b,id:\"criticalmass:spent_fuel_assembly\",count:1,components:{\"criticalmass:fuel_state\":{id:[I;4,7,7,7],remaining:0.0d,condition:0.9d,residual:5.00d,discharge_residual:5.00d}}}]}",
+    "/tp @p 74 -59 1"
+   ],
+   "gui": false,
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/criticalmass radiation 83.50 -58.50 1.50"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable assemble area 80 -60 0 82 -59 2"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 100 -50 20"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/sable info @n",
+    "/criticalmass radiation 83.50 -58.50 1.50",
+    "/criticalmass radiation 103.50 -48.50 21.50",
+    "/criticalmass radiation 101.50 -45.50 21.50"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:survey_meter",
+    "/tp @p 104 -51 21",
+    "/tp @p 104.50 -51.00 21.50 facing 101.50 -50.62 21.50"
+   ],
+   "wait": 40,
+   "gui": true
+  },
+  {
+   "shot": "meter_body",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/sable paused false"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/sable info @n",
+    "/criticalmass radiation 83.50 -58.50 1.50",
+    "/criticalmass radiation 103.50 -48.50 21.50"
+   ],
+   "wait": 5
+  }
+ ]
+}

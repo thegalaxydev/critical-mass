@@ -3,6 +3,10 @@ package com.criticalmass.registry;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.WasteCanisterItem;
+import com.criticalmass.content.radiation.DecontaminationCompoundItem;
+import com.criticalmass.content.radiation.DosimeterItem;
+import com.criticalmass.content.radiation.ProtectiveArmorItem;
+import com.criticalmass.content.radiation.SurveyMeterItem;
 import com.criticalmass.content.thermal.RepairKitItem;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import java.util.ArrayList;
@@ -33,13 +37,13 @@ public final class CMItems {
     public static final DeferredItem<Item> CONTROL_ROD = simple("control_rod", new Item.Properties());
     public static final DeferredItem<Item> TURBINE_BLADE = simple("turbine_blade", new Item.Properties());
     public static final DeferredItem<Item> SEALING_GASKET = simple("sealing_gasket", new Item.Properties());
-    public static final DeferredItem<Item> SURVEY_METER = simple("survey_meter", new Item.Properties().stacksTo(1));
-    public static final DeferredItem<Item> DOSIMETER = simple("dosimeter", new Item.Properties().stacksTo(1));
-    public static final DeferredItem<ArmorItem> PROTECTIVE_HOOD = armor("protective_hood", ArmorItem.Type.HELMET);
-    public static final DeferredItem<ArmorItem> PROTECTIVE_SUIT = armor("protective_suit", ArmorItem.Type.CHESTPLATE);
-    public static final DeferredItem<ArmorItem> PROTECTIVE_LEGGINGS = armor("protective_leggings", ArmorItem.Type.LEGGINGS);
-    public static final DeferredItem<ArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
-    public static final DeferredItem<Item> DECONTAMINATION_COMPOUND = simple("decontamination_compound", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<SurveyMeterItem> SURVEY_METER = custom("survey_meter", () -> new SurveyMeterItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<DosimeterItem> DOSIMETER = custom("dosimeter", () -> new DosimeterItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_HOOD = armor("protective_hood", ArmorItem.Type.HELMET);
+    public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_SUIT = armor("protective_suit", ArmorItem.Type.CHESTPLATE);
+    public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_LEGGINGS = armor("protective_leggings", ArmorItem.Type.LEGGINGS);
+    public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
+    public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<RepairKitItem> REPAIR_KIT = custom("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_FUEL_ASSEMBLY = ITEMS.register("incomplete_fuel_assembly", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
@@ -59,8 +63,8 @@ public final class CMItems {
         return item;
     }
 
-    static DeferredItem<ArmorItem> armor(String name, ArmorItem.Type type) {
-        DeferredItem<ArmorItem> item = ITEMS.register(name, () -> new ArmorItem(CMArmorMaterials.PROTECTIVE, type, new Item.Properties().durability(type.getDurability(12))));
+    static DeferredItem<ProtectiveArmorItem> armor(String name, ArmorItem.Type type) {
+        DeferredItem<ProtectiveArmorItem> item = ITEMS.register(name, () -> new ProtectiveArmorItem(CMArmorMaterials.PROTECTIVE, type, new Item.Properties().durability(type.getDurability(12))));
         TAB_ORDER.add(item);
         return item;
     }

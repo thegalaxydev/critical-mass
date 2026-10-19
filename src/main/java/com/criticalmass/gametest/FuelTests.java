@@ -1,18 +1,23 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ReactorCore;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMItems;
+import dev.ryanhcode.sable.api.SubLevelAssemblyHelper;
+import dev.ryanhcode.sable.companion.SableCompanion;
+import dev.ryanhcode.sable.companion.math.BoundingBox3i;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,6 +35,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -451,4 +457,82 @@ public final class FuelTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void assemblingABodyDoesNotDuplicateFuel(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.COOLED);
+        BlockPos rackPos = new BlockPos(9, 1, 3);
+        BlockPos caskPos = new BlockPos(9, 1, 5);
+        BlockPos benchPos = new BlockPos(9, 1, 7);
+        h.setBlock(rackPos, CMBlocks.SPENT_FUEL_RACK.get());
+        h.setBlock(caskPos, CMBlocks.SHIELDED_CASK.get());
+        h.setBlock(benchPos, CMBlocks.FUEL_ASSEMBLY_BENCH.get());
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        Set<UUID> ids = new HashSet<>();
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    c.core().setAssembly(COLUMN_A, c.core().assembly(COLUMN_A).withRemaining(0));
+                    FuelState r = FuelState.fresh().withRemaining(0);
+                    FuelState k = FuelState.fresh().withRemaining(0);
+                    FuelState b = FuelState.fresh();
+                    SpentFuelRackBlockEntity rack = h.getBlockEntity(rackPos);
+                    ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
+                    FuelAssemblyBenchBlockEntity bench = h.getBlockEntity(benchPos);
+                    rack.insert(assembly(r));
+                    cask.insert(assembly(k));
+                    bench.setHeld(assembly(b));
+                    ids.add(r.id());
+                    ids.add(k.id());
+                    ids.add(b.id());
+                    for (FuelState s : c.core().assemblies().values()) {
+                        ids.add(s.id());
+                    }
+                })
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    ServicePortBlockEntity port = h.getBlockEntity(TestVessels.SERVICE);
+                    h.assertTrue(!port.output().isEmpty(), "The spent assembly should wait in the port before assembly");
+                    List<BlockPos> blocks = new ArrayList<>();
+                    for (BlockPos p : BlockPos.betweenClosed(h.absolutePos(new BlockPos(0, 1, 0)), h.absolutePos(new BlockPos(10, 6, 8)))) {
+                        if (!h.getLevel().getBlockState(p).isAir()) {
+                            blocks.add(p.immutable());
+                        }
+                    }
+                    SubLevelAssemblyHelper.assembleBlocks(h.getLevel(), h.absolutePos(TestVessels.CONTROLLER), blocks,
+                            new BoundingBox3i(h.absolutePos(new BlockPos(0, 1, 0)), h.absolutePos(new BlockPos(10, 6, 8))));
+                })
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    h.assertTrue(items(h).stream().noneMatch(e -> state(e.getItem()) != null), "Assembly must not drop fuel: " + items(h).size() + " items");
+                    Set<UUID> moved = new HashSet<>();
+                    for (BlockEntity be : LoadedThermalBlocks.snapshot()) {
+                        if (be.getLevel() != h.getLevel() || SableCompanion.INSTANCE.getContaining(be) == null) {
+                            continue;
+                        }
+                        List<ItemStack> held = new ArrayList<>();
+                        if (be instanceof ReactorControllerBlockEntity rc) {
+                            for (FuelState s : rc.core().assemblies().values()) {
+                                moved.add(s.id());
+                            }
+                        } else if (be instanceof ServicePortBlockEntity p) {
+                            held.add(p.output());
+                        } else if (be instanceof SpentFuelRackBlockEntity r) {
+                            held.addAll(r.slots());
+                        } else if (be instanceof ShieldedCaskBlockEntity k) {
+                            held.addAll(k.slots());
+                        } else if (be instanceof FuelAssemblyBenchBlockEntity b) {
+                            held.add(b.held());
+                        }
+                        for (ItemStack st : held) {
+                            if (state(st) != null && ids.contains(state(st).id())) {
+                                moved.add(state(st).id());
+                            }
+                        }
+                    }
+                    h.assertTrue(moved.equals(ids), "Every assembly should be on the body exactly once: " + moved.size() + " of " + ids.size());
+                })
+                .thenSucceed();
+    }
+
 }

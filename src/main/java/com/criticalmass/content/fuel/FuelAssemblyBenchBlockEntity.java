@@ -1,5 +1,6 @@
 package com.criticalmass.content.fuel;
 
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllRecipeTypes;
@@ -16,6 +17,7 @@ import java.util.Optional;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -23,7 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
-public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
     public enum Outcome {
         NONE, WRONG, TOO_HOT, CONSUME, KEEP
     }
@@ -32,6 +34,18 @@ public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IH
 
     public FuelAssemblyBenchBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
     }
 
     @Override
@@ -164,5 +178,10 @@ public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IH
             tooltip.add(Component.literal("     ").append(Component.translatable("criticalmass.bench.next_press").withStyle(ChatFormatting.AQUA)));
         }
         return true;
+    }
+
+    @Override
+    public void clearContent() {
+        depot.clearContent();
     }
 }

@@ -18,6 +18,11 @@ public final class CMComponents {
     public static final Supplier<DataComponentType<Integer>> RECOVERY_STEP = COMPONENTS.registerComponentType("recovery_step",
             b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    public static final Supplier<DataComponentType<Integer>> METER_MODE = COMPONENTS.registerComponentType("meter_mode",
+            b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
+    public static final Supplier<DataComponentType<Double>> CONTAMINATION = COMPONENTS.registerComponentType("contamination",
+            b -> b.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE));
+
     private CMComponents() {
     }
 }

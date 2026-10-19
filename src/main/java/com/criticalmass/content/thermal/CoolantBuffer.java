@@ -87,6 +87,9 @@ public final class CoolantBuffer {
         if (isSteamMedium(other) && isSteamMedium(fluid)) {
             return true;
         }
+        if (CMThermal.isPrimaryMedium(other) && CMThermal.isPrimaryMedium(fluid)) {
+            return true;
+        }
         return FluidStack.isSameFluidSameComponents(fluid, other);
     }
 
@@ -124,6 +127,8 @@ public final class CoolantBuffer {
         }
         if (fluid.isEmpty()) {
             fluid = packet.fluid().copy();
+        } else if (CMThermal.isContaminated(packet.fluid()) && !CMThermal.isContaminated(fluid)) {
+            fluid = packet.fluid().copyWithAmount(fluid.getAmount() + packet.fluid().getAmount());
         } else {
             fluid.grow(packet.fluid().getAmount());
         }
@@ -151,6 +156,13 @@ public final class CoolantBuffer {
         this.heat = this.fluid.isEmpty() ? 0 : heat;
         refreshPhase();
         onChange.run();
+    }
+
+    public void contaminate() {
+        if (!fluid.isEmpty() && !CMThermal.isContaminated(fluid)) {
+            fluid = new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), fluid.getAmount());
+            onChange.run();
+        }
     }
 
     public CompoundTag save(HolderLookup.Provider registries) {

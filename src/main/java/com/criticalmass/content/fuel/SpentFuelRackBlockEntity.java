@@ -13,6 +13,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +22,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity {
+public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implements Clearable {
     private final NonNullList<ItemStack> slots = NonNullList.withSize(CMThermal.RACK_SLOTS, ItemStack.EMPTY);
     private final IItemHandler handler = new Handler();
     private double dryHeat;
@@ -279,5 +280,10 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity {
         public boolean isItemValid(int slot, ItemStack stack) {
             return stack.getItem() instanceof FuelAssemblyItem;
         }
+    }
+
+    @Override
+    public void clearContent() {
+        slots.replaceAll(s -> ItemStack.EMPTY);
     }
 }

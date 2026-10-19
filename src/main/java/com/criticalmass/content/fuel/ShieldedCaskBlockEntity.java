@@ -1,6 +1,7 @@
 package com.criticalmass.content.fuel;
 
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -14,6 +15,7 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.Clearable;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemContainerContents;
@@ -22,12 +24,24 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
     private final NonNullList<ItemStack> slots = NonNullList.withSize(CMThermal.CASK_SLOTS, ItemStack.EMPTY);
     private final IItemHandler handler = new Handler();
 
     public ShieldedCaskBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
     }
 
     @Override
@@ -205,5 +219,10 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
         public boolean isItemValid(int slot, ItemStack stack) {
             return refuseReason(stack) == null;
         }
+    }
+
+    @Override
+    public void clearContent() {
+        slots.replaceAll(s -> ItemStack.EMPTY);
     }
 }
