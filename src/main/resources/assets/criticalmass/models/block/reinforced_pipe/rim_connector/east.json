@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/fluid_pipe/rim_connector/east",
+ "textures": {
+  "0": "criticalmass:block/reinforced_pipe",
+  "particle": "criticalmass:block/reinforced_pipe"
+ }
+}

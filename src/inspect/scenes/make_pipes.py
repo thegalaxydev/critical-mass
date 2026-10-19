@@ -30,6 +30,8 @@ steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/gamemo
          {"cmds": ["/setblock 43 -58 50 minecraft:barrier", "/tp @p 43.5 -57 50.5 facing 46.0 -60.4 44.5"], "wait": 20}, {"shot": "close", "wait": 2},
          {"cmds": ["/setblock 58 -58 50 minecraft:barrier", "/tp @p 58.5 -57 50.5 facing 56.0 -60.4 44.5"], "wait": 20}, {"shot": "close2", "wait": 2},
          {"cmds": ["/setblock 66 -58 50 minecraft:barrier", "/tp @p 66.5 -57 50.5 facing 65.5 -58.5 45.5"], "wait": 20}, {"shot": "riser", "wait": 2},
+         {"cmds": ["/setblock 51 -59 37 minecraft:barrier", "/tp @p 51.5 -58 37.5 facing 51.5 -60.1 40.5"], "wait": 20}, {"shot": "straight_copper", "wait": 2},
+         {"cmds": ["/setblock 51 -59 42 minecraft:barrier", "/tp @p 51.5 -58 42.5 facing 51.5 -60.1 45.5"], "wait": 20}, {"shot": "straight_steel", "wait": 2},
          {"cmds": ["/item replace entity @p weapon.mainhand with criticalmass:reinforced_pipe", "/item replace entity @p hotbar.1 with create:fluid_pipe",
                    "/tp @p 53.5 -55 33.5 facing 53.5 -60.6 44.0"], "wait": 10, "gui": True}, {"shot": "held", "wait": 2}]
 json.dump({"name": "pipes", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "pipes.json"), "w", newline="\n"), indent=1)

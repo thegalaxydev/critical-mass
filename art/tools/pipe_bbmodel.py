@@ -9,7 +9,7 @@ from pipe_models import ASSETS, create_jar
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "art", "blockbench", "reinforced_pipe.bbmodel")
 TEXTURES = ["reinforced_pipe", "reinforced_pipe_connected"]
-PARTS = [("item", "reinforced_pipe/item", True), ("connection_north", "reinforced_pipe/connection/north", False),
+PARTS = [("item", "reinforced_pipe/item", True), ("connection_north", "reinforced_pipe/connection/north", False), ("rim_connector_north", "reinforced_pipe/rim_connector/north", False),
          ("straight_core", "reinforced_pipe/lr_x", False), ("rim_north", "reinforced_pipe/rim/north", False), ("junction_casing", "reinforced_pipe/casing", False)]
 
 

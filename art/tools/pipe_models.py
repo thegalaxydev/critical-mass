@@ -9,6 +9,7 @@ NS = "criticalmass"
 TEXTURE = NS + ":block/reinforced_pipe"
 CONNECTED = NS + ":block/reinforced_pipe_connected"
 SIDES = ["north", "east", "south", "west", "up", "down"]
+OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east", "up": "down", "down": "up"}
 AXES = {"x": ("east", "west"), "y": ("up", "down"), "z": ("north", "south")}
 
 
@@ -54,7 +55,22 @@ def multipart():
     for p in state["multipart"]:
         parts.append({"when": effective(p["when"]), "apply": {"model": ours(p["apply"]["model"])}})
     for side in SIDES:
-        parts.append({"when": effective({side: "true"}), "apply": {"model": "%s:block/reinforced_pipe/connection/%s" % (NS, side)}})
+        opp = OPPOSITE[side]
+        perps = [d for d in SIDES if d not in (side, opp)]
+        plain = []
+        for alt in ({opp: "true"}, {"rim_" + opp: "true"}):
+            c = {side: "true", "rim_" + side: "false"}
+            c.update(alt)
+            for d in perps:
+                c[d] = "false"
+                c["rim_" + d] = "false"
+            plain.append(c)
+        parts.append({"when": {"OR": plain}, "apply": {"model": "%s:block/reinforced_pipe/connection/%s" % (NS, side)}})
+        detailed = [{"rim_" + side: "true"}, {side: "true", opp: "false", "rim_" + opp: "false"}]
+        for d in perps:
+            detailed.append({side: "true", d: "true"})
+            detailed.append({side: "true", "rim_" + d: "true"})
+        parts.append({"when": {"OR": detailed}, "apply": {"model": "%s:block/reinforced_pipe/rim_connector/%s" % (NS, side)}})
     for side in SIDES:
         parts.append({"when": {"rim_" + side: "true"}, "apply": {"model": "%s:block/reinforced_pipe/rim/%s" % (NS, side)}})
     casing = []
@@ -74,7 +90,7 @@ def main():
     for p in state["multipart"]:
         name = p["apply"]["model"].split(NS + ":block/")[1]
         key = "0"
-        tex = TEXTURE if name.startswith(("reinforced_pipe/connection/", "reinforced_pipe/rim/", "reinforced_pipe/casing")) else CONNECTED
+        tex = TEXTURE if name.startswith(("reinforced_pipe/connection/", "reinforced_pipe/rim_connector/", "reinforced_pipe/rim/", "reinforced_pipe/casing")) else CONNECTED
         write(os.path.join(md, name + ".json"), {"parent": "create:block/fluid_pipe/" + name.split("reinforced_pipe/")[1], "textures": {key: tex, "particle": TEXTURE}})
     write(os.path.join(md, "reinforced_pipe", "item.json"), {"parent": "create:block/fluid_pipe/item", "textures": {"1": TEXTURE, "particle": TEXTURE}})
     write(os.path.join(ASSETS, "models", "item", "reinforced_pipe.json"), {"parent": NS + ":block/reinforced_pipe/item"})

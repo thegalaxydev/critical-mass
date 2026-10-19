@@ -9,6 +9,7 @@ from pipe_models import create_jar
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "src", "main", "resources", "assets", "criticalmass", "textures", "block")
 RIM = [(19, 22, 32, 32)]
+SEAM_CONTRAST = 1.3
 
 
 def luminance(c):
@@ -33,10 +34,10 @@ def copper_tones(*images):
 def shared_table(*images):
     tones = copper_tones(*images)
     lo, hi = luminance(tones[0]), luminance(tones[-1])
-    dark, light = (24, 26, 30), (150, 156, 162)
+    dark, light = (22, 24, 28), (178, 184, 190)
     table = {}
     for t in tones:
-        k = (luminance(t) - lo) / (hi - lo)
+        k = ((luminance(t) - lo) / (hi - lo)) ** SEAM_CONTRAST
         table[t] = tuple(round(dark[i] + (light[i] - dark[i]) * k) for i in range(3))
     return table
 

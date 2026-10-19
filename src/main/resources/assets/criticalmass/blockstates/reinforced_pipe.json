@@ -1066,10 +1066,30 @@
    "when": {
     "OR": [
      {
-      "north": "true"
+      "north": "true",
+      "rim_north": "false",
+      "south": "true",
+      "east": "false",
+      "rim_east": "false",
+      "west": "false",
+      "rim_west": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
      },
      {
-      "rim_north": "true"
+      "north": "true",
+      "rim_north": "false",
+      "rim_south": "true",
+      "east": "false",
+      "rim_east": "false",
+      "west": "false",
+      "rim_west": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
      }
     ]
    },
@@ -1081,10 +1101,79 @@
    "when": {
     "OR": [
      {
+      "rim_north": "true"
+     },
+     {
+      "north": "true",
+      "south": "false",
+      "rim_south": "false"
+     },
+     {
+      "north": "true",
       "east": "true"
      },
      {
+      "north": "true",
       "rim_east": "true"
+     },
+     {
+      "north": "true",
+      "west": "true"
+     },
+     {
+      "north": "true",
+      "rim_west": "true"
+     },
+     {
+      "north": "true",
+      "up": "true"
+     },
+     {
+      "north": "true",
+      "rim_up": "true"
+     },
+     {
+      "north": "true",
+      "down": "true"
+     },
+     {
+      "north": "true",
+      "rim_down": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/north"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "east": "true",
+      "rim_east": "false",
+      "west": "true",
+      "north": "false",
+      "rim_north": "false",
+      "south": "false",
+      "rim_south": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
+     },
+     {
+      "east": "true",
+      "rim_east": "false",
+      "rim_west": "true",
+      "north": "false",
+      "rim_north": "false",
+      "south": "false",
+      "rim_south": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
      }
     ]
    },
@@ -1096,10 +1185,79 @@
    "when": {
     "OR": [
      {
+      "rim_east": "true"
+     },
+     {
+      "east": "true",
+      "west": "false",
+      "rim_west": "false"
+     },
+     {
+      "east": "true",
+      "north": "true"
+     },
+     {
+      "east": "true",
+      "rim_north": "true"
+     },
+     {
+      "east": "true",
       "south": "true"
      },
      {
+      "east": "true",
       "rim_south": "true"
+     },
+     {
+      "east": "true",
+      "up": "true"
+     },
+     {
+      "east": "true",
+      "rim_up": "true"
+     },
+     {
+      "east": "true",
+      "down": "true"
+     },
+     {
+      "east": "true",
+      "rim_down": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/east"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "south": "true",
+      "rim_south": "false",
+      "north": "true",
+      "east": "false",
+      "rim_east": "false",
+      "west": "false",
+      "rim_west": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
+     },
+     {
+      "south": "true",
+      "rim_south": "false",
+      "rim_north": "true",
+      "east": "false",
+      "rim_east": "false",
+      "west": "false",
+      "rim_west": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
      }
     ]
    },
@@ -1111,10 +1269,79 @@
    "when": {
     "OR": [
      {
+      "rim_south": "true"
+     },
+     {
+      "south": "true",
+      "north": "false",
+      "rim_north": "false"
+     },
+     {
+      "south": "true",
+      "east": "true"
+     },
+     {
+      "south": "true",
+      "rim_east": "true"
+     },
+     {
+      "south": "true",
       "west": "true"
      },
      {
+      "south": "true",
       "rim_west": "true"
+     },
+     {
+      "south": "true",
+      "up": "true"
+     },
+     {
+      "south": "true",
+      "rim_up": "true"
+     },
+     {
+      "south": "true",
+      "down": "true"
+     },
+     {
+      "south": "true",
+      "rim_down": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/south"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "west": "true",
+      "rim_west": "false",
+      "east": "true",
+      "north": "false",
+      "rim_north": "false",
+      "south": "false",
+      "rim_south": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
+     },
+     {
+      "west": "true",
+      "rim_west": "false",
+      "rim_east": "true",
+      "north": "false",
+      "rim_north": "false",
+      "south": "false",
+      "rim_south": "false",
+      "up": "false",
+      "rim_up": "false",
+      "down": "false",
+      "rim_down": "false"
      }
     ]
    },
@@ -1126,10 +1353,79 @@
    "when": {
     "OR": [
      {
+      "rim_west": "true"
+     },
+     {
+      "west": "true",
+      "east": "false",
+      "rim_east": "false"
+     },
+     {
+      "west": "true",
+      "north": "true"
+     },
+     {
+      "west": "true",
+      "rim_north": "true"
+     },
+     {
+      "west": "true",
+      "south": "true"
+     },
+     {
+      "west": "true",
+      "rim_south": "true"
+     },
+     {
+      "west": "true",
       "up": "true"
      },
      {
+      "west": "true",
       "rim_up": "true"
+     },
+     {
+      "west": "true",
+      "down": "true"
+     },
+     {
+      "west": "true",
+      "rim_down": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/west"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "up": "true",
+      "rim_up": "false",
+      "down": "true",
+      "north": "false",
+      "rim_north": "false",
+      "east": "false",
+      "rim_east": "false",
+      "south": "false",
+      "rim_south": "false",
+      "west": "false",
+      "rim_west": "false"
+     },
+     {
+      "up": "true",
+      "rim_up": "false",
+      "rim_down": "true",
+      "north": "false",
+      "rim_north": "false",
+      "east": "false",
+      "rim_east": "false",
+      "south": "false",
+      "rim_south": "false",
+      "west": "false",
+      "rim_west": "false"
      }
     ]
    },
@@ -1141,15 +1437,133 @@
    "when": {
     "OR": [
      {
-      "down": "true"
+      "rim_up": "true"
      },
      {
-      "rim_down": "true"
+      "up": "true",
+      "down": "false",
+      "rim_down": "false"
+     },
+     {
+      "up": "true",
+      "north": "true"
+     },
+     {
+      "up": "true",
+      "rim_north": "true"
+     },
+     {
+      "up": "true",
+      "east": "true"
+     },
+     {
+      "up": "true",
+      "rim_east": "true"
+     },
+     {
+      "up": "true",
+      "south": "true"
+     },
+     {
+      "up": "true",
+      "rim_south": "true"
+     },
+     {
+      "up": "true",
+      "west": "true"
+     },
+     {
+      "up": "true",
+      "rim_west": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/up"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "down": "true",
+      "rim_down": "false",
+      "up": "true",
+      "north": "false",
+      "rim_north": "false",
+      "east": "false",
+      "rim_east": "false",
+      "south": "false",
+      "rim_south": "false",
+      "west": "false",
+      "rim_west": "false"
+     },
+     {
+      "down": "true",
+      "rim_down": "false",
+      "rim_up": "true",
+      "north": "false",
+      "rim_north": "false",
+      "east": "false",
+      "rim_east": "false",
+      "south": "false",
+      "rim_south": "false",
+      "west": "false",
+      "rim_west": "false"
      }
     ]
    },
    "apply": {
     "model": "criticalmass:block/reinforced_pipe/connection/down"
+   }
+  },
+  {
+   "when": {
+    "OR": [
+     {
+      "rim_down": "true"
+     },
+     {
+      "down": "true",
+      "up": "false",
+      "rim_up": "false"
+     },
+     {
+      "down": "true",
+      "north": "true"
+     },
+     {
+      "down": "true",
+      "rim_north": "true"
+     },
+     {
+      "down": "true",
+      "east": "true"
+     },
+     {
+      "down": "true",
+      "rim_east": "true"
+     },
+     {
+      "down": "true",
+      "south": "true"
+     },
+     {
+      "down": "true",
+      "rim_south": "true"
+     },
+     {
+      "down": "true",
+      "west": "true"
+     },
+     {
+      "down": "true",
+      "rim_west": "true"
+     }
+    ]
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rim_connector/down"
    }
   },
   {
