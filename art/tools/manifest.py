@@ -32,7 +32,7 @@ KINETIC = {
         "renderer": "Flywheel visual SingleAxisRotatingVisual.of(CIRCULATION_PUMP_ROTOR); fallback BER AxialRotorRenderer when visualization is unsupported",
     },
     "steam_turbine": {
-        "role": "generator (GeneratingKineticBlockEntity). Prototype: runs on hot primary coolant passing through it (steam circuit not built yet); 16 RPM whenever it has heat",
+        "role": "generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor, upstream bypass valve, or a disconnected shaft",
         "impact_su": "capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat",
         "block_class": "HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)",
         "shaft_faces": "both end plates on the axis",
@@ -62,6 +62,7 @@ STATE_NOTES = {
     "alarm_siren": "powered=true when the block receives redstone; powered model uses a lit, unshaded lamp",
     "docking_service_connector": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
     "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, hand pixel) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
+    "relief_valve": "venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting",
     "shielded_hatch": "vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates",
     "fuel_channel": "rotated pillar (axis)", "control_channel": "rotated pillar (axis)", "coolant_channel": "rotated pillar (axis)",
 }
@@ -82,7 +83,7 @@ REFS = {
 
 ISSUES = {
     "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
-    "steam_turbine": ["Prototype: powered by hot primary coolant, not steam. The steam circuit, heat exchanger and condenser come later (tsk-017 onward)."],
+    "steam_turbine": ["Single block; the spec describes a 3 to 7 block multiblock."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
     "instrumentation_panel": ["Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet."],
     "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],

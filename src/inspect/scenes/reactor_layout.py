@@ -13,14 +13,14 @@ def at(o):
     return w
 
 
-def vessel(o):
+def vessel(o, columns=None):
     w = at(o)
     cmds = ["/fill %s %s criticalmass:reactor_vessel_casing hollow" % (w(1, 1, 1), w(5, 5, 5)),
             "/setblock %s criticalmass:reactor_controller[facing=west]" % w(*CONTROLLER),
             "/setblock %s criticalmass:reactor_service_port[facing=up]" % w(3, 5, 3),
             "/setblock %s criticalmass:primary_coolant_port[facing=south,mode=outlet]" % w(3, 3, 5),
             "/setblock %s criticalmass:primary_coolant_port[facing=north,mode=inlet]" % w(3, 3, 1)]
-    for k, row in enumerate(COLUMNS):
+    for k, row in enumerate(columns or COLUMNS):
         for i, ch in enumerate(row):
             cmds.append("/fill %s %s criticalmass:%s" % (w(2 + i, 2, 2 + k), w(2 + i, 4, 2 + k), KIND[ch]))
     return cmds

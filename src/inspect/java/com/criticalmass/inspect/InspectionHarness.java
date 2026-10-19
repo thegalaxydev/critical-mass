@@ -76,6 +76,7 @@ public class InspectionHarness {
         if (!worldRequested) {
             if (mc.screen instanceof TitleScreen && mc.getOverlay() == null) {
                 worldRequested = true;
+                mc.options.pauseOnLostFocus = false;
                 createWorld(mc);
             }
             return;

@@ -1,0 +1,346 @@
+{
+ "name": "steam_plant",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 194 -55 194"
+   ],
+   "wait": 60,
+   "gui": true,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/item replace entity @p armor.head with create:goggles",
+    "/fill 198 -61 198 214 -61 213 minecraft:smooth_stone"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/fill 201 -59 201 205 -55 205 criticalmass:reactor_vessel_casing hollow",
+    "/setblock 201 -57 203 criticalmass:reactor_controller[facing=west]",
+    "/setblock 203 -55 203 criticalmass:reactor_service_port[facing=up]",
+    "/setblock 203 -57 205 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 203 -57 201 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/fill 202 -58 202 202 -56 202 criticalmass:coolant_channel",
+    "/fill 203 -58 202 203 -56 202 criticalmass:control_channel",
+    "/fill 204 -58 202 204 -56 202 criticalmass:coolant_channel",
+    "/fill 202 -58 203 202 -56 203 criticalmass:fuel_channel",
+    "/fill 203 -58 203 203 -56 203 criticalmass:fuel_channel",
+    "/fill 204 -58 203 204 -56 203 criticalmass:fuel_channel",
+    "/fill 202 -58 204 202 -56 204 criticalmass:coolant_channel",
+    "/fill 203 -58 204 203 -56 204 criticalmass:control_channel",
+    "/fill 204 -58 204 204 -56 204 criticalmass:coolant_channel",
+    "/setblock 204 -57 206 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 206 -57 206 criticalmass:heat_exchanger[facing=east]",
+    "/setblock 207 -59 206 criticalmass:circulation_pump[facing=west,axis_along_first=true]",
+    "/setblock 206 -56 206 criticalmass:relief_valve[facing=south]",
+    "/setblock 206 -54 206 criticalmass:steam_turbine[axis=x]",
+    "/setblock 207 -54 206 create:stressometer[facing=south,axis_along_first=true]",
+    "/setblock 208 -53 206 criticalmass:condenser[facing=east]",
+    "/fill 208 -59 209 208 -56 209 criticalmass:cooling_tower_packing",
+    "/setblock 210 -59 209 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 211 -56 209 criticalmass:radiator_panel[facing=south]",
+    "/setblock 203 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 205 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 205 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 204 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 203 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 202 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 201 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 206 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 205 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 204 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 203 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 206 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -58 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -54 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -56 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -58 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -54 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 207 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 208 criticalmass:reinforced_pipe",
+    "/setblock 209 -59 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -59 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -58 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -57 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -55 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -54 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -53 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -52 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 208 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 207 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -52 206 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 203 -57 206 minecraft:air",
+    "/setblock 205 -57 206 minecraft:air",
+    "/setblock 207 -57 206 minecraft:air",
+    "/setblock 207 -57 205 minecraft:air",
+    "/setblock 207 -57 204 minecraft:air",
+    "/setblock 207 -57 203 minecraft:air",
+    "/setblock 207 -57 202 minecraft:air",
+    "/setblock 207 -57 201 minecraft:air",
+    "/setblock 207 -57 200 minecraft:air",
+    "/setblock 206 -57 200 minecraft:air",
+    "/setblock 205 -57 200 minecraft:air",
+    "/setblock 204 -57 200 minecraft:air",
+    "/setblock 203 -57 200 minecraft:air",
+    "/setblock 206 -59 206 minecraft:air",
+    "/setblock 206 -58 206 minecraft:air",
+    "/setblock 206 -55 206 minecraft:air",
+    "/setblock 206 -53 206 minecraft:air",
+    "/setblock 207 -53 206 minecraft:air",
+    "/setblock 209 -53 206 minecraft:air",
+    "/setblock 210 -53 206 minecraft:air",
+    "/setblock 210 -54 206 minecraft:air",
+    "/setblock 210 -55 206 minecraft:air",
+    "/setblock 210 -56 206 minecraft:air",
+    "/setblock 210 -57 206 minecraft:air",
+    "/setblock 210 -58 206 minecraft:air",
+    "/setblock 210 -59 206 minecraft:air",
+    "/setblock 209 -59 206 minecraft:air",
+    "/setblock 208 -59 206 minecraft:air",
+    "/setblock 208 -54 206 minecraft:air",
+    "/setblock 208 -55 206 minecraft:air",
+    "/setblock 208 -56 206 minecraft:air",
+    "/setblock 208 -56 207 minecraft:air",
+    "/setblock 208 -56 208 minecraft:air",
+    "/setblock 209 -59 209 minecraft:air",
+    "/setblock 211 -59 209 minecraft:air",
+    "/setblock 211 -58 209 minecraft:air",
+    "/setblock 211 -57 209 minecraft:air",
+    "/setblock 211 -55 209 minecraft:air",
+    "/setblock 211 -54 209 minecraft:air",
+    "/setblock 211 -53 209 minecraft:air",
+    "/setblock 211 -52 209 minecraft:air",
+    "/setblock 211 -51 209 minecraft:air",
+    "/setblock 211 -51 208 minecraft:air",
+    "/setblock 211 -51 207 minecraft:air",
+    "/setblock 211 -51 206 minecraft:air",
+    "/setblock 210 -51 206 minecraft:air",
+    "/setblock 209 -51 206 minecraft:air",
+    "/setblock 208 -51 206 minecraft:air",
+    "/setblock 208 -52 206 minecraft:air",
+    "/setblock 203 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 205 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 205 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 204 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 203 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 202 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 201 criticalmass:reinforced_pipe",
+    "/setblock 207 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 206 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 205 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 204 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 203 -57 200 criticalmass:reinforced_pipe",
+    "/setblock 206 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -58 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 206 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 207 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -53 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -54 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -56 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -57 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -58 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -59 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -54 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -55 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 207 criticalmass:reinforced_pipe",
+    "/setblock 208 -56 208 criticalmass:reinforced_pipe",
+    "/setblock 209 -59 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -59 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -58 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -57 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -55 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -54 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -53 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -52 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 209 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 208 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 207 criticalmass:reinforced_pipe",
+    "/setblock 211 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 210 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 209 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -51 206 criticalmass:reinforced_pipe",
+    "/setblock 208 -52 206 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 201 -57 203 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:1200000.0d}}",
+    "/data merge block 206 -57 206 {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:80000.0d}}",
+    "/data merge block 206 -54 206 {Coolant:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:80000.0d}}",
+    "/data merge block 208 -53 206 {Primary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:80000.0d}}",
+    "/data merge block 208 -53 206 {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}",
+    "/data merge block 208 -59 209 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 208 -58 209 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 208 -57 209 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 208 -56 209 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 211 -56 209 {Buffer:{Fluid:{id:\"minecraft:water\",amount:250},Heat:0.0d}}",
+    "/setblock 204 -58 206 create:creative_motor[facing=up]",
+    "/setblock 207 -60 206 create:creative_motor[facing=up]",
+    "/setblock 210 -60 209 create:creative_motor[facing=up]",
+    "/setblock 200 -57 203 minecraft:lever[face=wall,facing=west,powered=true]"
+   ],
+   "wait": 900
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 206 -58 209 minecraft:barrier",
+    "/tp @p 206.50 -57.00 209.50 facing 206.50 -58.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "exchanger",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 205 -55 209 minecraft:barrier",
+    "/tp @p 205.50 -54.00 209.50 facing 206.50 -55.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "turbine",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 207 -55 209 minecraft:barrier",
+    "/tp @p 207.50 -54.00 209.50 facing 207.50 -55.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "stressometer",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 208 -54 203 minecraft:barrier",
+    "/tp @p 208.50 -53.00 203.50 facing 208.50 -54.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "condenser",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 205 -58 209 minecraft:barrier",
+    "/tp @p 205.50 -57.00 209.50 facing 208.50 -58.12 209.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "tower",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 211 -57 212 minecraft:barrier",
+    "/tp @p 211.50 -56.00 212.50 facing 211.50 -57.12 209.70"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "radiator",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 216 -49 216 minecraft:barrier",
+    "/tp @p 216.50 -48.00 216.50 facing 206.00 -57.62 206.00"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "overview",
+   "wait": 3
+  },
+  {
+   "note": "SECTION trip"
+  },
+  {
+   "cmds": [
+    "/setblock 207 -54 206 minecraft:air"
+   ],
+   "wait": 400
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 205 -55 209 minecraft:barrier",
+    "/tp @p 205.50 -54.00 209.50 facing 206.50 -55.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "turbine_tripped",
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/setblock 206 -57 209 minecraft:barrier",
+    "/tp @p 206.50 -56.00 209.50 facing 206.50 -57.12 206.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "relief_after_trip",
+   "wait": 3
+  },
+  {
+   "wait": 5
+  }
+ ]
+}

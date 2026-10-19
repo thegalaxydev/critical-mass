@@ -1,5 +1,6 @@
 package com.criticalmass;
 
+import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
@@ -10,6 +11,7 @@ import com.criticalmass.registry.CMFluids;
 import com.criticalmass.registry.CMItems;
 import com.criticalmass.registry.CMStress;
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.api.boiler.BoilerHeater;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -47,12 +49,20 @@ public class CriticalMass {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(CMStress::register);
+        event.enqueueWork(() -> BoilerHeater.REGISTRY.register(CMBlocks.BOILER_HEATING_PLATE.get(),
+                (level, pos, state) -> level.getBlockEntity(pos) instanceof BoilerPlateBlockEntity plate ? plate.heatForBoiler() : BoilerHeater.NO_HEAT));
         ModList mods = ModList.get();
         LOGGER.info("Critical Mass loaded. Dependencies present: create={}, sable={}, aeronautics={}",
                 describe(mods, "create"), describe(mods, "sable"), describe(mods, "aeronautics"));
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BYPASS_VALVE.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());

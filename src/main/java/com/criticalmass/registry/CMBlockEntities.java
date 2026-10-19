@@ -4,6 +4,11 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
+import com.criticalmass.content.thermal.BypassValveBlockEntity;
+import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
+import com.criticalmass.content.thermal.RadiatorBlockEntity;
+import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import java.util.function.Supplier;
@@ -27,6 +32,19 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<HeatExchangerBlockEntity>> HEAT_EXCHANGER = BLOCK_ENTITIES.register("heat_exchanger",
             () -> BlockEntityType.Builder.of((pos, state) -> new HeatExchangerBlockEntity(CMBlockEntities.HEAT_EXCHANGER.get(), pos, state), CMBlocks.HEAT_EXCHANGER.get()).build(null));
+
+    public static final Supplier<BlockEntityType<HeatExchangerBlockEntity>> CONDENSER = BLOCK_ENTITIES.register("condenser",
+            () -> BlockEntityType.Builder.of((pos, state) -> new HeatExchangerBlockEntity(CMBlockEntities.CONDENSER.get(), pos, state), CMBlocks.CONDENSER.get()).build(null));
+    public static final Supplier<BlockEntityType<CoolingTowerBlockEntity>> COOLING_TOWER = BLOCK_ENTITIES.register("cooling_tower_packing",
+            () -> BlockEntityType.Builder.of((pos, state) -> new CoolingTowerBlockEntity(CMBlockEntities.COOLING_TOWER.get(), pos, state), CMBlocks.COOLING_TOWER_PACKING.get()).build(null));
+    public static final Supplier<BlockEntityType<RadiatorBlockEntity>> RADIATOR = BLOCK_ENTITIES.register("radiator_panel",
+            () -> BlockEntityType.Builder.of((pos, state) -> new RadiatorBlockEntity(CMBlockEntities.RADIATOR.get(), pos, state), CMBlocks.RADIATOR_PANEL.get()).build(null));
+    public static final Supplier<BlockEntityType<BoilerPlateBlockEntity>> BOILER_PLATE = BLOCK_ENTITIES.register("boiler_heating_plate",
+            () -> BlockEntityType.Builder.of((pos, state) -> new BoilerPlateBlockEntity(CMBlockEntities.BOILER_PLATE.get(), pos, state), CMBlocks.BOILER_HEATING_PLATE.get()).build(null));
+    public static final Supplier<BlockEntityType<BypassValveBlockEntity>> BYPASS_VALVE = BLOCK_ENTITIES.register("steam_bypass_valve",
+            () -> BlockEntityType.Builder.of((pos, state) -> new BypassValveBlockEntity(CMBlockEntities.BYPASS_VALVE.get(), pos, state), CMBlocks.STEAM_BYPASS_VALVE.get()).build(null));
+    public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ReliefValveBlockEntity(CMBlockEntities.RELIEF_VALVE.get(), pos, state), CMBlocks.RELIEF_VALVE.get()).build(null));
 
     private CMBlockEntities() {
     }

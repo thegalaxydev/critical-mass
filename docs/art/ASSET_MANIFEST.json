@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-19T09:22:27",
+ "generated": "2026-10-19T10:48:00",
  "minecraft": "1.21.1",
  "neoforge": "21.1.262",
  "create": "6.0.10-280",
@@ -360,7 +360,7 @@
     "steam_turbine_rotor"
    ],
    "kinetic": {
-    "role": "generator (GeneratingKineticBlockEntity). Prototype: runs on hot primary coolant passing through it (steam circuit not built yet); 16 RPM whenever it has heat",
+    "role": "generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor, upstream bypass valve, or a disconnected shaft",
     "impact_su": "capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat",
     "block_class": "HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)",
     "shaft_faces": "both end plates on the axis",
@@ -387,7 +387,7 @@
     "rotation_on_tilted_body": true
    },
    "issues": [
-    "Prototype: powered by hot primary coolant, not steam. The steam circuit, heat exchanger and condenser come later (tsk-017 onward)."
+    "Single block; the spec describes a 3 to 7 block multiblock."
    ],
    "related_tasks": [
     "tsk-004",
@@ -1478,7 +1478,7 @@
    "item_model": "src/main/resources/assets/criticalmass/models/item/relief_valve.json",
    "inventory_icon": "item model relief_valve (parent: block model)",
    "placed_appearance": "blockstate relief_valve (facing)",
-   "state_notes": "",
+   "state_notes": "venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting",
    "partials": [],
    "kinetic": null,
    "references": [

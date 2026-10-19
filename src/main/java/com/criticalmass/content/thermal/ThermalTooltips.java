@@ -26,5 +26,9 @@ public final class ThermalTooltips {
         tooltip.add(line("criticalmass.goggles.coolant", ChatFormatting.GRAY, coolant.fluid().getHoverName(), number(coolant.amount()), number(coolant.capacity())));
         tooltip.add(line("criticalmass.goggles.temperature", ChatFormatting.GOLD, number(coolant.temperature())));
         tooltip.add(line("criticalmass.goggles.heat", ChatFormatting.GRAY, number(coolant.heat())));
+        if (coolant.steamMedium() && coolant.quality() > 0) {
+            ChatFormatting c = coolant.pressure() >= CMThermal.RELIEF_PRESSURE ? ChatFormatting.RED : ChatFormatting.AQUA;
+            tooltip.add(line("criticalmass.goggles.steam", c, Math.round(coolant.quality() * 100), number(coolant.pressure())));
+        }
     }
 }

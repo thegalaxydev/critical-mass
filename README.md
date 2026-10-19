@@ -65,10 +65,24 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Heat Exchanger:** the primary circuit enters and leaves through its front and back, the secondary through its top and bottom. The two never mix. Heat crosses from the hotter side only while both sides are flowing.
 - **Steam Turbine:** takes coolant through its bottom and top. It draws heat from that coolant and supplies 4 SU per HU/t at a fixed 16 RPM. (It runs on hot water or coolant until steam exists.)
 
+**Steam and cooling.**
+- **Steam:** water and steam are one medium. Water boils at 100 °C once it holds 80 HU per mB, and fully boils after another 540 HU per mB. A buffer shows as Steam once any of it has boiled. Pressure runs from 1 bar at saturation to 10 bar fully boiled.
+- **Steam loop:** heat exchanger secondary, then turbine, then condenser, with a pump driving the closed loop.
+- **Turbine:** draws only on steam energy, 2% per tick, giving 4 SU per HU/t at 16 RPM. A redstone signal closes it as a governor. It trips if nothing is attached to its shaft.
+- **Steam Bypass Valve:** its redstone signal sends that fraction of steam past any turbine downstream in the same loop.
+- **Relief Valve:** fits inline. It senses the loop's peak pressure, vents through its front from 8 bar down to 6 bar, and gives a redstone signal while venting. Vented water and heat are logged.
+- **Rupture:** any steam buffer above 12 bar ruptures and loses its contents (logged).
+- **Condenser:** steam side front/back, cooling water top/bottom. It condenses only while cooling water flows.
+- **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiator Panels, then back.
+  - Tower packing stacks up to 12 high. Water enters the top block from the side and leaves the bottom block from the side. It needs open sky, evaporates a little water, and stops past 15° of tilt on a moving body.
+  - Radiators reject per open face, with an airflow bonus from the body's speed capped at 2×.
+- **Boiler Heating Plate:** sits in the primary loop (front/back) under a Create boiler tank. It heats the boiler (level 1 from 120 °C, level 2 from 200 °C) and draws heat only while that boiler runs with water. A redstone signal turns it off.
+- **Heat accounting:** every unit of heat is stored, turned into stress by a turbine, sent to a Create boiler, rejected to the air, or vented. `/criticalmass ledger` shows each.
+
 **Chunk unloading.** An unloaded reactor freezes. It keeps its exact state and does nothing until it reloads, and a vessel that is only partly loaded waits instead of tripping.
 
-Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, and a 10,000-tick conservation run of the full two-loop plant (`./gradlew runGameTestServer`).
-`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking.
+Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, a 10,000-tick conservation run of the full two-loop plant, steam phase and pressure, turbine admission, bypass, condenser, cooling tower, radiator, boiler plate, relief and rupture, and turbine-trip handling (`./gradlew runGameTestServer`).
+`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking. `make_steam_plant.py` builds all three circuits (primary, steam, cooling) and trips the turbine.
 
 `/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
 

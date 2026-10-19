@@ -182,27 +182,55 @@ public final class CoolantCircuit {
             nodes.add(n);
             chain.add(n.bufferFor(h.enteredFrom()));
         }
+        double bypass = 0;
+        for (ThermalNode n : nodes) {
+            n.setUpstreamBypass(bypass);
+            bypass = Math.max(bypass, n.bypassFraction());
+        }
+        double peak = 0;
+        CoolantBuffer worst = null;
+        for (CoolantBuffer b : chain) {
+            if (b.steamMedium() && b.pressure() > peak) {
+                peak = b.pressure();
+                worst = b;
+            }
+        }
+        for (ThermalNode n : nodes) {
+            n.setCircuitPressure(peak, worst);
+        }
         return closed ? transferClosed(nodes, chain, requested) : transferOpen(level, nodes, chain, requested);
     }
 
     private Flow transferClosed(List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {
-        CoolantBuffer last = chain.get(chain.size() - 1);
-        if (last.amount() == 0) {
+        int n = chain.size();
+        int source = -1;
+        for (int i = n - 1; i >= 0; i--) {
+            if (chain.get(i).amount() > 0) {
+                source = i;
+                break;
+            }
+        }
+        if (source < 0) {
             return new Flow(0, "criticalmass.circuit.source_empty");
         }
+        CoolantBuffer from = chain.get(source);
         for (CoolantBuffer b : chain) {
-            if (!b.canMix(last.fluid())) {
+            if (!b.canMix(from.fluid())) {
                 return new Flow(0, "criticalmass.circuit.mixed");
             }
         }
-        CoolantBuffer.Packet packet = last.take(requested);
+        CoolantBuffer.Packet packet = from.take(requested);
         int moved = packet.amount();
-        pass(nodes, chain, packet);
+        List<Integer> order = new ArrayList<>(n);
+        for (int k = 1; k <= n; k++) {
+            order.add((source + k) % n);
+        }
+        pass(nodes, chain, order, packet);
         return new Flow(moved, null);
     }
 
-    private CoolantBuffer.Packet pass(List<ThermalNode> nodes, List<CoolantBuffer> chain, CoolantBuffer.Packet packet) {
-        for (int i = 0; i < chain.size(); i++) {
+    private CoolantBuffer.Packet pass(List<ThermalNode> nodes, List<CoolantBuffer> chain, List<Integer> order, CoolantBuffer.Packet packet) {
+        for (int i : order) {
             CoolantBuffer b = chain.get(i);
             b.give(packet);
             nodes.get(i).onCoolantPassed(passThrough.get(i).enteredFrom(), packet.amount());
@@ -245,7 +273,11 @@ public final class CoolantCircuit {
             packet = new CoolantBuffer.Packet(packet.fluid().copyWithAmount(free), packet.heat() - backHeat);
         }
         int moved = packet.amount();
-        to.coolant().give(pass(nodes, chain, packet));
+        List<Integer> order = new ArrayList<>(chain.size());
+        for (int i = 0; i < chain.size(); i++) {
+            order.add(i);
+        }
+        to.coolant().give(pass(nodes, chain, order, packet));
         if (from instanceof ReactorControllerBlockEntity c) {
             c.noteFlow(moved);
         }

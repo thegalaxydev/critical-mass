@@ -1,6 +1,6 @@
 # Asset manifest
 
-Generated 2026-10-19T09:22:27 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
+Generated 2026-10-19T10:48:00 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable 2.0.6. 16 texels per block; items 16x16.
 
@@ -10,7 +10,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 |---|---|---|---|---|---|
 | `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up. |
 | `criticalmass:circulation_pump` | `block/circulation_pump.png` 64x64<br>`block/circulation_pump_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes, stops_when_overstressed: yes |  |
-| `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Prototype: powered by hot primary coolant, not steam. The steam circuit, heat exchanger and condenser come later (tsk-017 onward). |
+| `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Single block; the spec describes a 3 to 7 block multiblock. |
 | `criticalmass:instrumentation_panel` | `block/instrumentation_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet. |
 | `criticalmass:reactor_controller` | `block/reactor_controller.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:fuel_channel` | `block/fuel_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -95,7 +95,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 ### `criticalmass:steam_turbine`
 
-- **role**: generator (GeneratingKineticBlockEntity). Prototype: runs on hot primary coolant passing through it (steam circuit not built yet); 16 RPM whenever it has heat
+- **role**: generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor, upstream bypass valve, or a disconnected shaft
 - **impact su**: capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat
 - **block class**: HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)
 - **shaft faces**: both end plates on the axis
@@ -140,7 +140,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - `cooling_tower_packing`: inventory = item model cooling_tower_packing (parent: block model); placed = blockstate cooling_tower_packing (simple)
 - `radiator_panel`: inventory = item model radiator_panel (parent: block model); placed = blockstate radiator_panel (horizontal)
 - `emergency_coolant_tank`: inventory = item model emergency_coolant_tank (parent: block model); placed = blockstate emergency_coolant_tank (simple)
-- `relief_valve`: inventory = item model relief_valve (parent: block model); placed = blockstate relief_valve (facing)
+- `relief_valve`: inventory = item model relief_valve (parent: block model); placed = blockstate relief_valve (facing); venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting
 - `steam_bypass_valve`: inventory = item model steam_bypass_valve (parent: block model); placed = blockstate steam_bypass_valve (horizontal)
 - `boiler_heating_plate`: inventory = item model boiler_heating_plate (parent: block model); placed = blockstate boiler_heating_plate (horizontal)
 - `shielding_concrete`: inventory = item model shielding_concrete (parent: block model); placed = blockstate shielding_concrete (simple)

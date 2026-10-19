@@ -20,4 +20,19 @@ public interface ThermalNode {
 
     default void onCoolantPassed(Direction enteredFrom, int amount) {
     }
+
+    @Nullable
+    default ThermalSinks sinks() {
+        return null;
+    }
+
+    default double bypassFraction() {
+        return 0;
+    }
+
+    default void setUpstreamBypass(double fraction) {
+    }
+
+    default void setCircuitPressure(double pressure, @Nullable CoolantBuffer worst) {
+    }
 }

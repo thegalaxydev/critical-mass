@@ -23,6 +23,7 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
     private double lastExchange;
     private double exchanged;
     private boolean syncPending;
+    private final ThermalSinks sinks = new ThermalSinks();
     private int syncCooldown;
 
     public HeatExchangerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -71,6 +72,11 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
     }
 
     @Override
+    public ThermalSinks sinks() {
+        return sinks;
+    }
+
+    @Override
     public List<CoolantBuffer> buffers() {
         return List.of(primary, secondary);
     }
@@ -107,6 +113,8 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
         if (level == null || level.isClientSide) {
             return;
         }
+        ThermalSafety.ruptureIfNeeded(level, worldPosition, primary, sinks);
+        ThermalSafety.ruptureIfNeeded(level, worldPosition, secondary, sinks);
         double q = 0;
         if (primaryFlowTicks > 0 && secondaryFlowTicks > 0 && primary.amount() > 0 && secondary.amount() > 0) {
             double cp = primary.amount() * CMThermal.HEAT_CAPACITY;
@@ -150,6 +158,7 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
         tag.put("Secondary", secondary.save(registries));
         tag.putDouble("Exchanged", exchanged);
         tag.putDouble("LastExchange", lastExchange);
+        tag.put("Sinks", sinks.save());
     }
 
     @Override
@@ -159,11 +168,12 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
         secondary.load(tag.getCompound("Secondary"), registries);
         exchanged = tag.getDouble("Exchanged");
         lastExchange = tag.getDouble("LastExchange");
+        sinks.load(tag.getCompound("Sinks"));
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.exchanger")));
+        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.exchanger_primary", ChatFormatting.GRAY));
         ThermalTooltips.coolant(tooltip, primary);
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.exchanger_secondary", ChatFormatting.GRAY));

@@ -21,7 +21,8 @@ public class HeatExchangerBlock extends HorizontalBlock implements IBE<HeatExcha
         super(properties);
     }
 
-    public static boolean connectsOn(BlockState state, Direction face) {
+    @Override
+    public boolean connectsOn(BlockState state, Direction face) {
         return face.getAxis() == Direction.Axis.Y || face.getAxis() == state.getValue(FACING).getAxis();
     }
 

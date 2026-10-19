@@ -1,7 +1,9 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMFluids;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -14,6 +16,10 @@ public final class CoolantBuffer {
     public CoolantBuffer(int capacity, Runnable onChange) {
         this.capacity = capacity;
         this.onChange = onChange;
+    }
+
+    public static boolean isSteamMedium(FluidStack stack) {
+        return stack.is(Fluids.WATER) || stack.is(CMFluids.STEAM.source.get());
     }
 
     public int capacity() {
@@ -36,12 +42,63 @@ public final class CoolantBuffer {
         return heat;
     }
 
+    public boolean steamMedium() {
+        return !fluid.isEmpty() && isSteamMedium(fluid);
+    }
+
+    public double specificEnergy() {
+        return amount() == 0 ? 0 : heat / amount();
+    }
+
+    public double quality() {
+        if (!steamMedium()) {
+            return 0;
+        }
+        return Math.max(0, Math.min(1, (specificEnergy() - CMThermal.SATURATION_ENERGY) / CMThermal.LATENT_HEAT));
+    }
+
+    public double steamEnergy() {
+        return steamMedium() ? Math.max(0, heat - amount() * CMThermal.SATURATION_ENERGY) : 0;
+    }
+
+    public double pressure() {
+        if (!steamMedium()) {
+            return CMThermal.ATMOSPHERIC;
+        }
+        return CMThermal.ATMOSPHERIC + CMThermal.PRESSURE_PER_LATENT * steamEnergy() / (capacity * CMThermal.LATENT_HEAT);
+    }
+
     public double temperature() {
-        return amount() == 0 ? CMThermal.AMBIENT : CMThermal.AMBIENT + heat / (amount() * CMThermal.HEAT_CAPACITY);
+        if (amount() == 0) {
+            return CMThermal.AMBIENT;
+        }
+        double e = specificEnergy();
+        if (!steamMedium() || e <= CMThermal.SATURATION_ENERGY) {
+            return CMThermal.AMBIENT + e / CMThermal.HEAT_CAPACITY;
+        }
+        double boiled = e - CMThermal.SATURATION_ENERGY - CMThermal.LATENT_HEAT;
+        return boiled <= 0 ? CMThermal.BOILING : CMThermal.BOILING + boiled / CMThermal.STEAM_HEAT_CAPACITY;
     }
 
     public boolean canMix(FluidStack other) {
-        return other.isEmpty() || fluid.isEmpty() || FluidStack.isSameFluidSameComponents(fluid, other);
+        if (other.isEmpty() || fluid.isEmpty()) {
+            return true;
+        }
+        if (isSteamMedium(other) && isSteamMedium(fluid)) {
+            return true;
+        }
+        return FluidStack.isSameFluidSameComponents(fluid, other);
+    }
+
+    private void refreshPhase() {
+        if (!steamMedium()) {
+            return;
+        }
+        boolean steam = quality() > 0;
+        boolean isSteam = fluid.is(CMFluids.STEAM.source.get());
+        if (steam != isSteam) {
+            fluid = new FluidStack(steam ? CMFluids.STEAM.source.get() : Fluids.WATER, fluid.getAmount());
+        }
     }
 
     public Packet take(int requested) {
@@ -71,17 +128,20 @@ public final class CoolantBuffer {
             fluid.grow(packet.fluid().getAmount());
         }
         heat += packet.heat();
+        refreshPhase();
         onChange.run();
     }
 
     public void addHeat(double amount) {
         heat += amount;
+        refreshPhase();
         onChange.run();
     }
 
     public double removeHeat(double amount) {
         double removed = Math.min(heat, Math.max(0, amount));
         heat -= removed;
+        refreshPhase();
         onChange.run();
         return removed;
     }
@@ -89,6 +149,7 @@ public final class CoolantBuffer {
     public void set(FluidStack stack, double heat) {
         this.fluid = stack.isEmpty() ? FluidStack.EMPTY : stack.copy();
         this.heat = this.fluid.isEmpty() ? 0 : heat;
+        refreshPhase();
         onChange.run();
     }
 
@@ -104,6 +165,7 @@ public final class CoolantBuffer {
     public void load(CompoundTag tag, HolderLookup.Provider registries) {
         fluid = tag.contains("Fluid") ? FluidStack.parseOptional(registries, tag.getCompound("Fluid")) : FluidStack.EMPTY;
         heat = fluid.isEmpty() ? 0 : tag.getDouble("Heat");
+        refreshPhase();
     }
 
     public IFluidHandler handler() {

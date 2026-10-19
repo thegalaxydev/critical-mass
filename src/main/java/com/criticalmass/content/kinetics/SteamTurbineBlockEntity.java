@@ -4,6 +4,10 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ThermalNode;
+import com.criticalmass.content.thermal.ThermalSafety;
+import com.criticalmass.content.thermal.ThermalSinks;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import java.util.List;
@@ -22,6 +26,11 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     private double heatRate;
     private double heatExtracted;
     private double appliedCapacity;
+    private double admission;
+    private double upstreamBypass;
+    private int bypassTicks;
+    private String status = "criticalmass.turbine.no_steam";
+    private final ThermalSinks sinks = new ThermalSinks();
     private int updateCooldown;
     private int syncCooldown;
 
@@ -64,13 +73,68 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         return appliedCapacity;
     }
 
+    public double admission() {
+        return admission;
+    }
+
+    public String status() {
+        return status;
+    }
+
+    @Override
+    public ThermalSinks sinks() {
+        return sinks;
+    }
+
+    @Override
+    public void setUpstreamBypass(double fraction) {
+        upstreamBypass = fraction;
+        bypassTicks = 3;
+    }
+
+    public boolean shaftConnected() {
+        if (level == null) {
+            return false;
+        }
+        Direction.Axis axis = getBlockState().getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS);
+        for (Direction d : new Direction[]{Direction.fromAxisAndDirection(axis, Direction.AxisDirection.POSITIVE), Direction.fromAxisAndDirection(axis, Direction.AxisDirection.NEGATIVE)}) {
+            if (level.getBlockEntity(worldPosition.relative(d)) instanceof KineticBlockEntity) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void tick() {
         super.tick();
         if (level == null || level.isClientSide) {
             return;
         }
-        double extracted = coolant.amount() > 0 ? coolant.removeHeat(coolant.heat() * CMThermal.TURBINE_EXTRACTION) : 0;
+        if (ThermalSafety.ruptureIfNeeded(level, worldPosition, coolant, sinks)) {
+            status = "criticalmass.turbine.ruptured";
+        }
+        if (bypassTicks > 0) {
+            bypassTicks--;
+        } else {
+            upstreamBypass = 0;
+        }
+        boolean connected = shaftConnected();
+        double governor = level.getBestNeighborSignal(worldPosition) / 15.0;
+        admission = connected ? (1 - governor) * (1 - upstreamBypass) : 0;
+        double steam = coolant.steamEnergy();
+        if (!connected) {
+            status = "criticalmass.turbine.disconnected";
+        } else if (steam <= 0) {
+            status = "criticalmass.turbine.no_steam";
+        } else if (upstreamBypass >= 1) {
+            status = "criticalmass.turbine.bypassed";
+        } else if (governor >= 1) {
+            status = "criticalmass.turbine.governed";
+        } else {
+            status = "criticalmass.turbine.ok";
+        }
+        double extracted = steam > 0 ? coolant.removeHeat(steam * CMThermal.TURBINE_EXTRACTION * admission) : 0;
         heatExtracted += extracted;
         heatRate += (extracted - heatRate) * 0.1;
         if (heatRate < 1e-3) {
@@ -116,6 +180,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         tag.putDouble("HeatRate", heatRate);
         tag.putDouble("HeatExtracted", heatExtracted);
         tag.putDouble("Capacity", appliedCapacity);
+        tag.put("Sinks", sinks.save());
+        tag.putDouble("Admission", admission);
+        tag.putString("Status", status);
     }
 
     @Override
@@ -125,13 +192,18 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         heatRate = tag.getDouble("HeatRate");
         heatExtracted = tag.getDouble("HeatExtracted");
         appliedCapacity = tag.getDouble("Capacity");
+        sinks.load(tag.getCompound("Sinks"));
+        admission = tag.getDouble("Admission");
+        status = tag.getString("Status");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.turbine")));
+        tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
         ThermalTooltips.coolant(tooltip, coolant);
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.admission", ChatFormatting.GRAY, Math.round(admission * 100)));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.heat_rate", ChatFormatting.GOLD, ThermalTooltips.number(heatRate)));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.capacity", appliedCapacity > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(appliedCapacity)));
         return true;

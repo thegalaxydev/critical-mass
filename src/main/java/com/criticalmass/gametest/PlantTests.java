@@ -115,14 +115,14 @@ public final class PlantTests {
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         HeatExchangerBlockEntity exchanger = h.getBlockEntity(TestVessels.EXCHANGER);
         SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.PLANT_TURBINE);
-        controller.coolant().set(CoolantLoopTests.coolant(6000), 300000);
+        controller.coolant().set(CoolantLoopTests.coolant(6000), 900000);
         exchanger.secondary().set(water(1000), 0);
         turbine.coolant().set(water(1000), 0);
         h.startSequence()
                 .thenIdle(200)
                 .thenExecute(() -> {
                     h.assertTrue(exchanger.primary().fluid().is(CoolantLoopTests.coolant(1).getFluid()), "Primary side should hold primary coolant");
-                    h.assertTrue(exchanger.secondary().fluid().is(Fluids.WATER) && turbine.coolant().fluid().is(Fluids.WATER), "Water left the secondary circuit or coolant entered it");
+                    h.assertTrue(exchanger.secondary().steamMedium() && turbine.coolant().steamMedium(), "Water and steam left the secondary circuit or coolant entered it");
                     h.assertTrue(controller.coolant().fluid().is(CoolantLoopTests.coolant(1).getFluid()), "Water reached the vessel");
                     h.assertTrue(controller.coolant().amount() + exchanger.primary().amount() == 6000, "Primary volume changed");
                     h.assertTrue(exchanger.secondary().amount() + turbine.coolant().amount() == 2000, "Secondary volume changed");

@@ -7,6 +7,7 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
+import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,8 +15,10 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
@@ -80,7 +83,7 @@ public final class CoolantLoopTests {
                     int total = controller.coolant().amount() + turbine.coolant().amount();
                     h.assertTrue(total == 6000, "Coolant volume not conserved: " + total);
                     h.assertTrue(close(ledger(controller, turbine), controller.heatAdded()), "Heat not conserved: " + ledger(controller, turbine) + " vs " + controller.heatAdded());
-                    h.assertTrue(turbine.heatExtracted() > 0, "Turbine extracted no heat");
+                    h.assertTrue(turbine.heatExtracted() == 0, "Primary coolant is not steam, so the turbine should take nothing: " + turbine.status());
                     h.setBlock(TestVessels.MOTOR, Blocks.AIR);
                 })
                 .thenIdle(20)
@@ -161,12 +164,15 @@ public final class CoolantLoopTests {
         BlockState turbine = CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X);
         h.setBlock(a, turbine);
         h.setBlock(b, turbine);
+        h.setBlock(a.east(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(b.east(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         SteamTurbineBlockEntity low = h.getBlockEntity(a);
         SteamTurbineBlockEntity high = h.getBlockEntity(b);
         double base = 20000;
         h.onEachTick(() -> {
-            low.coolant().set(coolant(CMThermal.TURBINE_CAPACITY), base);
-            high.coolant().set(coolant(CMThermal.TURBINE_CAPACITY), base * 2);
+            double saturated = CMThermal.TURBINE_CAPACITY * CMThermal.SATURATION_ENERGY;
+            low.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TURBINE_CAPACITY), saturated + base);
+            high.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TURBINE_CAPACITY), saturated + base * 2);
         });
         h.startSequence()
                 .thenIdle(200)

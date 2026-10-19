@@ -41,7 +41,24 @@ public final class LedgerCommand {
         int pumps = 0;
         int turbines = 0;
         int exchangers = 0;
+        int others = 0;
+        double sunk = 0;
+        long lostVolume = 0;
+        int ruptures = 0;
         for (BlockEntity be : all) {
+            if (be instanceof ThermalNode node && node.sinks() != null) {
+                sunk += node.sinks().totalHeat();
+                lostVolume += node.sinks().totalVolume();
+                ruptures += node.sinks().ruptures;
+            }
+            if (be instanceof SingleBufferNodeBlockEntity n) {
+                others++;
+                coolant += n.coolant().amount();
+                stored += n.coolant().heat();
+                source.sendSuccess(() -> Component.literal(n.getBlockState().getBlock().getName().getString() + " " + where(n) + " " + n.coolant().amount() + "mB "
+                        + fmt(n.coolant().temperature()) + "C p=" + fmt(n.coolant().pressure()) + " status=" + n.status() + " sunk=" + fmt(n.sinks().totalHeat())), false);
+                continue;
+            }
             if (be instanceof ReactorControllerBlockEntity c) {
                 controllers++;
                 coolant += c.coolant().amount();
@@ -72,9 +89,9 @@ public final class LedgerCommand {
                         + " status=" + p.status()), false);
             }
         }
-        double balance = added - stored - extracted;
-        String summary = "totals controllers=" + controllers + " pumps=" + pumps + " turbines=" + turbines + " exchangers=" + exchangers + " coolant=" + coolant
-                + " stored=" + fmt(stored) + " added=" + fmt(added) + " extracted=" + fmt(extracted) + " balance=" + fmt(balance);
+        double balance = added - stored - extracted - sunk;
+        String summary = "totals controllers=" + controllers + " pumps=" + pumps + " turbines=" + turbines + " exchangers=" + exchangers + " other=" + others + " coolant=" + coolant
+                + " stored=" + fmt(stored) + " added=" + fmt(added) + " extracted=" + fmt(extracted) + " sunk=" + fmt(sunk) + " lostVolume=" + lostVolume + " ruptures=" + ruptures + " balance=" + fmt(balance);
         source.sendSuccess(() -> Component.literal(summary), false);
         return controllers + pumps + turbines;
     }

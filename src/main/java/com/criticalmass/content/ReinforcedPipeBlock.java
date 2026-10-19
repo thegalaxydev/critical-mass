@@ -2,7 +2,6 @@ package com.criticalmass.content;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlock;
-import com.criticalmass.content.thermal.HeatExchangerBlock;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -67,12 +66,9 @@ public class ReinforcedPipeBlock extends PipeBlock {
         if (b instanceof SteamTurbineBlock) {
             return towards.getAxis() == Direction.Axis.Y;
         }
-        if (b instanceof HeatExchangerBlock) {
-            return HeatExchangerBlock.connectsOn(neighbor, towards.getOpposite());
+        if (b instanceof PipeConnectable connectable) {
+            return connectable.connectsOn(neighbor, towards.getOpposite());
         }
-        if (b instanceof ReliefValveBlock) {
-            return neighbor.getValue(FacingBlock.FACING) == towards;
-        }
-        return b instanceof PipeConnectable;
+        return false;
     }
 }
