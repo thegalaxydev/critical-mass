@@ -1,8 +1,333 @@
 {
  "multipart": [
   {
+   "when": {
+    "down": "false",
+    "north": "false",
+    "south": "true",
+    "up": "true"
+   },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_core"
+    "model": "criticalmass:block/reinforced_pipe/lu_x"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "north": "true",
+    "south": "false",
+    "up": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ru_x"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "north": "false",
+    "south": "true",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ld_x"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "north": "true",
+    "south": "false",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rd_x"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "north": "false",
+    "south": "false",
+    "up": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_x"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "north": "false",
+    "south": "false",
+    "up": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/u_x"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "north": "false",
+    "south": "false",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/d_x"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "north": "true",
+    "south": "true",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_x"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "north": "false",
+    "south": "true",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/l_x"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "north": "true",
+    "south": "false",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/r_x"
+   }
+  },
+  {
+   "when": {
+    "east": "true",
+    "north": "false",
+    "south": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lu_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "false",
+    "south": "true",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ru_y"
+   }
+  },
+  {
+   "when": {
+    "east": "true",
+    "north": "true",
+    "south": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ld_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "true",
+    "south": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rd_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "true",
+    "south": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "false",
+    "south": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/u_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "true",
+    "south": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/d_y"
+   }
+  },
+  {
+   "when": {
+    "east": "true",
+    "north": "false",
+    "south": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_y"
+   }
+  },
+  {
+   "when": {
+    "east": "true",
+    "north": "false",
+    "south": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/l_y"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "north": "false",
+    "south": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/r_y"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "true",
+    "up": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lu_z"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "false",
+    "up": "true",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ru_z"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "east": "true",
+    "up": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ld_z"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "east": "false",
+    "up": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/rd_z"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "east": "false",
+    "up": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_z"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "false",
+    "up": "true",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/u_z"
+   }
+  },
+  {
+   "when": {
+    "down": "true",
+    "east": "false",
+    "up": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/d_z"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "true",
+    "up": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_z"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "true",
+    "up": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/l_z"
+   }
+  },
+  {
+   "when": {
+    "down": "false",
+    "east": "false",
+    "up": "false",
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/r_z"
    }
   },
   {
@@ -10,7 +335,7 @@
     "north": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm"
+    "model": "criticalmass:block/reinforced_pipe/connection/north"
    }
   },
   {
@@ -18,8 +343,7 @@
     "east": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm",
-    "y": 90
+    "model": "criticalmass:block/reinforced_pipe/connection/east"
    }
   },
   {
@@ -27,8 +351,7 @@
     "south": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm",
-    "y": 180
+    "model": "criticalmass:block/reinforced_pipe/connection/south"
    }
   },
   {
@@ -36,8 +359,7 @@
     "west": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm",
-    "y": 270
+    "model": "criticalmass:block/reinforced_pipe/connection/west"
    }
   },
   {
@@ -45,8 +367,7 @@
     "up": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm",
-    "x": 270
+    "model": "criticalmass:block/reinforced_pipe/connection/up"
    }
   },
   {
@@ -54,8 +375,79 @@
     "down": "true"
    },
    "apply": {
-    "model": "criticalmass:block/reinforced_pipe_arm",
-    "x": 90
+    "model": "criticalmass:block/reinforced_pipe/connection/down"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "west": "false",
+    "up": "false",
+    "down": "false",
+    "north": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/north"
+   }
+  },
+  {
+   "when": {
+    "north": "false",
+    "south": "false",
+    "up": "false",
+    "down": "false",
+    "east": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/east"
+   }
+  },
+  {
+   "when": {
+    "east": "false",
+    "west": "false",
+    "up": "false",
+    "down": "false",
+    "south": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/south"
+   }
+  },
+  {
+   "when": {
+    "north": "false",
+    "south": "false",
+    "up": "false",
+    "down": "false",
+    "west": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/west"
+   }
+  },
+  {
+   "when": {
+    "north": "false",
+    "east": "false",
+    "south": "false",
+    "west": "false",
+    "up": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/up"
+   }
+  },
+  {
+   "when": {
+    "north": "false",
+    "east": "false",
+    "south": "false",
+    "west": "false",
+    "down": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/end/down"
    }
   }
  ]

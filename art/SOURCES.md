@@ -4,6 +4,12 @@ Every texture in `src/main/resources/assets/criticalmass/textures/` that came fr
 Model: `generator` via the image tool built-in `generate` tool (`image_tool.py --edit`). Raw outputs (downscaled to 512 px JPEG) are in `art/generated/`.
 All art is a candidate for replacement by hand-made art later.
 
+
+## reinforced_pipe and reinforced_pipe_connected (not generated)
+
+- Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
+- Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to dark steel by `art/tools/pipe_paint.py`; the flange rims keep Create's copper. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
+- Date: 2026-10-19
 ## alarm_siren
 
 - Used by: `textures/block/alarm_siren.png`

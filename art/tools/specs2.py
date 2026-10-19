@@ -285,8 +285,6 @@ def build_rest():
     models["reactor_service_port"] = service_port()
     a, b = coolant_ports()
     models[a.name], models[b.name] = a, b
-    core, arm = pipe_parts()
-    models[core.name], models[arm.name] = core, arm
     models["heat_exchanger"] = heat_exchanger()
     models["condenser"] = condenser()
     models["cooling_tower_packing"] = cooling_tower()

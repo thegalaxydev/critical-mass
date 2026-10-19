@@ -17,7 +17,7 @@ public class ReinforcedPipeBlock extends PipeBlock {
     public static final MapCodec<ReinforcedPipeBlock> CODEC = simpleCodec(ReinforcedPipeBlock::new);
 
     public ReinforcedPipeBlock(Properties properties) {
-        super(0.3125f, properties);
+        super(0.25f, properties);
         BlockState state = stateDefinition.any();
         for (Direction d : Direction.values()) {
             state = state.setValue(PROPERTY_BY_DIRECTION.get(d), false);

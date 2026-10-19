@@ -172,16 +172,8 @@ def _facing_prop(model_by_value, prop):
 
 
 def _pipe_multipart():
-    parts = [{"apply": {"model": "criticalmass:block/reinforced_pipe_core"}}]
-    rot = {"north": (0, 0), "east": (0, 90), "south": (0, 180), "west": (0, 270), "up": (270, 0), "down": (90, 0)}
-    for d, (x, y) in rot.items():
-        a = {"model": "criticalmass:block/reinforced_pipe_arm"}
-        if x:
-            a["x"] = x
-        if y:
-            a["y"] = y
-        parts.append({"when": {d: "true"}, "apply": a})
-    return {"multipart": parts}
+    import pipe_models
+    return pipe_models.multipart()
 
 
 def _trapdoor(name):
@@ -210,7 +202,7 @@ BLOCK_DEFS.update({
     "coolant_channel": {"state": ("raw", _pillar("coolant_channel")), "item": "block", "lang": "Coolant Channel"},
     "reactor_service_port": {"state": ("facing", "reactor_service_port"), "item": "block", "lang": "Reactor Service Port"},
     "primary_coolant_port": {"state": ("raw", _facing_prop({"inlet": "primary_coolant_port_inlet", "outlet": "primary_coolant_port_outlet"}, "mode")), "item": "primary_coolant_port_outlet", "lang": "Primary Coolant Port"},
-    "reinforced_pipe": {"state": ("raw", _pipe_multipart()), "item": "reinforced_pipe_item", "lang": "Reinforced Pipe"},
+    "reinforced_pipe": {"state": ("raw", _pipe_multipart()), "item": "reinforced_pipe/item", "lang": "Reinforced Pipe"},
     "heat_exchanger": {"state": ("horizontal", "heat_exchanger"), "item": "block", "lang": "Heat Exchanger"},
     "condenser": {"state": ("horizontal", "condenser"), "item": "block", "lang": "Condenser"},
     "cooling_tower_packing": {"state": ("simple",), "item": "block", "lang": "Cooling Tower Packing"},

@@ -296,11 +296,6 @@ def write_assets():
             im = {"parent": "%s:block/%s" % (NS, it)}
         assets.write(RES, os.path.join("models", "item", name + ".json"), im)
         lang["block.criticalmass." + name] = d["lang"]
-    core = json.load(open(os.path.join(md, "reinforced_pipe_core.json"), encoding="utf8")) if os.path.exists(os.path.join(md, "reinforced_pipe_core.json")) else None
-    if core:
-        arm = json.load(open(os.path.join(md, "reinforced_pipe_arm.json"), encoding="utf8"))
-        item = {"parent": "minecraft:block/block", "textures": core["textures"], "elements": core["elements"] + arm["elements"] + [assets.flip_z(e) for e in arm["elements"]]}
-        assets.write(RES, os.path.join("models", "block", "reinforced_pipe_item.json"), item)
     for name, d in specs.ITEM_DEFS.items():
         assets.write(RES, os.path.join("models", "item", name + ".json"), assets.item_generated(name, d.get("handheld", False)))
         lang["item.criticalmass." + name] = d["lang"]
