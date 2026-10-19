@@ -88,7 +88,7 @@
     }
    },
    "type": "cube",
-   "uuid": "f9974baf-7080-4dcf-9e43-5d5478db1af2",
+   "uuid": "ad61b1d8-4be4-48f8-adc3-2f89a6e76009",
    "visibility": true,
    "rotation": [
     0,
@@ -180,7 +180,7 @@
     }
    },
    "type": "cube",
-   "uuid": "c84e5e0d-2f3a-443b-84a8-736b824e2675",
+   "uuid": "7fd2fd3d-1cca-49fc-a169-c6575a3e1455",
    "visibility": true,
    "rotation": [
     0,
@@ -276,7 +276,7 @@
     }
    },
    "type": "cube",
-   "uuid": "858c3f47-cbab-42de-8cf7-c8657a0751c6",
+   "uuid": "273cd60f-4878-4e3f-8262-de4b062475ae",
    "visibility": true,
    "rotation": [
     0,
@@ -352,7 +352,7 @@
     }
    },
    "type": "cube",
-   "uuid": "b9aab246-624d-4102-9bdd-9510d920af48",
+   "uuid": "0bbb1fb1-9eec-44ac-ac65-24fa400d7d84",
    "visibility": false,
    "rotation": [
     0,
@@ -406,7 +406,7 @@
     }
    },
    "type": "cube",
-   "uuid": "95fd9f2e-ab14-4e87-9e55-653a14bb29fb",
+   "uuid": "a30d2c67-470c-45bf-92e3-077dd258a0e1",
    "visibility": false
   },
   {
@@ -493,7 +493,7 @@
     }
    },
    "type": "cube",
-   "uuid": "c4057650-7f78-4035-859a-d2564542251d",
+   "uuid": "1f8bcdd6-567f-4560-bc6f-c298125c1d98",
    "visibility": false,
    "rotation": [
     0,
@@ -583,14 +583,14 @@
     }
    },
    "type": "cube",
-   "uuid": "0004bea0-39d7-496c-a8fc-f59c4252c887",
+   "uuid": "e213899c-b2e9-4718-b9bd-cf68a9199522",
    "visibility": false
   }
  ],
  "groups": [
   {
    "name": "item",
-   "uuid": "ecba95b5-d20b-41ed-9c1c-6c28818b75bb",
+   "uuid": "b64a1d49-365a-4640-b4ed-f9f7dea32400",
    "export": true,
    "locked": false,
    "scope": 0,
@@ -615,7 +615,7 @@
   },
   {
    "name": "connection_north",
-   "uuid": "3741bc58-87c8-4574-a15d-05fe736644e4",
+   "uuid": "342ccd44-00e9-4915-a162-a79932c5e742",
    "export": true,
    "locked": false,
    "scope": 0,
@@ -640,7 +640,7 @@
   },
   {
    "name": "straight_core",
-   "uuid": "759064f4-983a-401d-996c-82522453108d",
+   "uuid": "f93f8e28-9220-438c-ad7b-9b1c13ba6224",
    "export": true,
    "locked": false,
    "scope": 0,
@@ -665,7 +665,7 @@
   },
   {
    "name": "rim_north",
-   "uuid": "024a6b97-971e-464d-abcd-083db554dba2",
+   "uuid": "6a78042f-5aaf-4eef-b5ef-c5434d853de2",
    "export": true,
    "locked": false,
    "scope": 0,
@@ -690,7 +690,7 @@
   },
   {
    "name": "junction_casing",
-   "uuid": "485ff2b8-4dba-4f75-a4a6-03b0f8bdabfd",
+   "uuid": "63866592-4788-4d7c-a9e1-cca0eb077f9d",
    "export": true,
    "locked": false,
    "scope": 0,
@@ -716,40 +716,40 @@
  ],
  "outliner": [
   {
-   "uuid": "ecba95b5-d20b-41ed-9c1c-6c28818b75bb",
+   "uuid": "b64a1d49-365a-4640-b4ed-f9f7dea32400",
    "isOpen": true,
    "children": [
-    "f9974baf-7080-4dcf-9e43-5d5478db1af2",
-    "c84e5e0d-2f3a-443b-84a8-736b824e2675",
-    "858c3f47-cbab-42de-8cf7-c8657a0751c6"
+    "ad61b1d8-4be4-48f8-adc3-2f89a6e76009",
+    "7fd2fd3d-1cca-49fc-a169-c6575a3e1455",
+    "273cd60f-4878-4e3f-8262-de4b062475ae"
    ]
   },
   {
-   "uuid": "3741bc58-87c8-4574-a15d-05fe736644e4",
+   "uuid": "342ccd44-00e9-4915-a162-a79932c5e742",
    "isOpen": true,
    "children": [
-    "b9aab246-624d-4102-9bdd-9510d920af48"
+    "0bbb1fb1-9eec-44ac-ac65-24fa400d7d84"
    ]
   },
   {
-   "uuid": "759064f4-983a-401d-996c-82522453108d",
+   "uuid": "f93f8e28-9220-438c-ad7b-9b1c13ba6224",
    "isOpen": true,
    "children": [
-    "95fd9f2e-ab14-4e87-9e55-653a14bb29fb"
+    "a30d2c67-470c-45bf-92e3-077dd258a0e1"
    ]
   },
   {
-   "uuid": "024a6b97-971e-464d-abcd-083db554dba2",
+   "uuid": "6a78042f-5aaf-4eef-b5ef-c5434d853de2",
    "isOpen": true,
    "children": [
-    "c4057650-7f78-4035-859a-d2564542251d"
+    "1f8bcdd6-567f-4560-bc6f-c298125c1d98"
    ]
   },
   {
-   "uuid": "485ff2b8-4dba-4f75-a4a6-03b0f8bdabfd",
+   "uuid": "63866592-4788-4d7c-a9e1-cca0eb077f9d",
    "isOpen": true,
    "children": [
-    "0004bea0-39d7-496c-a8fc-f59c4252c887"
+    "e213899c-b2e9-4718-b9bd-cf68a9199522"
    ]
   }
  ],
@@ -784,8 +784,8 @@
    "visible": true,
    "internal": false,
    "saved": true,
-   "uuid": "5d07b384-d866-47f9-b50a-e16717a9bddf",
-   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACrklEQVR4nL1XMW/TUBA+R27chrxQRJemEgIhJZ1LsoJgAAlQM4DEwoAQCz8IsTAwsDAwUHWmqpBYGnVOYEFISYRUROkLadMOQffsc86XvDjBbj7Jsv3u4vveu7vvvTiPnjwdrBaLsFpcA6UUaK0B0Wm3oNNum2ccR3teKehqDVofBXcNH96/cyABXDnASSCIHNnwymsVkkwK1/9wweqwX69DXjVNYA4kiauQCgEOmj19fKNSCdMj/XAFvnz+BEng6iCnmF+ZAmNrNn3PIA2Eb80GtIMaSYKMzUCEOKgGbPbUCHRjcptG7gnuuNwSpG0a+6zI8A8SaHn9+phsT0xAiVnwd55zmz0xAbBgkjZMY59ZB7paT5yRLDxs3VQJSFAAvk9EIHQhMYG8pbDmLsVKbEYkxWTjJFORYhCQK4BbMs6USMjtOCkcOGdcu14eYHpv3b4TqSXazNzzJkBihsF3d4bpwhV8sFmz60Ba8E9TxXDmDzdrZjUILswJ1DVYU1xD3HkE5i0r0+DMqwhL5XX/PBmkgrrIIcdnL14aR9R4edjgrff2zeuxpO/erw0eZ3/C+toK3Hy17Ww9vzdYXlqA7FLO2Avegrkf9c/M/fS4B4fHZ1ElRJb79b2R/sai6dRbsacglVuEleWL5hmDN1oH0Ov3x/rmPM+QdcMfq4LJDwa/UamaMZr19tZH807jNlxY9MJnnDkG3/uu4cev04jflctZqF71fTJ8BXgQrnaznAOVdynyLoPzMUzLWB2QUvs/Bw/KeRwy0cCjOk+Vm+ZB1EoAQf8Hkwanap+aQFdrI5O0HfPgG5UqlMrlqYjo/u+RgpOgMSQZdgEu/dedxlAy+UeDlMQV4d+TYcthn2OrYbXjJYE29ImcCXHTKMUI0cTZ907g4PCPeUaRwT6PE6J/g+GXkGCExMwAAAAASUVORK5CYII="
+   "uuid": "13e48413-1f51-45b4-a33e-33051911653d",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACy0lEQVR4nMVXTY/SUBS9kNLXQaE1wkowJmMiw5iZzThLt5q40GhijBsT/5M/wI0xJi40/gu3SmYBEyNMYgQjH8r0dRaY8+grrw9oIS14Eob23jL33O/XzMMnzya2bdPlQoEsZpHLXQL+jEY0GAzENWOMisUimYyRxzl5nkeu6xLnnD68f5uhBDB0gUoCkOSkTuohA8mkMPDHNM2lD3TabaFnlhWSc9cVkUiFgArpPUIMVKrVID36c6lEgPueIL96CqD76RPR0et2aejXSBJklyksLeSSnIzEIn1qBDzOI38Up18Hhl5cagfoulX06yKLPOuQ9QBdnD4xAaZ5oVY7dHH6xARoCaJmwyr6teeAx/lcr0cVXhpDKERgzqBvQN0Tm4ChF5Za5f9lFFvaMpKjWOpUkqktIxV6BLCSsRewjgF9HSdFhjaMW/WDiW07VNvbC9WSXGbGpgkM+n3xOTo+ptNmM5AjirV6ffMEbMchREB6Xt+/Lbw/aTTEvUFbAozC6+FwEOoeY1spODg8FPenrVagQ0FvLQXdbpdK5XJwjkAXQRZ0wdPnLyZQYujIoaQyla337s3rhZ1z/8GjyePcD6pdK9HdV58yH1/emzg7OTJ38kJfZDnxPeQX0/95Pqb++cUsAjBeKpWp02nP9ffu7k0hjzsFFfIWlRxbXMP4yVmPxktmRZ4xQdaQAnjeajXFiMX0Eyx9rxtfv0y98IfRMlyyZpGD5zD++duIvv8Kj+zrV026c2P6TDb4gR923TiiIfeAnpqFUWBXQve6cVWGtCw+E2qjFm9G60LmPA7ZRRtON47cp7X/IwkA8n1QNS5fUtaBrPaVCXicizEJoyLvivFKpSp6eJXj+Ij/nis4HVIGkrMjmecFXYBrddODEORxbfjXnRFEn6PVUO346IAOzwQE4CmOX2a5HDmIIr0fu9TrT1OIIYM+jxtE/wBwAZagKgmzkgAAAABJRU5ErkJggg=="
   },
   {
    "path": "D:\\Minecraft\\create-critical-mass-1.21.1\\src\\main\\resources\\assets\\criticalmass\\textures\\block\\reinforced_pipe_connected.png",
@@ -817,8 +817,8 @@
    "visible": true,
    "internal": false,
    "saved": true,
-   "uuid": "a9b21a3d-b651-4fbf-b3ba-04a3485c614b",
-   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACO0lEQVR4nO1WO04DMRDdjVx7L5BQIBogB4jCFShouAAFouIidFRUXICGgisQ5QAhNIhikwvsXiDojXec2VnbfDYNUp7kxPbYM8/jmfHmh0fHm+FolKFJrFcrarawWQh1VbfGsXUx8H6DHzZui6IRVjQHAien46gSSTK1LoTl24JIGGyGYWudcSJii2y9KknxcHSwZV1XLTlIYm4yPfPzrVOK9XoehEGCPOANF9a7BifjOSl3HqqJNDwlSev1ep/fa4tsuVjQeOAmhSKlgAnpO2+vqYKGcFJqYq/WP4gplUEpSWz7W9Ia8J4z3LS68h7V+k3wRM3dOWVlS8aByoZiYBcTEMzjcVC/0a6VY/QRKEGSel+jlE9OJJq9nCH+Who5ZQE689kss0XXEAflZDqlbGgHaUn7+sLoIiRrgTyFJsV9P28LGqOtMRGoIVIO/egTAUDmOysMEdBEY5B33tkr6oKRylLlFHf303LLhwp5SmPQMaSCMEookIZ6b6gO6DQ2PIBbUkVHyqMekjpEtIfWMgxy2T08pc/rUBFyb0M7QFmGOEHARQ02BSn0GOV4jumEiWc39Vz3fY5zEJB5zsL57LXzPeAeoW0aAp8f73nK0PnF5ebl+Yn69w+P9H97c+XlJrbxJ98DDYGknI3HYL4LEv2t0Afy5J6AjTy/zrjt3P2uMYilnCbD41Qq/gVGe0DX+tCrxzm/EwJZBD7n+ZlVeYxx6nvg1wTqSK1HOqbSsA+u73Z7nXvsscf/xBdZWZ5JUdatTwAAAABJRU5ErkJggg=="
+   "uuid": "35cb598f-3ef6-4578-b2e1-4c7dd6b88446",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACV0lEQVR4nO1WwU7DMAztpmjtAZoL234JiQs/ABIS4sCvcOeAkJDgB7gg8UtjXFo4JL2AnlcH1026weDEnrS1jWP7xbGdjA6Pjj9Ka7OiKDIJ51xWV1WWq3GGd67znZqXAusb/LHzyWRCz6ZpaAwErLVxC9Z2SCbnJVC1JAyU4XiS50GI9/e3NzK8t78fxhvvO3KQ9N5n0+k0jEvI+XochEGCIsAo8iJzfhUarI7HpJxk3hFpREqS1vO1XtDN86yua/oeEyNhSBsIhNpnDKyvHWGl+Eldbd+kjHJ4UyQkaY26rnpzQKQsbc++ia6odQxgryU4UYmQqoQuibozryzLqH1D5SAyWK4SstVa1pShtcEohb1d+etySc+DNknDtrRyqgK8vCwWWVX1XaEKMGk2n1M1yCRFZKC3LYxuQrIXAJqWJCGbDzIbMvyQAwg7r1zqshz2oW/Yuax3NkgEIpGRRFOQe97TFX3BSGOxGmZg74bkXeernOJIDemN9YBMwk1qf0g31gf4nfUNfyAsQ01HyqOEvO/Mkdkem8swSBbkAbI6tF+RXFymkOsE5VJElqC3Jx02TU+G3KIyxGmmj13ugCFsLUlpRDahoX6x0XE8E3VOxr2jJsLEQIh+zoXewHh+ehwNOTo5u/h4uLuh9+vbe3penp9udhbU+j7A7984+9l5CmZdkui7wjaQKw8Ecn0VE5kOmTzB/gJjfbcDeMVaBnJDpfgTGB0B3eu1Q24uv7UtJiUINc/HrKpjfA/dB75NoEn0+mV7pgOxMtwGF1dfl5Yddtjh/+ITapOoDp2VBvEAAAAASUVORK5CYII="
   }
  ]
 }
