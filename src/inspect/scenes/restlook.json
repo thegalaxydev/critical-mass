@@ -1,0 +1,90 @@
+{
+ "name": "restlook",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 45 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 40 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 42 -59 40 criticalmass:steam_turbine[axis=x]",
+    "/setblock 44 -59 40 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 46 -59 40 criticalmass:fuel_channel",
+    "/setblock 48 -59 40 criticalmass:control_channel",
+    "/setblock 50 -59 40 criticalmass:coolant_channel",
+    "/setblock 40 -59 44 criticalmass:fuel_assembly_bench[facing=south]",
+    "/setblock 42 -59 44 criticalmass:spent_fuel_rack",
+    "/setblock 44 -59 44 criticalmass:shielded_cask",
+    "/setblock 46 -59 44 criticalmass:alarm_siren[facing=south]",
+    "/setblock 48 -59 44 criticalmass:instrumentation_panel[facing=south]",
+    "/setblock 50 -59 44 criticalmass:docking_service_connector[facing=south]",
+    "/setblock 46 -58 40 create:creative_motor[facing=down]",
+    "/setblock 40 -59 39 create:creative_motor[facing=south]"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/setblock 43 -57 35 minecraft:barrier",
+    "/tp @p 43.50 -56.00 35.50 facing 43.50 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row1a",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 49 -57 35 minecraft:barrier",
+    "/tp @p 49.50 -56.00 35.50 facing 49.50 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row1b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 43 -57 49 minecraft:barrier",
+    "/tp @p 43.50 -56.00 49.50 facing 43.50 -60.62 44.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row2a",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 49 -57 49 minecraft:barrier",
+    "/tp @p 49.50 -56.00 49.50 facing 49.50 -60.62 44.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row2b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 45 -55 42 minecraft:barrier",
+    "/tp @p 45.50 -54.00 42.50 facing 44.00 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "top1",
+   "wait": 2
+  }
+ ]
+}

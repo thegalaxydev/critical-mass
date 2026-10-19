@@ -288,7 +288,9 @@ TEXTURES = {
 
 def main(names, dest):
     from handmade_plant import PLANT
+    from handmade_rest import REST
     TEXTURES.update(PLANT)
+    TEXTURES.update(REST)
     jar = Jar()
     for n in names or TEXTURES:
         TEXTURES[n](jar).save(os.path.join(dest, n + ".png"))
