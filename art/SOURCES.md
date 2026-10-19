@@ -15,6 +15,7 @@ All art is a candidate for replacement by hand-made art later.
 - `shielded_glass`: Create's tiled glass with an iron frame and tinted panes.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - `shielding_concrete`: hand-drawn poured slabs.
+- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `radiator_panel`, `boiler_heating_plate`, `relief_valve` and `steam_bypass_valve` hand-drawn with Create's copper, brass and iron ramps.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.

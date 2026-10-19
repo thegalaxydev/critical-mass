@@ -1,0 +1,62 @@
+{
+ "name": "plantlook",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 46 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 40 criticalmass:heat_exchanger[facing=south]",
+    "/setblock 42 -59 40 criticalmass:condenser[facing=south]",
+    "/setblock 44 -59 40 criticalmass:emergency_coolant_tank",
+    "/setblock 46 -59 40 criticalmass:radiator_panel[facing=south]",
+    "/setblock 48 -59 40 criticalmass:boiler_heating_plate",
+    "/setblock 50 -59 40 criticalmass:relief_valve[facing=south]",
+    "/setblock 52 -59 40 criticalmass:steam_bypass_valve[facing=south]",
+    "/fill 54 -59 40 54 -57 40 criticalmass:cooling_tower_packing"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/setblock 44 -57 35 minecraft:barrier",
+    "/tp @p 44.50 -56.00 35.50 facing 44.50 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "a",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 51 -57 35 minecraft:barrier",
+    "/tp @p 51.50 -56.00 35.50 facing 51.50 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 47 -56 45 minecraft:barrier",
+    "/tp @p 47.50 -55.00 45.50 facing 46.00 -60.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "back",
+   "wait": 2
+  }
+ ]
+}
