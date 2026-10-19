@@ -1,3 +1,4 @@
+import itertools
 import json
 import os
 import zipfile
@@ -8,8 +9,7 @@ NS = "criticalmass"
 TEXTURE = NS + ":block/reinforced_pipe"
 CONNECTED = NS + ":block/reinforced_pipe_connected"
 SIDES = ["north", "east", "south", "west", "up", "down"]
-AXIS = {"north": "z", "south": "z", "east": "x", "west": "x", "up": "y", "down": "y"}
-END_UV = [8, 0, 16, 8]
+AXES = {"x": ("east", "west"), "y": ("up", "down"), "z": ("north", "south")}
 
 
 def create_jar():
@@ -32,25 +32,39 @@ def ours(create_model):
     return NS + ":block/reinforced_pipe/" + create_model.split("create:block/fluid_pipe/")[1]
 
 
+def effective(when):
+    fixed = {}
+    choices = []
+    for side, value in when.items():
+        if value == "true":
+            choices.append([{side: "true"}, {"rim_" + side: "true"}])
+        else:
+            fixed[side] = "false"
+            fixed["rim_" + side] = "false"
+    combos = [dict(fixed)]
+    for options in choices:
+        combos = [dict(c, **o) for c in combos for o in options]
+    return combos[0] if len(combos) == 1 else {"OR": combos}
+
+
 def multipart():
     with zipfile.ZipFile(create_jar()) as z:
         state = json.loads(z.read("assets/create/blockstates/fluid_pipe.json"))
     parts = []
     for p in state["multipart"]:
-        parts.append({"when": p["when"], "apply": {"model": ours(p["apply"]["model"])}})
+        parts.append({"when": effective(p["when"]), "apply": {"model": ours(p["apply"]["model"])}})
     for side in SIDES:
-        parts.append({"when": {side: "true"}, "apply": {"model": "%s:block/reinforced_pipe/connection/%s" % (NS, side)}})
+        parts.append({"when": effective({side: "true"}), "apply": {"model": "%s:block/reinforced_pipe/connection/%s" % (NS, side)}})
     for side in SIDES:
-        when = {d: "false" for d in SIDES if AXIS[d] != AXIS[side]}
-        when[side] = "false"
-        parts.append({"when": when, "apply": {"model": "%s:block/reinforced_pipe/end/%s" % (NS, side)}})
+        parts.append({"when": {"rim_" + side: "true"}, "apply": {"model": "%s:block/reinforced_pipe/rim/%s" % (NS, side)}})
+    casing = []
+    for axis in AXES.values():
+        around = [d for d in SIDES if d not in axis]
+        for three in itertools.combinations(around, 3):
+            alt = effective({d: "true" for d in three})
+            casing.extend(alt["OR"])
+    parts.append({"when": {"OR": casing}, "apply": {"model": "%s:block/reinforced_pipe/casing" % NS}})
     return {"multipart": parts}
-
-
-def end_cap(side):
-    face = {"uv": END_UV, "texture": "#0"}
-    return {"parent": "block/block", "textures": {"0": CONNECTED, "particle": TEXTURE},
-            "elements": [{"from": [4, 4, 4], "to": [12, 12, 12], "faces": {side: face}}]}
 
 
 def main():
@@ -59,11 +73,8 @@ def main():
     md = os.path.join(ASSETS, "models", "block")
     for p in state["multipart"]:
         name = p["apply"]["model"].split(NS + ":block/")[1]
-        if name.startswith("reinforced_pipe/end/"):
-            write(os.path.join(md, name + ".json"), end_cap(name.rsplit("/", 1)[1]))
-            continue
         key = "0"
-        tex = TEXTURE if name.startswith("reinforced_pipe/connection/") else CONNECTED
+        tex = TEXTURE if name.startswith(("reinforced_pipe/connection/", "reinforced_pipe/rim/", "reinforced_pipe/casing")) else CONNECTED
         write(os.path.join(md, name + ".json"), {"parent": "create:block/fluid_pipe/" + name.split("reinforced_pipe/")[1], "textures": {key: tex, "particle": TEXTURE}})
     write(os.path.join(md, "reinforced_pipe", "item.json"), {"parent": "create:block/fluid_pipe/item", "textures": {"1": TEXTURE, "particle": TEXTURE}})
     write(os.path.join(ASSETS, "models", "item", "reinforced_pipe.json"), {"parent": NS + ":block/reinforced_pipe/item"})
@@ -71,6 +82,11 @@ def main():
         p = os.path.join(md, old + ".json")
         if os.path.exists(p):
             os.remove(p)
+    ends = os.path.join(md, "reinforced_pipe", "end")
+    if os.path.isdir(ends):
+        for f in os.listdir(ends):
+            os.remove(os.path.join(ends, f))
+        os.rmdir(ends)
     print(len(state["multipart"]), "multipart entries")
 
 

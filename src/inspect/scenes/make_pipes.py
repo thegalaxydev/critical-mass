@@ -23,7 +23,9 @@ def place(block, dz):
 
 
 steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/gamemode creative", "/tp @p 52 -55 34 0 35"], "wait": 40, "gui": False, "camera": "first"},
-         {"cmds": place("create:fluid_pipe", 0) + place("criticalmass:reinforced_pipe", 5), "wait": 20},
+         {"cmds": place("create:fluid_pipe", 0) + place("criticalmass:reinforced_pipe", 5), "wait": 10},
+         {"cmds": [c.replace(" criticalmass:reinforced_pipe", " minecraft:air") for c in place("criticalmass:reinforced_pipe", 5)], "wait": 5},
+         {"cmds": place("criticalmass:reinforced_pipe", 5) + place("criticalmass:reinforced_pipe", 5)[::-1], "wait": 20},
          {"cmds": ["/setblock 53 -56 33 minecraft:barrier", "/tp @p 53.5 -55 33.5 facing 53.5 -60.6 44.0"], "wait": 20}, {"shot": "overview", "wait": 2},
          {"cmds": ["/setblock 43 -58 50 minecraft:barrier", "/tp @p 43.5 -57 50.5 facing 46.0 -60.4 44.5"], "wait": 20}, {"shot": "close", "wait": 2},
          {"cmds": ["/setblock 58 -58 50 minecraft:barrier", "/tp @p 58.5 -57 50.5 facing 56.0 -60.4 44.5"], "wait": 20}, {"shot": "close2", "wait": 2},
