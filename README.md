@@ -65,6 +65,24 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Heat Exchanger:** the primary circuit enters and leaves through its front and back, the secondary through its top and bottom. The two never mix. Heat crosses from the hotter side only while both sides are flowing.
 - **Steam Turbine:** takes coolant through its bottom and top. It draws heat from that coolant and supplies 4 SU per HU/t at a fixed 16 RPM. (It runs on hot water or coolant until steam exists.)
 
+**Operation and safety.**
+- **States:** the controller shows Cold, Starting, Running, Tripped (with the cause), Cooling Down, Damaged or Breached. State and residual heat survive saving.
+- **Rod drives:**
+  - A Control Rod Drive on the top face above a control column moves that column's rods; its redstone signal withdraws them.
+  - Rods move at a rate set by shaft speed, up to 0.02 per tick, and the drive uses stress only while moving.
+  - Columns without a drive follow the controller's redstone signal.
+- **Fail-safe:** losing shaft power, overstress or a trip releases the drive's spring latch and drives the rods fully in within 2 seconds, in any orientation.
+- **Trips:** the reactor trips if the vessel turns invalid, primary flow stops for 2 seconds, the core passes 1,100 °C, or the casing is damaged or breached.
+  - To reset, turn off the controller signal and set every drive to insert.
+- **Residual heat:** fuel keeps producing decay heat after shutdown (up to 7% of its running output, halving every minute), so keep the pumps and cooling running after a trip.
+- **Emergency Coolant Tank:**
+  - Touching the vessel, it injects room-temperature coolant on a trip or loss of flow.
+  - A redstone signal disarms it, and a comparator reads its fill level.
+  - It won't inject when tilted past 30° on a moving body.
+- **Breach:** a casing block at zero integrity breaches the vessel, which then leaks coolant.
+  - Repair with Repair Kits: hold use for 2 seconds; each kit restores 50%.
+  - Kits are refused on a breached reactor until residual heat falls below 20 HU/t.
+
 **Steam and cooling.**
 - **Steam:** water and steam are one medium. Water boils at 100 °C once it holds 80 HU per mB, and fully boils after another 540 HU per mB. A buffer shows as Steam once any of it has boiled. Pressure runs from 1 bar at saturation to 10 bar fully boiled.
 - **Steam loop:** heat exchanger secondary, then turbine, then condenser, with a pump driving the closed loop.
@@ -82,7 +100,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 **Chunk unloading.** An unloaded reactor freezes. It keeps its exact state and does nothing until it reloads, and a vessel that is only partly loaded waits instead of tripping.
 
 Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, a 10,000-tick conservation run of the full two-loop plant, steam phase and pressure, turbine admission, bypass, condenser, cooling tower, radiator, boiler plate, relief and rupture, and turbine-trip handling (`./gradlew runGameTestServer`).
-`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking. `make_steam_plant.py` builds all three circuits (primary, steam, cooling) and trips the turbine.
+`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze. `make_cracks.py` overheats a fuel column and records the casing cracking. `make_steam_plant.py` builds all three circuits (primary, steam, cooling) and trips the turbine. `make_operation.py` walks a reactor with rod drives through start-up, a lost-flow trip with emergency injection, and a breach; `make_ops_body.py` scrams a reactor tipped over on a Sable body.
 
 `/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
 

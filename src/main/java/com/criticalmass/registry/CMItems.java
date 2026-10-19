@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.thermal.RepairKitItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
@@ -37,10 +38,16 @@ public final class CMItems {
     public static final DeferredItem<ArmorItem> PROTECTIVE_LEGGINGS = armor("protective_leggings", ArmorItem.Type.LEGGINGS);
     public static final DeferredItem<ArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<Item> DECONTAMINATION_COMPOUND = simple("decontamination_compound", new Item.Properties().stacksTo(16));
-    public static final DeferredItem<Item> REPAIR_KIT = simple("repair_kit", new Item.Properties().stacksTo(1));
+    public static final DeferredItem<RepairKitItem> REPAIR_KIT = custom("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> SEALED_WASTE_CANISTER = simple("sealed_waste_canister", new Item.Properties().stacksTo(1));
 
     private CMItems() {
+    }
+
+    static <I extends Item> DeferredItem<I> custom(String name, Supplier<I> factory) {
+        DeferredItem<I> item = ITEMS.register(name, factory);
+        TAB_ORDER.add(item);
+        return item;
     }
 
     static DeferredItem<Item> simple(String name, Item.Properties properties) {

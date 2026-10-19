@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
+import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.mojang.brigadier.CommandDispatcher;
 import java.util.Comparator;
@@ -50,6 +51,10 @@ public final class LedgerCommand {
                 sunk += node.sinks().totalHeat();
                 lostVolume += node.sinks().totalVolume();
                 ruptures += node.sinks().ruptures;
+            }
+            if (be instanceof ControlRodDriveBlockEntity d) {
+                source.sendSuccess(() -> Component.literal("rod drive " + where(d) + " insertion=" + fmt(d.insertion()) + " target=" + fmt(d.target()) + " failSafe=" + d.failSafe() + " speed=" + d.getSpeed()), false);
+                continue;
             }
             if (be instanceof SingleBufferNodeBlockEntity n) {
                 others++;

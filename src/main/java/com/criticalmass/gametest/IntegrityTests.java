@@ -3,6 +3,7 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
+import com.criticalmass.content.thermal.RepairKitItem;
 import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
@@ -10,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
@@ -116,10 +116,10 @@ public final class IntegrityTests {
                 .thenIdle(3)
                 .thenExecute(() -> {
                     h.assertTrue(!c.isReacting() && c.status().endsWith("damaged"), "Damaged vessel should stop: " + c.status());
-                    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.REPAIR_KIT.get()));
-                    h.useBlock(SIDE_CASING, player);
+                    ItemStack kit = new ItemStack(CMItems.REPAIR_KIT.get());
+                    h.assertTrue(kit.getUseDuration(player) == CMThermal.REPAIR_TICKS, "Repair should take the configured time");
+                    h.assertTrue(RepairKitItem.repairAt(h.getLevel(), abs), "Repair kit should repair damaged casing");
                     h.assertTrue(Math.abs(c.integrity(abs) - (0.1 + CMThermal.REPAIR_KIT_AMOUNT)) < 1e-9, "Repair kit should add 50%: " + c.integrity(abs));
-                    h.assertTrue(player.getMainHandItem().isEmpty(), "Repair kit should be used up");
                     h.assertTrue(crack(h, SIDE_CASING) == 1, "Crack stage should drop to 1 at 60%");
                 })
                 .thenIdle(3)

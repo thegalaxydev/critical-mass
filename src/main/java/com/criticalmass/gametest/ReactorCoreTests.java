@@ -163,7 +163,7 @@ public final class ReactorCoreTests {
         double before = core.storedHeat();
         core.tick(false, 1, CMThermal.COOLANT_REFERENCE_FLOW, buffer);
         h.assertTrue(core.lastExtracted() > 0, "No extraction with flow");
-        h.assertTrue(Math.abs(before - core.storedHeat() - buffer.heat()) < 1e-9, "Extracted heat did not arrive in the coolant");
+        h.assertTrue(Math.abs(before + core.lastOutput() - core.storedHeat() - buffer.heat()) < 1e-9, "Extracted heat did not arrive in the coolant");
         h.succeed();
     }
 

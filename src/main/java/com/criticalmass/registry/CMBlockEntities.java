@@ -7,6 +7,7 @@ import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.BypassValveBlockEntity;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
+import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
@@ -45,6 +46,9 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new BypassValveBlockEntity(CMBlockEntities.BYPASS_VALVE.get(), pos, state), CMBlocks.STEAM_BYPASS_VALVE.get()).build(null));
     public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReliefValveBlockEntity(CMBlockEntities.RELIEF_VALVE.get(), pos, state), CMBlocks.RELIEF_VALVE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<EmergencyTankBlockEntity>> EMERGENCY_TANK = BLOCK_ENTITIES.register("emergency_coolant_tank",
+            () -> BlockEntityType.Builder.of((pos, state) -> new EmergencyTankBlockEntity(CMBlockEntities.EMERGENCY_TANK.get(), pos, state), CMBlocks.EMERGENCY_COOLANT_TANK.get()).build(null));
 
     private CMBlockEntities() {
     }

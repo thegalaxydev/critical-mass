@@ -1,0 +1,188 @@
+{
+ "name": "ops_body",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode spectator",
+    "/tp @p 414 -40 390"
+   ],
+   "wait": 40,
+   "gui": false
+  },
+  {
+   "cmds": [
+    "/fill 399 -60 399 407 -60 407 create:andesite_casing",
+    "/fill 401 -59 401 405 -55 405 criticalmass:reactor_vessel_casing hollow",
+    "/setblock 401 -57 403 criticalmass:reactor_controller[facing=west]",
+    "/setblock 403 -55 403 criticalmass:reactor_service_port[facing=up]",
+    "/setblock 403 -57 405 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 403 -57 401 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/fill 402 -58 402 402 -56 402 criticalmass:coolant_channel",
+    "/fill 403 -58 402 403 -56 402 criticalmass:control_channel",
+    "/fill 404 -58 402 404 -56 402 criticalmass:coolant_channel",
+    "/fill 402 -58 403 402 -56 403 criticalmass:fuel_channel",
+    "/fill 403 -58 403 403 -56 403 criticalmass:fuel_channel",
+    "/fill 404 -58 403 404 -56 403 criticalmass:fuel_channel",
+    "/fill 402 -58 404 402 -56 404 criticalmass:coolant_channel",
+    "/fill 403 -58 404 403 -56 404 criticalmass:control_channel",
+    "/fill 404 -58 404 404 -56 404 criticalmass:coolant_channel",
+    "/setblock 404 -57 406 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 406 -55 406 criticalmass:steam_turbine[axis=x]",
+    "/setblock 403 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 405 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -56 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 405 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 404 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 403 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 402 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 401 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 405 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 404 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -55 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -56 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -57 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -54 402 criticalmass:control_rod_drive[facing=west]",
+    "/setblock 403 -54 404 criticalmass:control_rod_drive[facing=west]",
+    "/setblock 404 -54 402 create:creative_motor[facing=west]",
+    "/setblock 404 -54 404 create:creative_motor[facing=west]"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 403 -57 406 minecraft:air",
+    "/setblock 405 -57 406 minecraft:air",
+    "/setblock 406 -57 406 minecraft:air",
+    "/setblock 406 -56 406 minecraft:air",
+    "/setblock 406 -54 406 minecraft:air",
+    "/setblock 406 -54 405 minecraft:air",
+    "/setblock 406 -54 404 minecraft:air",
+    "/setblock 406 -54 403 minecraft:air",
+    "/setblock 406 -54 402 minecraft:air",
+    "/setblock 406 -54 401 minecraft:air",
+    "/setblock 406 -54 400 minecraft:air",
+    "/setblock 405 -54 400 minecraft:air",
+    "/setblock 404 -54 400 minecraft:air",
+    "/setblock 403 -54 400 minecraft:air",
+    "/setblock 403 -55 400 minecraft:air",
+    "/setblock 403 -56 400 minecraft:air",
+    "/setblock 403 -57 400 minecraft:air",
+    "/setblock 403 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 405 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -57 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -56 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 406 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 405 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 404 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 403 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 402 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 401 criticalmass:reinforced_pipe",
+    "/setblock 406 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 405 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 404 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -54 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -55 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -56 400 criticalmass:reinforced_pipe",
+    "/setblock 403 -57 400 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 401 -57 403 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/setblock 404 -58 406 create:creative_motor[facing=up]",
+    "/setblock 402 -54 402 minecraft:redstone_block",
+    "/setblock 402 -54 404 minecraft:redstone_block"
+   ],
+   "wait": 200
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/sable assemble area 399 -60 399 407 -53 407"
+   ],
+   "wait": 60
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/sable paused true",
+    "/sable teleport @n 403 -30 403"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/sable paused false",
+    "/sable physics impulse @n angular 0 0 1500 global",
+    "/sable physics impulse @n angular 600 0 0 global"
+   ],
+   "wait": 160
+  },
+  {
+   "shot": "flipped",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 3
+  },
+  {
+   "note": "SECTION scram while inverted"
+  },
+  {
+   "invoke": {
+    "offset": [
+     0,
+     0,
+     0
+    ],
+    "method": "scram",
+    "far": true
+   },
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 3
+  },
+  {
+   "wait": 60
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger",
+    "/sable info @n"
+   ],
+   "wait": 3
+  },
+  {
+   "shot": "after_scram",
+   "wait": 5
+  }
+ ]
+}

@@ -17,6 +17,7 @@ import com.criticalmass.content.thermal.BoilerPlateBlock;
 import com.criticalmass.content.thermal.BypassValveBlock;
 import com.criticalmass.content.thermal.CondenserBlock;
 import com.criticalmass.content.thermal.CoolingTowerBlock;
+import com.criticalmass.content.thermal.EmergencyTankBlock;
 import com.criticalmass.content.thermal.HeatExchangerBlock;
 import com.criticalmass.content.thermal.RadiatorBlock;
 import com.criticalmass.content.thermal.ReactorControllerBlock;
@@ -52,7 +53,7 @@ public final class CMBlocks {
     public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));
     public static final DeferredBlock<CoolingTowerBlock> COOLING_TOWER_PACKING = register("cooling_tower_packing", CoolingTowerBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.0f).sound(SoundType.WOOD).noOcclusion());
     public static final DeferredBlock<RadiatorBlock> RADIATOR_PANEL = register("radiator_panel", RadiatorBlock::new, metal(2.5f).noOcclusion());
-    public static final DeferredBlock<PipeConnectableBlocks.Simple> EMERGENCY_COOLANT_TANK = register("emergency_coolant_tank", PipeConnectableBlocks.Simple::new, metal(4.0f));
+    public static final DeferredBlock<EmergencyTankBlock> EMERGENCY_COOLANT_TANK = register("emergency_coolant_tank", EmergencyTankBlock::new, metal(4.0f));
     public static final DeferredBlock<ReliefValveBlock> RELIEF_VALVE = register("relief_valve", ReliefValveBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<BypassValveBlock> STEAM_BYPASS_VALVE = register("steam_bypass_valve", BypassValveBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<BoilerPlateBlock> BOILER_HEATING_PLATE = register("boiler_heating_plate", BoilerPlateBlock::new, metal(3.0f).noOcclusion());

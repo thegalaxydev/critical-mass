@@ -111,7 +111,6 @@ public final class CoolantLoopTests {
         controller.coolant().set(coolant(6000), 0);
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
         BlockPos casing = new BlockPos(5, 2, 2);
-        double[] mark = new double[1];
         h.startSequence()
                 .thenIdle(10)
                 .thenExecute(() -> h.assertTrue(controller.isReacting(), "Reactor should start: " + controller.status()))
@@ -120,13 +119,12 @@ public final class CoolantLoopTests {
                 .thenExecute(() -> {
                     h.assertTrue(!controller.isReacting() && controller.isTripped(), "Breaking the vessel should trip the reactor: " + controller.status());
                     h.assertTrue(controller.problemPositions().contains(h.absolutePos(casing)), "Missing casing not reported at its position");
-                    mark[0] = controller.heatAdded();
                     h.setBlock(casing, CMBlocks.REACTOR_VESSEL_CASING.get());
                 })
                 .thenIdle(5)
                 .thenExecute(() -> {
                     h.assertTrue(controller.isTripped() && !controller.isReacting(), "Trip should latch until the signal is removed");
-                    h.assertTrue(controller.heatAdded() == mark[0], "Tripped reactor produced heat");
+                    h.assertTrue(!controller.core().lastReacting(), "Tripped reactor kept fissioning");
                     h.setBlock(TestVessels.REDSTONE, Blocks.AIR);
                 })
                 .thenIdle(3)

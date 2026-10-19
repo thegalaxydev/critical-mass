@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.client.VesselHighlighter;
+import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -28,16 +29,25 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private final CoolantBuffer coolant = new CoolantBuffer(CMThermal.CONTROLLER_CAPACITY, this::markCoolantChanged);
     private final ReactorCore core = new ReactorCore();
     private VesselStructure structure;
+    private VesselStructure lastValid;
     private boolean structureDirty = true;
     private int revalidateIn;
     private int signal;
     private boolean reacting;
     private boolean tripped;
     private boolean frozen;
+    private boolean startingUp;
+    private int noFlowTicks;
+    private String tripReason = "";
+    private final ThermalSinks sinks = new ThermalSinks();
     private final Map<Long, Double> integrity = new HashMap<>();
     private int damageClock;
     private double clientLowestIntegrity = 1.0;
     private int clientDamaged;
+    private double clientResidual;
+    private double clientFission;
+    private int clientDrives;
+    private double clientDriveInsertion = 1;
     private double heatAdded;
     private int flowAccum;
     private int lastTickFlow;
@@ -236,6 +246,53 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
     }
 
+    private void trip(String reason) {
+        tripped = true;
+        tripReason = reason;
+        syncPending = true;
+    }
+
+    public void scram() {
+        trip("manual");
+    }
+
+    public String tripReason() {
+        return tripReason;
+    }
+
+    @Override
+    public ThermalSinks sinks() {
+        return sinks;
+    }
+
+    public boolean isBreached() {
+        for (double v : integrity.values()) {
+            if (v <= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Map<Long, ControlRodDriveBlockEntity> findDrives() {
+        Map<Long, ControlRodDriveBlockEntity> out = new HashMap<>();
+        VesselStructure layout = structure != null && structure.valid() ? structure : lastValid;
+        if (layout == null || level == null) {
+            return out;
+        }
+        for (long k : core.controlColumns()) {
+            BlockPos p = new BlockPos(worldPosition.getX() + ReactorCore.keyX(k), layout.max.getY() + 1, worldPosition.getZ() + ReactorCore.keyZ(k));
+            if (level.getBlockEntity(p) instanceof ControlRodDriveBlockEntity d) {
+                out.put(k, d);
+            }
+        }
+        return out;
+    }
+
+    public boolean repairAllowed() {
+        return !isBreached() || core.residualPower() <= CMThermal.REPAIR_RESIDUAL_LIMIT;
+    }
+
     public void noteFlow(int amount) {
         flowAccum += amount;
     }
@@ -284,18 +341,65 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             damageClock = 0;
             damageCasing();
         }
-        boolean canRun = structure != null && structure.complete() && !isDamaged();
-        if (!canRun && reacting) {
-            tripped = true;
-        }
-        if (signal == 0) {
-            tripped = false;
-        }
-        reacting = canRun && !tripped && signal > 0;
         effectiveFlow = Math.max(flowAccum, lastTickFlow);
         lastTickFlow = flowAccum;
         flowAccum = 0;
-        heatAdded += core.tick(reacting, insertion(), effectiveFlow, coolant);
+        Map<Long, ControlRodDriveBlockEntity> drives = findDrives();
+        boolean breached = isBreached();
+        boolean damaged = isDamaged();
+        boolean canRun = structure != null && structure.complete() && !damaged && !breached;
+        boolean demand = signal > 0;
+        for (ControlRodDriveBlockEntity d : drives.values()) {
+            if (d.target() < 1 || d.insertion() < 1) {
+                demand = true;
+            }
+        }
+        if (reacting) {
+            if (!canRun) {
+                trip(breached ? "breach" : damaged ? "damaged" : "invalid");
+            } else if (core.maxTemperature() >= CMThermal.TRIP_TEMPERATURE) {
+                trip("overtemp");
+            } else if (effectiveFlow == 0) {
+                if (++noFlowTicks >= CMThermal.LOW_FLOW_TRIP_TICKS) {
+                    trip("low_flow");
+                }
+            } else {
+                noFlowTicks = 0;
+            }
+        } else {
+            noFlowTicks = 0;
+        }
+        if (tripped && signal == 0) {
+            boolean rodsCommandedIn = true;
+            for (ControlRodDriveBlockEntity d : drives.values()) {
+                if (d.target() < 1) {
+                    rodsCommandedIn = false;
+                }
+            }
+            if (rodsCommandedIn) {
+                tripped = false;
+            }
+        }
+        if (tripped || !canRun) {
+            for (ControlRodDriveBlockEntity d : drives.values()) {
+                d.reactorTripped();
+            }
+        }
+        reacting = canRun && !tripped && demand;
+        double fallback = insertion();
+        heatAdded += core.tick(reacting, k -> {
+            ControlRodDriveBlockEntity d = drives.get(k);
+            return d != null ? d.insertion() : fallback;
+        }, effectiveFlow, coolant);
+        if (breached && coolant.amount() > 0) {
+            sinks.vent(coolant.take(CMThermal.BREACH_LEAK_RATE));
+        }
+        startingUp = false;
+        for (ControlRodDriveBlockEntity d : drives.values()) {
+            if (d.moving() && d.target() < d.insertion()) {
+                startingUp = true;
+            }
+        }
         String newStatus = statusKey(canRun);
         if (!newStatus.equals(status)) {
             status = newStatus;
@@ -325,19 +429,34 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (!structure.complete()) {
             return "criticalmass.reactor.status.incomplete";
         }
+        if (isBreached()) {
+            return "criticalmass.reactor.status.breached";
+        }
         if (isDamaged()) {
             return "criticalmass.reactor.status.damaged";
         }
         if (tripped) {
             return "criticalmass.reactor.status.tripped";
         }
-        return reacting ? "criticalmass.reactor.status.running" : "criticalmass.reactor.status.shutdown";
+        if (reacting && startingUp) {
+            return "criticalmass.reactor.status.starting";
+        }
+        if (reacting && core.lastOutput() > core.residualPower() + 1e-6) {
+            return "criticalmass.reactor.status.running";
+        }
+        if (core.residualPower() > CMThermal.RESIDUAL_COLD_LIMIT || core.maxTemperature() > CMThermal.COLD_TEMPERATURE) {
+            return "criticalmass.reactor.status.cooling_down";
+        }
+        return "criticalmass.reactor.status.cold";
     }
 
     public void revalidate() {
         structureDirty = false;
         revalidateIn = CMThermal.REVALIDATE_INTERVAL;
         structure = VesselStructure.scan(level, worldPosition);
+        if (structure.valid()) {
+            lastValid = structure;
+        }
         core.rebuild(structure, worldPosition);
         if (structure.unloaded()) {
             revalidateIn = 20;
@@ -350,6 +469,14 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             BlockPos abs = worldPosition.offset(BlockPos.of(k));
             return !structure.onShell(abs) || !(level.getBlockState(abs).getBlock() instanceof VesselCasingBlock);
         });
+        for (Map.Entry<Long, Double> e : integrity.entrySet()) {
+            BlockPos abs = worldPosition.offset(BlockPos.of(e.getKey()));
+            BlockState s = level.getBlockState(abs);
+            int stage = VesselCasingBlock.stageFor(e.getValue());
+            if (s.getBlock() instanceof VesselCasingBlock && s.getValue(VesselCasingBlock.CRACK) != stage) {
+                level.setBlock(abs, s.setValue(VesselCasingBlock.CRACK, stage), Block.UPDATE_ALL);
+            }
+        }
         problemPos.clear();
         problemReason.clear();
         for (VesselStructure.Problem p : structure.problems) {
@@ -379,6 +506,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putDouble("HeatAdded", heatAdded);
         tag.putBoolean("Tripped", tripped);
         tag.putBoolean("Reacting", reacting);
+        tag.putString("TripReason", tripReason);
+        tag.put("Sinks", sinks.save());
         ListTag damage = new ListTag();
         for (Map.Entry<Long, Double> e : integrity.entrySet()) {
             CompoundTag d = new CompoundTag();
@@ -392,6 +521,15 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             return;
         }
         tag.putDouble("LowestIntegrity", lowestIntegrity());
+        tag.putDouble("Residual", core.residualPower());
+        tag.putDouble("Fission", core.lastReacting() ? core.lastOutput() : 0);
+        Map<Long, ControlRodDriveBlockEntity> drives = findDrives();
+        double sum = 0;
+        for (ControlRodDriveBlockEntity d : drives.values()) {
+            sum += d.insertion();
+        }
+        tag.putInt("Drives", drives.size());
+        tag.putDouble("DriveInsertion", drives.isEmpty() ? 1 : sum / drives.size());
         tag.putInt("Damaged", damagedBlocks());
         tag.putString("Status", status);
         if (sizeError != null) {
@@ -427,6 +565,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         heatAdded = tag.getDouble("HeatAdded");
         tripped = tag.getBoolean("Tripped");
         reacting = tag.getBoolean("Reacting");
+        tripReason = tag.getString("TripReason");
+        sinks.load(tag.getCompound("Sinks"));
         if (!clientPacket) {
             integrity.clear();
             for (Tag t : tag.getList("Integrity", Tag.TAG_COMPOUND)) {
@@ -471,14 +611,21 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         clientHotSpots = tag.getInt("HotSpots");
         clientLowestIntegrity = tag.contains("LowestIntegrity") ? tag.getDouble("LowestIntegrity") : 1.0;
         clientDamaged = tag.getInt("Damaged");
+        clientResidual = tag.getDouble("Residual");
+        clientFission = tag.getDouble("Fission");
+        clientDrives = tag.getInt("Drives");
+        clientDriveInsertion = tag.getDouble("DriveInsertion");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.controller")));
-        boolean running = status.endsWith("running");
-        boolean healthy = running || status.endsWith("shutdown");
+        boolean running = status.endsWith("running") || status.endsWith("starting");
+        boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down");
         tooltip.add(ThermalTooltips.line(status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED));
+        if (status.endsWith("tripped") && !tripReason.isEmpty()) {
+            tooltip.add(ThermalTooltips.line("criticalmass.reactor.trip." + tripReason, ChatFormatting.RED));
+        }
         if (sizeError != null) {
             tooltip.add(ThermalTooltips.line(sizeError, ChatFormatting.RED, dims[0], dims[1], dims[2]));
         } else if (dims[0] > 0) {
@@ -495,9 +642,16 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         for (String m : missing) {
             tooltip.add(ThermalTooltips.line(m, ChatFormatting.GOLD));
         }
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.insertion", ChatFormatting.GRAY, Math.round(insertion() * 100)));
+        if (clientDrives > 0) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.drive_insertion", ChatFormatting.GRAY, clientDrives, Math.round(clientDriveInsertion * 100)));
+        } else {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.insertion", ChatFormatting.GRAY, Math.round(insertion() * 100)));
+        }
+        if (clientResidual > 0.05) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.residual", ChatFormatting.GOLD, ThermalTooltips.number(clientResidual)));
+        }
         if (fuelColumns > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientOutput > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientOutput)));
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientFission)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.extracted", ChatFormatting.GRAY, ThermalTooltips.number(clientExtracted)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.core_temp", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));
             if (clientHotSpots > 0) {
