@@ -11,8 +11,6 @@ VANILLA = os.path.join(ROOT, "build", "moddev", "artifacts", "neoforge-21.1.262-
 RAW = os.path.join(ROOT, "src", "main", "resources", "assets", "criticalmass", "textures", "item", "raw_uranium.png")
 OUT = os.path.join(ROOT, "src", "main", "resources", "assets", "criticalmass", "textures", "block")
 
-PAIRS = {"uranium_ore": ("stone", "gold_ore"), "deepslate_uranium_ore": ("deepslate", "deepslate_gold_ore")}
-
 
 def vanilla(z, name):
     return Image.open(io.BytesIO(z.read("assets/minecraft/textures/block/%s.png" % name))).convert("RGBA")
@@ -60,14 +58,23 @@ def paint(z, name, base_name, mask_name, ramp):
         c = ramp[min(len(ramp) - 1, int(t * len(ramp)))]
         out.putpixel(p, c + (255,))
     out.save(os.path.join(OUT, name + ".png"))
+    return out, spots
+
+
+def transplant(z, name, base_name, source, spots):
+    out = vanilla(z, base_name)
+    for p in spots:
+        out.putpixel(p, source.getpixel(p))
+    out.save(os.path.join(OUT, name + ".png"))
     return len(spots)
 
 
 def main():
     ramp = brighten(palette())
     with zipfile.ZipFile(VANILLA) as z:
-        for name, (base, mask) in PAIRS.items():
-            print(name, paint(z, name, base, mask, ramp), "ore pixels")
+        deep, spots = paint(z, "deepslate_uranium_ore", "deepslate", "deepslate_gold_ore", ramp)
+        print("deepslate_uranium_ore", len(spots), "ore pixels")
+        print("uranium_ore", transplant(z, "uranium_ore", "stone", deep, spots), "ore pixels from the deepslate ore")
 
 
 if __name__ == "__main__":
