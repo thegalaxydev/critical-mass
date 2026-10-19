@@ -9,7 +9,13 @@ public final class CMThermal {
     public static final double HEAT_CAPACITY = 1.0;
     public static final int CONTROLLER_CAPACITY = 8000;
     public static final int TURBINE_CAPACITY = 1000;
-    public static final double TEST_HEATER_RATE = 2000.0;
+    public static final double FUEL_BASE_OUTPUT = 50.0;
+    public static final double FUEL_ADJACENCY_FACTOR = 0.25;
+    public static final double FUEL_HEAT_CAPACITY = 200.0;
+    public static final double COOLANT_EXTRACTION = 0.05;
+    public static final int COOLANT_REFERENCE_FLOW = 64;
+    public static final double HOT_SPOT_TEMPERATURE = 800.0;
+    public static final int REVALIDATE_INTERVAL = 100;
     public static final double TURBINE_EXTRACTION = 0.02;
     public static final double SU_PER_HEAT = 4.0;
     public static final float TURBINE_RPM = 16.0f;

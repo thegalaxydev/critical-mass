@@ -44,10 +44,12 @@ public final class LedgerCommand {
             if (be instanceof ReactorControllerBlockEntity c) {
                 controllers++;
                 coolant += c.coolant().amount();
-                stored += c.coolant().heat();
+                stored += c.coolant().heat() + c.core().storedHeat();
                 added += c.heatAdded();
-                source.sendSuccess(() -> Component.literal("controller " + where(c) + " coolant=" + c.coolant().amount() + " heat=" + fmt(c.coolant().heat())
-                        + " temp=" + fmt(c.coolant().temperature()) + " added=" + fmt(c.heatAdded()) + " heater=" + c.isHeaterOn()), false);
+                source.sendSuccess(() -> Component.literal("controller " + where(c) + " status=" + c.status() + " coolant=" + c.coolant().amount() + " heat=" + fmt(c.coolant().heat())
+                        + " temp=" + fmt(c.coolant().temperature()) + " core=" + fmt(c.core().storedHeat()) + " coreMax=" + fmt(c.core().maxTemperature())
+                        + " hotSpots=" + c.core().hotSpots() + " added=" + fmt(c.heatAdded()) + " insertion=" + fmt(c.insertion()) + " flow=" + c.effectiveFlow()
+                        + " problems=" + c.problemPositions().size() + " missing=" + c.missing().size()), false);
             } else if (be instanceof SteamTurbineBlockEntity t) {
                 turbines++;
                 coolant += t.coolant().amount();

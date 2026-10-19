@@ -181,6 +181,12 @@ public final class CoolantCircuit {
             }
         }
         to.coolant().give(packet);
+        if (from instanceof ReactorControllerBlockEntity c) {
+            c.noteFlow(moved);
+        }
+        if (to instanceof ReactorControllerBlockEntity c && to != from) {
+            c.noteFlow(moved);
+        }
         return new Flow(moved, null);
     }
 

@@ -1,6 +1,7 @@
 package com.criticalmass;
 
 import com.criticalmass.content.thermal.LedgerCommand;
+import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
@@ -37,6 +38,7 @@ public class CriticalMass {
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
+        NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
     }
 
     public static ResourceLocation asResource(String path) {

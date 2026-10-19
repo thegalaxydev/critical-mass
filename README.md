@@ -30,20 +30,35 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
 - Generated art and its provenance (prompts, raw outputs, processing): `art/SOURCES.md`, `art/generated/`. The scripts that drew blockouts and finalized textures: `art/tools/`.
 - Fluid textures live in `textures/fluid/` and are added to the block atlas by `assets/minecraft/atlases/blocks.json`.
 
-## Prototype coolant loop (milestone 1)
+## Reactor and coolant loop
 
-The first playable loop proves the heat path: vessel, pump, turbine. Values live in `content/thermal/CMThermal.java`.
+Values live in `content/thermal/CMThermal.java`.
 
-1. Build a vessel: a Reactor Controller touching Reactor Vessel Casing and two Primary Coolant Ports. Set one port to outlet and one to inlet with Create's wrench.
-2. Fill the controller with water or primary coolant (right-click with a bucket, or pipe it in with Create). It holds 8,000 mB.
-3. Run Reinforced Pipe from the outlet port to the back of a Circulation Pump. Run it from the pump's front up into the bottom of a Steam Turbine, then from the turbine's top back to the inlet port. The loop must be a single path with no branches.
-4. Turn the pump's shaft. It moves 2 mB/t per RPM, up to 256 mB/t, and stops when the shaft stops or the network is overstressed.
-5. Give the controller a redstone signal to run the test heater (+2,000 HU/t while it holds coolant).
-6. The turbine extracts heat from the coolant passing through it and supplies 4 SU of stress capacity per HU/t, at a fixed 16 RPM.
+**Vessel.** A vessel is a box of Reactor Vessel Casing, odd on every side, from 5x5x5 up to 11x11x13.
+- Exactly one Reactor Controller sits on a side face and faces outward.
+- A Primary Coolant Port set to inlet and one set to outlet go on faces, facing outward (toggle with a wrench).
+- A Reactor Service Port goes on the top face, facing up.
+- Only casing may sit on edges and corners.
+- The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed.
 
-Wear Create's goggles to read coolant, temperature, stored heat, flow, loop status and stress capacity on each block.
-Game tests in `com.criticalmass.gametest` check save/load, the heater rate, volume and heat conservation, stopping without rotation, and turbine capacity (`./gradlew runGameTestServer`).
-`src/inspect/scenes/make_loop.py` builds the same loop in game for screenshots.
+With goggles on, invalid blocks are outlined in red, and the controller lists problems and missing parts.
+
+**Core.**
+- Each fuel column makes 50 HU/t per block, plus 25% for each neighbouring fuel column.
+- Each neighbouring control column scales that by (1 - rod insertion).
+- Rods withdraw with the controller's redstone signal (15 = fully withdrawn) until control rod drives move them.
+- Coolant columns pass 5% per tick of a neighbouring fuel column's heat into the vessel coolant, but only while the pump moves coolant through the vessel.
+- A fuel column without enough cooling heats up and is flagged as a hot spot at 800 °C.
+- If the vessel breaks while running, the reactor trips. It stays tripped until the redstone signal is removed.
+
+**Loop.**
+1. Fill the controller with coolant (it holds 8,000 mB).
+2. Run Reinforced Pipe from the outlet port to the back of a Circulation Pump, from its front up through the bottom of a Steam Turbine, and from the turbine's top back to the inlet port. The loop must be one path with no branches.
+3. The pump moves 2 mB/t per RPM, up to 256 mB/t, and stops when its shaft stops.
+4. The turbine draws heat from the coolant and supplies 4 SU per HU/t at a fixed 16 RPM.
+
+Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, conservation, tripping and turbine capacity (`./gradlew runGameTestServer`).
+`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage.
 
 `/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
 

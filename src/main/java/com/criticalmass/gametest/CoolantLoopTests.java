@@ -1,20 +1,13 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
-import com.criticalmass.content.CoolantPortBlock;
-import com.criticalmass.content.FacingBlock;
-import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
-import com.simibubi.create.AllBlocks;
-import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
-import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
-import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -31,138 +24,132 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class CoolantLoopTests {
     private static final String EMPTY = "empty";
-    private static final BlockPos CONTROLLER = new BlockPos(2, 2, 3);
-    private static final BlockPos HEATER_POWER = new BlockPos(1, 2, 3);
-    private static final BlockPos PUMP = new BlockPos(3, 2, 5);
-    private static final BlockPos MOTOR = new BlockPos(3, 1, 5);
-    private static final BlockPos TURBINE = new BlockPos(4, 4, 5);
-    private static final List<BlockPos> PIPES = List.of(
-            new BlockPos(2, 2, 5), new BlockPos(4, 2, 5), new BlockPos(4, 3, 5), new BlockPos(4, 5, 5), new BlockPos(4, 5, 4),
-            new BlockPos(4, 5, 3), new BlockPos(4, 5, 2), new BlockPos(4, 5, 1), new BlockPos(3, 5, 1), new BlockPos(2, 5, 1),
-            new BlockPos(2, 4, 1), new BlockPos(2, 3, 1), new BlockPos(2, 2, 1));
 
     private CoolantLoopTests() {
     }
 
-    private static FluidStack coolant(int amount) {
+    static FluidStack coolant(int amount) {
         return new FluidStack(CMFluids.PRIMARY_COOLANT.source.get(), amount);
     }
 
-    private static boolean close(double a, double b) {
+    static boolean close(double a, double b) {
         return Math.abs(a - b) <= 1e-6 * Math.max(1.0, Math.max(Math.abs(a), Math.abs(b)));
     }
 
-    @GameTest(template = EMPTY)
-    public static void vesselHeatSurvivesSaveAndLoad(GameTestHelper h) {
-        h.setBlock(CONTROLLER, CMBlocks.REACTOR_CONTROLLER.get());
-        ReactorControllerBlockEntity be = h.getBlockEntity(CONTROLLER);
-        be.coolant().set(coolant(4321), 98765.4321);
-        CompoundTag saved = be.saveWithFullMetadata(h.getLevel().registryAccess());
-        BlockEntity loaded = BlockEntity.loadStatic(h.absolutePos(CONTROLLER), be.getBlockState(), saved, h.getLevel().registryAccess());
-        h.assertTrue(loaded instanceof ReactorControllerBlockEntity, "Saved controller did not load back as a controller");
-        ReactorControllerBlockEntity copy = (ReactorControllerBlockEntity) loaded;
-        h.assertTrue(copy.coolant().amount() == 4321, "Coolant volume changed across save/load: " + copy.coolant().amount());
-        h.assertTrue(copy.coolant().heat() == 98765.4321, "Heat changed across save/load: " + copy.coolant().heat());
-        h.assertTrue(copy.coolant().fluid().is(CMFluids.PRIMARY_COOLANT.source.get()), "Coolant fluid changed across save/load");
-        h.succeed();
+    private static double ledger(ReactorControllerBlockEntity c, SteamTurbineBlockEntity t) {
+        return c.coolant().heat() + c.core().storedHeat() + t.coolant().heat() + t.heatExtracted();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 200)
-    public static void testHeaterAddsFixedRateOnlyWhenPowered(GameTestHelper h) {
-        h.setBlock(CONTROLLER, CMBlocks.REACTOR_CONTROLLER.get());
-        ReactorControllerBlockEntity be = h.getBlockEntity(CONTROLLER);
-        be.coolant().set(coolant(4000), 0);
-        double[] mark = new double[1];
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void vesselHeatSurvivesSaveAndLoad(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity be = h.getBlockEntity(TestVessels.CONTROLLER);
         h.startSequence()
-                .thenIdle(20)
-                .thenExecute(() -> h.assertTrue(be.coolant().heat() == 0, "Heat rose without redstone: " + be.coolant().heat()))
-                .thenExecute(() -> h.setBlock(HEATER_POWER, Blocks.REDSTONE_BLOCK))
-                .thenIdle(40)
-                .thenExecute(() -> {
-                    double heat = be.coolant().heat();
-                    h.assertTrue(heat > 0, "Powered heater added no heat");
-                    h.assertTrue(close(heat, be.heatAdded()), "Heat " + heat + " differs from the heater ledger " + be.heatAdded());
-                    double steps = heat / CMThermal.TEST_HEATER_RATE;
-                    h.assertTrue(Math.abs(steps - Math.rint(steps)) < 1e-9, "Heat is not a whole number of heater steps: " + steps);
-                    h.setBlock(HEATER_POWER, Blocks.AIR);
-                })
                 .thenIdle(2)
-                .thenExecute(() -> mark[0] = be.coolant().heat())
-                .thenIdle(40)
-                .thenExecute(() -> h.assertTrue(be.coolant().heat() == mark[0], "Heat changed with the heater off and nothing extracting"))
+                .thenExecute(() -> {
+                    be.coolant().set(coolant(4321), 98765.4321);
+                    be.core().setColumnHeat(1, 0, 5555.5);
+                    double core = be.core().storedHeat();
+                    h.assertTrue(core == 5555.5, "Column heat was not set: " + core);
+                    CompoundTag saved = be.saveWithFullMetadata(h.getLevel().registryAccess());
+                    BlockEntity loaded = BlockEntity.loadStatic(h.absolutePos(TestVessels.CONTROLLER), be.getBlockState(), saved, h.getLevel().registryAccess());
+                    h.assertTrue(loaded instanceof ReactorControllerBlockEntity, "Saved controller did not load back as a controller");
+                    ReactorControllerBlockEntity copy = (ReactorControllerBlockEntity) loaded;
+                    h.assertTrue(copy.coolant().amount() == 4321 && copy.coolant().heat() == 98765.4321, "Coolant changed across save/load");
+                    h.assertTrue(copy.core().storedHeat() == core, "Core heat changed across save/load: " + copy.core().storedHeat());
+                })
                 .thenSucceed();
     }
 
-    private static void buildLoop(GameTestHelper h, boolean heater) {
-        h.setBlock(CONTROLLER, CMBlocks.REACTOR_CONTROLLER.get());
-        h.setBlock(CONTROLLER.south(), CMBlocks.PRIMARY_COOLANT_PORT.get().defaultBlockState()
-                .setValue(FacingBlock.FACING, Direction.SOUTH).setValue(CoolantPortBlock.MODE, CoolantPortBlock.Mode.OUTLET));
-        h.setBlock(CONTROLLER.north(), CMBlocks.PRIMARY_COOLANT_PORT.get().defaultBlockState()
-                .setValue(FacingBlock.FACING, Direction.NORTH).setValue(CoolantPortBlock.MODE, CoolantPortBlock.Mode.INLET));
-        h.setBlock(PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
-                .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
-        h.setBlock(TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
-        for (BlockPos p : PIPES) {
-            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
-        }
-        for (BlockPos p : PIPES) {
-            BlockState s = ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(p), CMBlocks.REINFORCED_PIPE.get().defaultBlockState());
-            h.setBlock(p, s);
-        }
-        h.setBlock(MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
-        ReactorControllerBlockEntity controller = h.getBlockEntity(CONTROLLER);
+    @GameTest(template = EMPTY, timeoutTicks = 700)
+    public static void reactorLoopConservesCoolantAndHeat(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.loop(h, true);
+        ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         controller.coolant().set(coolant(6000), 0);
-        if (heater) {
-            h.setBlock(HEATER_POWER, Blocks.REDSTONE_BLOCK);
-        }
-    }
-
-    @GameTest(template = EMPTY, timeoutTicks = 600)
-    public static void pumpLoopConservesCoolantAndHeat(GameTestHelper h) {
-        buildLoop(h, true);
-        ReactorControllerBlockEntity controller = h.getBlockEntity(CONTROLLER);
+        h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
         int[] volumes = new int[2];
         h.startSequence()
                 .thenIdle(300)
                 .thenExecute(() -> {
-                    CirculationPumpBlockEntity pump = h.getBlockEntity(PUMP);
-                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
-                    h.assertTrue(pump.getSpeed() != 0, "Pump is not turning");
-                    h.assertTrue(pump.flow() == CMThermal.pumpFlow(pump.getSpeed()), "Pump flow " + pump.flow() + " status " + pump.status());
-                    h.assertTrue(turbine.coolant().amount() == CMThermal.TURBINE_CAPACITY, "Turbine did not fill: " + turbine.coolant().amount());
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
+                    h.assertTrue(controller.isReacting(), "Reactor should run: " + controller.status() + " problems " + controller.problemReasons() + " missing " + controller.missing());
+                    h.assertTrue(pump.flow() == CMThermal.pumpFlow(pump.getSpeed()) && pump.flow() > 0, "Pump flow " + pump.flow() + " status " + pump.status());
+                    h.assertTrue(controller.core().lastExtracted() > 0, "Coolant channels extracted nothing");
                     int total = controller.coolant().amount() + turbine.coolant().amount();
                     h.assertTrue(total == 6000, "Coolant volume not conserved: " + total);
-                    double energy = controller.coolant().heat() + turbine.coolant().heat() + turbine.heatExtracted();
-                    h.assertTrue(close(energy, controller.heatAdded()), "Heat not conserved: stored+extracted " + energy + " vs added " + controller.heatAdded());
+                    h.assertTrue(close(ledger(controller, turbine), controller.heatAdded()), "Heat not conserved: " + ledger(controller, turbine) + " vs " + controller.heatAdded());
                     h.assertTrue(turbine.heatExtracted() > 0, "Turbine extracted no heat");
-                    h.setBlock(MOTOR, Blocks.AIR);
+                    h.setBlock(TestVessels.MOTOR, Blocks.AIR);
                 })
                 .thenIdle(20)
                 .thenExecute(() -> {
-                    CirculationPumpBlockEntity pump = h.getBlockEntity(PUMP);
-                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
-                    h.assertTrue(pump.getSpeed() == 0 && pump.flow() == 0, "Pump kept flowing without rotation: " + pump.flow());
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
+                    h.assertTrue(pump.getSpeed() == 0 && pump.flow() == 0, "Pump kept flowing without rotation");
+                    h.assertTrue(controller.core().lastExtracted() == 0, "Coolant channels extracted heat without flow");
                     volumes[0] = controller.coolant().amount();
                     volumes[1] = turbine.coolant().amount();
                 })
                 .thenIdle(40)
                 .thenExecute(() -> {
-                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
                     h.assertTrue(controller.coolant().amount() == volumes[0] && turbine.coolant().amount() == volumes[1], "Coolant moved with the shaft stopped");
+                    h.assertTrue(close(ledger(controller, turbine), controller.heatAdded()), "Heat not conserved after stopping");
                 })
                 .thenSucceed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 300)
-    public static void unheatedLoopGivesNoCapacity(GameTestHelper h) {
-        buildLoop(h, false);
+    public static void invalidVesselTripsAndLatches(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
+        controller.coolant().set(coolant(6000), 0);
+        h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+        BlockPos casing = new BlockPos(5, 2, 2);
+        double[] mark = new double[1];
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> h.assertTrue(controller.isReacting(), "Reactor should start: " + controller.status()))
+                .thenExecute(() -> h.setBlock(casing, Blocks.AIR))
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    h.assertTrue(!controller.isReacting() && controller.isTripped(), "Breaking the vessel should trip the reactor: " + controller.status());
+                    h.assertTrue(controller.problemPositions().contains(h.absolutePos(casing)), "Missing casing not reported at its position");
+                    mark[0] = controller.heatAdded();
+                    h.setBlock(casing, CMBlocks.REACTOR_VESSEL_CASING.get());
+                })
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.assertTrue(controller.isTripped() && !controller.isReacting(), "Trip should latch until the signal is removed");
+                    h.assertTrue(controller.heatAdded() == mark[0], "Tripped reactor produced heat");
+                    h.setBlock(TestVessels.REDSTONE, Blocks.AIR);
+                })
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    h.assertTrue(!controller.isTripped(), "Trip should clear with the signal off");
+                    h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(3)
+                .thenExecute(() -> h.assertTrue(controller.isReacting(), "Reactor should restart: " + controller.status()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void unpoweredReactorGivesNoCapacity(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.loop(h, true);
+        ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
+        controller.coolant().set(coolant(6000), 0);
         h.startSequence()
                 .thenIdle(200)
                 .thenExecute(() -> {
-                    CirculationPumpBlockEntity pump = h.getBlockEntity(PUMP);
-                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
                     h.assertTrue(pump.flow() > 0, "Pump should circulate: " + pump.status());
-                    h.assertTrue(turbine.stressCapacity() == 0 && turbine.getGeneratedSpeed() == 0, "Turbine produced capacity with no delivered heat: " + turbine.stressCapacity());
+                    h.assertTrue(!controller.isReacting() && controller.heatAdded() == 0, "Rods fully inserted should give no reaction heat");
+                    h.assertTrue(turbine.stressCapacity() == 0 && turbine.getGeneratedSpeed() == 0, "Turbine produced capacity with no delivered heat");
                 })
                 .thenSucceed();
     }

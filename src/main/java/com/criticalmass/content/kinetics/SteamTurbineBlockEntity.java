@@ -90,6 +90,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         }
         if (syncCooldown-- <= 0) {
             syncCooldown = 20;
+            if (!hasSource() && getSpeed() != getGeneratedSpeed()) {
+                updateGeneratedRotation();
+            }
             sendData();
         }
     }
