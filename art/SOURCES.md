@@ -6,6 +6,15 @@ All art is a candidate for replacement by hand-made art later.
 
 
 
+
+## Hand-made block textures (2026-10-19)
+
+`art/tools/handmade.py` draws these from Create textures (MIT) plus hand-placed pixels, replacing the generated versions:
+- `reactor_vessel_casing`: Create's railway casing with the brass frame recoloured to iron and a weld seam across the panel.
+- `reactor_controller`, `reactor_service_port`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a round brass-rimmed hatch, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
+- `shielded_glass`: Create's tiled glass with an iron frame and tinted panes.
+- `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
+- `shielding_concrete`: hand-drawn poured slabs.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
