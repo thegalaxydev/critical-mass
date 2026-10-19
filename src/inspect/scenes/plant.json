@@ -1,0 +1,243 @@
+{
+ "name": "plant",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 594 -59 594"
+   ],
+   "wait": 60,
+   "gui": true,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/item replace entity @p armor.head with create:goggles",
+    "/fill 598 -61 598 611 -61 609 minecraft:smooth_stone"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/fill 601 -59 601 605 -55 605 criticalmass:reactor_vessel_casing hollow",
+    "/setblock 601 -57 603 criticalmass:reactor_controller[facing=west]",
+    "/setblock 603 -55 603 criticalmass:reactor_service_port[facing=up]",
+    "/setblock 603 -57 605 criticalmass:primary_coolant_port[facing=south,mode=outlet]",
+    "/setblock 603 -57 601 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/fill 602 -58 602 602 -56 602 criticalmass:coolant_channel",
+    "/fill 603 -58 602 603 -56 602 criticalmass:control_channel",
+    "/fill 604 -58 602 604 -56 602 criticalmass:coolant_channel",
+    "/fill 602 -58 603 602 -56 603 criticalmass:fuel_channel",
+    "/fill 603 -58 603 603 -56 603 criticalmass:fuel_channel",
+    "/fill 604 -58 603 604 -56 603 criticalmass:fuel_channel",
+    "/fill 602 -58 604 602 -56 604 criticalmass:coolant_channel",
+    "/fill 603 -58 604 603 -56 604 criticalmass:control_channel",
+    "/fill 604 -58 604 604 -56 604 criticalmass:coolant_channel",
+    "/setblock 604 -57 606 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 606 -57 606 criticalmass:heat_exchanger[facing=east]",
+    "/setblock 607 -59 606 criticalmass:circulation_pump[facing=west,axis_along_first=true]",
+    "/setblock 606 -54 606 criticalmass:steam_turbine[axis=x]",
+    "/setblock 607 -54 606 create:shaft[axis=x]",
+    "/setblock 608 -54 606 create:stressometer[facing=south,axis_along_first=true]",
+    "/setblock 603 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 605 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 605 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 604 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 603 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 602 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 601 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 606 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 605 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 604 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 603 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 606 -59 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -58 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -56 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -55 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 608 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -54 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -55 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -56 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -58 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -59 606 criticalmass:reinforced_pipe",
+    "/setblock 608 -59 606 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 603 -57 606 minecraft:air",
+    "/setblock 605 -57 606 minecraft:air",
+    "/setblock 607 -57 606 minecraft:air",
+    "/setblock 607 -57 605 minecraft:air",
+    "/setblock 607 -57 604 minecraft:air",
+    "/setblock 607 -57 603 minecraft:air",
+    "/setblock 607 -57 602 minecraft:air",
+    "/setblock 607 -57 601 minecraft:air",
+    "/setblock 607 -57 600 minecraft:air",
+    "/setblock 606 -57 600 minecraft:air",
+    "/setblock 605 -57 600 minecraft:air",
+    "/setblock 604 -57 600 minecraft:air",
+    "/setblock 603 -57 600 minecraft:air",
+    "/setblock 606 -59 606 minecraft:air",
+    "/setblock 606 -58 606 minecraft:air",
+    "/setblock 606 -56 606 minecraft:air",
+    "/setblock 606 -55 606 minecraft:air",
+    "/setblock 606 -53 606 minecraft:air",
+    "/setblock 607 -53 606 minecraft:air",
+    "/setblock 608 -53 606 minecraft:air",
+    "/setblock 609 -53 606 minecraft:air",
+    "/setblock 609 -54 606 minecraft:air",
+    "/setblock 609 -55 606 minecraft:air",
+    "/setblock 609 -56 606 minecraft:air",
+    "/setblock 609 -57 606 minecraft:air",
+    "/setblock 609 -58 606 minecraft:air",
+    "/setblock 609 -59 606 minecraft:air",
+    "/setblock 608 -59 606 minecraft:air",
+    "/setblock 603 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 605 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 605 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 604 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 603 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 602 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 601 criticalmass:reinforced_pipe",
+    "/setblock 607 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 606 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 605 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 604 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 603 -57 600 criticalmass:reinforced_pipe",
+    "/setblock 606 -59 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -58 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -56 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -55 606 criticalmass:reinforced_pipe",
+    "/setblock 606 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 607 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 608 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -53 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -54 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -55 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -56 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -57 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -58 606 criticalmass:reinforced_pipe",
+    "/setblock 609 -59 606 criticalmass:reinforced_pipe",
+    "/setblock 608 -59 606 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data merge block 601 -57 603 {Coolant:{Fluid:{id:\"criticalmass:primary_coolant\",amount:6000},Heat:0.0d}}",
+    "/setblock 604 -58 606 create:creative_motor[facing=up]",
+    "/setblock 600 -57 603 minecraft:lever[face=wall,facing=west,powered=true]",
+    "/data merge block 606 -57 606 {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}",
+    "/data merge block 606 -54 606 {Coolant:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}",
+    "/setblock 607 -60 606 create:creative_motor[facing=up]"
+   ],
+   "wait": 600
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 606 -58 610 minecraft:barrier",
+    "/tp @p 606.50 -57.00 610.50 facing 606.50 -58.12 606.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "exchanger",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 606 -55 610 minecraft:barrier",
+    "/tp @p 606.50 -54.00 610.50 facing 606.50 -55.12 606.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "turbine",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 608 -55 610 minecraft:barrier",
+    "/tp @p 608.50 -54.00 610.50 facing 608.50 -55.12 606.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "stressometer",
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 613 -51 613 minecraft:barrier",
+    "/tp @p 613.50 -50.00 613.50 facing 604.00 -58.62 603.00"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "overview",
+   "wait": 5
+  },
+  {
+   "note": "SECTION freeze"
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 3600 100 3600"
+   ],
+   "wait": 400
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 613.50 -50.00 613.50 facing 604.00 -58.62 603.00"
+   ],
+   "wait": 1
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/criticalmass ledger"
+   ],
+   "wait": 2
+  },
+  {
+   "wait": 5
+  }
+ ]
+}

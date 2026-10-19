@@ -9,6 +9,8 @@ public final class CMThermal {
     public static final double HEAT_CAPACITY = 1.0;
     public static final int CONTROLLER_CAPACITY = 8000;
     public static final int TURBINE_CAPACITY = 1000;
+    public static final int EXCHANGER_CAPACITY = 1000;
+    public static final double EXCHANGER_RATE = 0.1;
     public static final double FUEL_BASE_OUTPUT = 50.0;
     public static final double FUEL_ADJACENCY_FACTOR = 0.25;
     public static final double FUEL_HEAT_CAPACITY = 200.0;
@@ -22,6 +24,7 @@ public final class CMThermal {
     public static final double TURBINE_MIN_SU = 64.0;
     public static final int PUMP_FLOW_PER_RPM = 2;
     public static final int PUMP_MAX_FLOW = 256;
+    public static final float PUMP_IDLE_STRESS = 0.25f;
     public static final int MAX_PIPE_LENGTH = 256;
     public static final int MAX_VESSEL_BLOCKS = 2048;
 
@@ -30,6 +33,10 @@ public final class CMThermal {
 
     public static boolean isCoolant(FluidStack stack) {
         return stack.is(CMFluids.PRIMARY_COOLANT.source.get()) || stack.is(Fluids.WATER);
+    }
+
+    public static float pumpCapRpm() {
+        return PUMP_MAX_FLOW / (float) PUMP_FLOW_PER_RPM;
     }
 
     public static int pumpFlow(float speed) {

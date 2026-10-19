@@ -116,5 +116,12 @@
   "criticalmass.goggles.reaction": "Reaction heat: %s HU/t",
   "criticalmass.goggles.extracted": "To coolant: %s HU/t",
   "criticalmass.goggles.core_temp": "Hottest fuel column: %s °C",
-  "criticalmass.goggles.hot_spots": "%s hot spot(s): fuel columns without enough cooling"
+  "criticalmass.goggles.hot_spots": "%s hot spot(s): fuel columns without enough cooling",
+  "criticalmass.reactor.status.frozen": "Frozen: part of the vessel is not loaded",
+  "criticalmass.vessel.unloaded": "Part of the vessel is not loaded",
+  "criticalmass.goggles.exchanger": "Heat Exchanger",
+  "criticalmass.goggles.exchanger_primary": "Primary side (front and back):",
+  "criticalmass.goggles.exchanger_secondary": "Secondary side (top and bottom):",
+  "criticalmass.goggles.exchange_rate": "Heat moving to secondary: %s HU/t",
+  "criticalmass.circuit.empty_loop": "Loop has nothing to circulate through"
 }

@@ -55,6 +55,7 @@ public class CriticalMass {
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());
     }
 
     private static String describe(ModList mods, String modId) {

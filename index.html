@@ -1862,6 +1862,15 @@ const PROGRESS_SETS = [
   ]]
 ];
 const RECORD_PATCHES = [
+  ["progress-thermal-circuits-1", [
+    ["tasks", "tsk-015", "Todo", { status: "Done", notes: "Ports join only Reinforced Pipe: a game test asks Create's own FluidPipeBlock.canConnectTo and it refuses the port while accepting a fluid tank. Inlet and outlet modes set the loop direction; reversed modes stop the pump with a 'needs inlet/outlet' status (game test). Pipes still form single paths without branches." }],
+    ["tasks", "tsk-016", "Todo", { status: "Done", notes: "Pump stress is 4 SU per RPM while circulating, a quarter of that while idle (no loop or nothing to move), and stops rising past 128 RPM where flow reaches its 256 mB/t cap. Network stress updates when the pump starts or stops circulating. Game test checks idle, running and above-cap values." }],
+    ["tasks", "tsk-017", "Todo", { status: "Done", notes: "Heat Exchanger: the primary circuit passes front to back and the secondary top to bottom, each with its own 1,000 mB buffer. Heat moves from the hotter side to the colder only while both sides have flow, never past equal temperature, and what leaves one side arrives on the other. Pumps can now drive closed loops that return to themselves, so the secondary circuit needs no vessel. Game test checks fluids never cross and volumes hold; seen in game moving 212 HU/t." }],
+    ["tasks", "tsk-018", "Todo", { status: "Done", notes: "Game test plantConservesHeatAndFluidFor10000Ticks runs a reactor, primary loop, heat exchanger and a water secondary loop with a turbine for 10,000 ticks and checks every tick that both circuit volumes are unchanged and that stored heat plus turbine extraction equals reaction heat. No leaks or vents exist yet, so there are no sinks to log." }],
+    ["tasks", "tsk-019", "Todo", { status: "Done", notes: "Policy: freeze on unload. An unloaded reactor keeps its exact state and does nothing until it reloads; a vessel that is only partly loaded freezes instead of tripping. Checked in game: 400 ticks away from a running plant added only the 5 ticks spent loading and unloading, and the ledger stayed balanced." }],
+    ["decisions", "dec-chunk", "Open", { status: "Accepted", date: "2026-10-19", decision: "Freeze state on unload. Unloaded reactors keep their exact state and do nothing until reloaded; partly loaded vessels freeze instead of tripping. No free power and no hidden hazards. Catch-up simulation can be reconsidered if playtesting shows a need." }],
+    ["blocks", "blk-heat-exchanger", "Specified", { status: "In development", notes: "Two separate buffers (primary front/back, secondary top/bottom); transfers heat only with flow on both sides. Steam phase change and the condenser are still to come." }]
+  ]],
   ["progress-reactor-core-1", [
     ["tasks", "tsk-010", "Todo", { status: "Done", notes: "Vessel validation in the mod (VesselStructure): odd sizes from 5x5x5 to 11x11x13, casing on every face, edges and corners casing only, exactly one controller facing outward, service port on top, ports facing outward, channels inside as uniform vertical columns. Size errors give the measured size; a second controller is reported with its position. Runs on placement, on any block change in or next to the vessel, every 100 ticks, and on load. Game tests cover valid, even, oversize, undersize, largest and second-controller cases." }],
     ["tasks", "tsk-011", "Todo", { status: "Done", notes: "Invalid blocks are outlined in red for players wearing goggles within 48 blocks, and the controller's goggle tooltip lists the count and the first three positions with reasons, plus missing inlet, outlet and service port. A dedicated controller screen does not exist yet." }],
@@ -1905,7 +1914,8 @@ function applyProgressSets(raw) {
     for (const [coll, id, expected, patch] of entries) {
       const list = raw[coll];
       const rec = Array.isArray(list) ? list.find(x => x && x.id === id) : null;
-      if (!rec || rec.status !== expected || rec.updatedAt) continue;
+      const current = rec && rec.status === undefined && SPECS[coll] && SPECS[coll].defaults ? SPECS[coll].defaults.status : rec && rec.status;
+      if (!rec || current !== expected || rec.updatedAt) continue;
       for (const [k, v] of Object.entries(patch)) {
         rec[k] = k === "notes" && typeof rec.notes === "string" && rec.notes ? rec.notes + String.fromCharCode(10) + v : v;
       }

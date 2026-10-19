@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import java.util.List;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
@@ -9,6 +10,14 @@ public interface ThermalNode {
     @Nullable
     Direction passThroughExit(Direction enteredFrom);
 
-    default void onCoolantPassed(int amount) {
+    default CoolantBuffer bufferFor(Direction enteredFrom) {
+        return coolant();
+    }
+
+    default List<CoolantBuffer> buffers() {
+        return List.of(coolant());
+    }
+
+    default void onCoolantPassed(Direction enteredFrom, int amount) {
     }
 }

@@ -43,3 +43,26 @@ def start(o, coolant=6000, motor=True, power=True):
     if power:
         cmds.append("/setblock %s minecraft:lever[face=wall,facing=west,powered=true]" % w(*REDSTONE))
     return cmds
+
+
+PRIMARY = [(3, 3, 6), (5, 3, 6), (7, 3, 6), (7, 3, 5), (7, 3, 4), (7, 3, 3), (7, 3, 2), (7, 3, 1), (7, 3, 0), (6, 3, 0), (5, 3, 0), (4, 3, 0), (3, 3, 0)]
+SECONDARY = [(6, 1, 6), (6, 2, 6), (6, 4, 6), (6, 5, 6), (6, 7, 6), (7, 7, 6), (8, 7, 6), (9, 7, 6), (9, 6, 6), (9, 5, 6), (9, 4, 6), (9, 3, 6),
+             (9, 2, 6), (9, 1, 6), (8, 1, 6)]
+EXCHANGER = (6, 3, 6)
+PLANT_TURBINE = (6, 6, 6)
+
+
+def plant(o):
+    w = at(o)
+    pipes = PRIMARY + SECONDARY
+    cmds = ["/setblock %s criticalmass:circulation_pump[facing=east,axis_along_first=true]" % w(4, 3, 6),
+            "/setblock %s criticalmass:heat_exchanger[facing=east]" % w(*EXCHANGER),
+            "/setblock %s criticalmass:circulation_pump[facing=west,axis_along_first=true]" % w(7, 1, 6),
+            "/setblock %s criticalmass:steam_turbine[axis=x]" % w(*PLANT_TURBINE),
+            "/setblock %s create:shaft[axis=x]" % w(7, 6, 6), "/setblock %s create:stressometer[facing=south,axis_along_first=true]" % w(8, 6, 6)]
+    cmds += ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in pipes]
+    fix = ["/setblock %s minecraft:air" % w(*p) for p in pipes] + ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in pipes]
+    fill = ["/data merge block %s {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}" % w(*EXCHANGER),
+            "/data merge block %s {Coolant:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}" % w(*PLANT_TURBINE),
+            "/setblock %s create:creative_motor[facing=up]" % w(7, 0, 6)]
+    return cmds, fix, fill

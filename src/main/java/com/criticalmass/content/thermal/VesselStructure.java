@@ -22,6 +22,7 @@ public final class VesselStructure {
     public static final int MAX_WIDTH = 11;
     public static final int MAX_HEIGHT = 13;
     public static final int MAX_PROBLEMS = 64;
+    public static final String UNLOADED = "criticalmass.vessel.unloaded";
 
     public enum Kind { NONE, FUEL, CONTROL, COOLANT }
 
@@ -51,6 +52,10 @@ public final class VesselStructure {
 
     public boolean valid() {
         return sizeError == null && problems.isEmpty();
+    }
+
+    public boolean unloaded() {
+        return UNLOADED.equals(sizeError);
     }
 
     public boolean complete() {
@@ -114,7 +119,13 @@ public final class VesselStructure {
             maxZ = Math.max(maxZ, p.getZ());
             for (Direction d : Direction.values()) {
                 BlockPos n = p.relative(d);
-                if (seen.contains(n) || !level.isLoaded(n) || !isShell(level.getBlockState(n).getBlock())) {
+                if (seen.contains(n)) {
+                    continue;
+                }
+                if (!level.isLoaded(n)) {
+                    return failed(controller, UNLOADED);
+                }
+                if (!isShell(level.getBlockState(n).getBlock())) {
                     continue;
                 }
                 if (seen.size() > limit) {
@@ -126,6 +137,9 @@ public final class VesselStructure {
         }
         BlockPos min = new BlockPos(minX, minY, minZ);
         BlockPos max = new BlockPos(maxX, maxY, maxZ);
+        if (!level.hasChunksAt(min, max)) {
+            return failed(controller, UNLOADED);
+        }
         int w = maxX - minX + 1;
         int h = maxY - minY + 1;
         int l = maxZ - minZ + 1;

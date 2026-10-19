@@ -28,6 +28,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int signal;
     private boolean reacting;
     private boolean tripped;
+    private boolean frozen;
     private double heatAdded;
     private int flowAccum;
     private int lastTickFlow;
@@ -94,6 +95,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return reacting;
     }
 
+    public boolean isFrozen() {
+        return frozen;
+    }
+
     public boolean isTripped() {
         return tripped;
     }
@@ -150,8 +155,20 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
             return;
         }
+        if (structure != null && !structure.unloaded() && !level.hasChunksAt(structure.min, structure.max)) {
+            frozen = true;
+            return;
+        }
         if (structureDirty || revalidateIn-- <= 0) {
             revalidate();
+        }
+        frozen = structure.unloaded();
+        if (frozen) {
+            if (!status.equals("criticalmass.reactor.status.frozen")) {
+                status = "criticalmass.reactor.status.frozen";
+                sendData();
+            }
+            return;
         }
         int newSignal = level.getBestNeighborSignal(worldPosition);
         if (newSignal != signal) {
@@ -210,6 +227,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         revalidateIn = CMThermal.REVALIDATE_INTERVAL;
         structure = VesselStructure.scan(level, worldPosition);
         core.rebuild(structure, worldPosition);
+        if (structure.unloaded()) {
+            revalidateIn = 20;
+            return;
+        }
         problemPos.clear();
         problemReason.clear();
         for (VesselStructure.Problem p : structure.problems) {

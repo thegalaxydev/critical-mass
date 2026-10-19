@@ -13,6 +13,7 @@ import com.criticalmass.content.WallPanelBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.ControlRodDriveBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlock;
+import com.criticalmass.content.thermal.HeatExchangerBlock;
 import com.criticalmass.content.thermal.ReactorControllerBlock;
 import java.util.function.Function;
 import net.minecraft.world.level.block.Block;
@@ -40,7 +41,7 @@ public final class CMBlocks {
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
-    public static final DeferredBlock<PipeConnectableBlocks.Horizontal> HEAT_EXCHANGER = register("heat_exchanger", PipeConnectableBlocks.Horizontal::new, metal(4.0f));
+    public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<PipeConnectableBlocks.Horizontal> CONDENSER = register("condenser", PipeConnectableBlocks.Horizontal::new, metal(4.0f));
     public static final DeferredBlock<Block> COOLING_TOWER_PACKING = register("cooling_tower_packing", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.0f).sound(SoundType.WOOD).noOcclusion());

@@ -40,6 +40,7 @@ public final class LedgerCommand {
         int controllers = 0;
         int pumps = 0;
         int turbines = 0;
+        int exchangers = 0;
         for (BlockEntity be : all) {
             if (be instanceof ReactorControllerBlockEntity c) {
                 controllers++;
@@ -57,6 +58,14 @@ public final class LedgerCommand {
                 extracted += t.heatExtracted();
                 source.sendSuccess(() -> Component.literal("turbine " + where(t) + " coolant=" + t.coolant().amount() + " heat=" + fmt(t.coolant().heat())
                         + " extracted=" + fmt(t.heatExtracted()) + " capacity=" + fmt(t.stressCapacity()) + " speed=" + t.getSpeed()), false);
+            } else if (be instanceof HeatExchangerBlockEntity x) {
+                exchangers++;
+                for (CoolantBuffer b : x.buffers()) {
+                    coolant += b.amount();
+                    stored += b.heat();
+                }
+                source.sendSuccess(() -> Component.literal("exchanger " + where(x) + " primary=" + x.primary().amount() + "/" + fmt(x.primary().temperature())
+                        + "C secondary=" + x.secondary().amount() + "/" + fmt(x.secondary().temperature()) + "C rate=" + fmt(x.lastExchange()) + " total=" + fmt(x.exchanged())), false);
             } else if (be instanceof CirculationPumpBlockEntity p) {
                 pumps++;
                 source.sendSuccess(() -> Component.literal("pump " + where(p) + " flow=" + p.flow() + " moved=" + p.movedTotal() + " speed=" + p.getSpeed()
@@ -64,7 +73,7 @@ public final class LedgerCommand {
             }
         }
         double balance = added - stored - extracted;
-        String summary = "totals controllers=" + controllers + " pumps=" + pumps + " turbines=" + turbines + " coolant=" + coolant
+        String summary = "totals controllers=" + controllers + " pumps=" + pumps + " turbines=" + turbines + " exchangers=" + exchangers + " coolant=" + coolant
                 + " stored=" + fmt(stored) + " added=" + fmt(added) + " extracted=" + fmt(extracted) + " balance=" + fmt(balance);
         source.sendSuccess(() -> Component.literal(summary), false);
         return controllers + pumps + turbines;

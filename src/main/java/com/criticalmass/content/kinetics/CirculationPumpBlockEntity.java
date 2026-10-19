@@ -4,6 +4,7 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantCircuit;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ThermalTooltips;
+import com.criticalmass.registry.CMStress;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -80,10 +81,15 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
                 retraceIn = Math.min(retraceIn, 5);
             }
         }
+        boolean wasFlowing = flow > 0;
         if (newFlow != flow || !newStatus.equals(status)) {
             flow = newFlow;
             status = newStatus;
             syncPending = true;
+        }
+        if (wasFlowing != (flow > 0) && hasNetwork()) {
+            getOrCreateNetwork().updateStressFor(this, calculateStressApplied());
+            getOrCreateNetwork().updateStress();
         }
         if (syncCooldown > 0) {
             syncCooldown--;
@@ -93,6 +99,15 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
             setChanged();
             sendData();
         }
+    }
+
+    @Override
+    public float calculateStressApplied() {
+        float speed = Math.abs(getSpeed());
+        float share = flow > 0 && speed > 0 ? Math.min(speed, CMThermal.pumpCapRpm()) / speed : CMThermal.PUMP_IDLE_STRESS;
+        float impact = (float) CMStress.CIRCULATION_PUMP_IMPACT * share;
+        lastStressApplied = impact;
+        return impact;
     }
 
     @Override

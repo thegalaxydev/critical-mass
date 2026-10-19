@@ -51,14 +51,18 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - A fuel column without enough cooling heats up and is flagged as a hot spot at 800 °C.
 - If the vessel breaks while running, the reactor trips. It stays tripped until the redstone signal is removed.
 
-**Loop.**
-1. Fill the controller with coolant (it holds 8,000 mB).
-2. Run Reinforced Pipe from the outlet port to the back of a Circulation Pump, from its front up through the bottom of a Steam Turbine, and from the turbine's top back to the inlet port. The loop must be one path with no branches.
-3. The pump moves 2 mB/t per RPM, up to 256 mB/t, and stops when its shaft stops.
-4. The turbine draws heat from the coolant and supplies 4 SU per HU/t at a fixed 16 RPM.
+**Loops.**
+- **Primary loop:** run Reinforced Pipe from the outlet port, through a Circulation Pump (back to front) and any machines on the way, to the inlet port. The controller holds the vessel coolant (8,000 mB).
+- **Closed loops:** a pump can also drive a loop that comes back to its own back face without touching a vessel. Use this for the secondary circuit.
+- **Paths:** every loop must be a single path without branches.
+- **Pump:** moves 2 mB/t per RPM, up to 256 mB/t, and stops when its shaft stops. Stress is 4 SU per RPM while circulating, a quarter of that while idle, and stops rising past 128 RPM.
+- **Heat Exchanger:** the primary circuit enters and leaves through its front and back, the secondary through its top and bottom. The two never mix. Heat crosses from the hotter side only while both sides are flowing.
+- **Steam Turbine:** takes coolant through its bottom and top. It draws heat from that coolant and supplies 4 SU per HU/t at a fixed 16 RPM. (It runs on hot water or coolant until steam exists.)
 
-Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, conservation, tripping and turbine capacity (`./gradlew runGameTestServer`).
-`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage.
+**Chunk unloading.** An unloaded reactor freezes. It keeps its exact state and does nothing until it reloads, and a vessel that is only partly loaded waits instead of tripping.
+
+Game tests in `com.criticalmass.gametest` cover vessel validation, core heat, tripping, port rules, pump stress, the exchanger, turbine capacity, and a 10,000-tick conservation run of the full two-loop plant (`./gradlew runGameTestServer`).
+`src/inspect/scenes/make_reactor.py` builds a vessel with mistakes, repairs it, runs it until a hot spot forms, then breaks it, with goggle screenshots at each stage. `make_plant.py` builds the two-loop plant with a heat exchanger, then leaves and returns to check the unload freeze.
 
 `/criticalmass ledger` (operators) lists every loaded controller, pump and turbine and prints the totals for coolant, stored heat, heat added and heat extracted. `balance` should always be 0.
 

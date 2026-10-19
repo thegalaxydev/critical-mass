@@ -32,6 +32,19 @@ final class TestVessels {
             new BlockPos(6, 6, 0), new BlockPos(5, 6, 0), new BlockPos(4, 6, 0), new BlockPos(3, 6, 0), new BlockPos(3, 5, 0),
             new BlockPos(3, 4, 0), new BlockPos(3, 3, 0));
 
+    static final BlockPos EXCHANGER = new BlockPos(6, 3, 6);
+    static final BlockPos PUMP2 = new BlockPos(7, 1, 6);
+    static final BlockPos MOTOR2 = new BlockPos(7, 0, 6);
+    static final BlockPos PLANT_TURBINE = new BlockPos(6, 6, 6);
+    static final List<BlockPos> PRIMARY_PIPES = List.of(
+            new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(7, 3, 6), new BlockPos(7, 3, 5), new BlockPos(7, 3, 4),
+            new BlockPos(7, 3, 3), new BlockPos(7, 3, 2), new BlockPos(7, 3, 1), new BlockPos(7, 3, 0), new BlockPos(6, 3, 0),
+            new BlockPos(5, 3, 0), new BlockPos(4, 3, 0), new BlockPos(3, 3, 0));
+    static final List<BlockPos> SECONDARY_PIPES = List.of(
+            new BlockPos(6, 1, 6), new BlockPos(6, 2, 6), new BlockPos(6, 4, 6), new BlockPos(6, 5, 6), new BlockPos(6, 7, 6),
+            new BlockPos(7, 7, 6), new BlockPos(8, 7, 6), new BlockPos(9, 7, 6), new BlockPos(9, 6, 6), new BlockPos(9, 5, 6),
+            new BlockPos(9, 4, 6), new BlockPos(9, 3, 6), new BlockPos(9, 2, 6), new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
+
     static final char[][] STANDARD = {
             {'c', 'r', 'c'},
             {'f', 'f', 'f'},
@@ -80,6 +93,28 @@ final class TestVessels {
 
     static BlockState port(Direction facing, CoolantPortBlock.Mode mode) {
         return CMBlocks.PRIMARY_COOLANT_PORT.get().defaultBlockState().setValue(FacingBlock.FACING, facing).setValue(CoolantPortBlock.MODE, mode);
+    }
+
+    static void pipes(GameTestHelper h, List<BlockPos> pipes) {
+        for (BlockPos p : pipes) {
+            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+        }
+        for (BlockPos p : pipes) {
+            h.setBlock(p, ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(p), CMBlocks.REINFORCED_PIPE.get().defaultBlockState()));
+        }
+    }
+
+    static void plant(GameTestHelper h) {
+        h.setBlock(PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
+        h.setBlock(EXCHANGER, CMBlocks.HEAT_EXCHANGER.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.EAST));
+        h.setBlock(PUMP2, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
+        h.setBlock(PLANT_TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        pipes(h, PRIMARY_PIPES);
+        pipes(h, SECONDARY_PIPES);
+        h.setBlock(MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        h.setBlock(MOTOR2, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
     }
 
     static void loop(GameTestHelper h, boolean motor) {
