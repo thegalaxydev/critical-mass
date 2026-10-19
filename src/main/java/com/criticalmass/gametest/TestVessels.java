@@ -45,6 +45,11 @@ final class TestVessels {
             new BlockPos(7, 7, 6), new BlockPos(8, 7, 6), new BlockPos(9, 7, 6), new BlockPos(9, 6, 6), new BlockPos(9, 5, 6),
             new BlockPos(9, 4, 6), new BlockPos(9, 3, 6), new BlockPos(9, 2, 6), new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
 
+    static final char[][] COOLED = {
+            {'c', 'f', 'c'},
+            {'r', 'c', 'r'},
+            {'c', 'f', 'c'}};
+
     static final char[][] STANDARD = {
             {'c', 'r', 'c'},
             {'f', 'f', 'f'},

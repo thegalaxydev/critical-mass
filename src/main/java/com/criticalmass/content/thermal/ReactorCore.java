@@ -39,6 +39,14 @@ public final class ReactorCore {
             return heat;
         }
 
+        public int dx() {
+            return dx;
+        }
+
+        public int dz() {
+            return dz;
+        }
+
         public int coolantNeighbours() {
             return coolantNeighbours;
         }

@@ -1,5 +1,5 @@
 {
- "generated": "2026-10-18T15:14:55",
+ "generated": "2026-10-19T09:22:27",
  "minecraft": "1.21.1",
  "neoforge": "21.1.262",
  "create": "6.0.10-280",
@@ -39,8 +39,8 @@
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/reactor_vessel_casing.json",
    "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_vessel_casing.json",
    "inventory_icon": "item model reactor_vessel_casing (parent: block model)",
-   "placed_appearance": "blockstate reactor_vessel_casing (simple)",
-   "state_notes": "",
+   "placed_appearance": "blockstate reactor_vessel_casing (raw)",
+   "state_notes": "crack=0..3 overlay models (textures/block/casing_crack_1..3, hand pixel) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
    "partials": [],
    "kinetic": null,
    "references": [
@@ -56,8 +56,7 @@
     "moving_body": true
    },
    "issues": [
-    "No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up.",
-    "Integrity crack overlays are not made, because vessel integrity is not implemented."
+    "No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."
    ],
    "related_tasks": [
     "tsk-002",

@@ -15,6 +15,7 @@ import com.criticalmass.content.kinetics.ControlRodDriveBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlock;
 import com.criticalmass.content.thermal.HeatExchangerBlock;
 import com.criticalmass.content.thermal.ReactorControllerBlock;
+import com.criticalmass.content.thermal.VesselCasingBlock;
 import java.util.function.Function;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -31,7 +32,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class CMBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CriticalMass.MODID);
 
-    public static final DeferredBlock<Block> REACTOR_VESSEL_CASING = register("reactor_vessel_casing", Block::new, metal(5.0f));
+    public static final DeferredBlock<VesselCasingBlock> REACTOR_VESSEL_CASING = register("reactor_vessel_casing", VesselCasingBlock::new, metal(5.0f));
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = register("reactor_controller", ReactorControllerBlock::new, metal(5.0f));
     public static final DeferredBlock<RotatedPillarBlock> FUEL_CHANNEL = register("fuel_channel", RotatedPillarBlock::new, metal(4.0f));
     public static final DeferredBlock<RotatedPillarBlock> CONTROL_CHANNEL = register("control_channel", RotatedPillarBlock::new, metal(4.0f));

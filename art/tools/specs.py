@@ -126,7 +126,7 @@ DESCRIPTIONS = {
 
 
 BLOCK_DEFS = {
-    "reactor_vessel_casing": {"state": ("simple",), "item": "block", "lang": "Reactor Vessel Casing"},
+    "reactor_vessel_casing": {"state": ("raw", {"variants": {"crack=%d" % i: {"model": "criticalmass:block/reactor_vessel_casing" + ("" if i == 0 else "_crack_%d" % i)} for i in range(4)}}), "item": "block", "lang": "Reactor Vessel Casing"},
     "circulation_pump": {"state": ("dir_axis", "circulation_pump", "x", "circulation_pump_vertical", "y"), "item": ("merged", "circulation_pump", "circulation_pump_rotor"), "lang": "Circulation Pump"},
     "steam_turbine": {"state": ("h_axis", "steam_turbine"), "item": ("merged", "steam_turbine", "steam_turbine_rotor"), "lang": "Steam Turbine"},
     "instrumentation_panel": {"state": ("horizontal", "instrumentation_panel"), "item": "block", "lang": "Instrumentation Panel"},
@@ -235,6 +235,19 @@ EXTRA_MODELS = {
     "shielded_hatch_top": {"parent": "minecraft:block/template_orientable_trapdoor_top", "textures": {"texture": "criticalmass:block/shielded_hatch"}},
     "shielded_hatch_open": {"parent": "minecraft:block/template_orientable_trapdoor_open", "textures": {"texture": "criticalmass:block/shielded_hatch"}},
 }
+
+
+def _crack_model(stage):
+    full = {"uv": [0, 0, 16, 16]}
+    base = {d: dict(full, texture="#0") for d in ("north", "south", "east", "west", "up", "down")}
+    over = {d: dict(full, texture="#crack") for d in ("north", "south", "east", "west", "up", "down")}
+    return {"parent": "minecraft:block/block", "render_type": "minecraft:cutout",
+            "textures": {"0": "criticalmass:block/reactor_vessel_casing", "particle": "criticalmass:block/reactor_vessel_casing", "crack": "criticalmass:block/casing_crack_%d" % stage},
+            "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": base}, {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}]}
+
+
+for _stage in (1, 2, 3):
+    EXTRA_MODELS["reactor_vessel_casing_crack_%d" % _stage] = _crack_model(_stage)
 
 
 DESCRIPTIONS.update({

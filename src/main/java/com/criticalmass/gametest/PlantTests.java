@@ -134,7 +134,7 @@ public final class PlantTests {
 
     @GameTest(template = LARGE, timeoutTicks = 10300)
     public static void plantConservesHeatAndFluidFor10000Ticks(GameTestHelper h) {
-        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.standardVessel(h, TestVessels.COOLED);
         TestVessels.plant(h);
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         HeatExchangerBlockEntity exchanger = h.getBlockEntity(TestVessels.EXCHANGER);
@@ -167,6 +167,7 @@ public final class PlantTests {
                     h.assertTrue(checks[0] >= 10000, "Only " + checks[0] + " ticks checked");
                     h.assertTrue(controller.isReacting(), "Reactor stopped: " + controller.status());
                     h.assertTrue(turbine.stressCapacity() > 0, "Turbine produced no capacity through the exchanger");
+                    h.assertTrue(controller.core().hotSpots() == 0 && controller.damagedBlocks() == 0, "Fully cooled core should not overheat or crack");
                     CriticalMass.LOGGER.info("plant after {} ticks: added {} HU, turbine extracted {} HU, exchanger moved {} HU, capacity {} SU",
                             checks[0], controller.heatAdded(), turbine.heatExtracted(), exchanger.exchanged(), turbine.stressCapacity());
                 })

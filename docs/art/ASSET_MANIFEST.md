@@ -1,6 +1,6 @@
 # Asset manifest
 
-Generated 2026-10-18T15:14:55 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
+Generated 2026-10-19T09:22:27 from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs).
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable 2.0.6. 16 texels per block; items 16x16.
 
@@ -8,7 +8,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 | Registry ID | Textures | Generation | Integration | Verified | Issues |
 |---|---|---|---|---|---|
-| `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up.<br>Integrity crack overlays are not made, because vessel integrity is not implemented. |
+| `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up. |
 | `criticalmass:circulation_pump` | `block/circulation_pump.png` 64x64<br>`block/circulation_pump_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes, stops_when_overstressed: yes |  |
 | `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Prototype: powered by hot primary coolant, not steam. The steam circuit, heat exchanger and condenser come later (tsk-017 onward). |
 | `criticalmass:instrumentation_panel` | `block/instrumentation_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet. |
@@ -123,7 +123,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 ## Inventory icon vs placed appearance
 
-- `reactor_vessel_casing`: inventory = item model reactor_vessel_casing (parent: block model); placed = blockstate reactor_vessel_casing (simple)
+- `reactor_vessel_casing`: inventory = item model reactor_vessel_casing (parent: block model); placed = blockstate reactor_vessel_casing (raw); crack=0..3 overlay models (textures/block/casing_crack_1..3, hand pixel) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3
 - `circulation_pump`: inventory = item model circulation_pump (merged housing + rotor, static); placed = blockstate circulation_pump (dir_axis)
 - `steam_turbine`: inventory = item model steam_turbine (merged housing + rotor, static); placed = blockstate steam_turbine (h_axis)
 - `instrumentation_panel`: inventory = item model instrumentation_panel (parent: block model); placed = blockstate instrumentation_panel (horizontal)

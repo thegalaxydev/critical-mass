@@ -123,5 +123,7 @@
   "criticalmass.goggles.exchanger_primary": "Primary side (front and back):",
   "criticalmass.goggles.exchanger_secondary": "Secondary side (top and bottom):",
   "criticalmass.goggles.exchange_rate": "Heat moving to secondary: %s HU/t",
-  "criticalmass.circuit.empty_loop": "Loop has nothing to circulate through"
+  "criticalmass.circuit.empty_loop": "Loop has nothing to circulate through",
+  "criticalmass.reactor.status.damaged": "Damaged: repair the casing before restarting",
+  "criticalmass.goggles.integrity": "Casing integrity: lowest %s%% (%s damaged blocks)"
 }

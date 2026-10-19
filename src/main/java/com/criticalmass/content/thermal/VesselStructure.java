@@ -37,10 +37,11 @@ public final class VesselStructure {
     public final List<Problem> problems;
     public final List<String> missing;
     public final List<Column> columns;
+    public final java.util.Map<BlockPos, Integer> cracked;
     public final String sizeError;
     public final int interiorHeight;
 
-    private VesselStructure(BlockPos min, BlockPos max, List<Problem> problems, List<String> missing, List<Column> columns, String sizeError, int interiorHeight) {
+    private VesselStructure(BlockPos min, BlockPos max, List<Problem> problems, List<String> missing, List<Column> columns, String sizeError, int interiorHeight, java.util.Map<BlockPos, Integer> cracked) {
         this.min = min;
         this.max = max;
         this.problems = problems;
@@ -48,6 +49,7 @@ public final class VesselStructure {
         this.columns = columns;
         this.sizeError = sizeError;
         this.interiorHeight = interiorHeight;
+        this.cracked = cracked;
     }
 
     public boolean valid() {
@@ -72,6 +74,11 @@ public final class VesselStructure {
 
     public int length() {
         return max.getZ() - min.getZ() + 1;
+    }
+
+    public boolean onShell(BlockPos pos) {
+        return contains(pos, 0) && (pos.getX() == min.getX() || pos.getX() == max.getX() || pos.getY() == min.getY() || pos.getY() == max.getY()
+                || pos.getZ() == min.getZ() || pos.getZ() == max.getZ());
     }
 
     public boolean contains(BlockPos pos, int margin) {
@@ -155,6 +162,7 @@ public final class VesselStructure {
         boolean inlet = false;
         boolean outlet = false;
         boolean service = false;
+        java.util.Map<BlockPos, Integer> cracked = new java.util.HashMap<>();
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
@@ -170,6 +178,9 @@ public final class VesselStructure {
                     if (reason != null) {
                         add(problems, p, reason);
                         continue;
+                    }
+                    if (b == CMBlocks.REACTOR_VESSEL_CASING.get() && s.hasProperty(VesselCasingBlock.CRACK) && s.getValue(VesselCasingBlock.CRACK) > 0) {
+                        cracked.put(p, s.getValue(VesselCasingBlock.CRACK));
                     }
                     if (b == CMBlocks.PRIMARY_COOLANT_PORT.get()) {
                         if (s.getValue(CoolantPortBlock.MODE) == CoolantPortBlock.Mode.INLET) {
@@ -225,11 +236,11 @@ public final class VesselStructure {
         if (!service) {
             missing.add("criticalmass.vessel.missing.service_port");
         }
-        return new VesselStructure(min, max, List.copyOf(problems), List.copyOf(missing), List.copyOf(columns), sizeError, interiorHeight);
+        return new VesselStructure(min, max, List.copyOf(problems), List.copyOf(missing), List.copyOf(columns), sizeError, interiorHeight, java.util.Map.copyOf(cracked));
     }
 
     private static VesselStructure failed(BlockPos at, String key) {
-        return new VesselStructure(at, at, List.of(), List.of(), List.of(), key, 0);
+        return new VesselStructure(at, at, List.of(), List.of(), List.of(), key, 0, java.util.Map.of());
     }
 
     private static void add(List<Problem> problems, BlockPos pos, String reason) {

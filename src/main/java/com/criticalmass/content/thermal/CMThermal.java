@@ -18,6 +18,9 @@ public final class CMThermal {
     public static final int COOLANT_REFERENCE_FLOW = 64;
     public static final double HOT_SPOT_TEMPERATURE = 800.0;
     public static final int REVALIDATE_INTERVAL = 100;
+    public static final double CASING_DAMAGE_PER_SECOND = 0.02;
+    public static final double DAMAGED_THRESHOLD = 0.25;
+    public static final double REPAIR_KIT_AMOUNT = 0.5;
     public static final double TURBINE_EXTRACTION = 0.02;
     public static final double SU_PER_HEAT = 4.0;
     public static final float TURBINE_RPM = 16.0f;

@@ -5,7 +5,11 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +19,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -29,6 +34,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private boolean reacting;
     private boolean tripped;
     private boolean frozen;
+    private final Map<Long, Double> integrity = new HashMap<>();
+    private int damageClock;
+    private double clientLowestIntegrity = 1.0;
+    private int clientDamaged;
     private double heatAdded;
     private int flowAccum;
     private int lastTickFlow;
@@ -131,6 +140,102 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return effectiveFlow;
     }
 
+    private long rel(BlockPos abs) {
+        return abs.subtract(worldPosition).asLong();
+    }
+
+    public boolean owns(BlockPos pos) {
+        return structure != null && !structure.unloaded() && structure.onShell(pos);
+    }
+
+    public double integrity(BlockPos abs) {
+        return integrity.getOrDefault(rel(abs), 1.0);
+    }
+
+    public void setIntegrity(BlockPos abs, double value) {
+        double v = Math.max(0, Math.min(1, value));
+        long k = rel(abs);
+        if (v >= 1) {
+            integrity.remove(k);
+        } else {
+            integrity.put(k, v);
+        }
+        BlockState s = level.getBlockState(abs);
+        if (s.getBlock() instanceof VesselCasingBlock) {
+            int stage = VesselCasingBlock.stageFor(v);
+            if (s.getValue(VesselCasingBlock.CRACK) != stage) {
+                level.setBlock(abs, s.setValue(VesselCasingBlock.CRACK, stage), Block.UPDATE_ALL);
+            }
+        }
+        setChanged();
+        syncPending = true;
+    }
+
+    public boolean repair(BlockPos abs, double amount) {
+        if (!(level.getBlockState(abs).getBlock() instanceof VesselCasingBlock)) {
+            return false;
+        }
+        double current = integrity(abs);
+        if (current >= 1) {
+            return false;
+        }
+        setIntegrity(abs, current + amount);
+        return true;
+    }
+
+    public double lowestIntegrity() {
+        double low = 1.0;
+        for (double v : integrity.values()) {
+            low = Math.min(low, v);
+        }
+        return low;
+    }
+
+    public int damagedBlocks() {
+        return integrity.size();
+    }
+
+    public boolean isDamaged() {
+        return lowestIntegrity() < CMThermal.DAMAGED_THRESHOLD;
+    }
+
+    private void damageCasing() {
+        if (structure == null || !structure.valid()) {
+            return;
+        }
+        BlockPos min = structure.min;
+        BlockPos max = structure.max;
+        Map<BlockPos, Double> loss = new HashMap<>();
+        for (ReactorCore.FuelColumn f : core.columns()) {
+            double t = f.temperature();
+            if (t <= CMThermal.HOT_SPOT_TEMPERATURE) {
+                continue;
+            }
+            double amount = CMThermal.CASING_DAMAGE_PER_SECOND * (t - CMThermal.HOT_SPOT_TEMPERATURE) / CMThermal.HOT_SPOT_TEMPERATURE;
+            int x = worldPosition.getX() + f.dx();
+            int z = worldPosition.getZ() + f.dz();
+            Set<BlockPos> touched = new HashSet<>();
+            touched.add(new BlockPos(x, min.getY(), z));
+            touched.add(new BlockPos(x, max.getY(), z));
+            for (int y = min.getY() + 1; y < max.getY(); y++) {
+                for (Direction d : Direction.Plane.HORIZONTAL) {
+                    BlockPos n = new BlockPos(x, y, z).relative(d);
+                    if (structure.onShell(n)) {
+                        touched.add(n);
+                    }
+                }
+            }
+            for (BlockPos p : touched) {
+                if (level.getBlockState(p).getBlock() instanceof VesselCasingBlock) {
+                    loss.merge(p, amount, Double::sum);
+                }
+            }
+        }
+        for (Map.Entry<BlockPos, Double> e : loss.entrySet()) {
+            setIntegrity(e.getKey(), integrity(e.getKey()) - e.getValue());
+        }
+    }
+
     public void noteFlow(int amount) {
         flowAccum += amount;
     }
@@ -175,7 +280,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             signal = newSignal;
             syncPending = true;
         }
-        boolean canRun = structure != null && structure.complete();
+        if (++damageClock >= 20) {
+            damageClock = 0;
+            damageCasing();
+        }
+        boolean canRun = structure != null && structure.complete() && !isDamaged();
         if (!canRun && reacting) {
             tripped = true;
         }
@@ -213,8 +322,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (!structure.valid()) {
             return "criticalmass.reactor.status.invalid";
         }
-        if (!canRun) {
+        if (!structure.complete()) {
             return "criticalmass.reactor.status.incomplete";
+        }
+        if (isDamaged()) {
+            return "criticalmass.reactor.status.damaged";
         }
         if (tripped) {
             return "criticalmass.reactor.status.tripped";
@@ -231,6 +343,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             revalidateIn = 20;
             return;
         }
+        for (Map.Entry<BlockPos, Integer> c : structure.cracked.entrySet()) {
+            integrity.putIfAbsent(rel(c.getKey()), VesselCasingBlock.integrityFor(c.getValue()));
+        }
+        integrity.keySet().removeIf(k -> {
+            BlockPos abs = worldPosition.offset(BlockPos.of(k));
+            return !structure.onShell(abs) || !(level.getBlockState(abs).getBlock() instanceof VesselCasingBlock);
+        });
         problemPos.clear();
         problemReason.clear();
         for (VesselStructure.Problem p : structure.problems) {
@@ -260,9 +379,20 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putDouble("HeatAdded", heatAdded);
         tag.putBoolean("Tripped", tripped);
         tag.putBoolean("Reacting", reacting);
+        ListTag damage = new ListTag();
+        for (Map.Entry<Long, Double> e : integrity.entrySet()) {
+            CompoundTag d = new CompoundTag();
+            BlockPos r = BlockPos.of(e.getKey());
+            d.putIntArray("P", new int[]{r.getX(), r.getY(), r.getZ()});
+            d.putDouble("V", e.getValue());
+            damage.add(d);
+        }
+        tag.put("Integrity", damage);
         if (!clientPacket) {
             return;
         }
+        tag.putDouble("LowestIntegrity", lowestIntegrity());
+        tag.putInt("Damaged", damagedBlocks());
         tag.putString("Status", status);
         if (sizeError != null) {
             tag.putString("SizeError", sizeError);
@@ -298,6 +428,14 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tripped = tag.getBoolean("Tripped");
         reacting = tag.getBoolean("Reacting");
         if (!clientPacket) {
+            integrity.clear();
+            for (Tag t : tag.getList("Integrity", Tag.TAG_COMPOUND)) {
+                CompoundTag d = (CompoundTag) t;
+                int[] r = d.getIntArray("P");
+                if (r.length == 3) {
+                    integrity.put(new BlockPos(r[0], r[1], r[2]).asLong(), d.getDouble("V"));
+                }
+            }
             core.load(tag.getCompound("Core"));
             structureDirty = true;
             return;
@@ -331,6 +469,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         clientExtracted = tag.getDouble("Extracted");
         clientMaxTemp = tag.getDouble("MaxTemp");
         clientHotSpots = tag.getInt("HotSpots");
+        clientLowestIntegrity = tag.contains("LowestIntegrity") ? tag.getDouble("LowestIntegrity") : 1.0;
+        clientDamaged = tag.getInt("Damaged");
     }
 
     @Override
@@ -363,6 +503,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             if (clientHotSpots > 0) {
                 tooltip.add(ThermalTooltips.line("criticalmass.goggles.hot_spots", ChatFormatting.RED, clientHotSpots));
             }
+        }
+        if (clientDamaged > 0) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.integrity", clientLowestIntegrity < CMThermal.DAMAGED_THRESHOLD ? ChatFormatting.RED : ChatFormatting.GOLD,
+                    Math.round(clientLowestIntegrity * 100), clientDamaged));
         }
         ThermalTooltips.coolant(tooltip, coolant);
         return true;
