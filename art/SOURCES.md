@@ -46,12 +46,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 ## reinforced_valve, reinforced_valve_open and reinforced_valve_closed (not generated)
 
 - Used by: `textures/block/reinforced_valve.png`, `textures/block/reinforced_valve_open.png`, `textures/block/reinforced_valve_closed.png`
-- Source: hand-made by the author in `art/originals/`, laid out like Create's `fluid_valve.png`, `valve_open.png` and `valve_closed.png`. The models parent Create's fluid valve models.
+- Source: hand-made by the author in `art/originals/`, laid out like Create's `fluid_valve.png`, `valve_open.png` and `valve_closed.png`. The installed textures have their greys recoloured to the reactor alloy's shades by `art/tools/valve_paint.py`; the brass ring and the dial keep the original colours. The models parent Create's fluid valve models.
 - Date: 2026-11-10
 ## reinforced_pipe and reinforced_pipe_connected (not generated)
 
 - Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
-- Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to dark steel by `art/tools/pipe_paint.py`; the flange rims keep Create's copper. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
+- Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to the reactor alloy's blue-grey shades by `art/tools/pipe_paint.py`, flange rims included. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
 - Date: 2026-10-19
 ## alarm_siren
 
@@ -773,24 +773,6 @@ Front face of the reactor signal interface in iron casing: recessed steel panel 
 - Used by: `textures/block/reactor_vessel_casing.png`, `textures/block/reactor_vessel_casing_connected.png` (connected-texture sheet in Create's omnidirectional casing layout)
 - Source: hand-made by the author, originals in `art/originals/reactor_vessel_casing.png` and `art/originals/reactor_vessel_casing_connected.png`. Replaces the earlier generated and Create-derived versions.
 - Date: 2026-11-10
-## reinforced_pipe
-
-- Used by: `textures/block/reinforced_pipe.png`
-- Raw output: `art/generated/reinforced_pipe-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: reinforced pipe, 32x32 game pixels.
-Atlas for a thick reinforced copper pipe: pipe core faces with iron bands, long pipe side strips with highlight and an iron band, and a flanged pipe end with a black bore and four bolts.
-
-```
-
 ## relief_valve
 
 - Used by: `textures/block/relief_valve.png`

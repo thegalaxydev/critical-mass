@@ -8,7 +8,8 @@ from pipe_models import create_jar
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(ROOT, "src", "main", "resources", "assets", "criticalmass", "textures", "block")
-RIM = [(19, 22, 32, 32)]
+ALLOY = [(17, 23, 28), (19, 26, 33), (23, 31, 38), (27, 35, 40), (31, 39, 46), (40, 48, 56), (47, 55, 61), (54, 62, 68), (61, 70, 78), (68, 78, 86), (73, 83, 91)]
+HIGHLIGHT = (96, 108, 118)
 SEAM_CONTRAST = 1.3
 
 
@@ -31,14 +32,28 @@ def copper_tones(*images):
     return sorted(tones, key=luminance)
 
 
+def alloy(lum):
+    ramp = sorted(ALLOY + [HIGHLIGHT], key=luminance)
+    if lum <= luminance(ramp[0]):
+        k = max(lum, 0) / luminance(ramp[0])
+        return tuple(round(c * k) for c in ramp[0])
+    for a, b in zip(ramp, ramp[1:]):
+        la, lb = luminance(a), luminance(b)
+        if lum <= lb:
+            k = (lum - la) / (lb - la)
+            return tuple(round(a[i] + (b[i] - a[i]) * k) for i in range(3))
+    k = lum / luminance(ramp[-1])
+    return tuple(min(255, round(c * k)) for c in ramp[-1])
+
+
 def shared_table(*images):
     tones = copper_tones(*images)
     lo, hi = luminance(tones[0]), luminance(tones[-1])
-    dark, light = (22, 24, 28), (178, 184, 190)
+    dark, light = luminance(ALLOY[0]), luminance(HIGHLIGHT)
     table = {}
     for t in tones:
         k = ((luminance(t) - lo) / (hi - lo)) ** SEAM_CONTRAST
-        table[t] = tuple(round(dark[i] + (light[i] - dark[i]) * k) for i in range(3))
+        table[t] = alloy(dark + (light - dark) * k)
     return table
 
 
@@ -63,7 +78,7 @@ def main():
         pipes = Image.open(io.BytesIO(z.read("assets/create/textures/block/pipes.png"))).convert("RGBA")
         connected = Image.open(io.BytesIO(z.read("assets/create/textures/block/pipes_connected.png"))).convert("RGBA")
     table = shared_table(pipes, connected)
-    recolor(pipes, RIM, table).save(os.path.join(OUT, "reinforced_pipe.png"))
+    recolor(pipes, [], table).save(os.path.join(OUT, "reinforced_pipe.png"))
     recolor(connected, [], table).save(os.path.join(OUT, "reinforced_pipe_connected.png"))
     print("painted reinforced_pipe and reinforced_pipe_connected")
 
