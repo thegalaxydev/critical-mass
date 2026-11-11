@@ -25,10 +25,10 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## sealed_waste_canister (not generated)
+## sealed_waste_canister and open_waste_canister (not generated)
 
-- Used by: `textures/block/sealed_waste_canister.png` and `models/block/sealed_waste_canister.json`
-- Source: hand-made by the author, texture original in `art/originals/sealed_waste_cannister.png`.
+- Used by: `textures/block/sealed_waste_canister.png`, `textures/block/open_waste_canister.png` and `models/block/sealed_waste_canister.json` (the open canister and the incomplete canister reuse the model)
+- Source: hand-made by the author, texture originals in `art/originals/`.
 - Date: 2026-11-10
 
 ## steel_block and reactor_alloy_block (not generated)

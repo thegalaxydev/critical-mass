@@ -32,6 +32,7 @@
     "criticalmass:deepslate_uranium_ore",
     "criticalmass:steel_block",
     "criticalmass:reactor_alloy_block",
-    "criticalmass:sealed_waste_canister"
+    "criticalmass:sealed_waste_canister",
+    "criticalmass:open_waste_canister"
   ]
 }

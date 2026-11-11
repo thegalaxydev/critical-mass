@@ -8,7 +8,7 @@ BLOCKS = [
     ("cooling_tower_packing", ""), ("radiator_panel", "[facing=north]"), ("emergency_coolant_tank", ""), ("relief_valve", "[facing=north]"),
     ("reinforced_valve", "[facing=up,axis_along_first=false]"), ("boiler_heating_plate", "[facing=north]"), ("shielding_concrete", ""), ("shielded_glass", ""),
     ("shielded_hatch", "[facing=north,half=bottom,open=false]"), ("fuel_assembly_bench", "[facing=north]"), ("spent_fuel_rack", ""),
-    ("shielded_cask", ""), ("sealed_waste_canister", ""), ("instrumentation_panel", "[facing=north]"), ("reactor_signal_interface", "[facing=north]"),
+    ("shielded_cask", ""), ("open_waste_canister", ""), ("sealed_waste_canister", ""), ("instrumentation_panel", "[facing=north]"), ("reactor_signal_interface", "[facing=north]"),
     ("alarm_siren", "[facing=north,powered=false]"), ("alarm_siren", "[facing=north,powered=true]"), ("docking_service_connector", "[facing=north,connected=false]"),
     ("docking_service_connector", "[facing=north,connected=true]"), ("circulation_pump", "[facing=north,axis_along_first=true]"),
     ("steam_turbine", "[axis=x]"), ("control_rod_drive", "[facing=north]"), ("reinforced_pipe", "[east=true,west=true]"),

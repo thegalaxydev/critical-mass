@@ -242,7 +242,7 @@ public final class RadiationTests {
         d.baseline = d.total;
         p.setData(CMAttachments.RADIATION.get(), d);
         h.assertTrue(RadiationEvents.data(p).dosimeter() == 0 && RadiationEvents.data(p).total == before, "Resetting the reading keeps the lifetime dose");
-        h.assertTrue(h.getLevel().getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath(CriticalMass.MODID, "mixing/sealed_waste_canister")).isPresent(), "Solidification recipe loads");
+        h.assertTrue(h.getLevel().getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath(CriticalMass.MODID, "sequenced_assembly/sealed_waste_canister")).isPresent(), "Solidification recipe loads");
         h.assertTrue(new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), 1).getFluid() != null, "Contaminated coolant exists");
         h.succeed();
     }

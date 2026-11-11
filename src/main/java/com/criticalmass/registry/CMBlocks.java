@@ -11,6 +11,7 @@ import com.criticalmass.content.ReliefValveBlock;
 import com.criticalmass.content.WallPanelBlock;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlock;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlock;
+import com.criticalmass.content.fuel.WasteCanisterBlock;
 import com.criticalmass.content.fuel.ServicePortBlock;
 import com.criticalmass.content.fuel.ShieldedCaskBlock;
 import com.criticalmass.content.fuel.SpentFuelRackBlock;
@@ -66,6 +67,7 @@ public final class CMBlocks {
     public static final DeferredBlock<FuelAssemblyBenchBlock> FUEL_ASSEMBLY_BENCH = register("fuel_assembly_bench", FuelAssemblyBenchBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<SpentFuelRackBlock> SPENT_FUEL_RACK = register("spent_fuel_rack", SpentFuelRackBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<ShieldedCaskBlock> SHIELDED_CASK = register("shielded_cask", ShieldedCaskBlock::new, metal(6.0f).noOcclusion());
+    public static final DeferredBlock<WasteCanisterBlock> OPEN_WASTE_CANISTER = register("open_waste_canister", WasteCanisterBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<SealedWasteCanisterBlock> SEALED_WASTE_CANISTER = BLOCKS.register("sealed_waste_canister", () -> new SealedWasteCanisterBlock(metal(3.0f).noOcclusion()));
     public static final DeferredBlock<WallPanelBlock> INSTRUMENTATION_PANEL = register("instrumentation_panel", WallPanelBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", HorizontalBlock::new, metal(4.0f));

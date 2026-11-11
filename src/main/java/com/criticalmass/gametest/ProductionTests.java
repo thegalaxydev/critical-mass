@@ -10,6 +10,7 @@ import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllRecipeTypes;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
+import com.simibubi.create.content.fluids.transfer.FillingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -35,7 +36,8 @@ public final class ProductionTests {
     private static final String EMPTY = "empty";
     private static final List<String> CHAIN = List.of("milling/raw_uranium", "splashing/crushed_raw_uranium", "mixing/uranium_concentrate", "compacting/ceramic_fuel_pellet",
             "mixing/reactor_alloy_ingot", "pressing/reactor_alloy_sheet", "pressing/fuel_cladding", "compacting/sealing_gasket", "mechanical_crafting/empty_fuel_assembly",
-            "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller");
+            "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller",
+            "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister");
 
     private ProductionTests() {
     }
@@ -51,6 +53,8 @@ public final class ProductionTests {
         h.assertTrue(ours >= 45, "All addon recipes should load, found " + ours);
         h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), new ItemStack(CMItems.EMPTY_FUEL_ASSEMBLY.get()), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isPresent(),
                 "An empty fuel assembly should start the sequenced assembly");
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), AllRecipeTypes.FILLING.getType(), FillingRecipe.class).isPresent(),
+                "Spouting into an open waste canister should start its sequenced assembly");
         h.succeed();
     }
 

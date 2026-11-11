@@ -143,7 +143,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Protective gear:** each piece blocks a quarter of 90% of contamination uptake and collects that contamination itself. A full set cuts direct dose by only 5%: it is not shielding.
 - **Decontamination Compound:** use it on a contaminated area (3×3×3) or in the air (yourself and your gear).
   - Each use puts 250 mB of Contaminated Coolant runoff into a tank within 4 blocks. Without such a tank nothing is cleaned.
-  - Solidify the runoff into Sealed Waste Canisters: 1,000 mB with a Steel Plate and a Sealing Gasket, mixed in a heated basin.
+  - Solidify the runoff into Sealed Waste Canisters by sequenced assembly: spout 1,000 mB into an Open Waste Canister (3 Steel Plates in a bucket shape), deploy a Sealing Gasket, then press it shut.
 - `/criticalmass radiation <x y z>` lists every source reaching that point and the total. `/criticalmass contaminate <pos> <amount>` adds contamination for testing.
 
 **Chunk unloading.** An unloaded reactor freezes. It keeps its exact state and does nothing until it reloads, and a vessel that is only partly loaded waits instead of tripping.

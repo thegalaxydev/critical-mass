@@ -68,12 +68,16 @@ def shapeless(name, ingredients, result, count=1):
                                    "ingredients": [ing(i) for i in ingredients], "result": out(result, count)}
 
 
-def step_deploy(item):
-    return {"type": "create:deploying", "ingredients": [ing("incomplete_fuel_assembly"), ing(item)], "results": [out("incomplete_fuel_assembly")]}
+def step_deploy(item, part="incomplete_fuel_assembly"):
+    return {"type": "create:deploying", "ingredients": [ing(part), ing(item)], "results": [out(part)]}
 
 
-def step_press():
-    return {"type": "create:pressing", "ingredients": [ing("incomplete_fuel_assembly")], "results": [out("incomplete_fuel_assembly")]}
+def step_press(part="incomplete_fuel_assembly"):
+    return {"type": "create:pressing", "ingredients": [ing(part)], "results": [out(part)]}
+
+
+def step_fill(fl, part):
+    return {"type": "create:filling", "ingredients": [ing(part), fl], "results": [out(part)]}
 
 
 OTHER_URANIUM = ["mekanism", "immersiveengineering", "ic2"]
@@ -92,7 +96,6 @@ processing("turbine_blade", "pressing", ["#c:plates/steel"], [out("turbine_blade
 processing("sealing_gasket", "compacting", ["minecraft:dried_kelp", "minecraft:dried_kelp", "#c:nuggets/iron"], [out("sealing_gasket", 2)])
 processing("shielding_concrete", "mixing", ["minecraft:gravel", "minecraft:gravel", "#c:nuggets/iron", "#c:nuggets/iron", "#c:nuggets/iron", fluid("minecraft:water", 250)], [out("shielding_concrete", 2)])
 processing("primary_coolant", "mixing", ["minecraft:lapis_lazuli", fluid("minecraft:water", 1000)], [{"amount": 1000, "id": M + "primary_coolant"}])
-processing("sealed_waste_canister", "mixing", [fluid(M + "contaminated_coolant", 1000), "#c:plates/steel", "sealing_gasket"], [out("sealed_waste_canister")], heat="heated")
 processing("decontamination_compound", "mixing", ["create:limestone", "minecraft:dried_kelp", fluid("minecraft:water", 250)], [out("decontamination_compound", 2)])
 
 RECIPES["sequenced_assembly/fuel_assembly"] = {
@@ -104,6 +107,16 @@ RECIPES["sequenced_assembly/fuel_assembly"] = {
     "transitional_item": out("incomplete_fuel_assembly"),
 }
 
+RECIPES["sequenced_assembly/sealed_waste_canister"] = {
+    "type": "create:sequenced_assembly",
+    "ingredient": ing("open_waste_canister"),
+    "loops": 1,
+    "results": [out("sealed_waste_canister")],
+    "sequence": [step_fill(fluid(M + "contaminated_coolant", 1000), "incomplete_waste_canister"), step_deploy("sealing_gasket", "incomplete_waste_canister"), step_press("incomplete_waste_canister")],
+    "transitional_item": out("incomplete_waste_canister"),
+}
+
+shaped("open_waste_canister", ["P P", " P "], {"P": "#c:plates/steel"}, "open_waste_canister")
 shaped("empty_fuel_assembly", [" S ", "SGS", " S "], {"S": "#c:plates/reactor_alloy", "G": "sealing_gasket"}, "empty_fuel_assembly", mechanical=True)
 shaped("steam_turbine", [" C ", "BBB", "BSB", "BBB", " C "], {"C": "create:brass_casing", "B": "turbine_blade", "S": "create:shaft"}, "steam_turbine", mechanical=True)
 shaped("shielded_hatch", ["PCP", "PDP", " C "], {"P": "#c:plates/steel", "C": "shielding_concrete", "D": "minecraft:iron_door"}, "shielded_hatch", mechanical=True)

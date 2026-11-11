@@ -212,6 +212,7 @@ BLOCK_DEFS.update({
     "boiler_heating_plate": {"state": ("horizontal", "boiler_heating_plate"), "item": "block", "lang": "Boiler Heating Plate"},
     "shielding_concrete": {"state": ("simple",), "item": "block", "lang": "Shielding Concrete"},
     "shielded_glass": {"state": ("simple",), "item": "block", "lang": "Shielded Glass"},
+    "open_waste_canister": {"state": ("simple",), "item": "block", "lang": "Open Waste Canister"},
     "sealed_waste_canister": {"state": ("simple",), "item": "block", "lang": "Sealed Waste Canister"},
     "shielded_hatch": {"state": ("raw", _trapdoor("shielded_hatch")), "item": "shielded_hatch_bottom", "lang": "Shielded Hatch"},
     "fuel_assembly_bench": {"state": ("horizontal", "fuel_assembly_bench"), "item": "block", "lang": "Fuel Assembly Bench"},

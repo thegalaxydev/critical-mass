@@ -1,0 +1,7 @@
+{
+  "parent": "criticalmass:block/sealed_waste_canister",
+  "textures": {
+    "0": "criticalmass:block/open_waste_canister",
+    "particle": "criticalmass:block/open_waste_canister"
+  }
+}

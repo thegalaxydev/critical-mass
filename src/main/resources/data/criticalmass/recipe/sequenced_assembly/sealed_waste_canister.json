@@ -1,0 +1,64 @@
+{
+  "type": "create:sequenced_assembly",
+  "ingredient": {
+    "item": "criticalmass:open_waste_canister"
+  },
+  "loops": 1,
+  "results": [
+    {
+      "id": "criticalmass:sealed_waste_canister"
+    }
+  ],
+  "sequence": [
+    {
+      "type": "create:filling",
+      "ingredients": [
+        {
+          "item": "criticalmass:incomplete_waste_canister"
+        },
+        {
+          "type": "neoforge:single",
+          "amount": 1000,
+          "fluid": "criticalmass:contaminated_coolant"
+        }
+      ],
+      "results": [
+        {
+          "id": "criticalmass:incomplete_waste_canister"
+        }
+      ]
+    },
+    {
+      "type": "create:deploying",
+      "ingredients": [
+        {
+          "item": "criticalmass:incomplete_waste_canister"
+        },
+        {
+          "item": "criticalmass:sealing_gasket"
+        }
+      ],
+      "results": [
+        {
+          "id": "criticalmass:incomplete_waste_canister"
+        }
+      ]
+    },
+    {
+      "type": "create:pressing",
+      "ingredients": [
+        {
+          "item": "criticalmass:incomplete_waste_canister"
+        }
+      ],
+      "results": [
+        {
+          "id": "criticalmass:incomplete_waste_canister"
+        }
+      ]
+    }
+  ],
+  "transitional_item": {
+    "id": "criticalmass:incomplete_waste_canister"
+  }
+}

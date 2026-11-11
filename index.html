@@ -2039,6 +2039,9 @@ const RECORD_PATCHES = [
   ]],
   ["canister-block-1", [
     ["items", "itm-waste-canister", "Verified", {"purpose": "Sealed container for damaged fuel debris and solidified liquid waste. It can be placed as a block, where it stays a radiation source.", "visual": "Hand-made yellow drum block with a steel rim and hazard markings; the item shows the block.", "notes": "Records the damaged assembly's fuel state when made from recovery; solidified canisters say so in the tooltip. Placing it keeps that record on the block, and breaking it with a pickaxe drops the canister with the record."}]
+  ]],
+  ["open-canister-1", [
+    ["recipes", "rcp-solidify-waste", "Implemented, unverified", {"status": "Verified", "method": "Create sequenced assembly: spout, deployer, press", "inputs": [{"id": "fld-contaminated-coolant", "label": "", "qty": "1000 mB, spouted"}, {"id": "", "label": "Open Waste Canister", "qty": "1"}, {"id": "itm-gasket", "label": "", "qty": "1, deployed"}], "conditions": "Spout 1000 mB into an Open Waste Canister, deploy a Sealing Gasket, then press it shut. The Open Waste Canister is crafted from 3 Steel Plates in a bucket shape.", "notes": "Replaced the heated mixing recipe."}]
   ]]
 ];
 function applyProgressSets(raw) {

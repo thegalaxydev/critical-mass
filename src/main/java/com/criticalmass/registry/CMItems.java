@@ -52,6 +52,7 @@ public final class CMItems {
     public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<RepairKitItem> REPAIR_KIT = custom("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(CMBlocks.SEALED_WASTE_CANISTER.get(), new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_WASTE_CANISTER = ITEMS.register("incomplete_waste_canister", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_FUEL_ASSEMBLY = ITEMS.register("incomplete_fuel_assembly", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
 
     private CMItems() {

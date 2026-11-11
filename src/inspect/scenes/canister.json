@@ -19,6 +19,7 @@
     "/setblock 43 -59 40 criticalmass:sealed_waste_canister",
     "/setblock 43 -58 40 criticalmass:sealed_waste_canister",
     "/setblock 41 -59 40 criticalmass:shielded_cask",
+    "/setblock 46 -59 40 criticalmass:open_waste_canister",
     "/item replace entity @p hotbar.0 with criticalmass:sealed_waste_canister",
     "/item replace entity @p hotbar.1 with minecraft:air"
    ],
@@ -66,13 +67,37 @@
   {
    "cmds": [
     "/item replace entity @p hotbar.0 with criticalmass:sealed_waste_canister",
-    "/item replace entity @p hotbar.1 with criticalmass:shielded_cask"
+    "/item replace entity @p hotbar.1 with criticalmass:open_waste_canister"
    ],
    "wait": 10
   },
   {
    "shot": "hotbar_icon",
    "wait": 2
+  },
+  {
+   "jei": "criticalmass:sealed_waste_canister",
+   "wait": 30
+  },
+  {
+   "shot": "jei_sealed",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "criticalmass:open_waste_canister",
+   "wait": 30
+  },
+  {
+   "shot": "jei_open",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
   }
  ]
 }
