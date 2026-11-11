@@ -4,7 +4,7 @@
  "textures": {
   "0": "criticalmass:block/reactor_vessel_casing",
   "particle": "criticalmass:block/reactor_vessel_casing",
-  "crack": "criticalmass:block/casing_crack_2"
+  "crack": "minecraft:block/destroy_stage_6"
  },
  "elements": [
   {

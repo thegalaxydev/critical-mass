@@ -235,7 +235,7 @@ def _crack_model(stage):
     base = {d: dict(full, texture="#0") for d in ("north", "south", "east", "west", "up", "down")}
     over = {d: dict(full, texture="#crack") for d in ("north", "south", "east", "west", "up", "down")}
     return {"parent": "minecraft:block/block", "render_type": "minecraft:cutout",
-            "textures": {"0": "criticalmass:block/reactor_vessel_casing", "particle": "criticalmass:block/reactor_vessel_casing", "crack": "criticalmass:block/casing_crack_%d" % stage},
+            "textures": {"0": "criticalmass:block/reactor_vessel_casing", "particle": "criticalmass:block/reactor_vessel_casing", "crack": "minecraft:block/destroy_stage_%d" % {1: 3, 2: 6, 3: 9}[stage]},
             "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": base}, {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}]}
 
 

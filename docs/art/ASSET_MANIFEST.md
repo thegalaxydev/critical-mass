@@ -123,7 +123,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 ## Inventory icon vs placed appearance
 
-- `reactor_vessel_casing`: inventory = item model reactor_vessel_casing (parent: block model); placed = blockstate reactor_vessel_casing (raw); crack=0..3 overlay models (textures/block/casing_crack_1..3, hand pixel) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3
+- `reactor_vessel_casing`: inventory = item model reactor_vessel_casing (parent: block model); placed = blockstate reactor_vessel_casing (raw); crack=0..3 overlay models (Minecraft's block breaking textures destroy_stage_3, 6 and 9) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3
 - `circulation_pump`: inventory = item model circulation_pump (merged housing + rotor, static); placed = blockstate circulation_pump (dir_axis)
 - `steam_turbine`: inventory = item model steam_turbine (merged housing + rotor, static); placed = blockstate steam_turbine (h_axis)
 - `instrumentation_panel`: inventory = item model instrumentation_panel (parent: block model); placed = blockstate instrumentation_panel (horizontal)
