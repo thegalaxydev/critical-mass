@@ -9,13 +9,13 @@ import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
-import com.criticalmass.content.thermal.BypassValveBlockEntity;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
+import com.criticalmass.content.thermal.ReinforcedValveBlockEntity;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -46,8 +46,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new RadiatorBlockEntity(CMBlockEntities.RADIATOR.get(), pos, state), CMBlocks.RADIATOR_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<BoilerPlateBlockEntity>> BOILER_PLATE = BLOCK_ENTITIES.register("boiler_heating_plate",
             () -> BlockEntityType.Builder.of((pos, state) -> new BoilerPlateBlockEntity(CMBlockEntities.BOILER_PLATE.get(), pos, state), CMBlocks.BOILER_HEATING_PLATE.get()).build(null));
-    public static final Supplier<BlockEntityType<BypassValveBlockEntity>> BYPASS_VALVE = BLOCK_ENTITIES.register("steam_bypass_valve",
-            () -> BlockEntityType.Builder.of((pos, state) -> new BypassValveBlockEntity(CMBlockEntities.BYPASS_VALVE.get(), pos, state), CMBlocks.STEAM_BYPASS_VALVE.get()).build(null));
+    public static final Supplier<BlockEntityType<ReinforcedValveBlockEntity>> REINFORCED_VALVE = BLOCK_ENTITIES.register("reinforced_valve",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ReinforcedValveBlockEntity(CMBlockEntities.REINFORCED_VALVE.get(), pos, state), CMBlocks.REINFORCED_VALVE.get()).build(null));
     public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReliefValveBlockEntity(CMBlockEntities.RELIEF_VALVE.get(), pos, state), CMBlocks.RELIEF_VALVE.get()).build(null));
 

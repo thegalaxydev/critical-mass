@@ -1,0 +1,9 @@
+{
+ "parent": "create:block/fluid_valve/item",
+ "textures": {
+  "2": "criticalmass:block/reinforced_valve",
+  "4": "criticalmass:block/reinforced_valve_open",
+  "particle": "criticalmass:block/reinforced_valve_closed"
+ },
+ "render_type": "minecraft:cutout_mipped"
+}

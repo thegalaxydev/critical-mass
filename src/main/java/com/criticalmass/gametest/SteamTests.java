@@ -10,11 +10,14 @@ import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
+import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
+import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.content.kinetics.crank.ValveHandleBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
@@ -118,35 +121,46 @@ public final class SteamTests {
     private static final List<BlockPos> RING_PIPES = List.of(new BlockPos(4, 1, 2), new BlockPos(4, 2, 2), new BlockPos(4, 4, 2), new BlockPos(3, 4, 2),
             new BlockPos(2, 4, 2), new BlockPos(1, 4, 2), new BlockPos(1, 3, 2), new BlockPos(1, 2, 2), new BlockPos(1, 1, 2));
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
-    public static void bypassValveSplitsSteamAwayFromTurbine(GameTestHelper h) {
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void reinforcedValveTurnedByHandleStopsAndStartsTheLoop(GameTestHelper h) {
         h.setBlock(RING_PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
         h.setBlock(RING_PUMP.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
-        h.setBlock(RING_VALVE, CMBlocks.STEAM_BYPASS_VALVE.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.NORTH));
+        h.setBlock(RING_VALVE, CMBlocks.REINFORCED_VALVE.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.UP).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, false));
+        BlockPos handlePos = RING_VALVE.north();
+        h.setBlock(handlePos, AllBlocks.COPPER_VALVE_HANDLE.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
         SteamTurbineBlockEntity t = turbine(h, RING_TURBINE, true);
         TestVessels.pipes(h, RING_PIPES);
-        BlockPos signal = RING_VALVE.below();
-        h.setBlock(signal, Blocks.REDSTONE_BLOCK);
-        h.onEachTick(() -> {
-            if (t.coolant().steamEnergy() < 5000) {
-                t.coolant().set(water(t.coolant().amount() == 0 ? 1000 : t.coolant().amount()), steamHeat(t.coolant().amount() == 0 ? 1000 : t.coolant().amount(), 40000));
-            }
-        });
-        double[] mark = new double[1];
+        t.coolant().set(water(1000), steamHeat(1000, 40000));
+        CirculationPumpBlockEntity pump = h.getBlockEntity(RING_PUMP);
+        ValveHandleBlockEntity handle = h.getBlockEntity(handlePos);
+        boolean[] openWithSneak = new boolean[1];
         h.startSequence()
                 .thenIdle(40)
                 .thenExecute(() -> {
-                    h.assertTrue(t.admission() == 0 && t.status().endsWith("bypassed"), "Full bypass should leave the turbine no steam: " + t.status() + " admission " + t.admission());
-                    mark[0] = t.heatExtracted();
+                    h.assertTrue(ReinforcedValveBlock.getPipeAxis(h.getBlockState(RING_VALVE)) == Direction.Axis.X, "Valve should sit along the loop");
+                    h.assertTrue(pump.flow() == 0 && pump.status().endsWith("valve_closed"), "A closed valve must stop the loop: " + pump.status() + " flow " + pump.flow());
+                    h.assertTrue(handle.activate(false), "Handle should turn");
                 })
-                .thenIdle(20)
+                .thenIdle(40)
                 .thenExecute(() -> {
-                    h.assertTrue(t.heatExtracted() == mark[0], "Turbine took heat with full bypass");
-                    h.setBlock(signal, Blocks.AIR);
+                    if (!ReinforcedValveBlock.isOpen(h.getBlockState(RING_VALVE))) {
+                        openWithSneak[0] = true;
+                        h.assertTrue(handle.activate(true), "Handle should turn back");
+                    }
                 })
-                .thenIdle(20)
-                .thenExecute(() -> h.assertTrue(t.admission() == 1 && t.heatExtracted() > mark[0], "Closed bypass should admit all steam: " + t.admission()))
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(ReinforcedValveBlock.isOpen(h.getBlockState(RING_VALVE)), "Turning the handle one way should open the valve");
+                    h.assertTrue(pump.flow() > 0 && pump.status().endsWith("running"), "An open valve should let the loop circulate: " + pump.status());
+                    h.assertTrue(handle.activate(!openWithSneak[0]), "Handle should turn the other way");
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(!ReinforcedValveBlock.isOpen(h.getBlockState(RING_VALVE)), "Turning the handle the other way should close the valve");
+                    h.assertTrue(pump.flow() == 0 && pump.status().endsWith("valve_closed"), "Closing the valve should stop the loop again: " + pump.status());
+                })
                 .thenSucceed();
     }
 

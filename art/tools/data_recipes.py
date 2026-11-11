@@ -131,7 +131,7 @@ shapeless("reactor_service_port", ["reactor_vessel_casing", "create:brass_casing
 shapeless("primary_coolant_port", ["reactor_vessel_casing", "reinforced_pipe", "#c:plates/copper"], "primary_coolant_port")
 shapeless("circulation_pump", ["create:mechanical_pump", "reinforced_pipe", "create:brass_casing"], "circulation_pump")
 shapeless("relief_valve", ["create:fluid_valve", "reinforced_pipe", "#c:plates/iron"], "relief_valve")
-shapeless("steam_bypass_valve", ["create:fluid_valve", "reinforced_pipe", "#c:plates/brass", "create:electron_tube"], "steam_bypass_valve")
+shapeless("reinforced_valve", ["create:fluid_valve", "reinforced_pipe", "#c:plates/brass"], "reinforced_valve")
 shapeless("reactor_signal_interface", ["create:redstone_link", "create:brass_casing", "create:electron_tube"], "reactor_signal_interface")
 shapeless("repair_kit", ["#c:plates/reactor_alloy", "#c:plates/reactor_alloy", "sealing_gasket", "sealing_gasket", "create:andesite_alloy"], "repair_kit")
 

@@ -240,39 +240,6 @@ def relief_valve(jar):
     return img
 
 
-def bypass_valve(jar):
-    img = blank(32, 32)
-    for x0 in (0, 10, 20):
-        region(img, x0, 0, 10, 10, COPPER)
-        rect(img, x0 + 2, 2, x0 + 7, 7, COPPER[3])
-        for x, y in ((x0 + 1, 1), (x0 + 8, 1), (x0 + 1, 8), (x0 + 8, 8)):
-            put(img, x, y, IRON[4])
-    region(img, 0, 10, 8, 8, IRON)
-    opening(img, 0, 10, 8, PALE, IRON)
-    region(img, 8, 10, 8, 8, IRON)
-    opening(img, 8, 10, 8, RED, IRON)
-    for x in range(0, 6):
-        for y in range(18, 26):
-            put(img, x, y, IRON[4] if x in (0, 3) else IRON[2])
-    for x in range(6, 17):
-        for y in range(18, 21):
-            put(img, x, y, IRON[4] if y == 18 else IRON[2])
-    rect(img, 6, 18, 8, 25, IRON[3])
-    rect(img, 17, 18, 18, 19, IRON[3])
-
-    for cx in (20, 28):
-        bevel(img, cx - 4, 10, cx + 3, 17, STEEL, 2)
-        disc(img, cx, 14, 3.6, lambda x, y, d, cx=cx: (RED[3] if x + y < cx + 14 else RED[1]) if d > 2.6 else None)
-        for k in range(cx - 3, cx + 3):
-            put(img, k, 13, RED[2])
-        for k in range(11, 17):
-            put(img, cx - 1, k, RED[2])
-        put(img, cx - 1, 13, IRON[4])
-    for x in range(19, 27):
-        put(img, x, 18, RED[2])
-    return img
-
-
 PLANT = {
     "heat_exchanger": heat_exchanger,
     "condenser": condenser,
@@ -281,5 +248,4 @@ PLANT = {
     "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,
     "relief_valve": relief_valve,
-    "steam_bypass_valve": bypass_valve,
 }

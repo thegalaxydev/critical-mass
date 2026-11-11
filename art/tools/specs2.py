@@ -138,22 +138,6 @@ def relief_valve():
     return m
 
 
-def bypass_valve():
-    m = Model("steam_bypass_valve")
-    body_side = C("body_side", ("brass", 3), ("brass", 1), [("ring", 5, 5, 3, "copper", ("ink", 0))])
-    body_top = C("body_top", ("brass", 3), ("brass", 1), [("rect", 4, 4, 5, 5, "iron", 3)])
-    m.box([3, 3, 3], [13, 13, 13], {"east": body_side, "west": body_side, "north": body_side, "south": C("body_back", ("brass", 3), ("brass", 1), []), "up": body_top, "down": body_top}, name="body")
-    fe = C("fl_edge", ("copper", 2), None, [], outline=False)
-    fl = C("fl", ("copper", 3), ("copper", 1), [("hole", 2, 2, 5, 5)])
-    m.box([0, 4, 4], [3, 12, 12], {"west": fl, "north": fe, "south": fe, "up": C("fl_edge_t", ("copper", 2), None, [], outline=False), "down": C("fl_edge_t", ("copper", 2), None, [], outline=False)}, name="in")
-    m.box([13, 4, 4], [16, 12, 12], {"east": fl, "north": fe, "south": fe, "up": C("fl_edge_t", ("copper", 2), None, [], outline=False), "down": C("fl_edge_t", ("copper", 2), None, [], outline=False)}, name="turbine_out")
-    m.box([4, 4, 0], [12, 12, 3], {"north": C("fl_bypass", ("iron", 3), ("iron", 1), [("hole", 2, 2, 5, 5)]), "east": C("fl_edge_b", ("iron", 2), None, [], outline=False), "west": C("fl_edge_b", ("iron", 2), None, [], outline=False), "up": C("fl_edge_bt", ("iron", 2), None, [], outline=False), "down": C("fl_edge_bt", ("iron", 2), None, [], outline=False)}, name="bypass_out")
-    m.box([7, 13, 7], [9, 15, 9], {d: C("stem", ("iron", 3), None, [], outline=False) for d in ("north", "south", "east", "west")}, name="stem")
-    m.box([4, 15, 4], [12, 16, 12], {"up": C("wheel", ("red", 2), None, [("ring", 4, 4, 4, "red"), ("rect", 3, 3, 4, 4, "iron", 4), ("rect", 0, 3, 7, 4, "red", 3)], outline=False), "down": C("wheel_d", ("red", 1), None, [], outline=False),
-                                    "north": C("wheel_e", ("red", 2), None, [], outline=False), "south": C("wheel_e", ("red", 2), None, [], outline=False), "east": C("wheel_e", ("red", 2), None, [], outline=False), "west": C("wheel_e", ("red", 2), None, [], outline=False)}, name="handwheel")
-    return m
-
-
 def boiler_plate():
     m = Model("boiler_heating_plate")
     top = C("top", ("copper", 2), ("iron", 2), [("bars", "h", 3, 12, 2, "copper", False, 1, 2, 13), ("rect", 2, 2, 13, 2, "iron", 4)])
@@ -291,7 +275,6 @@ def build_rest():
     models["radiator_panel"] = radiator()
     models["emergency_coolant_tank"] = emergency_tank()
     models["relief_valve"] = relief_valve()
-    models["steam_bypass_valve"] = bypass_valve()
     models["boiler_heating_plate"] = boiler_plate()
     models["shielding_concrete"] = concrete()
     models["shielded_glass"] = shield_glass()

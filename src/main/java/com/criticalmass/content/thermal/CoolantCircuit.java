@@ -182,10 +182,10 @@ public final class CoolantCircuit {
             nodes.add(n);
             chain.add(n.bufferFor(h.enteredFrom()));
         }
-        double bypass = 0;
         for (ThermalNode n : nodes) {
-            n.setUpstreamBypass(bypass);
-            bypass = Math.max(bypass, n.bypassFraction());
+            if (n.blocksFlow()) {
+                return new Flow(0, "criticalmass.circuit.valve_closed");
+            }
         }
         double peak = 0;
         CoolantBuffer worst = null;

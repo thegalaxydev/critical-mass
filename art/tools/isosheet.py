@@ -39,7 +39,7 @@ if __name__ == "__main__":
         E += views("panel", ["criticalmass:block/instrumentation_panel"], (0, 45, 315))
     if which == "rest":
         names = ["reactor_controller", "fuel_channel", "control_channel", "coolant_channel", "reactor_service_port", "primary_coolant_port_inlet", "primary_coolant_port_outlet",
-                 "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "emergency_coolant_tank", "relief_valve", "steam_bypass_valve", "boiler_heating_plate",
+                 "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "emergency_coolant_tank", "relief_valve", "boiler_heating_plate",
                  "shielding_concrete", "shielded_glass", "shielded_hatch", "fuel_assembly_bench", "spent_fuel_rack", "shielded_cask", "reactor_signal_interface", "alarm_siren", "alarm_siren_powered",
                  "docking_service_connector", "docking_service_connector_connected"]
         for n in names:

@@ -26,11 +26,8 @@ public interface ThermalNode {
         return null;
     }
 
-    default double bypassFraction() {
-        return 0;
-    }
-
-    default void setUpstreamBypass(double fraction) {
+    default boolean blocksFlow() {
+        return false;
     }
 
     default void setCircuitPressure(double pressure, @Nullable CoolantBuffer worst) {

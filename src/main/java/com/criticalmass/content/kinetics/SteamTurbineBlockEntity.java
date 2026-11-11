@@ -27,8 +27,6 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     private double heatExtracted;
     private double appliedCapacity;
     private double admission;
-    private double upstreamBypass;
-    private int bypassTicks;
     private String status = "criticalmass.turbine.no_steam";
     private final ThermalSinks sinks = new ThermalSinks();
     private int updateCooldown;
@@ -86,12 +84,6 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         return sinks;
     }
 
-    @Override
-    public void setUpstreamBypass(double fraction) {
-        upstreamBypass = fraction;
-        bypassTicks = 3;
-    }
-
     public boolean shaftConnected() {
         if (level == null) {
             return false;
@@ -114,21 +106,14 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (ThermalSafety.ruptureIfNeeded(level, worldPosition, coolant, sinks)) {
             status = "criticalmass.turbine.ruptured";
         }
-        if (bypassTicks > 0) {
-            bypassTicks--;
-        } else {
-            upstreamBypass = 0;
-        }
         boolean connected = shaftConnected();
         double governor = level.getBestNeighborSignal(worldPosition) / 15.0;
-        admission = connected ? (1 - governor) * (1 - upstreamBypass) : 0;
+        admission = connected ? 1 - governor : 0;
         double steam = coolant.steamEnergy();
         if (!connected) {
             status = "criticalmass.turbine.disconnected";
         } else if (steam <= 0) {
             status = "criticalmass.turbine.no_steam";
-        } else if (upstreamBypass >= 1) {
-            status = "criticalmass.turbine.bypassed";
         } else if (governor >= 1) {
             status = "criticalmass.turbine.governed";
         } else {

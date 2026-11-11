@@ -3,6 +3,7 @@ package com.criticalmass;
 import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
+import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMAttachments;
@@ -38,6 +39,9 @@ public class CriticalMass {
         CMBlocks.BLOCKS.register(modEventBus);
         CMItems.ITEMS.register(modEventBus);
         CMBlockEntities.BLOCK_ENTITIES.register(modEventBus);
+        CMBlocks.BLOCKS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        CMItems.ITEMS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
         CMFluids.TYPES.register(modEventBus);
@@ -72,7 +76,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BYPASS_VALVE.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), (be, side) -> side == null || side.getAxis() == ReinforcedValveBlock.getPipeAxis(be.getBlockState()) ? be.coolant().handler() : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());

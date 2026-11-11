@@ -1,0 +1,145 @@
+{
+ "name": "valve",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 44 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 36 -59 36 52 -55 44 minecraft:air",
+    "/setblock 39 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -59 40 criticalmass:reinforced_valve[facing=up,axis_along_first=false]",
+    "/setblock 41 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -59 39 create:copper_valve_handle[facing=north]",
+    "/setblock 43 -59 40 create:fluid_pipe",
+    "/setblock 44 -59 40 criticalmass:reinforced_valve[facing=up,axis_along_first=false]",
+    "/setblock 45 -59 40 create:fluid_pipe",
+    "/setblock 44 -58 40 create:fluid_pipe",
+    "/setblock 48 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 48 -58 40 criticalmass:reinforced_valve[facing=north,axis_along_first=true]",
+    "/setblock 48 -57 40 criticalmass:reinforced_pipe",
+    "/setblock 47 -58 40 create:copper_valve_handle[facing=west]",
+    "/item replace entity @p hotbar.0 with criticalmass:reinforced_valve",
+    "/item replace entity @p hotbar.1 with minecraft:air"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/setblock 44 -57 35 minecraft:barrier",
+    "/tp @p 44.50 -56.00 35.50 facing 44.50 -60.12 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "overview_closed",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 40 -58 37 minecraft:barrier",
+    "/tp @p 40.50 -57.00 37.50 facing 40.50 -60.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "closeup_closed",
+   "wait": 2
+  },
+  {
+   "slot": 1,
+   "wait": 2
+  },
+  {
+   "use": [
+    40,
+    -59,
+    39,
+    "north"
+   ],
+   "wait": 4
+  },
+  {
+   "shot": "closeup_turning",
+   "wait": 30
+  },
+  {
+   "shot": "closeup_after_turn",
+   "wait": 2
+  },
+  {
+   "sneak": true,
+   "wait": 2
+  },
+  {
+   "use": [
+    40,
+    -59,
+    39,
+    "north"
+   ],
+   "wait": 4
+  },
+  {
+   "sneak": false,
+   "wait": 30
+  },
+  {
+   "shot": "closeup_after_sneak_turn",
+   "wait": 2
+  },
+  {
+   "use": [
+    47,
+    -58,
+    40,
+    "west"
+   ],
+   "wait": 30
+  },
+  {
+   "sneak": true,
+   "wait": 2
+  },
+  {
+   "use": [
+    47,
+    -58,
+    40,
+    "west"
+   ],
+   "wait": 4
+  },
+  {
+   "sneak": false,
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/tp @p 44.50 -56.00 35.50 facing 44.50 -60.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "overview_after",
+   "wait": 2
+  },
+  {
+   "slot": 0,
+   "gui": true,
+   "wait": 10
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  }
+ ]
+}

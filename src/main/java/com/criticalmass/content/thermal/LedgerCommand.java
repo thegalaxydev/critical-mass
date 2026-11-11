@@ -153,6 +153,11 @@ public final class LedgerCommand {
                 pumps++;
                 source.sendSuccess(() -> Component.literal("pump " + where(p) + " flow=" + p.flow() + " moved=" + p.movedTotal() + " speed=" + p.getSpeed()
                         + " status=" + p.status()), false);
+            } else if (be instanceof ReinforcedValveBlockEntity v) {
+                others++;
+                coolant += v.coolant().amount();
+                stored += v.coolant().heat();
+                source.sendSuccess(() -> Component.literal("valve " + where(v) + " " + v.coolant().amount() + "mB open=" + ReinforcedValveBlock.isOpen(v.getBlockState())), false);
             }
         }
         double balance = added - stored - extracted - sunk;

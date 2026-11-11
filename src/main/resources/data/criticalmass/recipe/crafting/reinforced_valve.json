@@ -10,12 +10,9 @@
     },
     {
       "tag": "c:plates/brass"
-    },
-    {
-      "item": "create:electron_tube"
     }
   ],
   "result": {
-    "id": "criticalmass:steam_bypass_valve"
+    "id": "criticalmass:reinforced_valve"
   }
 }
