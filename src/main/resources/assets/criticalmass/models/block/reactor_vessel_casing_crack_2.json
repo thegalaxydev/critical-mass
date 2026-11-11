@@ -1,147 +1,89 @@
 {
+ "loader": "neoforge:composite",
  "parent": "minecraft:block/block",
- "render_type": "minecraft:cutout",
  "textures": {
-  "0": "criticalmass:block/reactor_vessel_casing",
-  "particle": "criticalmass:block/reactor_vessel_casing",
-  "crack": "minecraft:block/destroy_stage_6"
+  "particle": "criticalmass:block/reactor_vessel_casing"
  },
- "elements": [
-  {
-   "from": [
-    0,
-    0,
-    0
-   ],
-   "to": [
-    16,
-    16,
-    16
-   ],
-   "faces": {
-    "north": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    },
-    "south": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    },
-    "east": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    },
-    "west": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    },
-    "up": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    },
-    "down": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#0"
-    }
-   }
+ "children": {
+  "casing": {
+   "parent": "criticalmass:block/reactor_vessel_casing",
+   "render_type": "minecraft:solid"
   },
-  {
-   "from": [
-    0,
-    0,
-    0
-   ],
-   "to": [
-    16,
-    16,
-    16
-   ],
-   "faces": {
-    "north": {
-     "uv": [
+  "crack": {
+   "render_type": "minecraft:translucent",
+   "textures": {
+    "crack": "criticalmass:block/casing_crack_2"
+   },
+   "elements": [
+    {
+     "from": [
       0,
       0,
+      0
+     ],
+     "to": [
+      16,
       16,
       16
      ],
-     "texture": "#crack"
-    },
-    "south": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#crack"
-    },
-    "east": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#crack"
-    },
-    "west": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#crack"
-    },
-    "up": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#crack"
-    },
-    "down": {
-     "uv": [
-      0,
-      0,
-      16,
-      16
-     ],
-     "texture": "#crack"
+     "faces": {
+      "north": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      },
+      "south": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      },
+      "east": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      },
+      "west": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      },
+      "up": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      },
+      "down": {
+       "uv": [
+        0,
+        0,
+        16,
+        16
+       ],
+       "texture": "#crack"
+      }
+     }
     }
-   }
+   ]
   }
- ]
+ }
 }

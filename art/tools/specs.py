@@ -231,12 +231,13 @@ EXTRA_MODELS = {
 
 
 def _crack_model(stage):
-    full = {"uv": [0, 0, 16, 16]}
-    base = {d: dict(full, texture="#0") for d in ("north", "south", "east", "west", "up", "down")}
-    over = {d: dict(full, texture="#crack") for d in ("north", "south", "east", "west", "up", "down")}
-    return {"parent": "minecraft:block/block", "render_type": "minecraft:cutout",
-            "textures": {"0": "criticalmass:block/reactor_vessel_casing", "particle": "criticalmass:block/reactor_vessel_casing", "crack": "minecraft:block/destroy_stage_%d" % {1: 3, 2: 6, 3: 9}[stage]},
-            "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": base}, {"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}]}
+    over = {d: {"uv": [0, 0, 16, 16], "texture": "#crack"} for d in ("north", "south", "east", "west", "up", "down")}
+    return {"loader": "neoforge:composite", "parent": "minecraft:block/block",
+            "textures": {"particle": "criticalmass:block/reactor_vessel_casing"},
+            "children": {
+                "casing": {"parent": "criticalmass:block/reactor_vessel_casing", "render_type": "minecraft:solid"},
+                "crack": {"render_type": "minecraft:translucent", "textures": {"crack": "criticalmass:block/casing_crack_%d" % stage},
+                          "elements": [{"from": [0, 0, 0], "to": [16, 16, 16], "faces": over}]}}}
 
 
 for _stage in (1, 2, 3):

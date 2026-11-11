@@ -61,7 +61,7 @@ STATE_NOTES = {
     "reinforced_pipe": "six connection booleans from real neighbours (pipes, coolant port fronts, pump fluid axis, turbine top/bottom, relief valve back, PipeConnectable blocks); multipart core + arms. Does not transport fluid yet.",
     "alarm_siren": "powered=true when the block receives redstone; powered model uses a lit, unshaded lamp",
     "docking_service_connector": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
-    "reactor_vessel_casing": "crack=0..3 overlay models (Minecraft's block breaking textures destroy_stage_3, 6 and 9) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
+    "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
     "relief_valve": "venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting",
     "shielded_hatch": "vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates",
     "fuel_channel": "rotated pillar (axis)", "control_channel": "rotated pillar (axis)", "coolant_channel": "rotated pillar (axis)",

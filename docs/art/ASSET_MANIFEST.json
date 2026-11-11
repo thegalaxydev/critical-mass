@@ -40,7 +40,7 @@
    "item_model": "src/main/resources/assets/criticalmass/models/item/reactor_vessel_casing.json",
    "inventory_icon": "item model reactor_vessel_casing (parent: block model)",
    "placed_appearance": "blockstate reactor_vessel_casing (raw)",
-   "state_notes": "crack=0..3 overlay models (Minecraft's block breaking textures destroy_stage_3, 6 and 9) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
+   "state_notes": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
    "partials": [],
    "kinetic": null,
    "references": [

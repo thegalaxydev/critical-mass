@@ -762,6 +762,12 @@ Front face of the reactor signal interface in iron casing: recessed steel panel 
 
 ```
 
+## casing_crack_1, casing_crack_2 and casing_crack_3 (not generated)
+
+- Used by: `textures/block/casing_crack_1.png`, `textures/block/casing_crack_2.png`, `textures/block/casing_crack_3.png` (translucent crack layer of the cracked Reactor Vessel Casing models)
+- Source: the author recoloured Minecraft's `destroy_stage_5` (original in `art/originals/casing_destroy_stage_5.png`); the other nine stages in `art/casing_break/` keep Minecraft's crack layout with the same colours and opacity. Cracks 1, 2 and 3 are stages 3, 6 and 9.
+- Date: 2026-11-11
+
 ## reactor_vessel_casing (not generated)
 
 - Used by: `textures/block/reactor_vessel_casing.png`, `textures/block/reactor_vessel_casing_connected.png` (connected-texture sheet in Create's omnidirectional casing layout)
