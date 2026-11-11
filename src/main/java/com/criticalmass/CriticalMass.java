@@ -1,6 +1,5 @@
 package com.criticalmass;
 
-import com.criticalmass.content.fuel.WasteCanisterSequence;
 import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
@@ -57,7 +56,6 @@ public class CriticalMass {
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
-        NeoForge.EVENT_BUS.addListener(WasteCanisterSequence::onDeployerSearch);
     }
 
     public static ResourceLocation asResource(String path) {

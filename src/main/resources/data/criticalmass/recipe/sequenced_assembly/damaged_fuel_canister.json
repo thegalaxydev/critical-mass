@@ -1,7 +1,7 @@
 {
   "type": "create:sequenced_assembly",
   "ingredient": {
-    "item": "criticalmass:open_waste_canister"
+    "item": "criticalmass:damaged_fuel_assembly"
   },
   "loops": 1,
   "results": [
@@ -17,7 +17,7 @@
           "item": "criticalmass:incomplete_waste_canister"
         },
         {
-          "item": "criticalmass:damaged_fuel_assembly"
+          "item": "criticalmass:open_waste_canister"
         }
       ],
       "results": [

@@ -16,4 +16,11 @@ public abstract class SequencedAssemblyRecipeMixin {
     private void criticalmass$keepFuelRecord(ResourceLocation id, ItemStack input, RandomSource random, CallbackInfoReturnable<ItemStack> cir) {
         WasteCanisterSequence.carryRecord(input, cir.getReturnValue());
     }
+
+    @Inject(method = "appliesTo", at = @At("RETURN"), cancellable = true)
+    private void criticalmass$refuseHotFuel(ResourceLocation id, ItemStack input, CallbackInfoReturnable<Boolean> cir) {
+        if (cir.getReturnValueZ() && WasteCanisterSequence.tooHot(input)) {
+            cir.setReturnValue(false);
+        }
+    }
 }

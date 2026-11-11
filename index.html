@@ -2044,10 +2044,10 @@ const RECORD_PATCHES = [
     ["recipes", "rcp-solidify-waste", "Implemented, unverified", {"status": "Verified", "method": "Create sequenced assembly: spout, deployer, press", "inputs": [{"id": "fld-contaminated-coolant", "label": "", "qty": "1000 mB, spouted"}, {"id": "", "label": "Open Waste Canister", "qty": "1"}, {"id": "itm-gasket", "label": "", "qty": "1, deployed"}], "conditions": "Spout 1000 mB into an Open Waste Canister, deploy a Sealing Gasket, then press it shut. The Open Waste Canister is crafted from 3 Steel Plates in a bucket shape.", "notes": "Replaced the heated mixing recipe."}]
   ]],
   ["damaged-fuel-sequence-1", [
-    ["recipes", "rcp-damaged-recovery", "Verified", {"method": "Recovery sequence at the Fuel Assembly Bench, or Create sequenced assembly (Open Waste Canister, deploy the damaged assembly, deploy a Sealing Gasket, press)", "notes": "The machine sequence keeps the assembly's lifecycle record on the incomplete and the finished canister, and refuses assemblies that have not cooled."}]
+    ["recipes", "rcp-damaged-recovery", "Verified", {"method": "Recovery sequence at the Fuel Assembly Bench, or Create sequenced assembly (deploy an Open Waste Canister, deploy a Sealing Gasket, press)", "notes": "The machine sequence keeps the assembly's lifecycle record on the incomplete and the finished canister, and refuses assemblies that have not cooled."}]
   ]],
-  ["damaged-fuel-sequence-2", [
-    ["recipes", "rcp-damaged-recovery", "Verified", {"method": "Recovery sequence at the Fuel Assembly Bench, or Create sequenced assembly (Open Waste Canister, deploy the damaged assembly, deploy a Sealing Gasket, press)"}]
+  ["damaged-fuel-sequence-3", [
+    ["recipes", "rcp-damaged-recovery", "Verified", {"method": "Recovery sequence at the Fuel Assembly Bench, or Create sequenced assembly (deploy an Open Waste Canister, deploy a Sealing Gasket, press)"}]
   ]]
 ];
 function applyProgressSets(raw) {

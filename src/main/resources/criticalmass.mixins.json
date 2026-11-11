@@ -4,7 +4,6 @@
   "package": "com.criticalmass.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
-    "BeltDeployerCallbacksMixin",
     "SequencedAssemblyRecipeMixin"
   ],
   "injectors": {
