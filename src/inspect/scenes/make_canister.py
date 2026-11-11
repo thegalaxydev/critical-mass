@@ -29,6 +29,7 @@ steps = [
     {"cmds": ["/item replace entity @p hotbar.0 with " + C, "/item replace entity @p hotbar.1 with criticalmass:open_waste_canister"], "wait": 10}, {"shot": "hotbar_icon", "wait": 2},
     {"jei": "criticalmass:sealed_waste_canister", "wait": 30}, {"shot": "jei_sealed", "wait": 2}, {"closeScreen": True, "wait": 5},
     {"jei": "criticalmass:open_waste_canister", "wait": 30}, {"shot": "jei_open", "wait": 2}, {"closeScreen": True, "wait": 5},
+    {"jei": "uses:criticalmass:damaged_fuel_assembly@create:sequenced_assembly", "wait": 30}, {"shot": "jei_damaged", "wait": 2}, {"closeScreen": True, "wait": 5},
 ]
 json.dump({"name": "canister", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "canister.json"), "w", newline="\n"), indent=1)
 print(len(steps), "steps")

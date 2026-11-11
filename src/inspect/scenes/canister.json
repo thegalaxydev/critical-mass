@@ -98,6 +98,18 @@
   {
    "closeScreen": true,
    "wait": 5
+  },
+  {
+   "jei": "uses:criticalmass:damaged_fuel_assembly@create:sequenced_assembly",
+   "wait": 30
+  },
+  {
+   "shot": "jei_damaged",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
   }
  ]
 }

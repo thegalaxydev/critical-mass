@@ -70,6 +70,9 @@ public final class Radiation {
         if (stack.is(CMItems.SEALED_WASTE_CANISTER.get())) {
             return stack.getCount() * (CANISTER_DOSE + RESIDUAL_DOSE * residual);
         }
+        if (stack.is(CMItems.INCOMPLETE_WASTE_CANISTER.get())) {
+            return stack.getCount() * (s == null ? CANISTER_DOSE : 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual));
+        }
         return 0;
     }
 

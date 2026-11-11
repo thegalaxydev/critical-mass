@@ -1,6 +1,15 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.minecraft.core.Direction;
+import com.simibubi.create.content.logistics.depot.DepotBlockEntity;
+import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
+import com.simibubi.create.AllBlocks;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity.Outcome;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
@@ -130,5 +139,73 @@ public final class ProductionTests {
         h.assertTrue(silkDrops.size() == 1 && silkDrops.get(0).is(CMBlocks.DEEPSLATE_URANIUM_ORE.get().asItem()), "Silk touch keeps the ore: " + silkDrops);
         h.assertTrue(new ItemStack(CMItems.RAW_URANIUM.get()).is(ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "raw_materials/uranium"))), "Raw uranium carries c:raw_materials/uranium");
         h.succeed();
+    }
+
+    private static void motor(GameTestHelper h, BlockPos pos) {
+        h.setBlock(pos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(pos);
+        motor.generatedSpeed.setValue(128);
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void damagedFuelSequenceKeepsItsRecord(GameTestHelper h) {
+        FuelState hot = FuelState.fresh().withBurned(4200).withCondition(0, "overheat").discharged(5);
+        FuelState cool = hot.withResidual(0.1);
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(hot), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isEmpty(),
+                "Hot damaged fuel cannot start the canister sequence");
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(cool), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isPresent(),
+                "Cooled damaged fuel starts the canister sequence");
+        BlockPos depotA = new BlockPos(2, 1, 2);
+        BlockPos deployer = new BlockPos(2, 3, 2);
+        BlockPos depotB = new BlockPos(5, 1, 2);
+        BlockPos press = new BlockPos(5, 3, 2);
+        h.setBlock(depotA, AllBlocks.DEPOT.get());
+        h.setBlock(depotB, AllBlocks.DEPOT.get());
+        h.setBlock(deployer, AllBlocks.DEPLOYER.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
+        h.setBlock(press, AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
+        motor(h, deployer.east());
+        motor(h, press.east());
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    DepotBlockEntity a = h.getBlockEntity(depotA);
+                    a.setHeldItem(FuelAssemblyItem.stackFor(cool));
+                    hand(h, deployer).insertItem(0, new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), false);
+                })
+                .thenWaitUntil(() -> {
+                    ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotA)).getHeldItem();
+                    h.assertTrue(held.is(CMItems.INCOMPLETE_WASTE_CANISTER.get()), "Deploying the open canister: " + held);
+                })
+                .thenExecute(() -> {
+                    ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotA)).getHeldItem();
+                    FuelState s = held.get(CMComponents.FUEL_STATE.get());
+                    h.assertTrue(s != null && s.id().equals(cool.id()), "The incomplete canister carries the assembly's record: " + s);
+                    h.assertTrue(com.criticalmass.content.radiation.Radiation.itemStrength(held) > 0, "The open canister with fuel inside radiates");
+                    hand(h, deployer).insertItem(0, new ItemStack(CMItems.SEALING_GASKET.get()), false);
+                })
+                .thenWaitUntil(() -> h.assertTrue(hand(h, deployer).getStackInSlot(0).isEmpty(), "Deploying the gasket"))
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    DepotBlockEntity a = h.getBlockEntity(depotA);
+                    DepotBlockEntity b = h.getBlockEntity(depotB);
+                    b.setHeldItem(a.getHeldItem());
+                    a.setHeldItem(ItemStack.EMPTY);
+                })
+                .thenWaitUntil(() -> {
+                    ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotB)).getHeldItem();
+                    h.assertTrue(held.is(CMItems.SEALED_WASTE_CANISTER.get()), "Pressing seals it: " + held);
+                })
+                .thenExecute(() -> {
+                    ItemStack done = ((DepotBlockEntity) h.getBlockEntity(depotB)).getHeldItem();
+                    FuelState s = done.get(CMComponents.FUEL_STATE.get());
+                    h.assertTrue(s != null && s.id().equals(cool.id()) && s.damageCause().equals("overheat") && s.burned() == 4200 && s.residual() == cool.residual(),
+                            "The sealed canister keeps the assembly's record: " + s);
+                    h.assertTrue(!done.has(com.simibubi.create.AllDataComponents.SEQUENCED_ASSEMBLY), "The finished canister is not left mid-sequence");
+                })
+                .thenSucceed();
+    }
+
+    private static IItemHandler hand(GameTestHelper h, BlockPos pos) {
+        return h.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, h.absolutePos(pos), null);
     }
 }

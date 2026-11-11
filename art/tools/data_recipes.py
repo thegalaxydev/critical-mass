@@ -116,6 +116,15 @@ RECIPES["sequenced_assembly/sealed_waste_canister"] = {
     "transitional_item": out("incomplete_waste_canister"),
 }
 
+RECIPES["sequenced_assembly/damaged_fuel_canister"] = {
+    "type": "create:sequenced_assembly",
+    "ingredient": ing("damaged_fuel_assembly"),
+    "loops": 1,
+    "results": [out("sealed_waste_canister")],
+    "sequence": [step_deploy("open_waste_canister", "incomplete_waste_canister"), step_deploy("sealing_gasket", "incomplete_waste_canister"), step_press("incomplete_waste_canister")],
+    "transitional_item": out("incomplete_waste_canister"),
+}
+
 shaped("open_waste_canister", ["P P", " P "], {"P": "#c:plates/steel"}, "open_waste_canister")
 shaped("empty_fuel_assembly", [" S ", "SGS", " S "], {"S": "#c:plates/reactor_alloy", "G": "sealing_gasket"}, "empty_fuel_assembly", mechanical=True)
 shaped("steam_turbine", [" C ", "BBB", "BSB", "BBB", " C "], {"C": "create:brass_casing", "B": "turbine_blade", "S": "create:shaft"}, "steam_turbine", mechanical=True)
