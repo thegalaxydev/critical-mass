@@ -269,13 +269,6 @@ def sheet(c, mat="lead", thick=False):
 
 
 
-def gasket(c):
-    c.ellipse(2, 3, 13, 13, P("rubber", 3))
-    c.ellipse(5, 6, 10, 10, T)
-    c.ld.ellipse([5, 6, 10, 10], fill=255)
-    c.px(4, 5, P("rubber", 4))
-    outline_pass(c)
-
 
 def decon(c):
     c.rect(4, 4, 11, 14, P("iron", 4))
@@ -304,7 +297,7 @@ def repair_kit(c):
 ITEMS.update({
     "raw_uranium": raw_uranium, "crushed_uranium": crushed_uranium, "uranium_concentrate": concentrate, "ceramic_fuel_pellet": pellet,
     "fuel_cladding": cladding, "reactor_alloy_ingot": ingot, "reactor_alloy_sheet": sheet,
-    "sealing_gasket": gasket, "decontamination_compound": decon,
+    "decontamination_compound": decon,
     "repair_kit": repair_kit,
 })
 ITEM_DESCRIPTIONS.update({
@@ -315,7 +308,6 @@ ITEM_DESCRIPTIONS.update({
     "fuel_cladding": "A long thin polished silver-grey metal tube lying diagonally from bottom-left to top-right, open dark end at the bottom.",
     "reactor_alloy_ingot": "A reactor alloy ingot shaped like Create's brass ingot, in cool blue-grey metal with bright top highlight.",
     "reactor_alloy_sheet": "A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.",
-    "sealing_gasket": "A black rubber sealing ring gasket with a round hole in the middle (keep the hole transparent).",
     "dosimeter": ITEM_DESCRIPTIONS.get("dosimeter", ""),
     "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
     "repair_kit": "A red metal repair toolbox with an iron carry handle and two brass latches.",

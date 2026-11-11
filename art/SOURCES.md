@@ -25,9 +25,9 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## control_rod and turbine_blade (not generated)
+## control_rod, turbine_blade and sealing_gasket (not generated)
 
-- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`
+- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`
 - Source: hand-made by the author, original in `art/originals/`.
 - Date: 2026-11-11
 
@@ -670,24 +670,6 @@ The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: ever
 Item: repair kit.
 A red metal repair toolbox with an iron carry handle and two brass latches.
 
-```
-
-## sealing_gasket
-
-- Used by: `textures/item/sealing_gasket.png`
-- Raw output: `art/generated/item__sealing_gasket-v2.jpg`
-- Processing: Generated design (v2) redrawn with a deterministic hand pixel pass (tools/pixel_edit.py)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: sealing gasket.
-A black rubber sealing ring gasket with a round hole in the middle (keep the hole transparent).
-A black rubber O-ring gasket. Make it readable on a dark background: strong light grey top-left highlight arc, mid-grey body, a thin copper inner rim. Clean shading, no speckle.
 ```
 
 ## spent_fuel_assembly
