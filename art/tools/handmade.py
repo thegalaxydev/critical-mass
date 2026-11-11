@@ -98,16 +98,6 @@ def rivet(img, x, y):
     put(img, x + 1, y + 1, IRON[1])
 
 
-def vessel_casing(jar):
-    img = casing_frame(jar)
-    for x in range(3, 13):
-        put(img, x, 7, STEEL[0])
-        put(img, x, 8, STEEL[6])
-    put(img, 3, 8, STEEL[3])
-    put(img, 12, 8, STEEL[3])
-    return img
-
-
 def controller(jar):
     img = casing_frame(jar)
     bevel(img, 3, 3, 12, 12, BRASS, 3)
@@ -275,7 +265,6 @@ def shielded_hatch(jar):
 
 
 TEXTURES = {
-    "reactor_vessel_casing": vessel_casing,
     "reactor_controller": controller,
     "reactor_service_port": service_port,
     "reactor_signal_interface": signal_interface,
