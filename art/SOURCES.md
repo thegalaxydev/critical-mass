@@ -25,6 +25,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
+## control_rod (not generated)
+
+- Used by: `textures/item/control_rod.png`
+- Source: hand-made by the author, original in `art/originals/`.
+- Date: 2026-11-11
+
 ## sealed_waste_canister and open_waste_canister (not generated)
 
 - Used by: `textures/block/sealed_waste_canister.png`, `textures/block/open_waste_canister.png` and `models/block/sealed_waste_canister.json` (the open canister and the incomplete canister reuse the model)
@@ -422,24 +428,6 @@ Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark st
 - Used by: `textures/item/ceramic_fuel_pellet.png`
 - Source: hand-made by the author, original in `art/originals/ceramic_fuel_pellet.png`. Replaces the earlier generated icon.
 - Date: 2026-11-10
-## control_rod
-
-- Used by: `textures/item/control_rod.png`
-- Raw output: `art/generated/item__control_rod-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: control rod.
-A long dark lead-grey absorber rod lying diagonally with brass end caps.
-
-```
-
 ## crushed_uranium
 
 - Used by: `textures/item/crushed_uranium.png`
