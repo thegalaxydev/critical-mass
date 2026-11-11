@@ -16,7 +16,7 @@ BLOCKS = [
 ITEMS = ["raw_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "empty_fuel_assembly", "fuel_assembly",
          "spent_fuel_assembly", "damaged_fuel_assembly", "reactor_alloy_ingot", "reactor_alloy_sheet", "steel_plate", "control_rod", "turbine_blade",
          "sealing_gasket", "survey_meter", "dosimeter", "protective_hood", "protective_suit", "protective_leggings", "protective_boots",
-         "decontamination_compound", "repair_kit"]
+         "decontamination_compound", "welding_torch"]
 
 steps = [{"cmds": ["/time set 6000", "/weather clear", "/fill -20 -61 -30 140 -61 40 minecraft:smooth_stone"], "wait": 20}]
 cmds = []

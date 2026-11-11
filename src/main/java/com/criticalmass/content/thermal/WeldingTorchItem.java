@@ -1,9 +1,13 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMItems;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -12,6 +16,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -24,10 +29,10 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class RepairKitItem extends Item {
+public class WeldingTorchItem extends Item {
     private static final Map<UUID, BlockPos> TARGETS = new ConcurrentHashMap<>();
 
-    public RepairKitItem(Properties properties) {
+    public WeldingTorchItem(Properties properties) {
         super(properties);
     }
 
@@ -61,11 +66,24 @@ public class RepairKitItem extends Item {
         }
         ReactorControllerBlockEntity c = owner(level, pos);
         if (c != null) {
-            return c.repair(pos, CMThermal.REPAIR_KIT_AMOUNT);
+            return c.repair(pos, CMThermal.REPAIR_AMOUNT);
         }
         BlockState state = level.getBlockState(pos);
         level.setBlock(pos, state.setValue(VesselCasingBlock.CRACK, Math.max(0, state.getValue(VesselCasingBlock.CRACK) - 2)), Block.UPDATE_ALL);
         return true;
+    }
+
+    public static ItemStack findPlate(Player player) {
+        if (player.getOffhandItem().is(CMItems.STEEL_PLATES)) {
+            return player.getOffhandItem();
+        }
+        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+            ItemStack s = player.getInventory().getItem(i);
+            if (s.is(CMItems.STEEL_PLATES)) {
+                return s;
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     @Override
@@ -82,9 +100,36 @@ public class RepairKitItem extends Item {
             }
             return InteractionResult.FAIL;
         }
+        if (!player.getAbilities().instabuild && findPlate(player).isEmpty()) {
+            if (!level.isClientSide) {
+                player.displayClientMessage(Component.translatable("criticalmass.welder.needs_plate"), true);
+            }
+            return InteractionResult.FAIL;
+        }
         TARGETS.put(player.getUUID(), pos.immutable());
         player.startUsingItem(context.getHand());
         return InteractionResult.CONSUME;
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity entity, ItemStack stack, int remaining) {
+        if (!level.isClientSide || remaining % 2 != 0 || !(entity instanceof Player player)) {
+            return;
+        }
+        Vec3 eye = player.getEyePosition();
+        Vec3 reach = eye.add(player.getViewVector(1.0f).scale(player.blockInteractionRange()));
+        BlockHitResult hit = level.clip(new ClipContext(eye, reach, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        if (hit.getType() != HitResult.Type.BLOCK) {
+            return;
+        }
+        Vec3 at = hit.getLocation();
+        for (int i = 0; i < 3; i++) {
+            level.addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, (level.random.nextDouble() - 0.5) * 0.3, level.random.nextDouble() * 0.2, (level.random.nextDouble() - 0.5) * 0.3);
+        }
+        level.addParticle(ParticleTypes.SMALL_FLAME, at.x, at.y, at.z, 0, 0.01, 0);
+        if (remaining % 8 == 0) {
+            level.playLocalSound(at.x, at.y, at.z, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.2f, 1.6f + level.random.nextFloat() * 0.3f, false);
+        }
     }
 
     @Override
@@ -114,12 +159,30 @@ public class RepairKitItem extends Item {
         if (hit.getType() != HitResult.Type.BLOCK || !hit.getBlockPos().equals(pos)) {
             return stack;
         }
+        boolean creative = player.getAbilities().instabuild;
+        ItemStack plate = creative ? ItemStack.EMPTY : findPlate(player);
+        if (!creative && plate.isEmpty()) {
+            player.displayClientMessage(Component.translatable("criticalmass.welder.needs_plate"), true);
+            return stack;
+        }
         if (repairAt(level, pos)) {
             level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.6f, 1.2f);
-            if (!player.getAbilities().instabuild) {
-                stack.shrink(1);
+            if (!creative) {
+                plate.shrink(1);
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
             }
         }
         return stack;
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repair) {
+        return repair.is(CMItems.STEEL_PLATES);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("criticalmass.welder.tooltip").withStyle(ChatFormatting.GRAY));
+        tooltip.add(Component.translatable("criticalmass.welder.tooltip_cost").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

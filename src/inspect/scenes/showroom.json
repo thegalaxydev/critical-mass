@@ -34,18 +34,20 @@
     "/setblock 57 -60 0 criticalmass:fuel_assembly_bench[facing=north]",
     "/setblock 60 -60 0 criticalmass:spent_fuel_rack",
     "/setblock 63 -60 0 criticalmass:shielded_cask",
-    "/setblock 66 -60 1 criticalmass:reactor_vessel_casing",
-    "/setblock 66 -60 0 criticalmass:instrumentation_panel[facing=north]",
-    "/setblock 69 -60 0 criticalmass:reactor_signal_interface[facing=north]",
-    "/setblock 72 -60 0 criticalmass:alarm_siren[facing=north,powered=false]",
-    "/setblock 75 -60 1 minecraft:redstone_block",
-    "/setblock 75 -60 0 criticalmass:alarm_siren[facing=north,powered=true]",
-    "/setblock 78 -60 0 criticalmass:docking_service_connector[facing=north,connected=false]",
-    "/setblock 81 -60 0 criticalmass:docking_service_connector[facing=north,connected=true]",
-    "/setblock 84 -60 0 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
-    "/setblock 87 -60 0 criticalmass:steam_turbine[axis=x]",
-    "/setblock 90 -60 0 criticalmass:control_rod_drive[facing=north]",
-    "/setblock 93 -60 0 criticalmass:reinforced_pipe[east=true,west=true]"
+    "/setblock 66 -60 0 criticalmass:open_waste_canister",
+    "/setblock 69 -60 0 criticalmass:sealed_waste_canister",
+    "/setblock 72 -60 1 criticalmass:reactor_vessel_casing",
+    "/setblock 72 -60 0 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 75 -60 0 criticalmass:reactor_signal_interface[facing=north]",
+    "/setblock 78 -60 0 criticalmass:alarm_siren[facing=north,powered=false]",
+    "/setblock 81 -60 1 minecraft:redstone_block",
+    "/setblock 81 -60 0 criticalmass:alarm_siren[facing=north,powered=true]",
+    "/setblock 84 -60 0 criticalmass:docking_service_connector[facing=north,connected=false]",
+    "/setblock 87 -60 0 criticalmass:docking_service_connector[facing=north,connected=true]",
+    "/setblock 90 -60 0 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 93 -60 0 criticalmass:steam_turbine[axis=x]",
+    "/setblock 96 -60 0 criticalmass:control_rod_drive[facing=north]",
+    "/setblock 99 -60 0 criticalmass:reinforced_pipe[east=true,west=true]"
    ],
    "wait": 20
   },
@@ -101,8 +103,7 @@
     "/summon minecraft:item 6.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_leggings\",count:1}}",
     "/summon minecraft:item 7.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:protective_boots\",count:1}}",
     "/summon minecraft:item 8.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:decontamination_compound\",count:1}}",
-    "/summon minecraft:item 9.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:repair_kit\",count:1}}",
-    "/summon minecraft:item 10.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:sealed_waste_canister\",count:1}}",
+    "/summon minecraft:item 9.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:welding_torch\",count:1}}",
     "/summon minecraft:armor_stand 16 -60 9 {ShowArms:1b,NoBasePlate:1b,Rotation:[180f,0f],ArmorItems:[{id:\"criticalmass:protective_boots\",count:1},{id:\"criticalmass:protective_leggings\",count:1},{id:\"criticalmass:protective_suit\",count:1},{id:\"criticalmass:protective_hood\",count:1}],HandItems:[{id:\"criticalmass:survey_meter\",count:1},{id:\"criticalmass:dosimeter\",count:1}]}",
     "/summon minecraft:armor_stand 19 -60 9 {ShowArms:1b,NoBasePlate:1b,Rotation:[0f,0f],ArmorItems:[{id:\"criticalmass:protective_boots\",count:1},{id:\"criticalmass:protective_leggings\",count:1},{id:\"criticalmass:protective_suit\",count:1},{id:\"criticalmass:protective_hood\",count:1}]}"
    ],
@@ -259,6 +260,24 @@
   },
   {
    "shot": "row_07_back"
+  },
+  {
+   "cmds": [
+    "/tp @p 100.5 -58.3 -4.2 0 18"
+   ],
+   "wait": 45
+  },
+  {
+   "shot": "row_08"
+  },
+  {
+   "cmds": [
+    "/tp @p 100.5 -57.9 4.4 180 22"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "row_08_back"
   },
   {
    "cmds": [
@@ -492,8 +511,7 @@
     "/item replace entity @p hotbar.0 with criticalmass:protective_leggings",
     "/item replace entity @p hotbar.1 with criticalmass:protective_boots",
     "/item replace entity @p hotbar.2 with criticalmass:decontamination_compound",
-    "/item replace entity @p hotbar.3 with criticalmass:repair_kit",
-    "/item replace entity @p hotbar.4 with criticalmass:sealed_waste_canister"
+    "/item replace entity @p hotbar.3 with criticalmass:welding_torch"
    ],
    "wait": 15
   },
@@ -526,10 +544,10 @@
     "/item replace entity @p hotbar.2 with criticalmass:fuel_channel",
     "/item replace entity @p hotbar.3 with criticalmass:heat_exchanger",
     "/item replace entity @p hotbar.4 with criticalmass:instrumentation_panel",
-    "/item replace entity @p hotbar.5 with criticalmass:primary_coolant_port",
-    "/item replace entity @p hotbar.6 with criticalmass:radiator_panel",
-    "/item replace entity @p hotbar.7 with criticalmass:reactor_controller",
-    "/item replace entity @p hotbar.8 with criticalmass:reactor_service_port"
+    "/item replace entity @p hotbar.5 with criticalmass:open_waste_canister",
+    "/item replace entity @p hotbar.6 with criticalmass:primary_coolant_port",
+    "/item replace entity @p hotbar.7 with criticalmass:radiator_panel",
+    "/item replace entity @p hotbar.8 with criticalmass:reactor_controller"
    ],
    "wait": 15
   },
@@ -539,15 +557,15 @@
   {
    "cmds": [
     "/clear @p",
-    "/item replace entity @p hotbar.0 with criticalmass:reactor_signal_interface",
-    "/item replace entity @p hotbar.1 with criticalmass:reactor_vessel_casing",
-    "/item replace entity @p hotbar.2 with criticalmass:reinforced_pipe",
-    "/item replace entity @p hotbar.3 with criticalmass:reinforced_valve",
-    "/item replace entity @p hotbar.4 with criticalmass:relief_valve",
-    "/item replace entity @p hotbar.5 with criticalmass:shielded_cask",
-    "/item replace entity @p hotbar.6 with criticalmass:shielded_glass",
-    "/item replace entity @p hotbar.7 with criticalmass:shielded_hatch",
-    "/item replace entity @p hotbar.8 with criticalmass:shielding_concrete"
+    "/item replace entity @p hotbar.0 with criticalmass:reactor_service_port",
+    "/item replace entity @p hotbar.1 with criticalmass:reactor_signal_interface",
+    "/item replace entity @p hotbar.2 with criticalmass:reactor_vessel_casing",
+    "/item replace entity @p hotbar.3 with criticalmass:reinforced_pipe",
+    "/item replace entity @p hotbar.4 with criticalmass:reinforced_valve",
+    "/item replace entity @p hotbar.5 with criticalmass:relief_valve",
+    "/item replace entity @p hotbar.6 with criticalmass:sealed_waste_canister",
+    "/item replace entity @p hotbar.7 with criticalmass:shielded_cask",
+    "/item replace entity @p hotbar.8 with criticalmass:shielded_glass"
    ],
    "wait": 15
   },
@@ -557,8 +575,10 @@
   {
    "cmds": [
     "/clear @p",
-    "/item replace entity @p hotbar.0 with criticalmass:spent_fuel_rack",
-    "/item replace entity @p hotbar.1 with criticalmass:steam_turbine"
+    "/item replace entity @p hotbar.0 with criticalmass:shielded_hatch",
+    "/item replace entity @p hotbar.1 with criticalmass:shielding_concrete",
+    "/item replace entity @p hotbar.2 with criticalmass:spent_fuel_rack",
+    "/item replace entity @p hotbar.3 with criticalmass:steam_turbine"
    ],
    "wait": 15
   },

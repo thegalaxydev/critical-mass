@@ -25,10 +25,10 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## control_rod, turbine_blade and sealing_gasket (not generated)
+## control_rod, turbine_blade, sealing_gasket and welding_torch (not generated)
 
-- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`
-- Source: hand-made by the author, original in `art/originals/`.
+- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`, `textures/item/welding_torch.png`
+- Source: hand-made by the author, originals in `art/originals/` (the welding torch is `portable_welder.png`).
 - Date: 2026-11-11
 
 ## sealed_waste_canister and open_waste_canister (not generated)
@@ -654,24 +654,6 @@ Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yello
 - Used by: `textures/item/reactor_alloy_sheet.png`
 - Source: hand-made by the author, original in `art/originals/reactor_alloy_sheet.png`.
 - Date: 2026-11-10
-## repair_kit
-
-- Used by: `textures/item/repair_kit.png`
-- Raw output: `art/generated/item__repair_kit-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: repair kit.
-A red metal repair toolbox with an iron carry handle and two brass latches.
-
-```
-
 ## spent_fuel_assembly
 
 - Used by: `textures/item/spent_fuel_assembly.png`

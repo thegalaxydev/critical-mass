@@ -156,7 +156,7 @@ shapeless("circulation_pump", ["create:mechanical_pump", "reinforced_pipe", "cre
 shapeless("relief_valve", ["create:fluid_valve", "reinforced_pipe", "#c:plates/steel"], "relief_valve")
 shapeless("reinforced_valve", ["create:fluid_valve", "reinforced_pipe", "#c:plates/steel"], "reinforced_valve")
 shapeless("reactor_signal_interface", ["create:redstone_link", "create:brass_casing", "create:electron_tube"], "reactor_signal_interface")
-shapeless("repair_kit", ["#c:plates/reactor_alloy", "#c:plates/reactor_alloy", "sealing_gasket", "sealing_gasket", "create:andesite_alloy"], "repair_kit")
+shapeless("welding_torch", ["#c:plates/steel", "#c:plates/copper", "minecraft:flint_and_steel"], "welding_torch")
 
 for metal in ("steel", "reactor_alloy"):
     shaped(metal + "_block", ["III", "III", "III"], {"I": "#c:ingots/" + metal}, metal + "_block")

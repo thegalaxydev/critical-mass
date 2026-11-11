@@ -7,7 +7,7 @@ import com.criticalmass.content.radiation.DecontaminationCompoundItem;
 import com.criticalmass.content.radiation.DosimeterItem;
 import com.criticalmass.content.radiation.ProtectiveArmorItem;
 import com.criticalmass.content.radiation.SurveyMeterItem;
-import com.criticalmass.content.thermal.RepairKitItem;
+import com.criticalmass.content.thermal.WeldingTorchItem;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public final class CMItems {
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_LEGGINGS = armor("protective_leggings", ArmorItem.Type.LEGGINGS);
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
-    public static final DeferredItem<RepairKitItem> REPAIR_KIT = custom("repair_kit", () -> new RepairKitItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<WeldingTorchItem> WELDING_TORCH = custom("welding_torch", () -> new WeldingTorchItem(new Item.Properties().durability(128)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(CMBlocks.SEALED_WASTE_CANISTER.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_WASTE_CANISTER = ITEMS.register("incomplete_waste_canister", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_FUEL_ASSEMBLY = ITEMS.register("incomplete_fuel_assembly", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));

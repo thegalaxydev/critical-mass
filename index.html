@@ -2048,6 +2048,10 @@ const RECORD_PATCHES = [
   ]],
   ["damaged-fuel-sequence-3", [
     ["recipes", "rcp-damaged-recovery", "Verified", {"method": "Recovery sequence at the Fuel Assembly Bench, or Create sequenced assembly (deploy an Open Waste Canister, deploy a Sealing Gasket, press)"}]
+  ]],
+  ["welding-torch-1", [
+    ["items", "itm-repair-kit", "In development", {"name": "Welding Torch", "registryId": "criticalmass:welding_torch", "status": "Verified", "stackSize": "1 (128 durability)", "purpose": "Welds cracked Reactor Vessel Casing back together. Replaced the Repair Kit.", "acquisition": "Crafted from a Steel Plate, a Copper Sheet and Flint and Steel.", "outputs": "Hold use on cracked casing for 2 seconds: each weld restores 50%, uses a Steel Plate from the inventory and a point of durability.", "persistentData": "Durability; repaired with Steel Plates on an anvil.", "tooltip": "What it repairs and what each weld costs.", "visual": "Hand-made handheld butane torch with a red canister and a lit flame.", "notes": "Refused on a breached reactor until residual heat falls below 20 HU/t. Ports and pipes have no integrity yet."}],
+    ["recipes", "rcp-repair-kit", "Implemented, unverified", {"title": "Craft welding torch", "status": "Verified", "inputs": [{"id": "itm-shielding-plate", "label": "", "qty": "1"}, {"id": "", "label": "Copper Sheet", "qty": "1"}, {"id": "", "label": "Flint and Steel", "qty": "1"}], "outputs": [{"id": "itm-repair-kit", "label": "", "qty": "1"}]}]
   ]]
 ];
 function applyProgressSets(raw) {

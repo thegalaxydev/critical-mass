@@ -8,7 +8,7 @@ import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ReactorCore;
-import com.criticalmass.content.thermal.RepairKitItem;
+import com.criticalmass.content.thermal.WeldingTorchItem;
 import com.criticalmass.content.thermal.VesselStructure;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMStress;
@@ -272,15 +272,15 @@ public final class OperationTests {
                 .thenExecute(() -> {
                     h.assertTrue(c.status().endsWith("breached"), "Zero integrity should breach the vessel: " + c.status());
                     h.assertTrue(c.coolant().amount() < 6000 && c.sinks().ventedVolume == 6000 - c.coolant().amount(), "Breach should leak coolant and log it");
-                    h.assertTrue(!RepairKitItem.allowed(h.getLevel(), abs) && !RepairKitItem.repairAt(h.getLevel(), abs), "Repair must be refused while residual heat is high");
+                    h.assertTrue(!WeldingTorchItem.allowed(h.getLevel(), abs) && !WeldingTorchItem.repairAt(h.getLevel(), abs), "Repair must be refused while residual heat is high");
                     for (ReactorCore.FuelColumn f : c.core().columns()) {
                         c.core().setColumnDecay(f.dx(), f.dz(), 0);
                     }
-                    h.assertTrue(RepairKitItem.repairAt(h.getLevel(), abs), "Repair should be allowed once residual heat is low");
+                    h.assertTrue(WeldingTorchItem.repairAt(h.getLevel(), abs), "Repair should be allowed once residual heat is low");
                 })
                 .thenIdle(3)
                 .thenExecute(() -> {
-                    h.assertTrue(!c.isBreached() && c.integrity(abs) == CMThermal.REPAIR_KIT_AMOUNT, "Repair should close the breach");
+                    h.assertTrue(!c.isBreached() && c.integrity(abs) == CMThermal.REPAIR_AMOUNT, "Repair should close the breach");
                     h.assertTrue(!c.status().endsWith("breached") && !c.status().endsWith("damaged"), "Repaired vessel should be usable again: " + c.status());
                 })
                 .thenSucceed();

@@ -54,7 +54,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 **Casing integrity.**
 - Casing next to a fuel column hotter than 800 °C loses integrity and shows cracks: stage 1 below 75%, stage 2 below 50%, stage 3 below 25%.
 - Below 25% the reactor counts as damaged and cannot restart until it is repaired.
-- Right-clicking cracked casing with a Repair Kit restores 50% and uses up the kit.
+- Holding use on cracked casing with a Welding Torch for 2 seconds welds it: each weld restores 50% and uses a Steel Plate from your inventory and a point of the torch's durability (128 welds; repair it with steel plates on an anvil).
 - Integrity is saved with the controller and also shows on the blocks themselves.
 
 **Loops.**
@@ -80,8 +80,8 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - A redstone signal disarms it, and a comparator reads its fill level.
   - It won't inject when tilted past 30° on a moving body.
 - **Breach:** a casing block at zero integrity breaches the vessel, which then leaks coolant.
-  - Repair with Repair Kits: hold use for 2 seconds; each kit restores 50%.
-  - Kits are refused on a breached reactor until residual heat falls below 20 HU/t.
+  - Repair with the Welding Torch: hold use for 2 seconds; each weld restores 50%.
+  - Welding is refused on a breached reactor until residual heat falls below 20 HU/t.
 
 **Steam and cooling.**
 - **Steam:** water and steam are one medium. Water boils at 100 °C once it holds 80 HU per mB, and fully boils after another 540 HU per mB. A buffer shows as Steam once any of it has boiled. Pressure runs from 1 bar at saturation to 10 bar fully boiled.

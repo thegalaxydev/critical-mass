@@ -281,24 +281,11 @@ def decon(c):
     outline_pass(c)
 
 
-def repair_kit(c):
-    c.rect(2, 7, 13, 13, P("red", 2))
-    c.rect(2, 7, 13, 8, P("red", 3))
-    c.rect(5, 4, 10, 4, P("iron", 4))
-    c.px(5, 5, P("iron", 4))
-    c.px(10, 5, P("iron", 4))
-    c.px(5, 6, P("iron", 4))
-    c.px(10, 6, P("iron", 4))
-    c.rect(4, 9, 5, 10, P("brass", 4), True)
-    c.rect(10, 9, 11, 10, P("brass", 4), True)
-    outline_pass(c)
-
 
 ITEMS.update({
     "raw_uranium": raw_uranium, "crushed_uranium": crushed_uranium, "uranium_concentrate": concentrate, "ceramic_fuel_pellet": pellet,
     "fuel_cladding": cladding, "reactor_alloy_ingot": ingot, "reactor_alloy_sheet": sheet,
     "decontamination_compound": decon,
-    "repair_kit": repair_kit,
 })
 ITEM_DESCRIPTIONS.update({
     "raw_uranium": "Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yellow-green mineral chunk with dark grey flecks.",
@@ -310,5 +297,4 @@ ITEM_DESCRIPTIONS.update({
     "reactor_alloy_sheet": "A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.",
     "dosimeter": ITEM_DESCRIPTIONS.get("dosimeter", ""),
     "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
-    "repair_kit": "A red metal repair toolbox with an iron carry handle and two brass latches.",
 })

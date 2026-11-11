@@ -278,6 +278,6 @@ ITEM_DEFS.update({
     "spent_fuel_assembly": {"lang": "Spent Fuel Assembly"}, "damaged_fuel_assembly": {"lang": "Damaged Fuel Assembly"},
     "reactor_alloy_ingot": {"lang": "Reactor Alloy Ingot"}, "reactor_alloy_sheet": {"lang": "Reactor Alloy Sheet"},
     "control_rod": {"lang": "Control Rod", "handheld": True}, "turbine_blade": {"lang": "Turbine Blade"}, "sealing_gasket": {"lang": "Sealing Gasket"},
-    "dosimeter": {"lang": "Dosimeter"}, "decontamination_compound": {"lang": "Decontamination Compound"}, "repair_kit": {"lang": "Repair Kit"},
+    "dosimeter": {"lang": "Dosimeter"}, "decontamination_compound": {"lang": "Decontamination Compound"}, "welding_torch": {"lang": "Welding Torch", "handheld": True},
 })
 FLUID_LANG = {"primary_coolant": "Primary Coolant", "steam": "Steam", "contaminated_coolant": "Contaminated Coolant"}

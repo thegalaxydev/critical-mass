@@ -3,19 +3,25 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
-import com.criticalmass.content.thermal.RepairKitItem;
+import com.criticalmass.content.thermal.WeldingTorchItem;
 import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -116,10 +122,10 @@ public final class IntegrityTests {
                 .thenIdle(3)
                 .thenExecute(() -> {
                     h.assertTrue(!c.isReacting() && c.status().endsWith("damaged"), "Damaged vessel should stop: " + c.status());
-                    ItemStack kit = new ItemStack(CMItems.REPAIR_KIT.get());
-                    h.assertTrue(kit.getUseDuration(player) == CMThermal.REPAIR_TICKS, "Repair should take the configured time");
-                    h.assertTrue(RepairKitItem.repairAt(h.getLevel(), abs), "Repair kit should repair damaged casing");
-                    h.assertTrue(Math.abs(c.integrity(abs) - (0.1 + CMThermal.REPAIR_KIT_AMOUNT)) < 1e-9, "Repair kit should add 50%: " + c.integrity(abs));
+                    ItemStack torch = new ItemStack(CMItems.WELDING_TORCH.get());
+                    h.assertTrue(torch.getUseDuration(player) == CMThermal.REPAIR_TICKS, "Repair should take the configured time");
+                    h.assertTrue(WeldingTorchItem.repairAt(h.getLevel(), abs), "The welding torch should repair damaged casing");
+                    h.assertTrue(Math.abs(c.integrity(abs) - (0.1 + CMThermal.REPAIR_AMOUNT)) < 1e-9, "A weld should add 50%: " + c.integrity(abs));
                     h.assertTrue(crack(h, SIDE_CASING) == 1, "Crack stage should drop to 1 at 60%");
                 })
                 .thenIdle(3)
@@ -132,5 +138,26 @@ public final class IntegrityTests {
                 .thenIdle(3)
                 .thenExecute(() -> h.assertTrue(c.isReacting(), "Repaired vessel should restart: " + c.status()))
                 .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void weldingTorchUsesAPlateAndDurability(GameTestHelper h) {
+        BlockPos casing = new BlockPos(2, 1, 3);
+        h.setBlock(casing, CMBlocks.REACTOR_VESSEL_CASING.get().defaultBlockState().setValue(VesselCasingBlock.CRACK, 3));
+        BlockPos abs = h.absolutePos(casing);
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        p.moveTo(abs.getX() + 0.5, abs.getY(), abs.getZ() - 1.5, 0, 29);
+        ItemStack torch = new ItemStack(CMItems.WELDING_TORCH.get());
+        p.setItemInHand(InteractionHand.MAIN_HAND, torch);
+        UseOnContext click = new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.NORTH, abs, false));
+        h.assertTrue(torch.useOn(click) == InteractionResult.FAIL, "Welding needs a steel plate");
+        p.getInventory().add(new ItemStack(CMItems.STEEL_PLATE.get(), 2));
+        h.assertTrue(torch.useOn(click) == InteractionResult.CONSUME && p.isUsingItem(), "With a plate the torch starts welding");
+        torch.finishUsingItem(h.getLevel(), p);
+        h.assertTrue(h.getBlockState(casing).getValue(VesselCasingBlock.CRACK) == 1, "A weld closes two crack stages: " + h.getBlockState(casing));
+        h.assertTrue(WeldingTorchItem.findPlate(p).getCount() == 1, "A weld uses one steel plate");
+        h.assertTrue(torch.getDamageValue() == 1 && torch.getMaxDamage() == 128, "A weld uses one point of durability");
+        h.assertTrue(torch.getItem().isValidRepairItem(torch, new ItemStack(CMItems.STEEL_PLATE.get())), "Steel plates repair the torch on an anvil");
+        h.succeed();
     }
 }
