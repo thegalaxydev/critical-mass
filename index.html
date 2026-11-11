@@ -2036,6 +2036,9 @@ const RECORD_PATCHES = [
     ["items", "itm-shielding-plate", "Verified", {"name": "Steel Plate", "registryId": "criticalmass:steel_plate", "notes": "The Shielding Plate was removed and replaced by the Steel Plate (old plates convert). Steel Ingots come from superheated mixing of an iron ingot with coal or charcoal and press into Steel Plates; Steel Nuggets and a Block of Steel craft from the ingot. Steel plates make the vessel casing, reinforced pipe, both valves, turbine blades, shielded glass, hatch and cask, sealed waste canisters and the damaged-fuel recovery on the bench."}],
     ["items", "itm-alloy-ingot", "Implemented, unverified", {"notes": "Now mixed from 2 steel, 1 zinc and 1 nether quartz (heated). A Block of Reactor Alloy crafts from 9 ingots."}],
     ["items", "itm-alloy-sheet", "Implemented, unverified", {"notes": "Hand-made texture."}]
+  ]],
+  ["canister-block-1", [
+    ["items", "itm-waste-canister", "Verified", {"purpose": "Sealed container for damaged fuel debris and solidified liquid waste. It can be placed as a block, where it stays a radiation source.", "visual": "Hand-made yellow drum block with a steel rim and hazard markings; the item shows the block.", "notes": "Records the damaged assembly's fuel state when made from recovery; solidified canisters say so in the tooltip. Placing it keeps that record on the block, and breaking it with a pickaxe drops the canister with the record."}]
   ]]
 ];
 function applyProgressSets(raw) {

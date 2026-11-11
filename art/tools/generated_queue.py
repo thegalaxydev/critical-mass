@@ -14,7 +14,7 @@ BLOCKS = ["coolant_channel", "reactor_service_port", "primary_coolant_port", "re
           "reactor_signal_interface", "alarm_siren", "docking_service_connector", "control_rod_drive", "control_rod_drive_pinion"]
 ITEMS = ["raw_uranium", "crushed_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "reactor_alloy_ingot",
          "reactor_alloy_sheet", "control_rod", "turbine_blade", "sealing_gasket", "dosimeter",
-         "decontamination_compound", "repair_kit", "sealed_waste_canister"]
+         "decontamination_compound", "repair_kit"]
 FLUIDS = ["primary_coolant", "steam", "contaminated_coolant"]
 
 

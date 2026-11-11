@@ -1,6 +1,3 @@
 {
- "parent": "minecraft:item/generated",
- "textures": {
-  "layer0": "criticalmass:item/sealed_waste_canister"
- }
+  "parent": "criticalmass:block/sealed_waste_canister"
 }

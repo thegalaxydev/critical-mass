@@ -212,6 +212,7 @@ BLOCK_DEFS.update({
     "boiler_heating_plate": {"state": ("horizontal", "boiler_heating_plate"), "item": "block", "lang": "Boiler Heating Plate"},
     "shielding_concrete": {"state": ("simple",), "item": "block", "lang": "Shielding Concrete"},
     "shielded_glass": {"state": ("simple",), "item": "block", "lang": "Shielded Glass"},
+    "sealed_waste_canister": {"state": ("simple",), "item": "block", "lang": "Sealed Waste Canister"},
     "shielded_hatch": {"state": ("raw", _trapdoor("shielded_hatch")), "item": "shielded_hatch_bottom", "lang": "Shielded Hatch"},
     "fuel_assembly_bench": {"state": ("horizontal", "fuel_assembly_bench"), "item": "block", "lang": "Fuel Assembly Bench"},
     "spent_fuel_rack": {"state": ("simple",), "item": "block", "lang": "Spent Fuel Rack"},
@@ -277,6 +278,5 @@ ITEM_DEFS.update({
     "reactor_alloy_ingot": {"lang": "Reactor Alloy Ingot"}, "reactor_alloy_sheet": {"lang": "Reactor Alloy Sheet"},
     "control_rod": {"lang": "Control Rod", "handheld": True}, "turbine_blade": {"lang": "Turbine Blade"}, "sealing_gasket": {"lang": "Sealing Gasket"},
     "dosimeter": {"lang": "Dosimeter"}, "decontamination_compound": {"lang": "Decontamination Compound"}, "repair_kit": {"lang": "Repair Kit"},
-    "sealed_waste_canister": {"lang": "Sealed Waste Canister"},
 })
 FLUID_LANG = {"primary_coolant": "Primary Coolant", "steam": "Steam", "contaminated_coolant": "Contaminated Coolant"}

@@ -3,6 +3,8 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
+import com.criticalmass.content.fuel.WasteCanisterItem;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.radiation.ContaminationData;
@@ -23,13 +25,16 @@ import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
 import java.util.List;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
@@ -37,6 +42,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.TrapDoorBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -239,5 +245,34 @@ public final class RadiationTests {
         h.assertTrue(h.getLevel().getRecipeManager().byKey(ResourceLocation.fromNamespaceAndPath(CriticalMass.MODID, "mixing/sealed_waste_canister")).isPresent(), "Solidification recipe loads");
         h.assertTrue(new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), 1).getFluid() != null, "Contaminated coolant exists");
         h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void placedCanisterKeepsItsRecordAndRadiates(GameTestHelper h) {
+        FuelState state = FuelState.fresh().withRemaining(0).discharged(0.3);
+        BlockPos floor = new BlockPos(2, 0, 2);
+        BlockPos at = floor.above();
+        h.setBlock(floor, Blocks.STONE);
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack stack = WasteCanisterItem.sealing(state);
+        p.setItemInHand(InteractionHand.MAIN_HAND, stack);
+        BlockPos abs = h.absolutePos(floor);
+        stack.useOn(new UseOnContext(p, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs).add(0, 0.5, 0), Direction.UP, abs, false)));
+        h.assertBlockPresent(CMBlocks.SEALED_WASTE_CANISTER.get(), at);
+        h.assertTrue(stack.isEmpty(), "Placing uses up the canister item");
+        SealedWasteCanisterBlockEntity be = h.getBlockEntity(at);
+        h.assertTrue(state.equals(be.state()), "The placed canister keeps its record: " + be.state());
+        h.startSequence()
+                .thenIdle(2)
+                .thenExecute(() -> {
+                    double expected = Radiation.CANISTER_DOSE + Radiation.RESIDUAL_DOSE * 0.3;
+                    Vec3 centre = Vec3.atCenterOf(h.absolutePos(at));
+                    h.assertTrue(local(h).stream().anyMatch(s -> s.pos().distanceTo(centre) < 0.01 && Math.abs(s.strength() - expected) < 1e-9), "A placed canister is a radiation source of " + expected);
+                    List<ItemStack> drops = Block.getDrops(h.getBlockState(at), h.getLevel(), h.absolutePos(at), h.getBlockEntity(at));
+                    h.assertTrue(drops.size() == 1 && drops.get(0).is(CMItems.SEALED_WASTE_CANISTER.get()) && state.equals(drops.get(0).get(CMComponents.FUEL_STATE.get())), "Breaking it drops the canister with its record: " + drops);
+                    h.setBlock(at, Blocks.AIR);
+                    h.assertTrue(local(h).stream().noneMatch(s -> s.pos().distanceTo(centre) < 0.01), "A removed canister stops radiating");
+                })
+                .thenSucceed();
     }
 }

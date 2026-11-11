@@ -3,6 +3,7 @@ package com.criticalmass.content.radiation;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
@@ -164,6 +165,8 @@ public final class Radiation {
                 if (s > 0) {
                     out.add(new Source(c, s * CASK_TRANSMISSION, null, body(be), null));
                 }
+            } else if (be instanceof SealedWasteCanisterBlockEntity canister) {
+                out.add(new Source(c, canister.strength(), null, body(be), null));
             } else if (be instanceof ServicePortBlockEntity port) {
                 double s = itemStrength(port.output()) * PORT_TRANSMISSION;
                 if (s > 0) {

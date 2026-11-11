@@ -315,23 +315,11 @@ def repair_kit(c):
     outline_pass(c)
 
 
-def canister(c):
-    c.rect(4, 3, 11, 14, P("hazard", 2))
-    c.rect(4, 3, 11, 3, P("hazard", 3))
-    c.rect(4, 2, 11, 2, P("iron", 4))
-    c.rect(4, 14, 11, 14, P("iron", 2))
-    for x in range(4, 12):
-        c.px(x, 8, P("rubber", 1) if x % 2 == 0 else P("hazard", 3))
-        c.px(x, 9, P("hazard", 3) if x % 2 == 0 else P("rubber", 1))
-    c.rect(6, 5, 9, 6, P("rubber", 2))
-    outline_pass(c)
-
-
 ITEMS.update({
     "raw_uranium": raw_uranium, "crushed_uranium": crushed_uranium, "uranium_concentrate": concentrate, "ceramic_fuel_pellet": pellet,
     "fuel_cladding": cladding, "reactor_alloy_ingot": ingot, "reactor_alloy_sheet": sheet,
     "control_rod": control_rod, "turbine_blade": turbine_blade, "sealing_gasket": gasket, "decontamination_compound": decon,
-    "repair_kit": repair_kit, "sealed_waste_canister": canister,
+    "repair_kit": repair_kit,
 })
 ITEM_DESCRIPTIONS.update({
     "raw_uranium": "Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yellow-green mineral chunk with dark grey flecks.",
@@ -347,5 +335,4 @@ ITEM_DESCRIPTIONS.update({
     "dosimeter": ITEM_DESCRIPTIONS.get("dosimeter", ""),
     "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
     "repair_kit": "A red metal repair toolbox with an iron carry handle and two brass latches.",
-    "sealed_waste_canister": "A squat yellow waste drum with an iron lid and base, a black-and-yellow hazard band around the middle and a dark label patch.",
 })

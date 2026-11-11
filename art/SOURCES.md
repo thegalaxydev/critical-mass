@@ -25,6 +25,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
+## sealed_waste_canister (not generated)
+
+- Used by: `textures/block/sealed_waste_canister.png` and `models/block/sealed_waste_canister.json`
+- Source: hand-made by the author, texture original in `art/originals/sealed_waste_cannister.png`.
+- Date: 2026-11-10
+
 ## steel_block and reactor_alloy_block (not generated)
 
 - Used by: `textures/block/steel_block.png`, `textures/block/reactor_alloy_block.png`
@@ -676,24 +682,6 @@ The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: ever
 Item: repair kit.
 A red metal repair toolbox with an iron carry handle and two brass latches.
 
-```
-
-## sealed_waste_canister
-
-- Used by: `textures/item/sealed_waste_canister.png`
-- Raw output: `art/generated/item__sealed_waste_canister-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: sealed waste canister.
-A squat yellow waste drum with an iron lid and base, a black-and-yellow hazard band around the middle and a dark label patch.
-A sealed bright yellow waste canister with a black-and-yellow hazard band, dark lid slot and steel top and bottom rims; smooth clean shading, no speckle.
 ```
 
 ## sealing_gasket

@@ -8,7 +8,7 @@ BLOCKS = [
     ("cooling_tower_packing", ""), ("radiator_panel", "[facing=north]"), ("emergency_coolant_tank", ""), ("relief_valve", "[facing=north]"),
     ("reinforced_valve", "[facing=up,axis_along_first=false]"), ("boiler_heating_plate", "[facing=north]"), ("shielding_concrete", ""), ("shielded_glass", ""),
     ("shielded_hatch", "[facing=north,half=bottom,open=false]"), ("fuel_assembly_bench", "[facing=north]"), ("spent_fuel_rack", ""),
-    ("shielded_cask", ""), ("instrumentation_panel", "[facing=north]"), ("reactor_signal_interface", "[facing=north]"),
+    ("shielded_cask", ""), ("sealed_waste_canister", ""), ("instrumentation_panel", "[facing=north]"), ("reactor_signal_interface", "[facing=north]"),
     ("alarm_siren", "[facing=north,powered=false]"), ("alarm_siren", "[facing=north,powered=true]"), ("docking_service_connector", "[facing=north,connected=false]"),
     ("docking_service_connector", "[facing=north,connected=true]"), ("circulation_pump", "[facing=north,axis_along_first=true]"),
     ("steam_turbine", "[axis=x]"), ("control_rod_drive", "[facing=north]"), ("reinforced_pipe", "[east=true,west=true]"),
@@ -16,7 +16,7 @@ BLOCKS = [
 ITEMS = ["raw_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "empty_fuel_assembly", "fuel_assembly",
          "spent_fuel_assembly", "damaged_fuel_assembly", "reactor_alloy_ingot", "reactor_alloy_sheet", "steel_plate", "control_rod", "turbine_blade",
          "sealing_gasket", "survey_meter", "dosimeter", "protective_hood", "protective_suit", "protective_leggings", "protective_boots",
-         "decontamination_compound", "repair_kit", "sealed_waste_canister"]
+         "decontamination_compound", "repair_kit"]
 
 steps = [{"cmds": ["/time set 6000", "/weather clear", "/fill -20 -61 -30 140 -61 40 minecraft:smooth_stone"], "wait": 20}]
 cmds = []

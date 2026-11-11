@@ -55,7 +55,7 @@
   "item.criticalmass.dosimeter": "Dosimeter",
   "item.criticalmass.decontamination_compound": "Decontamination Compound",
   "item.criticalmass.repair_kit": "Repair Kit",
-  "item.criticalmass.sealed_waste_canister": "Sealed Waste Canister",
+  "block.criticalmass.sealed_waste_canister": "Sealed Waste Canister",
   "fluid.criticalmass.primary_coolant": "Primary Coolant",
   "fluid_type.criticalmass.primary_coolant": "Primary Coolant",
   "fluid.criticalmass.steam": "Steam",

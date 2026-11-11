@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "criticalmass:block/sealed_waste_canister"
+    }
+  }
+}
