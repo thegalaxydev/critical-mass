@@ -764,8 +764,8 @@ Front face of the reactor signal interface in iron casing: recessed steel panel 
 
 ## reactor_vessel_casing (not generated)
 
-- Used by: `textures/block/reactor_vessel_casing.png`
-- Source: hand-made by the author, original in `art/originals/reactor_vessel_casing.png`. Replaces the earlier generated and Create-derived versions.
+- Used by: `textures/block/reactor_vessel_casing.png`, `textures/block/reactor_vessel_casing_connected.png` (connected-texture sheet in Create's omnidirectional casing layout)
+- Source: hand-made by the author, originals in `art/originals/reactor_vessel_casing.png` and `art/originals/reactor_vessel_casing_connected.png`. Replaces the earlier generated and Create-derived versions.
 - Date: 2026-11-10
 ## reinforced_pipe
 

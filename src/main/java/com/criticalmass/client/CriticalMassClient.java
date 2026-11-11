@@ -25,6 +25,7 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 public class CriticalMassClient {
     public CriticalMassClient(IEventBus modEventBus) {
         CMPartialModels.init();
+        CMSpriteShifts.init();
         modEventBus.addListener(this::registerRenderers);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);
