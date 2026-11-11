@@ -25,9 +25,9 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## control_rod, turbine_blade, sealing_gasket and welding_torch (not generated)
+## control_rod, turbine_blade, sealing_gasket, welding_torch, dosimeter and survey_meter (not generated)
 
-- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`, `textures/item/welding_torch.png`
+- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`, `textures/item/welding_torch.png`, `textures/item/dosimeter.png`, `textures/item/survey_meter.png`
 - Source: hand-made by the author, originals in `art/originals/` (the welding torch is `portable_welder.png`).
 - Date: 2026-11-11
 
@@ -482,24 +482,6 @@ A sealed metal tin of decontamination compound with a blue label band and a whit
 A clean metal tin with a blue label band and white label; smooth tin shading with a single highlight stripe, no speckle, no dirt.
 ```
 
-## dosimeter
-
-- Used by: `textures/item/dosimeter.png`
-- Raw output: `art/generated/item__dosimeter-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: dosimeter.
-A small personal dosimeter badge: brass clip at the top, rectangular brass body with a dark readout window showing an amber value and a cream scale strip with green and red marks.
-
-```
-
 ## empty_fuel_assembly
 
 - Used by: `textures/item/empty_fuel_assembly.png`
@@ -669,24 +651,6 @@ The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: ever
 
 Item: spent fuel assembly.
 The same fuel assembly after use: darkened steel rods with a few faint glowing amber hot spots, dulled fittings, and a small yellow-and-black hazard tag hanging from the side on a wire.
-
-```
-
-## survey_meter
-
-- Used by: `textures/item/survey_meter.png`
-- Raw output: `art/generated/item__survey_meter-v3.jpg`
-- Processing: Generated design (v3) redrawn with a deterministic hand pixel pass (tools/pixel_edit.py)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: survey meter.
-A handheld radiation survey meter: chunky brass instrument box with a carry handle on top, a round cream analogue dial with a black needle, a small amber indicator light, and a separate iron detector probe on a short black cable to the right.
 
 ```
 

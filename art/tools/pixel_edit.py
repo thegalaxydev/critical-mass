@@ -16,28 +16,10 @@ KEYS = {
 
 SPRITES = {
     "sealing_gasket": ['................', '......qqqq......', '....qhhhhhmq....', '...qhhmmmmmmq...', '..qhmmuuuumggq..', '..hhmu....vggg..', '.qhmu......vssq.', '.qhmu......vssq.', '.qhmu......vssq.', '.qhmu......vssq.', '..mmmv....vsss..', '..qmggvvvvsssq..', '...qggssssssq...', '....qgsssssq....', '......qqqq......', '................'],
-    "survey_meter": [
-        "................",
-        "....kkkk....kkk.",
-        "...kJ..Jk...kJk.",
-        "...kI..Ik...kIk.",
-        ".OOOOOOOOOO.kIk.",
-        ".OHBcccBBBO.kIk.",
-        ".OBcccnrabO.kIk.",
-        ".OBCcncc bO.kok.".replace(" ", "b"),
-        ".OBcnCccbIO..R..",
-        ".ObBcccbbiO..R..",
-        ".ObbbbbbbbO.R...",
-        ".ObboooobbO.R...",
-        ".OobbbbbbbRR....",
-        ".OoooooooiO.....",
-        "..OOOOOOOO......",
-        "................",
-    ],
 }
 
 
-VERSION = {"sealing_gasket": 2, "survey_meter": 3}
+VERSION = {"sealing_gasket": 2}
 
 
 def render(name):

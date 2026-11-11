@@ -67,42 +67,6 @@ def assembly(c, state="fresh"):
     outline_pass(c)
 
 
-def survey_meter(c):
-    c.rect(4, 2, 7, 2, P("iron", 4))
-    c.px(3, 3, P("iron", 4))
-    c.px(8, 3, P("iron", 4))
-    c.rect(1, 5, 10, 14, P("brass", 3))
-    c.rect(2, 6, 9, 13, P("brass", 4))
-    c.rect(2, 4, 3, 4, P("brass", 2))
-    c.rect(8, 4, 9, 4, P("brass", 2))
-    c.ellipse(2, 6, 7, 11, P("fabric", 5))
-    c.px(4, 9, P("ink", 0))
-    c.px(5, 8, P("ink", 0))
-    c.px(6, 7, P("ink", 0))
-    c.rect(8, 12, 9, 13, P("rubber", 2))
-    c.px(9, 7, P("amber", 2), True)
-    for i, (x, y) in enumerate(((11, 12), (12, 11), (12, 10), (13, 9))):
-        c.px(x, y, P("rubber", 3))
-    c.rect(12, 2, 14, 8, P("iron", 4))
-    c.rect(13, 1, 13, 1, P("iron", 5))
-    c.vline(12, 2, 8, P("iron", 2))
-    c.rect(12, 7, 14, 8, P("brass", 3))
-    outline_pass(c)
-
-
-def dosimeter(c):
-    c.rect(6, 1, 9, 3, P("iron", 4))
-    c.rect(7, 2, 8, 2, T)
-    c.rect(3, 4, 12, 14, P("brass", 3))
-    c.rect(4, 5, 11, 13, P("brass", 4))
-    c.rect(5, 6, 10, 8, P("ink", 0), True)
-    c.rect(6, 7, 7, 7, P("amber", 3), True)
-    c.rect(5, 10, 10, 12, P("fabric", 4))
-    for x in (6, 8, 10):
-        c.px(x, 11, P("signal_bars" if False else "green", 2), True) if x < 10 else c.px(x, 11, P("red", 2), True)
-    outline_pass(c)
-
-
 def hood(c):
     for y in range(1, 15):
         w = {1: 3, 2: 5, 3: 6}.get(y, 6)
@@ -160,8 +124,6 @@ ITEMS = {
     "fuel_assembly": lambda c: assembly(c, "fresh"),
     "spent_fuel_assembly": lambda c: assembly(c, "spent"),
     "damaged_fuel_assembly": lambda c: assembly(c, "damaged"),
-    "survey_meter": survey_meter,
-    "dosimeter": dosimeter,
     "protective_hood": hood,
     "protective_suit": suit,
     "protective_leggings": leggings,
@@ -173,8 +135,6 @@ ITEM_DESCRIPTIONS = {
     "fuel_assembly": "A fresh sealed reactor fuel assembly: tall square bundle of pale ceramic-and-steel fuel rods held by two bright iron spacer grids, polished brass top and bottom end fittings. Clean and new.",
     "spent_fuel_assembly": "The same fuel assembly after use: darkened steel rods with a few faint glowing amber hot spots, dulled fittings, and a small yellow-and-black hazard tag hanging from the side on a wire.",
     "damaged_fuel_assembly": "The same fuel assembly but damaged: one fuel rod bent and sticking out diagonally from the bundle, a broken spacer grid, scorched grey rods and a few sickly green contamination specks.",
-    "survey_meter": "A handheld radiation survey meter: chunky brass instrument box with a carry handle on top, a round cream analogue dial with a black needle, a small amber indicator light, and a separate iron detector probe on a short black cable to the right.",
-    "dosimeter": "A small personal dosimeter badge: brass clip at the top, rectangular brass body with a dark readout window showing an amber value and a cream scale strip with green and red marks.",
     "protective_hood": "A protective hazard hood: off-white rubberised canvas hood with a brass-rimmed open face window, a small iron respirator filter at the mouth, and yellow hazard trim strips down the sides.",
     "protective_suit": "A protective hazard suit jacket: off-white rubberised canvas with a brass zip down the middle, brass rivet buckles, a yellow hazard stripe across the chest and black rubber cuffs.",
     "protective_leggings": "Protective hazard trousers: off-white rubberised canvas with a brass-buckled waist belt, yellow hazard bands at the knees and black rubber ankle cuffs.",
@@ -295,6 +255,5 @@ ITEM_DESCRIPTIONS.update({
     "fuel_cladding": "A long thin polished silver-grey metal tube lying diagonally from bottom-left to top-right, open dark end at the bottom.",
     "reactor_alloy_ingot": "A reactor alloy ingot shaped like Create's brass ingot, in cool blue-grey metal with bright top highlight.",
     "reactor_alloy_sheet": "A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.",
-    "dosimeter": ITEM_DESCRIPTIONS.get("dosimeter", ""),
     "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
 })
