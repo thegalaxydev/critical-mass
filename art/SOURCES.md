@@ -400,24 +400,11 @@ Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark st
 
 ```
 
-## ceramic_fuel_pellet
+## ceramic_fuel_pellet (not generated)
 
 - Used by: `textures/item/ceramic_fuel_pellet.png`
-- Raw output: `art/generated/item__ceramic_fuel_pellet-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: ceramic fuel pellet.
-Three small dark ceramic fuel pellets (short cylinders) with lighter tops, grouped together.
-
-```
-
+- Source: hand-made by the author, original in `art/originals/ceramic_fuel_pellet.png`. Replaces the earlier generated icon.
+- Date: 2026-11-10
 ## control_rod
 
 - Used by: `textures/item/control_rod.png`
