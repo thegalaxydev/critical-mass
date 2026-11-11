@@ -230,22 +230,9 @@ def sheet(c, mat="lead", thick=False):
 
 
 
-def decon(c):
-    c.rect(4, 4, 11, 14, P("iron", 4))
-    c.rect(4, 3, 11, 3, P("iron", 5))
-    c.rect(5, 2, 10, 2, P("iron", 3))
-    c.rect(4, 7, 11, 11, P("coolant", 3))
-    c.rect(6, 8, 9, 10, P("fabric", 5))
-    c.px(7, 9, P("coolant", 1), True)
-    c.px(8, 9, P("coolant", 1), True)
-    outline_pass(c)
-
-
-
 ITEMS.update({
     "raw_uranium": raw_uranium, "crushed_uranium": crushed_uranium, "uranium_concentrate": concentrate, "ceramic_fuel_pellet": pellet,
     "fuel_cladding": cladding, "reactor_alloy_ingot": ingot, "reactor_alloy_sheet": sheet,
-    "decontamination_compound": decon,
 })
 ITEM_DESCRIPTIONS.update({
     "raw_uranium": "Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yellow-green mineral chunk with dark grey flecks.",
@@ -255,5 +242,4 @@ ITEM_DESCRIPTIONS.update({
     "fuel_cladding": "A long thin polished silver-grey metal tube lying diagonally from bottom-left to top-right, open dark end at the bottom.",
     "reactor_alloy_ingot": "A reactor alloy ingot shaped like Create's brass ingot, in cool blue-grey metal with bright top highlight.",
     "reactor_alloy_sheet": "A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.",
-    "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
 })
