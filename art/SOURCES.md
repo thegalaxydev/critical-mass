@@ -25,9 +25,9 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## control_rod (not generated)
+## control_rod and turbine_blade (not generated)
 
-- Used by: `textures/item/control_rod.png`
+- Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`
 - Source: hand-made by the author, original in `art/originals/`.
 - Date: 2026-11-11
 
@@ -723,24 +723,6 @@ The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: ever
 
 Item: survey meter.
 A handheld radiation survey meter: chunky brass instrument box with a carry handle on top, a round cream analogue dial with a black needle, a small amber indicator light, and a separate iron detector probe on a short black cable to the right.
-
-```
-
-## turbine_blade
-
-- Used by: `textures/item/turbine_blade.png`
-- Raw output: `art/generated/item__turbine_blade-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: turbine blade.
-A single curved polished iron turbine blade lying diagonally with a brass root fitting at the bottom-left.
 
 ```
 

@@ -268,14 +268,6 @@ def sheet(c, mat="lead", thick=False):
 
 
 
-def turbine_blade(c):
-    pts = [(3, 13), (4, 12), (4, 11), (5, 10), (6, 9), (6, 8), (7, 7), (8, 6), (9, 5), (10, 4), (11, 3), (12, 2)]
-    for i, (x, y) in enumerate(pts):
-        c.rect(x, y, x + 2 + (i % 3 == 0), y, P("iron", 4))
-        c.px(x, y, P("iron", 6))
-    c.rect(2, 13, 4, 14, P("brass", 3))
-    outline_pass(c)
-
 
 def gasket(c):
     c.ellipse(2, 3, 13, 13, P("rubber", 3))
@@ -312,7 +304,7 @@ def repair_kit(c):
 ITEMS.update({
     "raw_uranium": raw_uranium, "crushed_uranium": crushed_uranium, "uranium_concentrate": concentrate, "ceramic_fuel_pellet": pellet,
     "fuel_cladding": cladding, "reactor_alloy_ingot": ingot, "reactor_alloy_sheet": sheet,
-    "turbine_blade": turbine_blade, "sealing_gasket": gasket, "decontamination_compound": decon,
+    "sealing_gasket": gasket, "decontamination_compound": decon,
     "repair_kit": repair_kit,
 })
 ITEM_DESCRIPTIONS.update({
@@ -323,7 +315,6 @@ ITEM_DESCRIPTIONS.update({
     "fuel_cladding": "A long thin polished silver-grey metal tube lying diagonally from bottom-left to top-right, open dark end at the bottom.",
     "reactor_alloy_ingot": "A reactor alloy ingot shaped like Create's brass ingot, in cool blue-grey metal with bright top highlight.",
     "reactor_alloy_sheet": "A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.",
-    "turbine_blade": "A single curved polished iron turbine blade lying diagonally with a brass root fitting at the bottom-left.",
     "sealing_gasket": "A black rubber sealing ring gasket with a round hole in the middle (keep the hole transparent).",
     "dosimeter": ITEM_DESCRIPTIONS.get("dosimeter", ""),
     "decontamination_compound": "A sealed metal tin of decontamination compound with a blue label band and a white label patch.",
