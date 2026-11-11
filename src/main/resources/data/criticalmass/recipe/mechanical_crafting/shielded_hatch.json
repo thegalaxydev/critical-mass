@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "P": {
-      "item": "criticalmass:shielding_plate"
+      "tag": "c:plates/steel"
     },
     "C": {
       "item": "criticalmass:shielding_concrete"

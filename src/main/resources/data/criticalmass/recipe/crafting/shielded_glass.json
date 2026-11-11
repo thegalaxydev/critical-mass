@@ -6,7 +6,7 @@
       "tag": "c:glass_blocks/colorless"
     },
     "P": {
-      "item": "criticalmass:shielding_plate"
+      "tag": "c:plates/steel"
     }
   },
   "pattern": [

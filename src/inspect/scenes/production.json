@@ -20,7 +20,7 @@
     "/item replace entity @p hotbar.1 with criticalmass:fuel_cladding 4",
     "/item replace entity @p hotbar.2 with criticalmass:ceramic_fuel_pellet 8",
     "/item replace entity @p hotbar.3 with minecraft:air",
-    "/item replace entity @p hotbar.4 with criticalmass:shielding_plate 2",
+    "/item replace entity @p hotbar.4 with criticalmass:steel_plate 2",
     "/item replace entity @p hotbar.5 with criticalmass:sealing_gasket 1",
     "/item replace entity @p hotbar.6 with criticalmass:damaged_fuel_assembly[criticalmass:fuel_state={id:[I;11,22,33,44],remaining:0.42d,condition:0.0d,burned:52000.0d,damage_cause:\"overheat\"}]",
     "/item replace entity @p armor.head with create:goggles",

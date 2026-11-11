@@ -1,0 +1,84 @@
+{
+ "name": "steel",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 44 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 36 -59 36 52 -55 44 minecraft:air",
+    "/setblock 43 -59 40 criticalmass:steel_block",
+    "/setblock 45 -59 40 criticalmass:reactor_alloy_block",
+    "/setblock 44 -59 40 criticalmass:reactor_vessel_casing",
+    "/item replace entity @p hotbar.0 with criticalmass:steel_ingot",
+    "/item replace entity @p hotbar.1 with criticalmass:steel_nugget",
+    "/item replace entity @p hotbar.2 with criticalmass:steel_plate",
+    "/item replace entity @p hotbar.3 with criticalmass:reactor_alloy_ingot",
+    "/item replace entity @p hotbar.4 with criticalmass:reactor_alloy_sheet",
+    "/item replace entity @p hotbar.5 with criticalmass:steel_block",
+    "/item replace entity @p hotbar.6 with criticalmass:reactor_alloy_block"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/setblock 44 -58 37 minecraft:barrier",
+    "/tp @p 44.50 -57.00 37.50 facing 44.50 -60.12 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "slot": 0,
+   "gui": true,
+   "wait": 10
+  },
+  {
+   "shot": "blocks_and_hotbar",
+   "wait": 2
+  },
+  {
+   "jei": "criticalmass:steel_ingot",
+   "wait": 30
+  },
+  {
+   "shot": "jei_steel_ingot",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "criticalmass:reactor_alloy_ingot",
+   "wait": 30
+  },
+  {
+   "shot": "jei_reactor_alloy",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "jei": "criticalmass:steel_plate",
+   "wait": 30
+  },
+  {
+   "shot": "jei_steel_plate",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  }
+ ]
+}

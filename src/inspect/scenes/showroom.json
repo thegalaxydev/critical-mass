@@ -90,7 +90,7 @@
     "/summon minecraft:item 7.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:damaged_fuel_assembly\",count:1}}",
     "/summon minecraft:item 8.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:reactor_alloy_ingot\",count:1}}",
     "/summon minecraft:item 9.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:reactor_alloy_sheet\",count:1}}",
-    "/summon minecraft:item 10.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:shielding_plate\",count:1}}",
+    "/summon minecraft:item 10.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:steel_plate\",count:1}}",
     "/summon minecraft:item 11.5 -59.6 8.0 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:control_rod\",count:1}}",
     "/summon minecraft:item 0.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:turbine_blade\",count:1}}",
     "/summon minecraft:item 1.5 -59.6 9.2 {NoGravity:1b,PickupDelay:32767,Age:-32768,Item:{id:\"criticalmass:sealing_gasket\",count:1}}",
@@ -472,7 +472,7 @@
    "cmds": [
     "/clear @p",
     "/item replace entity @p hotbar.0 with criticalmass:reactor_alloy_sheet",
-    "/item replace entity @p hotbar.1 with criticalmass:shielding_plate",
+    "/item replace entity @p hotbar.1 with criticalmass:steel_plate",
     "/item replace entity @p hotbar.2 with criticalmass:control_rod",
     "/item replace entity @p hotbar.3 with criticalmass:turbine_blade",
     "/item replace entity @p hotbar.4 with criticalmass:sealing_gasket",

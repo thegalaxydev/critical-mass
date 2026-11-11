@@ -22,7 +22,7 @@ give = ["/item replace entity @p hotbar.0 with criticalmass:empty_fuel_assembly"
         "/item replace entity @p hotbar.1 with criticalmass:fuel_cladding 4",
         "/item replace entity @p hotbar.2 with criticalmass:ceramic_fuel_pellet 8",
         "/item replace entity @p hotbar.3 with minecraft:air",
-        "/item replace entity @p hotbar.4 with criticalmass:shielding_plate 2",
+        "/item replace entity @p hotbar.4 with criticalmass:steel_plate 2",
         "/item replace entity @p hotbar.5 with criticalmass:sealing_gasket 1",
         "/item replace entity @p hotbar.6 with " + DAMAGED,
         "/item replace entity @p armor.head with create:goggles"]

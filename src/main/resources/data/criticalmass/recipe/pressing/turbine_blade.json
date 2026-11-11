@@ -2,7 +2,7 @@
   "type": "create:pressing",
   "ingredients": [
     {
-      "item": "criticalmass:fuel_cladding"
+      "tag": "c:plates/steel"
     }
   ],
   "results": [

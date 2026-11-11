@@ -41,6 +41,7 @@ public class CriticalMass {
         CMBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         CMBlocks.BLOCKS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
         CMItems.ITEMS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        CMItems.ITEMS.addAlias(asResource("shielding_plate"), asResource("steel_plate"));
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);

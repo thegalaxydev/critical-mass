@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "criticalmass:steel_block"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:steel_ingot",
+    "count": 9
+  }
+}

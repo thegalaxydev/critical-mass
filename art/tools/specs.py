@@ -274,7 +274,7 @@ ITEM_DEFS.update({
     "raw_uranium": {"lang": "Raw Uranium"}, "crushed_uranium": {"lang": "Crushed Uranium"}, "uranium_concentrate": {"lang": "Uranium Concentrate"},
     "ceramic_fuel_pellet": {"lang": "Ceramic Fuel Pellet"}, "fuel_cladding": {"lang": "Fuel Cladding"}, "empty_fuel_assembly": {"lang": "Empty Fuel Assembly"},
     "spent_fuel_assembly": {"lang": "Spent Fuel Assembly"}, "damaged_fuel_assembly": {"lang": "Damaged Fuel Assembly"},
-    "reactor_alloy_ingot": {"lang": "Reactor Alloy Ingot"}, "reactor_alloy_sheet": {"lang": "Reactor Alloy Sheet"}, "shielding_plate": {"lang": "Shielding Plate"},
+    "reactor_alloy_ingot": {"lang": "Reactor Alloy Ingot"}, "reactor_alloy_sheet": {"lang": "Reactor Alloy Sheet"},
     "control_rod": {"lang": "Control Rod", "handheld": True}, "turbine_blade": {"lang": "Turbine Blade"}, "sealing_gasket": {"lang": "Sealing Gasket"},
     "dosimeter": {"lang": "Dosimeter"}, "decontamination_compound": {"lang": "Decontamination Compound"}, "repair_kit": {"lang": "Repair Kit"},
     "sealed_waste_canister": {"lang": "Sealed Waste Canister"},

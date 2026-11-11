@@ -29,6 +29,8 @@
     "criticalmass:reinforced_valve",
     "criticalmass:steam_turbine",
     "criticalmass:uranium_ore",
-    "criticalmass:deepslate_uranium_ore"
+    "criticalmass:deepslate_uranium_ore",
+    "criticalmass:steel_block",
+    "criticalmass:reactor_alloy_block"
   ]
 }

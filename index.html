@@ -2031,6 +2031,11 @@ const RECORD_PATCHES = [
   ]],
   ["reinforced-valve-1", [
     ["blocks", "blk-bypass-valve", "In development", {"name": "Reinforced Valve", "registryId": "criticalmass:reinforced_valve", "status": "Verified", "notes": "Replaced the Steam Bypass Valve. Uses Create's fluid valve model with its own textures and a shaft through its side: turning the shaft forwards opens it and backwards closes it, so a Valve Handle on the shaft works it (one turn opens or closes). While closed nothing circulates in that loop. Reinforced and Create pipes connect only along its line. Game test reinforcedValveTurnedByHandleStopsAndStartsTheLoop."}]
+  ]],
+  ["steel-1", [
+    ["items", "itm-shielding-plate", "Verified", {"name": "Steel Plate", "registryId": "criticalmass:steel_plate", "notes": "The Shielding Plate was removed and replaced by the Steel Plate (old plates convert). Steel Ingots come from superheated mixing of an iron ingot with coal or charcoal and press into Steel Plates; Steel Nuggets and a Block of Steel craft from the ingot. Steel plates make the vessel casing, reinforced pipe, both valves, turbine blades, shielded glass, hatch and cask, sealed waste canisters and the damaged-fuel recovery on the bench."}],
+    ["items", "itm-alloy-ingot", "Implemented, unverified", {"notes": "Now mixed from 2 steel, 1 zinc and 1 nether quartz (heated). A Block of Reactor Alloy crafts from 9 ingots."}],
+    ["items", "itm-alloy-sheet", "Implemented, unverified", {"notes": "Hand-made texture."}]
   ]]
 ];
 function applyProgressSets(raw) {

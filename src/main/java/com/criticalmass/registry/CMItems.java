@@ -12,6 +12,9 @@ import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class CMItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CriticalMass.MODID);
     public static final List<Supplier<? extends Item>> TAB_ORDER = new ArrayList<>();
+    public static final TagKey<Item> STEEL_PLATES = ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", "plates/steel"));
 
     public static final DeferredItem<Item> RAW_URANIUM = simple("raw_uranium", new Item.Properties());
     public static final DeferredItem<Item> URANIUM_CONCENTRATE = simple("uranium_concentrate", new Item.Properties());
@@ -31,9 +35,11 @@ public final class CMItems {
     public static final DeferredItem<FuelAssemblyItem> FRESH_FUEL_ASSEMBLY = custom("fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.FRESH, new Item.Properties().stacksTo(1)));
     public static final DeferredItem<FuelAssemblyItem> SPENT_FUEL_ASSEMBLY = custom("spent_fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.SPENT, new Item.Properties().stacksTo(1)));
     public static final DeferredItem<FuelAssemblyItem> DAMAGED_FUEL_ASSEMBLY = custom("damaged_fuel_assembly", () -> new FuelAssemblyItem(FuelAssemblyItem.Form.DAMAGED, new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> STEEL_INGOT = simple("steel_ingot", new Item.Properties());
+    public static final DeferredItem<Item> STEEL_NUGGET = simple("steel_nugget", new Item.Properties());
+    public static final DeferredItem<Item> STEEL_PLATE = simple("steel_plate", new Item.Properties());
     public static final DeferredItem<Item> REACTOR_ALLOY_INGOT = simple("reactor_alloy_ingot", new Item.Properties());
     public static final DeferredItem<Item> REACTOR_ALLOY_SHEET = simple("reactor_alloy_sheet", new Item.Properties());
-    public static final DeferredItem<Item> SHIELDING_PLATE = simple("shielding_plate", new Item.Properties());
     public static final DeferredItem<Item> CONTROL_ROD = simple("control_rod", new Item.Properties());
     public static final DeferredItem<Item> TURBINE_BLADE = simple("turbine_blade", new Item.Properties());
     public static final DeferredItem<Item> SEALING_GASKET = simple("sealing_gasket", new Item.Properties());

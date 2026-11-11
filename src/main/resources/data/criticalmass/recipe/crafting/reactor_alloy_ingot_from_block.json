@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "criticalmass:reactor_alloy_block"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:reactor_alloy_ingot",
+    "count": 9
+  }
+}

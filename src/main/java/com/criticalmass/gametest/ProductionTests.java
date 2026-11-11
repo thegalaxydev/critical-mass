@@ -35,7 +35,7 @@ public final class ProductionTests {
     private static final String EMPTY = "empty";
     private static final List<String> CHAIN = List.of("milling/raw_uranium", "splashing/crushed_raw_uranium", "mixing/uranium_concentrate", "compacting/ceramic_fuel_pellet",
             "mixing/reactor_alloy_ingot", "pressing/reactor_alloy_sheet", "pressing/fuel_cladding", "compacting/sealing_gasket", "mechanical_crafting/empty_fuel_assembly",
-            "sequenced_assembly/fuel_assembly", "compacting/shielding_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller");
+            "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller");
 
     private ProductionTests() {
     }
@@ -96,13 +96,13 @@ public final class ProductionTests {
         FuelAssemblyBenchBlockEntity bench = h.getBlockEntity(pos);
         FuelState hot = FuelState.fresh().withBurned(5000).withCondition(0, "overheat").discharged(5);
         FuelState cool = hot.withResidual(0.1);
-        ItemStack plate = new ItemStack(CMItems.SHIELDING_PLATE.get());
+        ItemStack plate = new ItemStack(CMItems.STEEL_PLATE.get());
         ItemStack gasket = new ItemStack(CMItems.SEALING_GASKET.get());
         bench.setHeld(FuelAssemblyItem.stackFor(hot));
         h.assertTrue(bench.work(plate, false) == Outcome.TOO_HOT, "Hot damaged fuel cannot be recovered yet");
         bench.setHeld(FuelAssemblyItem.stackFor(cool));
         h.assertTrue(bench.work(gasket, false) == Outcome.WRONG, "Gasket comes last");
-        h.assertTrue(bench.work(plate, false) == Outcome.CONSUME && bench.work(plate, false) == Outcome.CONSUME, "Two shielding plates");
+        h.assertTrue(bench.work(plate, false) == Outcome.CONSUME && bench.work(plate, false) == Outcome.CONSUME, "Two steel plates");
         h.assertTrue(bench.held().is(CMItems.DAMAGED_FUEL_ASSEMBLY.get()) && bench.held().get(CMComponents.RECOVERY_STEP.get()) == 2, "Recovery progress is kept on the item");
         h.assertTrue(bench.work(gasket, false) == Outcome.CONSUME, "Gasket seals it");
         ItemStack canister = bench.held();

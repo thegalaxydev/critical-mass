@@ -14,7 +14,7 @@ BLOCKS = [
     ("steam_turbine", "[axis=x]"), ("control_rod_drive", "[facing=north]"), ("reinforced_pipe", "[east=true,west=true]"),
 ]
 ITEMS = ["raw_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "empty_fuel_assembly", "fuel_assembly",
-         "spent_fuel_assembly", "damaged_fuel_assembly", "reactor_alloy_ingot", "reactor_alloy_sheet", "shielding_plate", "control_rod", "turbine_blade",
+         "spent_fuel_assembly", "damaged_fuel_assembly", "reactor_alloy_ingot", "reactor_alloy_sheet", "steel_plate", "control_rod", "turbine_blade",
          "sealing_gasket", "survey_meter", "dosimeter", "protective_hood", "protective_suit", "protective_leggings", "protective_boots",
          "decontamination_compound", "repair_kit", "sealed_waste_canister"]
 

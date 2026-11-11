@@ -19,6 +19,18 @@ All art is a candidate for replacement by hand-made art later.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
+## steel_ingot, steel_nugget and steel_plate (not generated)
+
+- Used by: `textures/item/steel_ingot.png`, `textures/item/steel_nugget.png`, `textures/item/steel_plate.png`
+- Source: hand-made by the author, originals in `art/originals/`.
+- Date: 2026-11-10
+
+## steel_block and reactor_alloy_block (not generated)
+
+- Used by: `textures/block/steel_block.png`, `textures/block/reactor_alloy_block.png`
+- Source: hand-made by the author, originals in `art/originals/`.
+- Date: 2026-11-10
+
 ## reinforced_valve, reinforced_valve_open and reinforced_valve_closed (not generated)
 
 - Used by: `textures/block/reinforced_valve.png`, `textures/block/reinforced_valve_open.png`, `textures/block/reinforced_valve_closed.png`
@@ -638,42 +650,16 @@ Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yello
 
 ```
 
-## reactor_alloy_ingot
+## reactor_alloy_ingot (not generated)
 
 - Used by: `textures/item/reactor_alloy_ingot.png`
-- Raw output: `art/generated/item__reactor_alloy_ingot-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: reactor alloy ingot.
-A reactor alloy ingot shaped like Create's brass ingot, in cool blue-grey metal with bright top highlight.
-
-```
-
-## reactor_alloy_sheet
+- Source: hand-made by the author, original in `art/originals/reactor_alloy.png`.
+- Date: 2026-11-10
+## reactor_alloy_sheet (not generated)
 
 - Used by: `textures/item/reactor_alloy_sheet.png`
-- Raw output: `art/generated/item__reactor_alloy_sheet-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: reactor alloy sheet.
-A thin reactor alloy plate shaped like Create's metal sheets, in cool blue-grey metal.
-
-```
-
+- Source: hand-made by the author, original in `art/originals/reactor_alloy_sheet.png`.
+- Date: 2026-11-10
 ## repair_kit
 
 - Used by: `textures/item/repair_kit.png`
@@ -726,24 +712,6 @@ The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: ever
 Item: sealing gasket.
 A black rubber sealing ring gasket with a round hole in the middle (keep the hole transparent).
 A black rubber O-ring gasket. Make it readable on a dark background: strong light grey top-left highlight arc, mid-grey body, a thin copper inner rim. Clean shading, no speckle.
-```
-
-## shielding_plate
-
-- Used by: `textures/item/shielding_plate.png`
-- Raw output: `art/generated/item__shielding_plate-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: shielding plate.
-A thick heavy dark concrete-grey shielding plate, visibly thicker than a normal sheet, with three bright rivets.
-A clean heavy lead-grey shielding plate with four bright rivets at the corners, smooth bevel shading light at top-left, no speckle or noise.
 ```
 
 ## spent_fuel_assembly

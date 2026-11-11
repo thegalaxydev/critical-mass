@@ -70,6 +70,9 @@ public final class CMBlocks {
     public static final DeferredBlock<AlarmSirenBlock> ALARM_SIREN = register("alarm_siren", AlarmSirenBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<DockingConnectorBlock> DOCKING_SERVICE_CONNECTOR = register("docking_service_connector", DockingConnectorBlock::new, metal(4.0f));
 
+    public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
+    public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));
+
     public static final DeferredBlock<Block> URANIUM_ORE = register("uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(3.0f, 3.0f).sound(SoundType.STONE).requiresCorrectToolForDrops());
     public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = register("deepslate_uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 3.0f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
 

@@ -89,7 +89,7 @@ public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IH
     public Ingredient nextIngredient() {
         ItemStack b = held();
         if (b.is(CMItems.DAMAGED_FUEL_ASSEMBLY.get())) {
-            return Ingredient.of(b.getOrDefault(CMComponents.RECOVERY_STEP.get(), 0) < 2 ? CMItems.SHIELDING_PLATE.get() : CMItems.SEALING_GASKET.get());
+            return (b.getOrDefault(CMComponents.RECOVERY_STEP.get(), 0) < 2 ? Ingredient.of(CMItems.STEEL_PLATES) : Ingredient.of(CMItems.SEALING_GASKET.get()));
         }
         if (!workable()) {
             return null;
@@ -141,7 +141,7 @@ public class FuelAssemblyBenchBlockEntity extends SmartBlockEntity implements IH
             return Outcome.TOO_HOT;
         }
         int step = b.getOrDefault(CMComponents.RECOVERY_STEP.get(), 0);
-        if (!tool.is(step < 2 ? CMItems.SHIELDING_PLATE.get() : CMItems.SEALING_GASKET.get())) {
+        if (step < 2 ? !tool.is(CMItems.STEEL_PLATES) : !tool.is(CMItems.SEALING_GASKET.get())) {
             return Outcome.WRONG;
         }
         if (step + 1 >= 3) {

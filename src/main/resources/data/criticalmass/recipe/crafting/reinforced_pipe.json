@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "S": {
-      "tag": "c:plates/iron"
+      "tag": "c:plates/steel"
     },
     "F": {
       "item": "create:fluid_pipe"

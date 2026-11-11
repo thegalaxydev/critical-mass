@@ -3,10 +3,10 @@
   "heat_requirement": "heated",
   "ingredients": [
     {
-      "tag": "c:ingots/iron"
+      "tag": "c:ingots/steel"
     },
     {
-      "tag": "c:ingots/iron"
+      "tag": "c:ingots/steel"
     },
     {
       "tag": "c:ingots/zinc"
