@@ -118,10 +118,10 @@ RECIPES["sequenced_assembly/sealed_waste_canister"] = {
 
 RECIPES["sequenced_assembly/damaged_fuel_canister"] = {
     "type": "create:sequenced_assembly",
-    "ingredient": ing("damaged_fuel_assembly"),
+    "ingredient": ing("open_waste_canister"),
     "loops": 1,
     "results": [out("sealed_waste_canister")],
-    "sequence": [step_deploy("open_waste_canister", "incomplete_waste_canister"), step_deploy("sealing_gasket", "incomplete_waste_canister"), step_press("incomplete_waste_canister")],
+    "sequence": [step_deploy("damaged_fuel_assembly", "incomplete_waste_canister"), step_deploy("sealing_gasket", "incomplete_waste_canister"), step_press("incomplete_waste_canister")],
     "transitional_item": out("incomplete_waste_canister"),
 }
 

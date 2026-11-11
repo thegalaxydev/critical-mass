@@ -147,14 +147,12 @@ public final class ProductionTests {
         motor.generatedSpeed.setValue(128);
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 600)
+    @GameTest(template = EMPTY, timeoutTicks = 800)
     public static void damagedFuelSequenceKeepsItsRecord(GameTestHelper h) {
         FuelState hot = FuelState.fresh().withBurned(4200).withCondition(0, "overheat").discharged(5);
         FuelState cool = hot.withResidual(0.1);
-        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(hot), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isEmpty(),
-                "Hot damaged fuel cannot start the canister sequence");
-        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(cool), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isPresent(),
-                "Cooled damaged fuel starts the canister sequence");
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), AllRecipeTypes.DEPLOYING.getType(), DeployerApplicationRecipe.class).isPresent(),
+                "Deploying onto an open waste canister starts the damaged fuel sequence");
         BlockPos depotA = new BlockPos(2, 1, 2);
         BlockPos deployer = new BlockPos(2, 3, 2);
         BlockPos depotB = new BlockPos(5, 1, 2);
@@ -169,17 +167,26 @@ public final class ProductionTests {
                 .thenIdle(5)
                 .thenExecute(() -> {
                     DepotBlockEntity a = h.getBlockEntity(depotA);
-                    a.setHeldItem(FuelAssemblyItem.stackFor(cool));
-                    hand(h, deployer).insertItem(0, new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), false);
+                    a.setHeldItem(new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()));
+                    hand(h, deployer).insertItem(0, FuelAssemblyItem.stackFor(hot), false);
+                })
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotA)).getHeldItem();
+                    h.assertTrue(held.is(CMBlocks.OPEN_WASTE_CANISTER.get().asItem()), "A hot assembly is not deployed into the canister: " + held);
+                    h.assertTrue(hand(h, deployer).getStackInSlot(0).is(CMItems.DAMAGED_FUEL_ASSEMBLY.get()), "The deployer keeps holding the hot assembly");
+                    hand(h, deployer).extractItem(0, 1, false);
+                    hand(h, deployer).insertItem(0, FuelAssemblyItem.stackFor(cool), false);
                 })
                 .thenWaitUntil(() -> {
                     ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotA)).getHeldItem();
-                    h.assertTrue(held.is(CMItems.INCOMPLETE_WASTE_CANISTER.get()), "Deploying the open canister: " + held);
+                    h.assertTrue(held.is(CMItems.INCOMPLETE_WASTE_CANISTER.get()), "Deploying the cooled assembly into the canister: " + held);
                 })
                 .thenExecute(() -> {
                     ItemStack held = ((DepotBlockEntity) h.getBlockEntity(depotA)).getHeldItem();
                     FuelState s = held.get(CMComponents.FUEL_STATE.get());
-                    h.assertTrue(s != null && s.id().equals(cool.id()), "The incomplete canister carries the assembly's record: " + s);
+                    h.assertTrue(s != null && s.id().equals(cool.id()), "The incomplete canister takes the deployed assembly's record: " + s);
+                    h.assertTrue(hand(h, deployer).getStackInSlot(0).isEmpty(), "The assembly is used up");
                     h.assertTrue(com.criticalmass.content.radiation.Radiation.itemStrength(held) > 0, "The open canister with fuel inside radiates");
                     hand(h, deployer).insertItem(0, new ItemStack(CMItems.SEALING_GASKET.get()), false);
                 })
