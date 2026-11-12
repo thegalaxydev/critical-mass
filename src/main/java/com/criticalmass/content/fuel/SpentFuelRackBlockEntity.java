@@ -17,6 +17,7 @@ import net.minecraft.world.Clearable;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -82,8 +83,7 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implem
                 ItemStack one = stack.copyWithCount(1);
                 FuelAssemblyItem.ensure(one);
                 slots.set(i, one);
-                changed();
-                setChanged();
+                slotsChanged();
                 return true;
             }
         }
@@ -95,12 +95,24 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implem
             if (!slots.get(i).isEmpty()) {
                 ItemStack out = slots.get(i);
                 slots.set(i, ItemStack.EMPTY);
-                changed();
-                setChanged();
+                slotsChanged();
                 return out;
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    private void slotsChanged() {
+        changed();
+        setChanged();
+        if (level == null || level.isClientSide) {
+            return;
+        }
+        BlockState state = getBlockState();
+        int fill = Math.min(SpentFuelRackBlock.FILL_MAX, count());
+        if (state.hasProperty(SpentFuelRackBlock.FILL) && state.getValue(SpentFuelRackBlock.FILL) != fill) {
+            level.setBlock(worldPosition, state.setValue(SpentFuelRackBlock.FILL, fill), Block.UPDATE_ALL);
+        }
     }
 
     public int count() {
@@ -251,8 +263,7 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implem
                 ItemStack one = stack.copyWithCount(1);
                 FuelAssemblyItem.ensure(one);
                 slots.set(slot, one);
-                changed();
-                setChanged();
+                slotsChanged();
             }
             return stack.copyWithCount(stack.getCount() - 1);
         }
@@ -265,8 +276,7 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implem
             }
             if (!simulate) {
                 slots.set(slot, ItemStack.EMPTY);
-                changed();
-                setChanged();
+                slotsChanged();
             }
             return s.copy();
         }

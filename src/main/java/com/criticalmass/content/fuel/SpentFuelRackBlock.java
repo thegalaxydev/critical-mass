@@ -14,11 +14,22 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class SpentFuelRackBlock extends Block implements IBE<SpentFuelRackBlockEntity> {
+    public static final int FILL_MAX = 4;
+    public static final IntegerProperty FILL = IntegerProperty.create("fill", 0, FILL_MAX);
+
     public SpentFuelRackBlock(Properties properties) {
         super(properties);
+        registerDefaultState(defaultBlockState().setValue(FILL, 0));
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FILL);
     }
 
     @Override

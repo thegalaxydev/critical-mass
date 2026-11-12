@@ -147,7 +147,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - `shielded_glass`: inventory = item model shielded_glass (parent: block model); placed = blockstate shielded_glass (simple)
 - `shielded_hatch`: inventory = item model shielded_hatch (parent: block model); placed = blockstate shielded_hatch (raw); vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates
 - `fuel_assembly_bench`: inventory = item model fuel_assembly_bench (parent: block model); placed = blockstate fuel_assembly_bench (horizontal)
-- `spent_fuel_rack`: inventory = item model spent_fuel_rack (parent: block model); placed = blockstate spent_fuel_rack (simple)
+- `spent_fuel_rack`: inventory = item model spent_fuel_rack (parent: block model); placed = blockstate spent_fuel_rack (multipart: shell plus one assembly model per stored assembly, fill=0..4)
 - `shielded_cask`: inventory = item model shielded_cask (parent: block model); placed = blockstate shielded_cask (simple)
 - `reactor_signal_interface`: inventory = item model reactor_signal_interface (parent: block model); placed = blockstate reactor_signal_interface (horizontal)
 - `alarm_siren`: inventory = item model alarm_siren (parent: block model); placed = blockstate alarm_siren (raw); powered=true when the block receives redstone; powered model uses a lit, unshaded lamp

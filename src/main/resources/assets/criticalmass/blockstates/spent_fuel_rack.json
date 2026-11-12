@@ -1,7 +1,41 @@
 {
- "variants": {
-  "": {
-   "model": "criticalmass:block/spent_fuel_rack"
+ "multipart": [
+  {
+   "apply": {
+    "model": "criticalmass:block/spent_fuel_rack"
+   }
+  },
+  {
+   "when": {
+    "fill": "1|2|3|4"
+   },
+   "apply": {
+    "model": "criticalmass:block/spent_fuel_rack_assembly_1"
+   }
+  },
+  {
+   "when": {
+    "fill": "2|3|4"
+   },
+   "apply": {
+    "model": "criticalmass:block/spent_fuel_rack_assembly_2"
+   }
+  },
+  {
+   "when": {
+    "fill": "3|4"
+   },
+   "apply": {
+    "model": "criticalmass:block/spent_fuel_rack_assembly_3"
+   }
+  },
+  {
+   "when": {
+    "fill": "4"
+   },
+   "apply": {
+    "model": "criticalmass:block/spent_fuel_rack_assembly_4"
+   }
   }
- }
+ ]
 }

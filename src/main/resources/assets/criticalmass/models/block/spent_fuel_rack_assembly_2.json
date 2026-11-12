@@ -1,0 +1,67 @@
+{
+ "textures": {
+  "0": "criticalmass:block/spent_fuel_rack",
+  "particle": "criticalmass:block/spent_fuel_rack"
+ },
+ "elements": [
+  {
+   "from": [
+    10,
+    2,
+    2
+   ],
+   "to": [
+    14,
+    15,
+    6
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10,
+      8,
+      12,
+      14.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      10,
+      8,
+      12,
+      14.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      10,
+      8,
+      12,
+      14.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      10,
+      8,
+      12,
+      14.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      8,
+      10,
+      10
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

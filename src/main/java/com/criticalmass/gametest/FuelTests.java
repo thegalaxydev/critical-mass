@@ -6,6 +6,7 @@ import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
+import com.criticalmass.content.fuel.SpentFuelRackBlock;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
@@ -348,6 +349,23 @@ public final class FuelTests {
                     h.assertTrue(d.id().equals(hot2.id()), "Damage keeps the lifecycle ID");
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 20)
+    public static void rackBlockStateShowsAssemblyCount(GameTestHelper h) {
+        BlockPos pos = new BlockPos(1, 1, 1);
+        h.setBlock(pos, CMBlocks.SPENT_FUEL_RACK.get());
+        SpentFuelRackBlockEntity rack = h.getBlockEntity(pos);
+        h.assertTrue(h.getBlockState(pos).getValue(SpentFuelRackBlock.FILL) == 0, "Empty rack shows no assemblies");
+        for (int i = 1; i <= 4; i++) {
+            rack.insert(assembly(FuelState.fresh().withRemaining(0).discharged(10)));
+            h.assertTrue(h.getBlockState(pos).getValue(SpentFuelRackBlock.FILL) == i, "Rack shows " + i + " assemblies");
+        }
+        rack.takeLast();
+        h.assertTrue(h.getBlockState(pos).getValue(SpentFuelRackBlock.FILL) == 3, "Taking one out updates the rack");
+        rack.handler().extractItem(0, 1, false);
+        h.assertTrue(h.getBlockState(pos).getValue(SpentFuelRackBlock.FILL) == 2, "Extracting through the item handler updates the rack");
+        h.succeed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 100)

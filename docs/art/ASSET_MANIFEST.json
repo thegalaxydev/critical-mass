@@ -1982,13 +1982,17 @@
     }
    ],
    "block_models": [
-    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack.json"
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack.json",
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack_assembly_1.json",
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack_assembly_2.json",
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack_assembly_3.json",
+    "src/main/resources/assets/criticalmass/models/block/spent_fuel_rack_assembly_4.json"
    ],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/spent_fuel_rack.json",
    "item_model": "src/main/resources/assets/criticalmass/models/item/spent_fuel_rack.json",
    "inventory_icon": "item model spent_fuel_rack (parent: block model)",
-   "placed_appearance": "blockstate spent_fuel_rack (simple)",
-   "state_notes": "",
+   "placed_appearance": "blockstate spent_fuel_rack (multipart)",
+   "state_notes": "fill=0..4 shows one fuel assembly per stored assembly in the four open-top wells",
    "partials": [],
    "kinetic": null,
    "references": [

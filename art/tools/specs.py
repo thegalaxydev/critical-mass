@@ -216,7 +216,9 @@ BLOCK_DEFS.update({
     "sealed_waste_canister": {"state": ("simple",), "item": "block", "lang": "Sealed Waste Canister"},
     "shielded_hatch": {"state": ("raw", _trapdoor("shielded_hatch")), "item": "shielded_hatch_bottom", "lang": "Shielded Hatch"},
     "fuel_assembly_bench": {"state": ("horizontal", "fuel_assembly_bench"), "item": "block", "lang": "Fuel Assembly Bench"},
-    "spent_fuel_rack": {"state": ("simple",), "item": "block", "lang": "Spent Fuel Rack"},
+    "spent_fuel_rack": {"state": ("raw", {"multipart": [{"apply": {"model": "criticalmass:block/spent_fuel_rack"}}] + [
+        {"when": {"fill": "|".join(str(n) for n in range(i, 5))}, "apply": {"model": "criticalmass:block/spent_fuel_rack_assembly_%d" % i}} for i in range(1, 5)]}),
+        "item": "block", "lang": "Spent Fuel Rack"},
     "shielded_cask": {"state": ("simple",), "item": "block", "lang": "Shielded Cask"},
     "reactor_signal_interface": {"state": ("horizontal", "reactor_signal_interface"), "item": "block", "lang": "Reactor Signal Interface"},
     "alarm_siren": {"state": ("raw", _facing_prop({"false": "alarm_siren", "true": "alarm_siren_powered"}, "powered")), "item": "alarm_siren", "lang": "Alarm Siren"},
@@ -242,6 +244,49 @@ def _crack_model(stage):
 
 for _stage in (1, 2, 3):
     EXTRA_MODELS["reactor_vessel_casing_crack_%d" % _stage] = _crack_model(_stage)
+
+
+RACK_UV = {"side": [0, 0, 8, 8], "bottom": [8, 0, 16, 8], "rim": [0.5, 8.5, 1.5, 9.5], "divider": [2.5, 8.5, 3.5, 9.5], "well": [4.5, 8.5, 5.5, 9.5],
+           "cap": [8, 8, 10, 10], "body": [10, 8, 12, 14.5]}
+RACK_CELLS = [(2, 2), (10, 2), (2, 10), (10, 10)]
+
+
+def _rack_face(key, cull=None):
+    f = {"uv": RACK_UV[key], "texture": "#0"}
+    if cull:
+        f["cullface"] = cull
+    return f
+
+
+def _rack_box(frm, to, faces):
+    return {"from": frm, "to": to, "faces": faces}
+
+
+def _rack_model():
+    well, rim, div = _rack_face("well"), _rack_face("rim", "up"), _rack_face("divider", "up")
+    return {"parent": "minecraft:block/block",
+            "textures": {"0": "criticalmass:block/spent_fuel_rack", "particle": "criticalmass:block/spent_fuel_rack"},
+            "elements": [
+                _rack_box([0, 0, 0], [16, 16, 16], {d: _rack_face("side", d) for d in ("north", "south", "east", "west")} | {"down": _rack_face("bottom", "down")}),
+                _rack_box([1, 2, 1], [15, 2, 15], {"up": well}),
+                _rack_box([0, 2, 0], [16, 16, 1], {"south": well, "up": rim}),
+                _rack_box([0, 2, 15], [16, 16, 16], {"north": well, "up": rim}),
+                _rack_box([0, 2, 1], [1, 16, 15], {"east": well, "up": rim}),
+                _rack_box([15, 2, 1], [16, 16, 15], {"west": well, "up": rim}),
+                _rack_box([7, 2, 1], [9, 16, 15], {"east": well, "west": well, "up": div}),
+                _rack_box([1, 2, 7], [7, 16, 9], {"north": well, "south": well, "up": div}),
+                _rack_box([9, 2, 7], [15, 16, 9], {"north": well, "south": well, "up": div})]}
+
+
+def _rack_assembly(x, z):
+    body = _rack_face("body")
+    return {"textures": {"0": "criticalmass:block/spent_fuel_rack", "particle": "criticalmass:block/spent_fuel_rack"},
+            "elements": [_rack_box([x, 2, z], [x + 4, 15, z + 4], {"north": body, "south": body, "east": body, "west": body, "up": _rack_face("cap")})]}
+
+
+EXTRA_MODELS["spent_fuel_rack"] = _rack_model()
+for _i, (_x, _z) in enumerate(RACK_CELLS, 1):
+    EXTRA_MODELS["spent_fuel_rack_assembly_%d" % _i] = _rack_assembly(_x, _z)
 
 
 DESCRIPTIONS.update({

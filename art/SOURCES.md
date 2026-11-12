@@ -15,7 +15,7 @@ All art is a candidate for replacement by hand-made art later.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - `shielding_concrete`: hand-drawn poured slabs.
 - Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `radiator_panel`, `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `circulation_pump`, `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack`, `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `circulation_pump`, `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -843,24 +843,6 @@ The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: 
 Texture: shielding concrete, 16x16 game pixels.
 Dense radiation shielding concrete block, one face used on all sides: dark grey aggregate concrete with small lighter stone and steel flecks, uniform, tileable, no frame.
 Dense poured radiation-shielding concrete: smooth, even mid-grey surface with only subtle, sparse small aggregate flecks in close tones, faint formwork seam lines and two small form-tie holes. Low contrast, calm, no gravel look, no high-contrast speckle.
-```
-
-## spent_fuel_rack
-
-- Used by: `textures/block/spent_fuel_rack.png`
-- Raw output: `art/generated/spent_fuel_rack-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: spent fuel rack, 32x32 game pixels.
-Atlas for a spent fuel storage rack: iron lattice frame with vertical bars and transparent gaps between them (keep gaps magenta), horizontal braces; top view grid.
-
 ```
 
 ## steam_turbine

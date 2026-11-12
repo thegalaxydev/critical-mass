@@ -182,14 +182,6 @@ def bench():
     return m
 
 
-def rack():
-    m = Model("spent_fuel_rack", render_type="minecraft:cutout")
-    side = C("side", ("iron", 4), None, [("bars", "v", 0, 15, 5, "iron", True, 1), ("rect", 0, 0, 15, 1, "iron", 4), ("rect", 0, 14, 15, 15, "iron", 2), ("rect", 0, 7, 15, 7, "iron", 3)], outline=False)
-    top = C("top", ("iron", 4), None, [("bars", "v", 0, 15, 5, "iron", True, 1), ("bars", "h", 0, 15, 5, "iron", False, 1)], outline=False)
-    cube_faces(m, {"north": side, "south": side, "east": side, "west": side, "up": top, "down": top})
-    return m
-
-
 def cask():
     m = Model("shielded_cask")
     side = C("side", ("lead", 2), ("lead", 1), [("stripe", 4, "hazard", True, 2), ("rect", 0, 10, 11, 10, "lead", 4), ("bolts", [(2, 1), (9, 1)])])
@@ -280,7 +272,6 @@ def build_rest():
     models["shielded_glass"] = shield_glass()
     models["shielded_hatch"] = hatch()
     models["fuel_assembly_bench"] = bench()
-    models["spent_fuel_rack"] = rack()
     models["shielded_cask"] = cask()
     models["reactor_signal_interface"] = signal_interface()
     off, on = sirens()
