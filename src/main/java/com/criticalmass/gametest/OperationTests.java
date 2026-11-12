@@ -138,6 +138,43 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = LARGE, timeoutTicks = 400)
+    public static void startNeedsFlowAndCoolant(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        ControlRodDriveBlockEntity d = drive(h, new BlockPos(3, 6, 2), 64);
+        c.setBankTarget(0, 0.0);
+        boolean[] flow = {false};
+        h.onEachTick(() -> {
+            if (flow[0]) {
+                c.noteFlow(32);
+            }
+        });
+        h.startSequence()
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isReacting() && c.status().endsWith("blocked_flow"), "No flow should block the start: " + c.status());
+                    h.assertTrue(d.insertion() == 1 && d.withdrawalBlocked() && d.requested() == 0, "Rods should not withdraw while the start is blocked: " + d.insertion());
+                    c.coolant().set(CoolantLoopTests.coolant(2000), 0);
+                    flow[0] = true;
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isReacting() && c.status().endsWith("blocked_coolant"), "A vessel under half full should block the start: " + c.status());
+                    h.assertTrue(d.insertion() == 1, "Rods should still be held in");
+                    c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+                })
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertTrue(c.isReacting() && d.insertion() == 0, "With flow and coolant the rods should withdraw and the reactor start: " + c.status() + " " + d.insertion());
+                    flow[0] = false;
+                })
+                .thenIdle(60)
+                .thenExecute(() -> h.assertTrue(c.isTripped() && c.tripReason().equals("low_flow"), "Losing flow at power should still trip: " + c.status()))
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE, timeoutTicks = 200)
     public static void viewportCountsAsVesselWall(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);

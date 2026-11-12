@@ -81,6 +81,14 @@ public final class CMThermal {
     public static final int MAX_FLOW_STEPS = 8;
     public static final float PUMP_IDLE_STRESS = 0.25f;
     public static final int MAX_PIPE_LENGTH = 256;
+    public static final int POWER_RAMP_TICKS = 60;
+    public static final double FUEL_FEEDBACK = 0.5;
+    public static final double FUEL_FEEDBACK_SPAN = 1000.0;
+    public static final double COOLANT_FEEDBACK = 0.5;
+    public static final double COOLANT_FEEDBACK_START = 250.0;
+    public static final double COOLANT_FEEDBACK_SPAN = 300.0;
+    public static final double START_COOLANT_SHARE = 0.5;
+    public static final int WITHDRAW_BLOCK_TICKS = 5;
     public static final double TOWER_NATURAL_DRAFT = 0.25;
     public static final double TOWER_NATURAL_PER_BLOCK = 0.05;
     public static final double TOWER_NATURAL_MAX = 0.75;

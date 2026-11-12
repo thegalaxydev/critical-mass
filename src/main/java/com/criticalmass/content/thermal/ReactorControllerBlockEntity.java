@@ -84,6 +84,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int clientHotSpots;
 
     private final double[] bankTargets = {Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    private String startBlock = "";
     private double primaryPressure = CMThermal.ATMOSPHERIC;
     private int pressureLink;
     private boolean flashing;
@@ -292,6 +293,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         return false;
+    }
+
+    public String startBlock() {
+        return startBlock;
     }
 
     public void notePressure(double bar) {
@@ -635,7 +640,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         boolean canRun = structure != null && structure.complete() && !damaged && !breached;
         boolean demand = signal > 0;
         for (ControlRodDriveBlockEntity d : drives.values()) {
-            if (d.target() < 1 || d.insertion() < 1) {
+            if (d.requested() < 1 || d.insertion() < 1) {
                 demand = true;
             }
         }
@@ -660,7 +665,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (tripped && signal == 0) {
             boolean rodsCommandedIn = true;
             for (ControlRodDriveBlockEntity d : drives.values()) {
-                if (d.target() < 1) {
+                if (d.requested() < 1) {
                     rodsCommandedIn = false;
                 }
             }
@@ -673,7 +678,18 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 d.reactorTripped();
             }
         }
-        reacting = canRun && !tripped && demand;
+        boolean permitted = reacting || (effectiveFlow > 0 && coolant.amount() >= coolant.capacity() * CMThermal.START_COOLANT_SHARE);
+        String block = !demand || !canRun || tripped || permitted ? "" : effectiveFlow == 0 ? "flow" : "coolant";
+        if (!block.equals(startBlock)) {
+            startBlock = block;
+            syncPending = true;
+        }
+        if (!permitted) {
+            for (ControlRodDriveBlockEntity d : drives.values()) {
+                d.blockWithdrawal();
+            }
+        }
+        reacting = canRun && !tripped && demand && permitted;
         double fallback = insertion();
         VesselStructure shape = structure != null && structure.valid() ? structure : lastValid;
         for (ControlRodDriveBlockEntity d : drives.values()) {
@@ -739,6 +755,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         if (tripped) {
             return "criticalmass.reactor.status.tripped";
+        }
+        if (!startBlock.isEmpty()) {
+            return "criticalmass.reactor.status.blocked_" + startBlock;
         }
         if (core.activeAssemblies() == 0 && core.residualPower() <= CMThermal.RESIDUAL_COLD_LIMIT && core.maxTemperature() <= CMThermal.COLD_TEMPERATURE) {
             return "criticalmass.reactor.status.unfueled";
@@ -814,6 +833,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putString("TripReason", tripReason);
         tag.putDouble("PrimaryPressure", primaryPressure);
         tag.putBoolean("Flashing", flashing);
+        tag.putString("StartBlock", startBlock);
         tag.putDouble("Flashed", flashedVolume);
         for (int i = 0; i < bankTargets.length; i++) {
             if (!Double.isNaN(bankTargets[i])) {
@@ -891,6 +911,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tripReason = tag.getString("TripReason");
         primaryPressure = tag.contains("PrimaryPressure") ? tag.getDouble("PrimaryPressure") : CMThermal.ATMOSPHERIC;
         flashing = tag.getBoolean("Flashing");
+        startBlock = tag.getString("StartBlock");
         flashedVolume = tag.getDouble("Flashed");
         for (int i = 0; i < bankTargets.length; i++) {
             bankTargets[i] = tag.contains("Bank" + i) ? tag.getDouble("Bank" + i) : Double.NaN;

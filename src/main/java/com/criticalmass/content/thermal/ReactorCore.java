@@ -37,6 +37,7 @@ public final class ReactorCore {
         double heat;
         double decay;
         double lastShare;
+        double power;
         int fuelNeighbours;
         int coolantNeighbours;
         final List<Long> controlNeighbours = new ArrayList<>();
@@ -161,6 +162,12 @@ public final class ReactorCore {
     public double tick(boolean reacting, ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant) {
         double output = 0;
         double fission = 0;
+        double coolantTemperature = vesselCoolant.temperature();
+        if (!reacting) {
+            for (FuelColumn f : fuel.values()) {
+                f.power = 0;
+            }
+        }
         double lifetime = CMConfig.fuelLifetime();
         double wear = CMConfig.fuelWear();
         for (FuelColumn f : fuel.values()) {
@@ -171,7 +178,11 @@ public final class ReactorCore {
                 for (long c : f.controlNeighbours) {
                     suppression *= Math.max(0, Math.min(1, 1 - insertion.applyAsDouble(c)));
                 }
-                double q = CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours) * suppression;
+                double rated = CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours);
+                double wanted = rated * suppression * feedback(f.temperature(), coolantTemperature);
+                double step = rated / CMThermal.POWER_RAMP_TICKS;
+                f.power += Math.max(-step, Math.min(step, wanted - f.power));
+                double q = f.power;
                 f.heat += q;
                 f.lastShare = suppression;
                 f.decay += (CMThermal.DECAY_FRACTION * q - f.decay) / CMThermal.DECAY_BUILDUP_TICKS;
@@ -184,6 +195,7 @@ public final class ReactorCore {
                 }
                 assemblies.put(k, a);
             } else if (f.decay > 0) {
+                f.power = 0;
                 f.lastShare = 0;
                 double r = f.decay;
                 f.heat += r;
@@ -227,6 +239,12 @@ public final class ReactorCore {
         lastExtracted = extracted;
         lastReacting = reacting;
         return output;
+    }
+
+    public static double feedback(double fuelTemperature, double coolantTemperature) {
+        double fuel = 1 - CMThermal.FUEL_FEEDBACK * Math.max(0, Math.min(1, (fuelTemperature - CMThermal.HOT_SPOT_TEMPERATURE) / CMThermal.FUEL_FEEDBACK_SPAN));
+        double water = 1 - CMThermal.COOLANT_FEEDBACK * Math.max(0, Math.min(1, (coolantTemperature - CMThermal.COOLANT_FEEDBACK_START) / CMThermal.COOLANT_FEEDBACK_SPAN));
+        return fuel * water;
     }
 
     public double ratedOutput() {

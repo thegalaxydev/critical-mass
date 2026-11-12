@@ -123,19 +123,47 @@ public final class ReactorCoreTests {
         return core;
     }
 
+    private static double settle(ReactorCore core, double insertion, CoolantBuffer buffer) {
+        double out = 0;
+        for (int i = 0; i <= CMThermal.POWER_RAMP_TICKS; i++) {
+            out = core.tick(true, insertion, 0, buffer);
+        }
+        return out;
+    }
+
+    @GameTest(template = EMPTY)
+    public static void heatFeedbackLowersPowerAndShutdownIsPrompt(GameTestHelper h) {
+        h.assertTrue(ReactorCore.feedback(300, 200) == 1.0, "Cool fuel and coolant should give full power");
+        h.assertTrue(Math.abs(ReactorCore.feedback(300, 400) - 0.75) < 1e-9, "Coolant at 400 C should cut power to 75%: " + ReactorCore.feedback(300, 400));
+        h.assertTrue(Math.abs(ReactorCore.feedback(1300, 200) - 0.75) < 1e-9, "Fuel at 1300 C should cut power to 75%: " + ReactorCore.feedback(1300, 200));
+        h.assertTrue(Math.abs(ReactorCore.feedback(5000, 5000) - 0.25) < 1e-9, "Feedback should bottom out at a quarter");
+        ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}});
+        CoolantBuffer cold = new CoolantBuffer(1000, () -> { });
+        CoolantBuffer hot = new CoolantBuffer(1000, () -> { });
+        hot.set(new net.neoforged.neoforge.fluids.FluidStack(com.criticalmass.registry.CMFluids.PRIMARY_COOLANT.source.get(), 1000), 1000 * (550 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
+        double full = settle(core, 0, cold);
+        double reduced = settle(core, 0, hot);
+        h.assertTrue(Math.abs(reduced - full * 0.5) < 1e-6, "Coolant at 550 C should halve the output: " + reduced + " of " + full);
+        double after = core.tick(false, 0, 0, cold);
+        h.assertTrue(after > 0 && after <= full * CMThermal.DECAY_FRACTION + 1e-9, "Shutdown should drop straight to decay heat: " + after + " of " + full);
+        h.succeed();
+    }
+
     @GameTest(template = EMPTY)
     public static void loneFuelColumnGivesBaseOutput(GameTestHelper h) {
         ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}});
-        double out = core.tick(true, 0, 0, new CoolantBuffer(1000, () -> { }));
+        double first = core.tick(true, 0, 0, new CoolantBuffer(1000, () -> { }));
+        double out = settle(core, 0, new CoolantBuffer(1000, () -> { }));
         double expected = CMThermal.FUEL_BASE_OUTPUT * 3;
-        h.assertTrue(out == expected, "Lone column output " + out + " expected " + expected);
+        h.assertTrue(Math.abs(first - expected / CMThermal.POWER_RAMP_TICKS) < 1e-9, "Power should ramp, first tick gave " + first);
+        h.assertTrue(Math.abs(out - expected) < 1e-9, "Lone column output " + out + " expected " + expected);
         h.succeed();
     }
 
     @GameTest(template = EMPTY)
     public static void adjacentFuelRaisesOutput(GameTestHelper h) {
         ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'f', 'f', 'f'}, {'.', '.', '.'}});
-        double out = core.tick(true, 0, 0, new CoolantBuffer(1000, () -> { }));
+        double out = settle(core, 0, new CoolantBuffer(1000, () -> { }));
         double base = CMThermal.FUEL_BASE_OUTPUT * 3;
         double expected = base * (1 + CMThermal.FUEL_ADJACENCY_FACTOR) * 2 + base * (1 + 2 * CMThermal.FUEL_ADJACENCY_FACTOR);
         h.assertTrue(Math.abs(out - expected) < 1e-9, "Row of three output " + out + " expected " + expected);
@@ -146,9 +174,9 @@ public final class ReactorCoreTests {
     public static void controlInsertionSuppressesLinearly(GameTestHelper h) {
         ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'r', 'f', '.'}, {'.', '.', '.'}});
         CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
-        double full = core.tick(true, 0, 0, buffer);
-        double half = core.tick(true, 0.5, 0, buffer);
-        double none = core.tick(true, 1.0, 0, buffer);
+        double full = settle(core, 0, buffer);
+        double half = settle(core, 0.5, buffer);
+        double none = settle(core, 1.0, buffer);
         h.assertTrue(Math.abs(half - full * 0.5) < 1e-9, "Half insertion gave " + half + " of " + full);
         h.assertTrue(none == 0, "Full insertion should stop reaction heat, got " + none);
         h.succeed();

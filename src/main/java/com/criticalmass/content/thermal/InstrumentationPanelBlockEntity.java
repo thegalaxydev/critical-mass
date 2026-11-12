@@ -75,7 +75,7 @@ public class InstrumentationPanelBlockEntity extends SmartBlockEntity implements
         if (status.endsWith(".running")) {
             return Lamp.GREEN;
         }
-        if (status.endsWith(".starting") || status.endsWith(".cooling_down")) {
+        if (status.endsWith(".starting") || status.endsWith(".cooling_down") || status.contains(".blocked_")) {
             return Lamp.AMBER;
         }
         if (status.endsWith(".tripped") || status.endsWith(".damaged") || status.endsWith(".breached") || status.endsWith(".invalid") || status.endsWith(".incomplete")) {

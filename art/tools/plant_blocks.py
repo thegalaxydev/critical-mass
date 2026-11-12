@@ -426,6 +426,8 @@ BLOCKS = {
 }
 
 LANG = {
+    "criticalmass.reactor.status.blocked_flow": "Start blocked: get coolant flowing through the vessel first",
+    "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant",
     "criticalmass.basin.ok": "Collecting",
     "criticalmass.basin.low": "Water low: add makeup water",
     "criticalmass.basin.dry": "Dry",

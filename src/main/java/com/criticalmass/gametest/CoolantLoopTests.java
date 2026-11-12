@@ -110,6 +110,7 @@ public final class CoolantLoopTests {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         controller.coolant().set(coolant(6000), 0);
+        h.onEachTick(() -> controller.noteFlow(32));
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
         BlockPos casing = new BlockPos(5, 2, 2);
         h.startSequence()

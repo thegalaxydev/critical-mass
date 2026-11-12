@@ -25,6 +25,8 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
     private int travel;
     private double bankCommand = Double.NaN;
     private int linkTicks;
+    private int withdrawBlock;
+    private double requested = 1.0;
     public float shownInsertion = 1.0f;
 
     public ControlRodDriveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -86,6 +88,18 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         linkTicks = CMThermal.ROD_LINK_TICKS;
     }
 
+    public void blockWithdrawal() {
+        withdrawBlock = CMThermal.WITHDRAW_BLOCK_TICKS;
+    }
+
+    public double requested() {
+        return requested;
+    }
+
+    public boolean withdrawalBlocked() {
+        return withdrawBlock > 0;
+    }
+
     public void reactorTripped() {
         reactorTripTicks = 3;
     }
@@ -105,6 +119,11 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
             bankCommand = Double.NaN;
         }
         target = Double.isNaN(bankCommand) ? 1.0 - level.getBestNeighborSignal(worldPosition) / 15.0 : bankCommand;
+        requested = target;
+        if (withdrawBlock > 0) {
+            withdrawBlock--;
+            target = Math.max(target, insertion);
+        }
         boolean latched = getSpeed() != 0 && !isOverStressed() && reactorTripTicks == 0;
         boolean wasMoving = moving;
         failSafe = !latched && insertion < 1.0;

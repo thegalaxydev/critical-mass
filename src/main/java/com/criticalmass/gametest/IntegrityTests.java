@@ -110,6 +110,7 @@ public final class IntegrityTests {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        h.onEachTick(() -> c.noteFlow(32));
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
         BlockPos abs = h.absolutePos(SIDE_CASING);
         Player player = h.makeMockPlayer(GameType.SURVIVAL);
