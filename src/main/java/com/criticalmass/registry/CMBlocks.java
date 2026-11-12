@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.thermal.ChannelBlocks;
 import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.content.InstrumentationPanelBlock;
 import com.criticalmass.CriticalMass;
@@ -45,8 +46,9 @@ public final class CMBlocks {
 
     public static final DeferredBlock<VesselCasingBlock> REACTOR_VESSEL_CASING = register("reactor_vessel_casing", VesselCasingBlock::new, metal(5.0f));
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = register("reactor_controller", ReactorControllerBlock::new, metal(5.0f));
-    public static final DeferredBlock<RotatedPillarBlock> FUEL_CHANNEL = register("fuel_channel", RotatedPillarBlock::new, metal(4.0f));
-    public static final DeferredBlock<RotatedPillarBlock> CONTROL_CHANNEL = register("control_channel", RotatedPillarBlock::new, metal(4.0f));
+    public static final DeferredBlock<ChannelBlocks.Viewport> REACTOR_VIEWPORT = register("reactor_viewport", ChannelBlocks.Viewport::new, metal(5.0f).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
+    public static final DeferredBlock<ChannelBlocks.Fuel> FUEL_CHANNEL = register("fuel_channel", ChannelBlocks.Fuel::new, metal(4.0f));
+    public static final DeferredBlock<ChannelBlocks.Control> CONTROL_CHANNEL = register("control_channel", ChannelBlocks.Control::new, metal(4.0f));
     public static final DeferredBlock<ControlRodDriveBlock> CONTROL_ROD_DRIVE = register("control_rod_drive", ControlRodDriveBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<RotatedPillarBlock> COOLANT_CHANNEL = register("coolant_channel", RotatedPillarBlock::new, metal(4.0f));
     public static final DeferredBlock<ServicePortBlock> REACTOR_SERVICE_PORT = register("reactor_service_port", ServicePortBlock::new, metal(5.0f));

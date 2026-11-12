@@ -4,6 +4,7 @@ import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
+import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
@@ -88,7 +89,7 @@ public final class Radiation {
         if (state.is(CMBlocks.SHIELDING_CONCRETE.get())) {
             return CMConfig.get(CMConfig.SHIELD_CONCRETE);
         }
-        if (state.is(CMBlocks.REACTOR_VESSEL_CASING.get())) {
+        if (state.getBlock() instanceof VesselCasingBlock) {
             return CMConfig.get(CMConfig.SHIELD_CASING);
         }
         if (state.is(CMBlocks.SHIELDED_GLASS.get())) {

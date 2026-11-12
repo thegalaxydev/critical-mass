@@ -1,0 +1,7 @@
+{
+ "parent": "criticalmass:block/fuel_channel",
+ "textures": {
+  "0": "criticalmass:block/fuel_channel_glow_3",
+  "particle": "criticalmass:block/fuel_channel_glow_3"
+ }
+}

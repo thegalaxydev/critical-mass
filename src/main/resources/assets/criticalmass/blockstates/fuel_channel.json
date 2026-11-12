@@ -1,15 +1,51 @@
 {
  "variants": {
-  "axis=y": {
+  "axis=y,glow=0": {
    "model": "criticalmass:block/fuel_channel"
   },
-  "axis=x": {
+  "axis=y,glow=1": {
+   "model": "criticalmass:block/fuel_channel_glow_1"
+  },
+  "axis=y,glow=2": {
+   "model": "criticalmass:block/fuel_channel_glow_2"
+  },
+  "axis=y,glow=3": {
+   "model": "criticalmass:block/fuel_channel_glow_3"
+  },
+  "axis=x,glow=0": {
    "model": "criticalmass:block/fuel_channel",
    "x": 90,
    "y": 90
   },
-  "axis=z": {
+  "axis=x,glow=1": {
+   "model": "criticalmass:block/fuel_channel_glow_1",
+   "x": 90,
+   "y": 90
+  },
+  "axis=x,glow=2": {
+   "model": "criticalmass:block/fuel_channel_glow_2",
+   "x": 90,
+   "y": 90
+  },
+  "axis=x,glow=3": {
+   "model": "criticalmass:block/fuel_channel_glow_3",
+   "x": 90,
+   "y": 90
+  },
+  "axis=z,glow=0": {
    "model": "criticalmass:block/fuel_channel",
+   "x": 90
+  },
+  "axis=z,glow=1": {
+   "model": "criticalmass:block/fuel_channel_glow_1",
+   "x": 90
+  },
+  "axis=z,glow=2": {
+   "model": "criticalmass:block/fuel_channel_glow_2",
+   "x": 90
+  },
+  "axis=z,glow=3": {
+   "model": "criticalmass:block/fuel_channel_glow_3",
    "x": 90
   }
  }

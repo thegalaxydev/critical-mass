@@ -83,6 +83,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private double clientMaxTemp = CMThermal.AMBIENT;
     private int clientHotSpots;
 
+    private final double[] bankTargets = {Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    private int visualClock;
+
     public ReactorControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -285,6 +288,57 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         return false;
+    }
+
+    public double bankTarget(int bank) {
+        return bankTargets[bank];
+    }
+
+    public void setBankTarget(int bank, double insertion) {
+        bankTargets[bank] = Double.isNaN(insertion) ? Double.NaN : Math.max(0, Math.min(1, insertion));
+        setChanged();
+    }
+
+    public double bankInsertion(int bank) {
+        double sum = 0;
+        int n = 0;
+        for (ControlRodDriveBlockEntity d : findDrives().values()) {
+            if (d.bank() == bank) {
+                sum += d.insertion();
+                n++;
+            }
+        }
+        return n == 0 ? Double.NaN : sum / n;
+    }
+
+    private void updateChannelVisuals(@Nullable VesselStructure shape, Map<Long, ControlRodDriveBlockEntity> drives, double fallback) {
+        if (shape == null || level == null) {
+            return;
+        }
+        int top = shape.max.getY() - 1;
+        int height = shape.interiorHeight;
+        for (long k : core.controlColumns()) {
+            ControlRodDriveBlockEntity d = drives.get(k);
+            double insertion = d != null ? d.insertion() : fallback;
+            for (int i = 0; i < height; i++) {
+                BlockPos p = new BlockPos(worldPosition.getX() + ReactorCore.keyX(k), top - i, worldPosition.getZ() + ReactorCore.keyZ(k));
+                BlockState s = level.getBlockState(p);
+                int rod = (int) Math.round(ChannelBlocks.ROD_LEVELS * Math.max(0, Math.min(1, insertion * height - i)));
+                if (s.getBlock() instanceof ChannelBlocks.Control && s.getValue(ChannelBlocks.Control.ROD) != rod) {
+                    level.setBlock(p, s.setValue(ChannelBlocks.Control.ROD, rod), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
+        for (ReactorCore.FuelColumn f : core.columns()) {
+            int glow = core.glow(f);
+            for (int i = 0; i < height; i++) {
+                BlockPos p = new BlockPos(worldPosition.getX() + f.dx(), top - i, worldPosition.getZ() + f.dz());
+                BlockState s = level.getBlockState(p);
+                if (s.getBlock() instanceof ChannelBlocks.Fuel && s.getValue(ChannelBlocks.Fuel.GLOW) != glow) {
+                    level.setBlock(p, s.setValue(ChannelBlocks.Fuel.GLOW, glow), Block.UPDATE_CLIENTS);
+                }
+            }
+        }
     }
 
     public Map<Long, ControlRodDriveBlockEntity> findDrives() {
@@ -537,6 +591,14 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         reacting = canRun && !tripped && demand;
         double fallback = insertion();
+        VesselStructure shape = structure != null && structure.valid() ? structure : lastValid;
+        for (ControlRodDriveBlockEntity d : drives.values()) {
+            d.linkToReactor(shape == null ? 0 : shape.interiorHeight, bankTargets[d.bank()]);
+        }
+        if (visualClock-- <= 0) {
+            visualClock = CMThermal.CHANNEL_VISUAL_TICKS;
+            updateChannelVisuals(shape, drives, fallback);
+        }
         heatAdded += core.tick(reacting, k -> {
             ControlRodDriveBlockEntity d = drives.get(k);
             return d != null ? d.insertion() : fallback;
@@ -665,6 +727,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putBoolean("Tripped", tripped);
         tag.putBoolean("Reacting", reacting);
         tag.putString("TripReason", tripReason);
+        for (int i = 0; i < bankTargets.length; i++) {
+            if (!Double.isNaN(bankTargets[i])) {
+                tag.putDouble("Bank" + i, bankTargets[i]);
+            }
+        }
         tag.put("Sinks", sinks.save());
         ListTag damage = new ListTag();
         for (Map.Entry<Long, Double> e : integrity.entrySet()) {
@@ -734,6 +801,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tripped = tag.getBoolean("Tripped");
         reacting = tag.getBoolean("Reacting");
         tripReason = tag.getString("TripReason");
+        for (int i = 0; i < bankTargets.length; i++) {
+            bankTargets[i] = tag.contains("Bank" + i) ? tag.getDouble("Bank" + i) : Double.NaN;
+        }
         sinks.load(tag.getCompound("Sinks"));
         if (!clientPacket) {
             integrity.clear();

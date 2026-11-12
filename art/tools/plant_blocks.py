@@ -5,7 +5,7 @@ from PIL import Image
 
 from handmade import AMBER, BRASS, COPPER, GREEN, IRON, OUT, RED, STEEL, bevel, put, rect
 from handmade_plant import opening
-from handmade_rest import casing, plate
+from handmade_rest import LEAD, casing, plate
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RES = os.path.join(ROOT, "src", "main", "resources")
@@ -84,7 +84,113 @@ def generator_texture():
     return atlas({"a": front, "b": back, "c": side, "d": top})
 
 
+def viewport_base():
+    img = casing(IRON, STEEL)(16, 16)
+    for y in range(3, 13):
+        for x in range(3, 13):
+            img.putpixel((x, y), (118, 158, 178, 64))
+    for k in range(4):
+        img.putpixel((4 + k, 7 - k), (206, 232, 242, 120))
+        img.putpixel((8 + k, 11 - k), (206, 232, 242, 96))
+    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
+        put(img, x, y, IRON[5])
+    return img
+
+
+def viewport_textures():
+    base = viewport_base()
+    out = {"reactor_viewport": base}
+    for stage in (1, 2, 3):
+        crack = Image.open(os.path.join(OUT, "casing_crack_%d.png" % stage)).convert("RGBA").resize((16, 16), Image.NEAREST)
+        img = base.copy()
+        img.alpha_composite(crack)
+        out["reactor_viewport_crack_%d" % stage] = img
+    return out
+
+
+def viewport_models():
+    models = {}
+    for stage in range(4):
+        name = "reactor_viewport" if stage == 0 else "reactor_viewport_crack_%d" % stage
+        models[name] = {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/" + name}, "render_type": "minecraft:translucent"}
+    return models
+
+
+def viewport_state(name):
+    return {"variants": {"crack=%d" % i: {"model": M + "block/" + (name if i == 0 else "%s_crack_%d" % (name, i))} for i in range(4)}}
+
+
+PILLAR = {"y": {}, "x": {"x": 90, "y": 90}, "z": {"x": 90}}
+WINDOW_DARK = (0x17, 0x19, 0x1c)
+GLOWS = {1: {(0x17, 0x19, 0x1c): (14, 44, 84), (0x1e, 0x21, 0x26): (18, 54, 98), (0x23, 0x26, 0x2b): (16, 48, 90), (0xd2, 0xc7, 0xb4): (196, 222, 240), (0x8f, 0x82, 0x73): (112, 150, 190)},
+         2: {(0x17, 0x19, 0x1c): (26, 96, 168), (0x1e, 0x21, 0x26): (34, 112, 186), (0x23, 0x26, 0x2b): (30, 104, 176), (0xd2, 0xc7, 0xb4): (232, 246, 255), (0x8f, 0x82, 0x73): (150, 204, 240)},
+         3: {(0x17, 0x19, 0x1c): (126, 34, 14), (0x1e, 0x21, 0x26): (146, 44, 16), (0x23, 0x26, 0x2b): (136, 38, 14), (0xd2, 0xc7, 0xb4): (255, 226, 160), (0x8f, 0x82, 0x73): (244, 150, 70)}}
+
+
+def channel_variants():
+    control = Image.open(os.path.join(OUT, "control_channel.png")).convert("RGBA")
+    for level in range(5):
+        img = control.copy()
+        rows = round(10 * level / 4)
+        for y in range(3, 13):
+            if y == 7:
+                continue
+            if y - 3 >= rows:
+                for x in (4, 5, 7, 8):
+                    put(img, x, y, WINDOW_DARK)
+            put(img, 11, y, (0xf7, 0xcb, 0x6c))
+            put(img, 12, y, (0x9e, 0x69, 0x47))
+        marker = 3 + min(9, rows)
+        if marker == 7:
+            marker = 8
+        put(img, 11, marker, (0xff, 0xbe, 0x4a))
+        put(img, 12, marker, (0xd8, 0x8a, 0x1c))
+        name = "control_channel_rod_%d" % level
+        img.save(os.path.join(OUT, name + ".png"))
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": M + "block/control_channel", "textures": {"0": M + "block/" + name, "particle": M + "block/" + name}})
+    write(os.path.join(ASSETS, "blockstates", "control_channel.json"), {"variants": {
+        "axis=%s,rod=%d" % (axis, level): dict({"model": M + "block/control_channel_rod_%d" % level}, **rot) for axis, rot in PILLAR.items() for level in range(5)}})
+    fuel = Image.open(os.path.join(OUT, "fuel_channel.png")).convert("RGBA")
+    for level, table in GLOWS.items():
+        img = fuel.copy()
+        for y in range(img.height):
+            for x in range(img.width):
+                c = img.getpixel((x, y))[:3]
+                if c in table:
+                    put(img, x, y, table[c])
+        name = "fuel_channel_glow_%d" % level
+        img.save(os.path.join(OUT, name + ".png"))
+        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/" + name, "particle": M + "block/" + name}})
+    write(os.path.join(ASSETS, "blockstates", "fuel_channel.json"), {"variants": {
+        "axis=%s,glow=%d" % (axis, level): dict({"model": M + "block/" + ("fuel_channel" if level == 0 else "fuel_channel_glow_%d" % level)}, **rot) for axis, rot in PILLAR.items() for level in range(4)}})
+
+
+def rod_partials():
+    img = Image.new("RGBA", (16, 16))
+    for y in range(16):
+        band = y % 8 == 0
+        put(img, 0, y, BRASS[3] if band else LEAD[4])
+        put(img, 1, y, BRASS[1] if band else LEAD[2])
+    bevel(img, 4, 0, 7, 1, BRASS, 3)
+    bevel(img, 4, 2, 7, 5, BRASS, 3)
+    img.save(os.path.join(OUT, "control_rod_shaft.png"))
+    tex = {"0": M + "block/control_rod_shaft", "particle": M + "block/control_rod_shaft"}
+    side = {"uv": [0, 0, 2, 16], "texture": "#0"}
+    write(os.path.join(ASSETS, "models", "block", "control_rod_shaft.json"), {"textures": tex, "elements": [
+        {"from": [7, 0, 7], "to": [9, 16, 9], "faces": {d: side for d in ("north", "south", "east", "west")}}]})
+    cap_side = {"uv": [4, 0, 8, 2], "texture": "#0"}
+    cap_top = {"uv": [4, 2, 8, 6], "texture": "#0"}
+    write(os.path.join(ASSETS, "models", "block", "control_rod_cap.json"), {"textures": tex, "elements": [
+        {"from": [6, 0, 6], "to": [10, 2, 10], "faces": {"north": cap_side, "south": cap_side, "east": cap_side, "west": cap_side, "up": cap_top, "down": cap_top}}]})
+
+
 BLOCKS = {
+    "reactor_viewport": {
+        "lang": "Reactor Viewport",
+        "textures": viewport_textures,
+        "models": viewport_models,
+        "state": viewport_state,
+    },
     "generator": {
         "lang": "Generator",
         "texture": generator_texture,
@@ -94,6 +200,8 @@ BLOCKS = {
 }
 
 LANG = {
+    "criticalmass.goggles.rod_bank": "Rod bank %s (use with an empty hand to change)",
+    "criticalmass.rod.bank_set": "Rod bank %s",
     "criticalmass.generator.load": "Electrical load",
     "criticalmass.generator.breaker_open": "Breaker open: full redstone signal",
     "criticalmass.goggles.generator": "Generator",
@@ -132,12 +240,16 @@ def main():
     for name, d in BLOCKS.items():
         if d.get("texture"):
             d["texture"]().save(os.path.join(OUT, name + ".png"))
-        for model_name, model in (d.get("models") or {name: d["model"](name)}).items():
+        for tex_name, tex in (d["textures"]() if d.get("textures") else {}).items():
+            tex.save(os.path.join(OUT, tex_name + ".png"))
+        for model_name, model in (d["models"]() if d.get("models") else {name: d["model"](name)}).items():
             write(os.path.join(ASSETS, "models", "block", model_name + ".json"), model)
         write(os.path.join(ASSETS, "blockstates", name + ".json"), d["state"](name))
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": M + "block/" + d.get("item", name)})
         write(os.path.join(DATA, "criticalmass", "loot_table", "blocks", name + ".json"), loot(name))
         entries["block.criticalmass." + name] = d["lang"]
+    channel_variants()
+    rod_partials()
     pickaxe(BLOCKS)
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))

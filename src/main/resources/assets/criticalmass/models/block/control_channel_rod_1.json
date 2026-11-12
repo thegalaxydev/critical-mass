@@ -1,0 +1,7 @@
+{
+ "parent": "criticalmass:block/control_channel",
+ "textures": {
+  "0": "criticalmass:block/control_channel_rod_1",
+  "particle": "criticalmass:block/control_channel_rod_1"
+ }
+}

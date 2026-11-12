@@ -36,6 +36,7 @@ public final class ReactorCore {
         int height;
         double heat;
         double decay;
+        double lastShare;
         int fuelNeighbours;
         int coolantNeighbours;
         final List<Long> controlNeighbours = new ArrayList<>();
@@ -172,6 +173,7 @@ public final class ReactorCore {
                 }
                 double q = CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours) * suppression;
                 f.heat += q;
+                f.lastShare = suppression;
                 f.decay += (CMThermal.DECAY_FRACTION * q - f.decay) / CMThermal.DECAY_BUILDUP_TICKS;
                 output += q;
                 double burn = q / (CMThermal.FUEL_BASE_OUTPUT * Math.max(1, f.height)) / lifetime;
@@ -182,6 +184,7 @@ public final class ReactorCore {
                 }
                 assemblies.put(k, a);
             } else if (f.decay > 0) {
+                f.lastShare = 0;
                 double r = f.decay;
                 f.heat += r;
                 output += r;
@@ -224,6 +227,20 @@ public final class ReactorCore {
         lastExtracted = extracted;
         lastReacting = reacting;
         return output;
+    }
+
+    public int glow(FuelColumn f) {
+        FuelState a = assemblies.get(key(f.dx, f.dz));
+        if (a == null) {
+            return 0;
+        }
+        if (f.temperature() >= CMThermal.HOT_SPOT_TEMPERATURE) {
+            return ChannelBlocks.GLOW_HOT;
+        }
+        if (lastReacting && a.active() && f.lastShare > 0) {
+            return f.lastShare >= 0.5 ? 2 : 1;
+        }
+        return f.decay > CMThermal.RESIDUAL_COLD_LIMIT ? 1 : 0;
     }
 
     public Map<Long, FuelState> assemblies() {

@@ -1,0 +1,7 @@
+{
+ "parent": "minecraft:block/cube_all",
+ "textures": {
+  "all": "criticalmass:block/reactor_viewport_crack_2"
+ },
+ "render_type": "minecraft:translucent"
+}

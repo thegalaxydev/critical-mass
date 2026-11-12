@@ -12,7 +12,8 @@ COOLING = [(8, 6, 6), (8, 5, 6), (8, 4, 6), (8, 4, 7), (8, 4, 8), (9, 1, 9), (11
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
 PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + STEAM + COOLING
-DRIVES = [(2, 6, 3), (4, 6, 3)]
+DRIVES = [((3, 6, 2), "south", (3, 6, 1), (2, 6, 2)), ((3, 6, 4), "north", (3, 6, 5), (2, 6, 4))]
+VIEWPORTS = [(5, 2, 3), (5, 3, 3), (5, 4, 3), (3, 2, 5), (3, 4, 5)]
 NS = "criticalmass_demo"
 TAG = "cm_reactor_origin"
 AREA = ((-9, -2), (14, 13))
@@ -73,7 +74,7 @@ safety = [
     setblock((0, 4, 4), "criticalmass:instrumentation_panel[facing=west]"),
     setblock((0, 2, 2), "criticalmass:emergency_coolant_tank"),
     setblock((5, 4, 6), "criticalmass:alarm_siren[facing=west]"),
-    setblock((3, 6, 4), "criticalmass:docking_service_connector[facing=up]"),
+    setblock((4, 6, 3), "criticalmass:docking_service_connector[facing=up]"),
 ]
 
 bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)),
@@ -92,7 +93,7 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
 
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
          "fill %s %s minecraft:smooth_stone" % (w(x0, -1, z0), w(x1, -1, z1))]
-place += vessel + plant + safety + bay
+place += vessel + [setblock(p, "criticalmass:reactor_viewport") for p in VIEWPORTS] + plant + safety + bay
 place += [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
 place += [setblock(p, "minecraft:air") for p in PIPES] + [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
 place += ["schedule function %s:reactor/start 40t replace" % NS]
@@ -115,10 +116,10 @@ start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),
                setblock((7, 0, 6), "create:creative_motor[facing=up]"),
                setblock((10, 0, 9), "create:creative_motor[facing=up]"),
                setblock(REDSTONE, "minecraft:lever[face=wall,facing=west,powered=true]")]
-for x, y, z in DRIVES:
-    start_here += [setblock((x, y, z), "criticalmass:control_rod_drive[facing=north]"),
-                   setblock((x, y, z + 1), "create:creative_motor[facing=north]"),
-                   setblock((x, y, z - 1), "minecraft:lever[face=floor,facing=north,powered=true]")]
+for pos, facing, motor, lever in DRIVES:
+    start_here += [setblock(pos, "criticalmass:control_rod_drive[facing=%s]" % facing),
+                   setblock(motor, "create:creative_motor[facing=%s]" % facing),
+                   setblock(lever, "minecraft:lever[face=floor,facing=north,powered=true]")]
 start_here += ["tellraw @a {\"text\":\"Reactor plant filled, fuelled and started. The levers by the rod drives and the controller run it; flip them off to shut it down.\",\"color\":\"green\"}"]
 
 build = ["kill @e[type=minecraft:marker,tag=%s]" % TAG,

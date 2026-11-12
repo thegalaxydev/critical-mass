@@ -80,6 +80,9 @@ public final class CMThermal {
     public static final int MAX_FLOW_STEPS = 8;
     public static final float PUMP_IDLE_STRESS = 0.25f;
     public static final int MAX_PIPE_LENGTH = 256;
+    public static final int CHANNEL_VISUAL_TICKS = 5;
+    public static final int ROD_BANKS = 4;
+    public static final int ROD_LINK_TICKS = 20;
     public static final double PIPE_BURST_TEMPERATURE = BOILING;
     public static final float PIPE_BURST_DAMAGE = 4.0f;
     public static final int MAX_VESSEL_BLOCKS = 2048;

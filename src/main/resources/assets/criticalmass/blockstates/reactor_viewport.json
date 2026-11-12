@@ -1,0 +1,16 @@
+{
+ "variants": {
+  "crack=0": {
+   "model": "criticalmass:block/reactor_viewport"
+  },
+  "crack=1": {
+   "model": "criticalmass:block/reactor_viewport_crack_1"
+  },
+  "crack=2": {
+   "model": "criticalmass:block/reactor_viewport_crack_2"
+  },
+  "crack=3": {
+   "model": "criticalmass:block/reactor_viewport_crack_3"
+  }
+ }
+}

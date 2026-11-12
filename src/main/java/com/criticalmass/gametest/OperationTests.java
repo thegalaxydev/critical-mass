@@ -3,6 +3,8 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
+import com.criticalmass.content.thermal.ChannelBlocks;
+import net.minecraft.world.level.block.state.BlockState;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
@@ -91,6 +93,62 @@ public final class OperationTests {
                 })
                 .thenIdle(3)
                 .thenExecute(() -> h.assertTrue(c.status().endsWith("cold"), "Cool, unheated core should be Cold: " + c.status()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 600)
+    public static void rodBanksMoveSeparatelyAndShowInTheCore(GameTestHelper h) {
+        ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
+        BlockPos posA = new BlockPos(3, 6, 2);
+        BlockPos posB = new BlockPos(3, 6, 4);
+        ControlRodDriveBlockEntity a = drive(h, posA, 64);
+        ControlRodDriveBlockEntity b = drive(h, posB, 64);
+        b.setBank(1);
+        c.setBankTarget(0, 0.0);
+        c.setBankTarget(1, 1.0);
+        h.startSequence()
+                .thenIdle(200)
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() == 0 && b.insertion() == 1, "Only bank A should withdraw: A " + a.insertion() + " B " + b.insertion());
+                    h.assertTrue(a.travel() == 3 && b.travel() == 3, "Drives should learn the column height: " + a.travel());
+                    for (int y = 2; y <= 4; y++) {
+                        h.assertTrue(h.getBlockState(new BlockPos(3, y, 2)).getValue(ChannelBlocks.Control.ROD) == 0, "Withdrawn column should show no rod at y " + y);
+                        h.assertTrue(h.getBlockState(new BlockPos(3, y, 4)).getValue(ChannelBlocks.Control.ROD) == ChannelBlocks.ROD_LEVELS, "Inserted column should show a full rod at y " + y);
+                    }
+                    h.assertTrue(c.isReacting(), "Reactor should run on bank A: " + c.status());
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 3)).getValue(ChannelBlocks.Fuel.GLOW) == 0, "Fuel beside an inserted rod should stay dark");
+                    BlockState side = h.getBlockState(new BlockPos(2, 3, 3));
+                    h.assertTrue(side.getValue(ChannelBlocks.Fuel.GLOW) == 2 && side.getLightEmission() > 0, "Unrodded fuel should glow at full power");
+                    c.setBankTarget(1, 0.5);
+                })
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(b.insertion() - 0.5) < 1e-6 && Math.abs(c.bankInsertion(1) - 0.5) < 1e-6, "Bank B should stop half way: " + b.insertion());
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 4, 4)).getValue(ChannelBlocks.Control.ROD) == ChannelBlocks.ROD_LEVELS, "Top of a half-inserted column holds the rod");
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 4)).getValue(ChannelBlocks.Control.ROD) == 2, "Rod tip should sit half way down the middle block");
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 2, 4)).getValue(ChannelBlocks.Control.ROD) == 0, "Bottom of a half-inserted column is empty");
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 3)).getValue(ChannelBlocks.Fuel.GLOW) > 0, "Fuel should light up once its rod is half out");
+                    CompoundTag saved = b.saveWithFullMetadata(h.getLevel().registryAccess());
+                    ControlRodDriveBlockEntity copy = (ControlRodDriveBlockEntity) BlockEntity.loadStatic(h.absolutePos(posB), b.getBlockState(), saved, h.getLevel().registryAccess());
+                    h.assertTrue(copy.bank() == 1 && Math.abs(copy.insertion() - 0.5) < 1e-6 && copy.travel() == 3, "Bank, position and travel should survive saving");
+                    CompoundTag core = c.saveWithFullMetadata(h.getLevel().registryAccess());
+                    ReactorControllerBlockEntity coreCopy = (ReactorControllerBlockEntity) BlockEntity.loadStatic(h.absolutePos(TestVessels.CONTROLLER), c.getBlockState(), core, h.getLevel().registryAccess());
+                    h.assertTrue(coreCopy.bankTarget(0) == 0.0 && coreCopy.bankTarget(1) == 0.5, "Bank targets should survive saving");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void viewportCountsAsVesselWall(GameTestHelper h) {
+        ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
+        h.setBlock(new BlockPos(5, 3, 3), CMBlocks.REACTOR_VIEWPORT.get());
+        h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+        h.startSequence()
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertTrue(c.problemPositions().isEmpty() && c.missing().isEmpty(), "A viewport in the wall should keep the vessel valid: " + c.problemReasons());
+                    h.assertTrue(c.isReacting(), "Reactor should run with a viewport: " + c.status());
+                })
                 .thenSucceed();
     }
 

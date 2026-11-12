@@ -1,5 +1,10 @@
 package com.criticalmass.content.kinetics;
 
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
 import com.criticalmass.content.CMShapes;
 import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
@@ -38,6 +43,18 @@ public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         return CMShapes.rotated(NORTH, state.getValue(HORIZONTAL_FACING));
+    }
+
+    @Override
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        if (level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        }
+        return onBlockEntityUse(level, pos, be -> {
+            be.setBank(be.bank() + (player.isShiftKeyDown() ? -1 : 1));
+            player.displayClientMessage(Component.translatable("criticalmass.rod.bank_set", String.valueOf((char) ('A' + be.bank()))), true);
+            return InteractionResult.SUCCESS;
+        });
     }
 
     @Override

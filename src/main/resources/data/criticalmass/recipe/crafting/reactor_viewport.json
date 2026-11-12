@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "criticalmass:reactor_vessel_casing"
+    },
+    {
+      "item": "criticalmass:shielded_glass"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:reactor_viewport"
+  }
+}

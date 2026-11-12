@@ -21,6 +21,11 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
     private boolean failSafe;
     private int reactorTripTicks;
     private int syncCooldown;
+    private int bank;
+    private int travel;
+    private double bankCommand = Double.NaN;
+    private int linkTicks;
+    public float shownInsertion = 1.0f;
 
     public ControlRodDriveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -58,6 +63,29 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         insertion = Math.max(0, Math.min(1, value));
     }
 
+    public int bank() {
+        return bank;
+    }
+
+    public void setBank(int value) {
+        bank = Math.floorMod(value, CMThermal.ROD_BANKS);
+        setChanged();
+        sendData();
+    }
+
+    public int travel() {
+        return travel;
+    }
+
+    public void linkToReactor(int columnHeight, double command) {
+        if (columnHeight != travel) {
+            travel = columnHeight;
+            syncCooldown = 0;
+        }
+        bankCommand = command;
+        linkTicks = CMThermal.ROD_LINK_TICKS;
+    }
+
     public void reactorTripped() {
         reactorTripTicks = 3;
     }
@@ -71,7 +99,12 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         if (reactorTripTicks > 0) {
             reactorTripTicks--;
         }
-        target = 1.0 - level.getBestNeighborSignal(worldPosition) / 15.0;
+        if (linkTicks > 0) {
+            linkTicks--;
+        } else {
+            bankCommand = Double.NaN;
+        }
+        target = Double.isNaN(bankCommand) ? 1.0 - level.getBestNeighborSignal(worldPosition) / 15.0 : bankCommand;
         boolean latched = getSpeed() != 0 && !isOverStressed() && reactorTripTicks == 0;
         boolean wasMoving = moving;
         failSafe = !latched && insertion < 1.0;
@@ -93,7 +126,7 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
             getOrCreateNetwork().updateStress();
         }
         if (syncCooldown-- <= 0 || wasMoving != moving) {
-            syncCooldown = 10;
+            syncCooldown = moving || failSafe ? 2 : 10;
             setChanged();
             sendData();
         }
@@ -113,6 +146,8 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         tag.putDouble("Target", target);
         tag.putBoolean("Moving", moving);
         tag.putBoolean("FailSafe", failSafe);
+        tag.putInt("Bank", bank);
+        tag.putInt("Travel", travel);
     }
 
     @Override
@@ -122,12 +157,15 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         target = tag.contains("Target") ? tag.getDouble("Target") : 1.0;
         moving = tag.getBoolean("Moving");
         failSafe = tag.getBoolean("FailSafe");
+        bank = Math.floorMod(tag.getInt("Bank"), CMThermal.ROD_BANKS);
+        travel = tag.getInt("Travel");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         super.addToGoggleTooltip(tooltip, isPlayerSneaking);
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.rod_drive")));
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rod_bank", ChatFormatting.GRAY, String.valueOf((char) ('A' + bank))));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.rod_position", ChatFormatting.GRAY, Math.round(insertion * 100), Math.round(target * 100)));
         String state = failSafe ? "criticalmass.rod.fail_safe" : moving ? "criticalmass.rod.moving" : "criticalmass.rod.holding";
         tooltip.add(ThermalTooltips.line(state, failSafe ? ChatFormatting.RED : moving ? ChatFormatting.AQUA : ChatFormatting.GRAY));

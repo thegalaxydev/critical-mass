@@ -1,15 +1,63 @@
 {
  "variants": {
-  "axis=y": {
-   "model": "criticalmass:block/control_channel"
+  "axis=y,rod=0": {
+   "model": "criticalmass:block/control_channel_rod_0"
   },
-  "axis=x": {
-   "model": "criticalmass:block/control_channel",
+  "axis=y,rod=1": {
+   "model": "criticalmass:block/control_channel_rod_1"
+  },
+  "axis=y,rod=2": {
+   "model": "criticalmass:block/control_channel_rod_2"
+  },
+  "axis=y,rod=3": {
+   "model": "criticalmass:block/control_channel_rod_3"
+  },
+  "axis=y,rod=4": {
+   "model": "criticalmass:block/control_channel_rod_4"
+  },
+  "axis=x,rod=0": {
+   "model": "criticalmass:block/control_channel_rod_0",
    "x": 90,
    "y": 90
   },
-  "axis=z": {
-   "model": "criticalmass:block/control_channel",
+  "axis=x,rod=1": {
+   "model": "criticalmass:block/control_channel_rod_1",
+   "x": 90,
+   "y": 90
+  },
+  "axis=x,rod=2": {
+   "model": "criticalmass:block/control_channel_rod_2",
+   "x": 90,
+   "y": 90
+  },
+  "axis=x,rod=3": {
+   "model": "criticalmass:block/control_channel_rod_3",
+   "x": 90,
+   "y": 90
+  },
+  "axis=x,rod=4": {
+   "model": "criticalmass:block/control_channel_rod_4",
+   "x": 90,
+   "y": 90
+  },
+  "axis=z,rod=0": {
+   "model": "criticalmass:block/control_channel_rod_0",
+   "x": 90
+  },
+  "axis=z,rod=1": {
+   "model": "criticalmass:block/control_channel_rod_1",
+   "x": 90
+  },
+  "axis=z,rod=2": {
+   "model": "criticalmass:block/control_channel_rod_2",
+   "x": 90
+  },
+  "axis=z,rod=3": {
+   "model": "criticalmass:block/control_channel_rod_3",
+   "x": 90
+  },
+  "axis=z,rod=4": {
+   "model": "criticalmass:block/control_channel_rod_4",
    "x": 90
   }
  }

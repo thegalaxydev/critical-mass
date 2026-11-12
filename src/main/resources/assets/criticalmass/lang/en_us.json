@@ -281,5 +281,8 @@
   "criticalmass.goggles.generator": "Generator",
   "criticalmass.goggles.generator_output": "Output: %s FE/t (set to %s)",
   "criticalmass.goggles.generator_stored": "Buffer: %s / %s FE",
-  "block.criticalmass.generator": "Generator"
+  "block.criticalmass.generator": "Generator",
+  "criticalmass.goggles.rod_bank": "Rod bank %s (use with an empty hand to change)",
+  "criticalmass.rod.bank_set": "Rod bank %s",
+  "block.criticalmass.reactor_viewport": "Reactor Viewport"
 }

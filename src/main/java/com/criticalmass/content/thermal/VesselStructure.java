@@ -91,7 +91,7 @@ public final class VesselStructure {
     }
 
     public static boolean isShell(Block b) {
-        return b == CMBlocks.REACTOR_VESSEL_CASING.get() || b == CMBlocks.REACTOR_CONTROLLER.get() || b == CMBlocks.PRIMARY_COOLANT_PORT.get()
+        return b instanceof VesselCasingBlock || b == CMBlocks.REACTOR_CONTROLLER.get() || b == CMBlocks.PRIMARY_COOLANT_PORT.get()
                 || b == CMBlocks.REACTOR_SERVICE_PORT.get() || b == CMBlocks.REACTOR_SIGNAL_INTERFACE.get();
     }
 
@@ -179,7 +179,7 @@ public final class VesselStructure {
                         add(problems, p, reason);
                         continue;
                     }
-                    if (b == CMBlocks.REACTOR_VESSEL_CASING.get() && s.hasProperty(VesselCasingBlock.CRACK) && s.getValue(VesselCasingBlock.CRACK) > 0) {
+                    if (b instanceof VesselCasingBlock && s.hasProperty(VesselCasingBlock.CRACK) && s.getValue(VesselCasingBlock.CRACK) > 0) {
                         cracked.put(p, s.getValue(VesselCasingBlock.CRACK));
                     }
                     if (b == CMBlocks.PRIMARY_COOLANT_PORT.get()) {
@@ -265,7 +265,7 @@ public final class VesselStructure {
         if (!isShell(b)) {
             return channelKind(b) != Kind.NONE ? "criticalmass.vessel.problem.channel_outside" : "criticalmass.vessel.problem.missing_casing";
         }
-        if (b == CMBlocks.REACTOR_VESSEL_CASING.get()) {
+        if (b instanceof VesselCasingBlock) {
             return null;
         }
         if (faces > 1) {
