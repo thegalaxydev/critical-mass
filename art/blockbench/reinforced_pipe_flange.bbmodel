@@ -1,0 +1,319 @@
+{
+ "meta": {
+  "format_version": "5.0",
+  "model_format": "java_block",
+  "box_uv": false
+ },
+ "name": "reinforced_pipe_flange",
+ "parent": "block/block",
+ "ambientocclusion": true,
+ "front_gui_light": false,
+ "visible_box": [
+  1,
+  1,
+  0
+ ],
+ "variable_placeholders": "",
+ "variable_placeholder_buttons": [],
+ "unhandled_root_fields": {},
+ "resolution": {
+  "width": 16,
+  "height": 16
+ },
+ "elements": [
+  {
+   "name": "flange_0",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    3,
+    3,
+    0
+   ],
+   "to": [
+    13,
+    13,
+    2
+   ],
+   "autouv": 0,
+   "color": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": 0
+    },
+    "east": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "texture": 0,
+     "rotation": 270
+    },
+    "down": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": 0,
+     "rotation": 270
+    }
+   },
+   "type": "cube",
+   "uuid": "079a8378-1ca7-4dc1-bd5d-51872632049c",
+   "visibility": true
+  },
+  {
+   "name": "stub_0",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    4,
+    4,
+    0
+   ],
+   "to": [
+    12,
+    12,
+    4
+   ],
+   "autouv": 0,
+   "color": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      4,
+      0,
+      8,
+      2
+     ],
+     "texture": 0,
+     "rotation": 90
+    },
+    "west": {
+     "uv": [
+      4,
+      2,
+      8,
+      0
+     ],
+     "texture": 0,
+     "rotation": 90
+    },
+    "up": {
+     "uv": [
+      4,
+      2,
+      8,
+      0
+     ],
+     "texture": 0,
+     "rotation": 180
+    },
+    "down": {
+     "uv": [
+      4,
+      0,
+      8,
+      2
+     ],
+     "texture": 0,
+     "rotation": 180
+    }
+   },
+   "type": "cube",
+   "uuid": "558be788-e500-4275-88d1-d793a41c440d",
+   "visibility": true
+  }
+ ],
+ "groups": [
+  {
+   "name": "flange",
+   "uuid": "cffd6669-ecbb-4761-8c2f-027a2529eb11",
+   "export": true,
+   "locked": false,
+   "scope": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "color": 0,
+   "children": [],
+   "reset": false,
+   "shade": true,
+   "mirror_uv": false,
+   "visibility": true,
+   "autouv": 0,
+   "isOpen": true
+  },
+  {
+   "name": "stub",
+   "uuid": "6d1d08dc-93cd-4018-b246-bc9d862b619c",
+   "export": true,
+   "locked": false,
+   "scope": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "color": 0,
+   "children": [],
+   "reset": false,
+   "shade": true,
+   "mirror_uv": false,
+   "visibility": true,
+   "autouv": 0,
+   "isOpen": true
+  }
+ ],
+ "outliner": [
+  {
+   "uuid": "cffd6669-ecbb-4761-8c2f-027a2529eb11",
+   "isOpen": true,
+   "children": [
+    "079a8378-1ca7-4dc1-bd5d-51872632049c"
+   ]
+  },
+  {
+   "uuid": "6d1d08dc-93cd-4018-b246-bc9d862b619c",
+   "isOpen": true,
+   "children": [
+    "558be788-e500-4275-88d1-d793a41c440d"
+   ]
+  }
+ ],
+ "textures": [
+  {
+   "path": "D:\\Minecraft\\create-critical-mass-1.21.1\\src\\main\\resources\\assets\\criticalmass\\textures\\block\\reinforced_pipe.png",
+   "name": "reinforced_pipe.png",
+   "relative_path": "../../src/main/resources/assets/criticalmass/textures/block/reinforced_pipe.png",
+   "folder": "block",
+   "namespace": "criticalmass",
+   "id": "0",
+   "group": "",
+   "scope": 0,
+   "width": 32,
+   "height": 32,
+   "uv_width": 16,
+   "uv_height": 16,
+   "particle": true,
+   "use_as_default": false,
+   "layers_enabled": false,
+   "sync_to_project": "",
+   "file_format": "png",
+   "render_mode": "default",
+   "render_sides": "auto",
+   "wrap_mode": "limited",
+   "pbr_channel": "color",
+   "fps": 7,
+   "frame_time": 1,
+   "frame_order_type": "loop",
+   "frame_order": "",
+   "frame_interpolate": false,
+   "visible": true,
+   "internal": false,
+   "saved": true,
+   "uuid": "486a0438-51b4-4abe-bd4f-684f12b66886",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACoElEQVR4nMVXUYvTQBCelt3Q9mqq5g6vp+UeFH0RRBBEfPCP+6Igggi++OrDIXotUo70alqygcq37SSbueaSXtLzg2uvO5udb3dmvtm0nr96u+r1utTt9Ul7Hpk4JmARzSmKFvZ/rRV1ewektUfGxJSYmIwxZExC379+alENKDngkgCYHNvY3t2QrAtlP7RXOGE6vSAVXtpTcIHdJ0nSDAEXvHscMRAE99LwyHk4gR9UD8ruxMQ2vjIEsIXh5WbqOgyMWXhBUbSs6Z6oXWTQWl8d2+RAkb0xAsZkSXgT+y5QV5LLqQBpq2LfFW3EWYLzAbYye20CWuzCzXbYyuy1CVABrtOGKvaqUG5iyVq/LvFQuo0SkGAHbp/II68LtQloTiwny/+LFGvRjFiK2eaSbESKSUCeAFoy+gLasbWLdlwXLdozjkZPVp2OR8PhSS6XuJmpfRNI4iXN4yV1Hz+l8fl5Np4k9Gg0KtaBpqC8DvV9P9356PSUjofDzE63BBw5dh39nec0RN1WCFjIJuNJRsrE+yeAECAJZ2FIvt9P7xGoIoylBF6+ebeCERrPouQy5dL79vnD1sp59uL1Ct+DwR368vF9y10v30HjIiXU5N+9T9M/E5qZMDfp+OShHS+7Ba2v7xvR0tpe54rUUillyap0QHs0/v3LiktwGNgx3vXPszP7Ozg8KCXgrgfns1lo8yDn3OuQ7w/snHb28PqIpHMQ4oVlaLaSEE1LOnfHsN5WHZBSe5OLRxWyQI4AX9Glc8Szic5XSgDg90HXOb+k7IKqN+e2+wBkEk457uw8OHpga7jKorKbIuEkeCwnRDh6rgIc9yI7iPR2XFaGbnvGeig1ZDsR/gQJpdZzsoeNvX6VCVEZAX5jxlxb5wVCxOv9AzUKkZDeVcLEAAAAAElFTkSuQmCC"
+  },
+  {
+   "path": "D:\\Minecraft\\create-critical-mass-1.21.1\\src\\main\\resources\\assets\\criticalmass\\textures\\block\\reinforced_pipe_connected.png",
+   "name": "reinforced_pipe_connected.png",
+   "relative_path": "../../src/main/resources/assets/criticalmass/textures/block/reinforced_pipe_connected.png",
+   "folder": "block",
+   "namespace": "criticalmass",
+   "id": "1",
+   "group": "",
+   "scope": 0,
+   "width": 32,
+   "height": 32,
+   "uv_width": 16,
+   "uv_height": 16,
+   "particle": false,
+   "use_as_default": false,
+   "layers_enabled": false,
+   "sync_to_project": "",
+   "file_format": "png",
+   "render_mode": "default",
+   "render_sides": "auto",
+   "wrap_mode": "limited",
+   "pbr_channel": "color",
+   "fps": 7,
+   "frame_time": 1,
+   "frame_order_type": "loop",
+   "frame_order": "",
+   "frame_interpolate": false,
+   "visible": true,
+   "internal": false,
+   "saved": true,
+   "uuid": "3e3fa974-b05a-4854-b7d6-dcab6d615781",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACT0lEQVR4nO1WsW7bMBClDdKoFdf6jI7dkq1TP6RTpsz5iHTtB/RDMmVLt479ikKqIxuUAQeP1FHHM0k7cTIU8ANsiTze3ePx7qjJp89Xu6r6oIwxiqPve9V1G2WMjuZH+TYa59blQPraK3vn2szcc9vbYW6jqmpeMDKSLK1LoevWjoSGMhybwbknNFPrbuUMz6sFc2iF3ChjtmpZ12E+Jmiz81XlSWguMLOZ6q0Nu6M5Lncyax1pRIqTluulHun6DTy58RR/kSFhIBAanimQvnSEnbqfzdvXOaMILyVKigQnLdE9rfbWuLBfLPbs65QBOjsAZx0xZudJx5QChZjWzauLpH0ty4nvEjIkijAdZCnSeNLO29aTXy4X0bGQPESgaf4lHPnaxqK6/uiqgScpIgO9U6FlE+K9AJDEOAnefJDZkOGHHEDYaedcl+S+12j0Ae+c1zsZTBGIiaZl3t545hJjX1j7I9CFGibg7EpyDsr2EKmC3nTPEU/CI2q/pJvqA/RO+poGCEup6XB5NkLcBsv21FqCRrIgD5DVof2ypKRyg1wmKMmQJ+jtOYeYl7JwGXXdxt16PKP3a9yTjDtbf6BfvOA6rlmdO6G1qm3+hqsWi+lHY8Kf34+TkqPLL193vx7u3fu3m1v3/Pnj7ri7QB34HjgG5DwHfTBJxLfCKeA7H+2bmEN0deJLh91g74GpTDjveMiFxEVVKsXXQMsIyF4vHVJzeatj0XlmvtdTPsg6xrj0PfBiAn2m17dNE95TZXgKrr+3b2LnjDPO+L/xDI9hsQeij5h5AAAAAElFTkSuQmCC"
+  }
+ ]
+}
