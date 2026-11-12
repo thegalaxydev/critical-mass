@@ -38,8 +38,8 @@ if __name__ == "__main__":
         E += views("turbine", ["criticalmass:block/steam_turbine", ("criticalmass:block/steam_turbine_rotor", Y_TO_X)])
     if which == "rest":
         names = ["reactor_controller", "fuel_channel", "control_channel", "coolant_channel", "reactor_service_port", "primary_coolant_port_inlet", "primary_coolant_port_outlet",
-                 "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "emergency_coolant_tank", "relief_valve", "boiler_heating_plate",
-                 "shielding_concrete", "shielded_glass", "shielded_hatch", "fuel_assembly_bench", "spent_fuel_rack", "shielded_cask", "reactor_signal_interface", "alarm_siren", "alarm_siren_powered",
+                 "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "relief_valve", "boiler_heating_plate",
+                 "shielding_concrete", "shielded_glass", "shielded_hatch", "spent_fuel_rack", "shielded_cask", "reactor_signal_interface",
                  "docking_service_connector", "docking_service_connector_connected"]
         for n in names:
             E.append((n, iso.render(["criticalmass:block/" + n], 200, 45)))

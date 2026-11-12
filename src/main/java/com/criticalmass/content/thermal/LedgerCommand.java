@@ -196,7 +196,7 @@ public final class LedgerCommand {
                         + "C secondary=" + x.secondary().amount() + "/" + fmt(x.secondary().temperature()) + "C rate=" + fmt(x.lastExchange()) + " total=" + fmt(x.exchanged())), false);
             } else if (be instanceof CirculationPumpBlockEntity p) {
                 pumps++;
-                for (PipeCoolant pipe : p.pipeContents()) {
+                for (ThermalNode pipe : p.pipeContents()) {
                     coolant += pipe.coolant().amount();
                     stored += pipe.coolant().heat();
                 }

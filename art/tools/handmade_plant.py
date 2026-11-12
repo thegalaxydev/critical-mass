@@ -86,37 +86,6 @@ def condenser(jar):
     return atlas4(copper_face(jar, PALE), copper_face(jar, BLUE), fin_side(jar), copper_face(jar, WATER))
 
 
-def emergency_tank(jar):
-    table = {c: TANK[i] for i, c in enumerate(COPPER_TONES)}
-    side = remap(jar.tex("fluid_tank"), table)
-    for x in range(16):
-        edge = x in (0, 15)
-        put(side, x, 0, RED[2] if edge else RED[3])
-        put(side, x, 1, RED[2])
-        put(side, x, 2, RED[1])
-        put(side, x, 13, RED[2] if edge else RED[3])
-        put(side, x, 14, RED[2])
-        put(side, x, 15, RED[1])
-    rect(side, 6, 5, 9, 10, STEEL[0])
-    for y in range(6, 10):
-        put(side, 7, y, WATER[3] if y == 6 else WATER[2])
-        put(side, 8, y, WATER[2] if y == 6 else WATER[1])
-    put(side, 7, 6, (160, 210, 235))
-    top = remap(jar.tex("fluid_tank_top"), table)
-
-    def wheel(x, y, d):
-        if 3.2 < d <= 4.3:
-            return RED[3] if x + y < 16 else RED[1]
-        return None
-
-    disc(top, 8, 8, 4.3, wheel)
-    for k in range(5, 11):
-        put(top, k, 7, RED[2])
-        put(top, 7, k, RED[2])
-    rect(top, 7, 7, 8, 8, IRON[4])
-    put(top, 8, 8, IRON[2])
-    return atlas4(side, top, None, None)
-
 
 def radiator(jar):
     front = blank(16, 16)
@@ -243,7 +212,6 @@ def relief_valve(jar):
 PLANT = {
     "heat_exchanger": heat_exchanger,
     "condenser": condenser,
-    "emergency_coolant_tank": emergency_tank,
     "radiator_panel": radiator,
     "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,

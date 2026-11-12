@@ -12,8 +12,11 @@ COOLING = [(8, 6, 6), (8, 6, 7), (8, 6, 8), (9, 1, 9), (11, 1, 9), (11, 2, 9), (
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
 FEEDWATER = (9, 1, 6)
-MAKEUP = (5, 1, 9)
-PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING
+MAKEUP = (6, 1, 9)
+BASIN = (8, 1, 9)
+TOWER_INLET = (8, 6, 9)
+ECCS_PORT, ECCS_PUMP, ECCS_TANK, ECCS_LEVER = (1, 2, 2), (0, 2, 2), (-1, 2, 2), (-1, 4, 2)
+PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING + [TOWER_INLET]
 DRIVES = [((3, 6, 2), "south", (3, 6, 1), (2, 6, 2)), ((3, 6, 4), "north", (3, 6, 5), (2, 6, 4))]
 VIEWPORTS = [(5, 2, 4), (5, 3, 4), (5, 4, 4), (3, 2, 5), (3, 4, 5)]
 CORE = ["frf", "cfc", "frf"]
@@ -29,7 +32,8 @@ PRESSURIZER = (6, 5, 5)
 DESK = ((-8, -2), 12)
 PANELS = [((-2, 1, 12), "scram_panel", CONTROLLER), ((-3, 1, 12), "rod_panel", CONTROLLER), ((-4, 1, 12), "alarm_panel", CONTROLLER),
           ((-5, 1, 12), "turbine_panel", TURBINE), ((-6, 1, 12), "lever_panel", None), ((-7, 1, 12), "dial_panel", None)]
-SIREN = (-4, 0, 12)
+ALARM_LINK = (-4, 0, 12)
+WHISTLE_LINK = (7, 6, 2)
 RUN_POWER = 0.7
 RUN_COOLANT = 125
 
@@ -46,6 +50,11 @@ w = rel((0, 0, 0))
 
 def merge(pos, key, fluid, amount, heat):
     return "data merge block %s {%s:{Fluid:{id:\"%s\",amount:%d},Heat:%.1fd}}" % (w(*pos), key, fluid, amount, heat)
+
+
+def tank(pos, fluid, amount, heat=0.0):
+    held = "Fluid:{id:\"%s\",amount:%d}" % (fluid, amount)
+    return "data merge block %s {TankContent:{%s},\"neoforge:attachments\":{\"criticalmass:tank_coolant\":{%s,Heat:%.1fd}}}" % (w(*pos), held, held, heat)
 
 
 def strip(cmds):
@@ -75,17 +84,15 @@ plant = [
     setblock((7, 6, 6), "create:stressometer[facing=south,axis_along_first=true]"),
     setblock((5, 6, 6), "create:mechanical_press[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
-    setblock((8, 1, 9), "criticalmass:tower_basin"),
+    setblock(BASIN, "create:fluid_tank"),
     "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 5, 9)),
-    setblock((8, 6, 9), "criticalmass:tower_distributor"),
     setblock((8, 7, 9), "criticalmass:tower_fan"),
     setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:24}"),
-    setblock((7, 1, 9), "create:fluid_pipe[east=true,west=true]"),
-    setblock((6, 1, 9), "create:mechanical_pump[facing=east]"),
+    setblock((7, 1, 9), "create:mechanical_pump[facing=east]"),
     setblock(MAKEUP, "create:creative_fluid_tank"),
-    setblock((6, 2, 9), "create:cogwheel[axis=x]"),
-    setblock((5, 2, 9), "create:creative_motor[facing=east]"),
-    setblock(FEEDWATER, "criticalmass:feedwater_tank"),
+    setblock((7, 2, 9), "create:cogwheel[axis=x]"),
+    setblock((6, 2, 9), "create:creative_motor[facing=east]"),
+    setblock(FEEDWATER, "create:fluid_tank"),
     setblock(PRESSURIZER, "criticalmass:pressurizer"),
     setblock((PRESSURIZER[0], PRESSURIZER[1] - 1, PRESSURIZER[2]), "create:blaze_burner[blaze=kindled]{isCreative:1b}"),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
@@ -103,8 +110,13 @@ plant = [
 ]
 
 safety = [
-    setblock((0, 2, 2), "criticalmass:emergency_coolant_tank"),
-    setblock((5, 4, 6), "criticalmass:alarm_siren[facing=west]"),
+    setblock(ECCS_PORT, "criticalmass:primary_coolant_port[facing=west,mode=inlet]"),
+    setblock(ECCS_PUMP, "create:mechanical_pump[facing=east]"),
+    setblock(ECCS_TANK, "create:fluid_tank"),
+    setblock((0, 3, 2), "create:cogwheel[axis=x]"),
+    setblock((-1, 3, 2), "create:clutch[axis=x]"),
+    setblock((-2, 3, 2), "create:creative_motor[facing=east]"),
+    setblock(ECCS_LEVER, "minecraft:lever[face=floor,facing=north,powered=true]"),
     setblock((4, 6, 3), "criticalmass:docking_service_connector[facing=up]"),
 ]
 
@@ -113,7 +125,6 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
        setblock((-5, 0, 0), "criticalmass:spent_fuel_rack"),
        setblock((-5, 0, 1), "criticalmass:spent_fuel_rack"),
        setblock((-5, 0, 3), "criticalmass:shielded_cask"),
-       setblock((-5, 0, 5), "criticalmass:fuel_assembly_bench[facing=east]"),
        setblock((-6, 0, 5), "criticalmass:open_waste_canister"),
        setblock((-4, -2, 7), "criticalmass:sealed_waste_canister"),
        setblock((-4, -1, 7), "criticalmass:shielded_hatch[half=top,open=false,facing=north]"),
@@ -127,7 +138,7 @@ desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(bx1
         "fill %s %s criticalmass:plant_screen[facing=north]" % (w(bx0, by0, bz), w(bx1, by1, bz)),
         setblock(SCREEN_SHAFT, "create:shaft[axis=z]"),
         setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
-desk += [setblock(pos, "criticalmass:%s[facing=north]" % name) for pos, name, _ in PANELS] + [setblock(SIREN, "criticalmass:alarm_siren[facing=north]")]
+desk += [setblock(pos, "criticalmass:%s[facing=north]" % name) for pos, name, _ in PANELS] + [setblock(ALARM_LINK, "create:redstone_link[facing=north,receiver=false]"), setblock(WHISTLE_LINK, "create:redstone_link[facing=up,receiver=true]")]
 wiring = []
 for pos, _, target in PANELS:
     if target:
@@ -146,12 +157,12 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
               merge((6, 6, 6), "Coolant", "minecraft:water", 1000, 1000 * 80.0),
               merge((8, 7, 6), "Primary", "minecraft:water", 1000, 1000 * 80.0),
               merge((8, 7, 6), "Secondary", "minecraft:water", 1000, 0),
-              merge((0, 2, 2), "Buffer", "criticalmass:primary_coolant", 4000, 0),
+              tank(ECCS_TANK, "criticalmass:primary_coolant", 4000),
               merge((-5, 0, 0), "Buffer", "minecraft:water", 4000, 0),
               merge((-5, 0, 1), "Buffer", "minecraft:water", 4000, 0),
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2),
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*MAKEUP)]
-start_here += [merge((8, 1, 9), "Buffer", "minecraft:water", 2500, 0), merge(FEEDWATER, "Buffer", "minecraft:water", 1500, 1500 * 80.0)]
+start_here += [tank(BASIN, "minecraft:water", 2500), tank(FEEDWATER, "minecraft:water", 1500, 1500 * 80.0)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
 start_here += wiring
 start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),

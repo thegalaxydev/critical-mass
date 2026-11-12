@@ -104,13 +104,6 @@ def radiator():
     return m
 
 
-def emergency_tank():
-    m = Model("emergency_coolant_tank")
-    side = C("side", ("steel", 3), ("iron", 2), [("rect", 0, 3, 15, 4, "red", 2), ("rect", 0, 11, 15, 12, "red", 2), ("rect", 6, 5, 9, 10, "glass", 2, True), ("rect", 7, 6, 7, 9, "coolant", 3, True)])
-    top = C("top", ("steel", 3), ("iron", 2), [("ring", 8, 8, 6, "red", ("steel", 3)), ("rect", 6, 6, 9, 9, "brass", 3), ("hole", 7, 7, 8, 8)])
-    cube_faces(m, {"north": side, "south": side, "east": side, "west": side, "up": top, "down": top})
-    return m
-
 
 def relief_valve():
     m = Model("relief_valve")
@@ -156,19 +149,6 @@ def hatch():
     return m
 
 
-def bench():
-    m = Model("fuel_assembly_bench")
-    top = C("top", ("wood", 3), ("iron", 1), [("rect", 3, 5, 12, 10, "steel", 2), ("rect", 4, 6, 11, 9, "ceramic", 3)])
-    side = C("side", ("iron", 3), ("iron", 1), [("inset", 2, 2, 13, 5, "steel", 2)])
-    front = C("front", ("iron", 3), ("iron", 1), [("inset", 2, 2, 13, 5, "steel", 2), ("rect", 6, 3, 9, 3, "brass", 4)])
-    m.box([0, 10, 0], [16, 16, 16], {"up": top, "down": C("under", ("iron", 2), None, []), "north": front, "south": side, "east": side, "west": side}, name="top")
-    leg = C("leg", ("iron", 3), None, [("rect", 0, 0, 0, 9, "iron", 5)], outline=False)
-    for (x, z) in ((1, 1), (12, 1), (1, 12), (12, 12)):
-        m.box([x, 0, z], [x + 3, 10, z + 3], {"north": leg, "south": leg, "east": leg, "west": leg, "down": C("foot", ("iron", 2), None, [], outline=False)}, name="leg")
-    jig_s = C("jig_side", ("brass", 3), ("brass", 1), [("rect", 1, 1, 4, 1, "brass", 5)])
-    m.box([5, 16, 6], [11, 19, 10], {"up": C("jig_top", ("brass", 3), ("brass", 1), [("hole", 2, 1, 3, 2)]), "north": jig_s, "south": jig_s, "east": C("jig_end", ("brass", 3), ("brass", 1), []), "west": C("jig_end", ("brass", 3), ("brass", 1), [])}, name="clamp_jig")
-    return m
-
 
 def cask():
     m = Model("shielded_cask")
@@ -188,20 +168,6 @@ def signal_interface():
         ("inset", 2, 2, 13, 13, "steel", 2), ("hole", 4, 4, 5, 5, "brass"), ("hole", 10, 4, 11, 5, "brass"), ("hole", 4, 10, 5, 11, "brass"), ("hole", 10, 10, 11, 11, "brass"),
         ("px", [(4, 7), (11, 7)], "red", 1), ("px", [(7, 4), (8, 11)], "amber", 1)]))
 
-
-def sirens():
-    off = Model("alarm_siren", atlas_name="alarm_siren")
-    on = Model("alarm_siren_powered", share=off)
-    for m, lamp in ((off, ("lamp_off", 1)), (on, ("lamp_on", 4))):
-        base = C("base", ("iron", 3), ("iron", 1), [("bolts", [(1, 1), (8, 1), (1, 8), (8, 8)])])
-        be = C("base_edge", ("iron", 2), None, [], outline=False)
-        m.box([3, 3, 14], [13, 13, 16], {"north": base, "south": base, "east": be, "west": be, "up": C("base_edge_h", ("iron", 2), None, [], outline=False), "down": C("base_edge_h", ("iron", 2), None, [], outline=False)}, name="base")
-        hs = C("horn_side", ("brass", 3), ("brass", 1), [("rect", 0, 2, 5, 2, "brass", 5)])
-        m.box([5, 5, 6], [11, 11, 14], {"east": hs, "west": hs, "up": hs, "down": hs, "north": C("horn_mouth", ("brass", 2), ("brass", 4), [("rect", 1, 1, 4, 4, "ink", 0, True)])}, name="horn")
-        key, li = lamp
-        ls = C(key, ("red", li), None, [("rect", 0, 0, 3, 0, "red", min(4, li + 1))], outline=False)
-        m.box([6, 11, 9], [10, 14, 13], {"up": ls, "north": ls, "south": ls, "east": ls, "west": ls}, name="beacon", shade=key != "lamp_on")
-    return off, on
 
 
 def docking():
@@ -253,17 +219,13 @@ def build_rest():
     models["condenser"] = condenser()
     models["cooling_tower_packing"] = cooling_tower()
     models["radiator_panel"] = radiator()
-    models["emergency_coolant_tank"] = emergency_tank()
     models["relief_valve"] = relief_valve()
     models["boiler_heating_plate"] = boiler_plate()
     models["shielding_concrete"] = concrete()
     models["shielded_glass"] = shield_glass()
     models["shielded_hatch"] = hatch()
-    models["fuel_assembly_bench"] = bench()
     models["shielded_cask"] = cask()
     models["reactor_signal_interface"] = signal_interface()
-    off, on = sirens()
-    models[off.name], models[on.name] = off, on
     d0, d1 = docking()
     models[d0.name], models[d1.name] = d0, d1
     models["control_rod_drive"] = rod_drive()

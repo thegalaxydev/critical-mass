@@ -22,7 +22,7 @@ public class CoolingTowerBlock extends Block implements IBE<CoolingTowerBlockEnt
 
     @Override
     public boolean connectsOn(BlockState state, Direction face) {
-        return face.getAxis().isHorizontal();
+        return true;
     }
 
     @Override

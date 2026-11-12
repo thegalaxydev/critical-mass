@@ -5,11 +5,11 @@ BLOCKS = [
     ("reactor_vessel_casing", ""), ("reactor_controller", "[facing=north]"), ("fuel_channel", "[axis=y]"), ("control_channel", "[axis=y]"),
     ("coolant_channel", "[axis=y]"), ("reactor_service_port", "[facing=north]"), ("primary_coolant_port", "[facing=north,mode=inlet]"),
     ("primary_coolant_port", "[facing=north,mode=outlet]"), ("heat_exchanger", "[facing=north]"), ("condenser", "[facing=north]"),
-    ("cooling_tower_packing", ""), ("radiator_panel", "[facing=north]"), ("emergency_coolant_tank", ""), ("relief_valve", "[facing=north]"),
+    ("cooling_tower_packing", ""), ("radiator_panel", "[facing=north]"), ("relief_valve", "[facing=north]"),
     ("boiler_heating_plate", "[facing=north]"), ("shielding_concrete", ""), ("shielded_glass", ""),
-    ("shielded_hatch", "[facing=north,half=bottom,open=false]"), ("fuel_assembly_bench", "[facing=north]"), ("spent_fuel_rack", ""),
+    ("shielded_hatch", "[facing=north,half=bottom,open=false]"), ("spent_fuel_rack", ""),
     ("shielded_cask", ""), ("open_waste_canister", ""), ("sealed_waste_canister", ""), ("reactor_signal_interface", "[facing=north]"),
-    ("alarm_siren", "[facing=north,powered=false]"), ("alarm_siren", "[facing=north,powered=true]"), ("docking_service_connector", "[facing=north,connected=false]"),
+    ("docking_service_connector", "[facing=north,connected=false]"),
     ("docking_service_connector", "[facing=north,connected=true]"), ("circulation_pump", "[facing=north,axis_along_first=true]"),
     ("steam_turbine", "[axis=x]"), ("control_rod_drive", "[facing=north]"),
 ]
@@ -24,8 +24,6 @@ for i, (b, st) in enumerate(BLOCKS):
     x = i * 3
     if b == "radiator_panel":
         cmds.append("/setblock %d -60 1 criticalmass:reactor_vessel_casing" % x)
-    if b == "alarm_siren" and "powered=true" in st:
-        cmds.append("/setblock %d -60 1 minecraft:redstone_block" % x)
     cmds.append("/setblock %d -60 0 criticalmass:%s%s" % (x, b, st))
 steps.append({"cmds": cmds, "wait": 20})
 
@@ -137,10 +135,10 @@ inst = ["/fill 2 -60 22 6 -57 26 criticalmass:reactor_vessel_casing", "/fill 3 -
         "/setblock 2 -59 24 criticalmass:primary_coolant_port[facing=west,mode=inlet]", "/setblock 1 -59 24 create:fluid_pipe[east=true,west=true,north=false,south=false,up=false,down=false]",
         "/setblock 3 -56 24 criticalmass:control_rod_drive[facing=north]", "/setblock 3 -56 25 create:creative_motor[facing=north]",
         "/setblock 5 -56 24 criticalmass:control_rod_drive[facing=north]", "/setblock 5 -56 25 create:creative_motor[facing=north]",
-        "/setblock 4 -56 23 criticalmass:relief_valve[facing=north]", "/setblock 6 -57 21 criticalmass:alarm_siren[facing=north,powered=false]", "/setblock 7 -57 21 minecraft:redstone_block",
+        "/setblock 4 -56 23 criticalmass:relief_valve[facing=north]",
         "/setblock 13 -59 24 criticalmass:steam_turbine[axis=x]", "/setblock 12 -59 24 create:shaft[axis=x]", "/setblock 14 -59 24 create:shaft[axis=x]", "/setblock 15 -59 24 create:creative_motor[facing=west]",
-        "/setblock 0 -60 27 criticalmass:emergency_coolant_tank", "/setblock 9 -60 27 criticalmass:spent_fuel_rack", "/setblock 11 -60 27 criticalmass:shielded_cask",
-        "/setblock 13 -60 27 criticalmass:fuel_assembly_bench[facing=north]", "/fill -1 -60 29 15 -58 29 criticalmass:shielding_concrete"]
+        "/setblock 9 -60 27 criticalmass:spent_fuel_rack", "/setblock 11 -60 27 criticalmass:shielded_cask",
+        "/fill -1 -60 29 15 -58 29 criticalmass:shielding_concrete"]
 steps.append({"cmds": inst, "wait": 40, "gui": False, "camera": "first"})
 steps.append({"cmds": ["/gamemode spectator", "/tp @p 17.5 -53.0 13.5 48 20"], "wait": 40})
 steps.append({"shot": "install_a", "wait": 7})
@@ -153,8 +151,7 @@ ship = ["/gamemode spectator", "/fill 100 -58 0 106 -58 4 create:andesite_casing
         "/setblock 102 -57 2 criticalmass:circulation_pump[facing=north,axis_along_first=true]", "/setblock 101 -57 2 create:creative_motor[facing=east]",
         "/setblock 104 -57 2 criticalmass:steam_turbine[axis=x]", "/setblock 103 -57 2 create:shaft[axis=x]", "/setblock 105 -57 2 create:shaft[axis=x]",
         "/setblock 102 -57 0 criticalmass:reactor_vessel_casing", "/setblock 103 -57 0 minecraft:air", "/setblock 103 -57 1 criticalmass:reactor_vessel_casing",
-        "/setblock 100 -57 4 criticalmass:control_rod_drive[facing=north]", "/setblock 100 -57 5 create:creative_motor[facing=north]",
-        "/setblock 106 -57 4 criticalmass:alarm_siren[facing=north,powered=false]"]
+        "/setblock 100 -57 4 criticalmass:control_rod_drive[facing=north]", "/setblock 100 -57 5 create:creative_motor[facing=north]"]
 steps.append({"cmds": ship, "wait": 30, "gui": False, "camera": "first"})
 steps.append({"cmds": ["/tp @p 103.0 -54.5 -6.0 0 25"], "wait": 40})
 steps.append({"shot": "ship_before_a", "wait": 6})

@@ -59,7 +59,6 @@
     "/setblock 303 -54 304 criticalmass:control_rod_drive[facing=west]",
     "/setblock 304 -54 302 create:creative_motor[facing=west]",
     "/setblock 304 -54 304 create:creative_motor[facing=west]",
-    "/setblock 300 -58 302 criticalmass:emergency_coolant_tank",
     "/data merge block 300 -58 302 {Buffer:{Fluid:{id:\"criticalmass:primary_coolant\",amount:4000},Heat:0.0d}}"
    ],
    "wait": 10

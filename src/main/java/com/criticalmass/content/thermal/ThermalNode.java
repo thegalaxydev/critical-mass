@@ -32,4 +32,10 @@ public interface ThermalNode {
 
     default void setCircuitPressure(double pressure, @Nullable CoolantBuffer worst) {
     }
+
+    default void prepare() {
+    }
+
+    default void settle() {
+    }
 }

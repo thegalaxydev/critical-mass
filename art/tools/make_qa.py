@@ -4,10 +4,10 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import specs
 
-SHIP = {"circulation_pump", "steam_turbine", "reactor_vessel_casing", "control_rod_drive", "alarm_siren"}
+SHIP = {"circulation_pump", "steam_turbine", "reactor_vessel_casing", "control_rod_drive"}
 INSTALL = {"reactor_vessel_casing", "fuel_channel", "control_channel", "coolant_channel", "shielded_glass", "reactor_controller", "reactor_signal_interface",
-           "reactor_service_port", "primary_coolant_port", "circulation_pump", "heat_exchanger", "control_rod_drive", "relief_valve", "alarm_siren", "steam_turbine",
-           "emergency_coolant_tank", "spent_fuel_rack", "shielded_cask", "fuel_assembly_bench", "shielding_concrete"}
+           "reactor_service_port", "primary_coolant_port", "circulation_pump", "heat_exchanger", "control_rod_drive", "relief_valve", "steam_turbine",
+           "spent_fuel_rack", "shielded_cask", "shielding_concrete"}
 qa = {}
 for n in specs.BLOCK_DEFS:
     v = {"iso": True, "in_game": True}

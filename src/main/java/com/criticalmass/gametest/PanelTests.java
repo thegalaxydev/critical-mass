@@ -243,7 +243,7 @@ public final class PanelTests {
         BlockPos turbinePos = new BlockPos(2, 1, 2);
         BlockPos tankPos = new BlockPos(4, 1, 2);
         h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
-        h.setBlock(tankPos, CMBlocks.EMERGENCY_COOLANT_TANK.get());
+        h.setBlock(tankPos, CMBlocks.SPENT_FUEL_RACK.get());
         PanelBlockEntity trip = panel(h, CMBlocks.TURBINE_PANEL.get(), new BlockPos(3, 1, 5), Direction.NORTH);
         Player player = h.makeMockPlayer(GameType.CREATIVE);
         ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());

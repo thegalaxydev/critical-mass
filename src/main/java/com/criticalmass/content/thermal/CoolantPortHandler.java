@@ -14,7 +14,8 @@ public final class CoolantPortHandler implements IFluidHandler {
     @Nullable
     private final Direction side;
     private BlockPos controller;
-    private long checkedAt = Long.MIN_VALUE;
+    private boolean checked;
+    private long checkedAt;
 
     public CoolantPortHandler(Level level, BlockPos pos, @Nullable Direction side) {
         this.level = level;
@@ -25,7 +26,8 @@ public final class CoolantPortHandler implements IFluidHandler {
     @Nullable
     private IFluidHandler target() {
         long now = level.getGameTime();
-        if (now - checkedAt >= RECHECK_TICKS) {
+        if (!checked || now - checkedAt >= RECHECK_TICKS) {
+            checked = true;
             checkedAt = now;
             VesselLookup.Result r = VesselLookup.findController(level, pos);
             controller = r.ok() ? r.controller() : null;

@@ -24,14 +24,12 @@
     "/setblock 30 -60 0 criticalmass:cooling_tower_packing",
     "/setblock 33 -60 1 criticalmass:reactor_vessel_casing",
     "/setblock 33 -60 0 criticalmass:radiator_panel[facing=north]",
-    "/setblock 36 -60 0 criticalmass:emergency_coolant_tank",
     "/setblock 39 -60 0 criticalmass:relief_valve[facing=north]",
     "/setblock 42 -60 0 create:fluid_valve[facing=up,axis_along_first=false]",
     "/setblock 45 -60 0 criticalmass:boiler_heating_plate[facing=north]",
     "/setblock 48 -60 0 criticalmass:shielding_concrete",
     "/setblock 51 -60 0 criticalmass:shielded_glass",
     "/setblock 54 -60 0 criticalmass:shielded_hatch[facing=north,half=bottom,open=false]",
-    "/setblock 57 -60 0 criticalmass:fuel_assembly_bench[facing=north]",
     "/setblock 60 -60 0 criticalmass:spent_fuel_rack",
     "/setblock 63 -60 0 criticalmass:shielded_cask",
     "/setblock 66 -60 0 criticalmass:open_waste_canister",
@@ -39,9 +37,7 @@
     "/setblock 72 -60 1 criticalmass:reactor_vessel_casing",
     "/setblock 72 -60 0 minecraft:air",
     "/setblock 75 -60 0 criticalmass:reactor_signal_interface[facing=north]",
-    "/setblock 78 -60 0 criticalmass:alarm_siren[facing=north,powered=false]",
     "/setblock 81 -60 1 minecraft:redstone_block",
-    "/setblock 81 -60 0 criticalmass:alarm_siren[facing=north,powered=true]",
     "/setblock 84 -60 0 criticalmass:docking_service_connector[facing=north,connected=false]",
     "/setblock 87 -60 0 criticalmass:docking_service_connector[facing=north,connected=true]",
     "/setblock 90 -60 0 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
@@ -521,7 +517,6 @@
   {
    "cmds": [
     "/clear @p",
-    "/item replace entity @p hotbar.0 with criticalmass:alarm_siren",
     "/item replace entity @p hotbar.1 with criticalmass:boiler_heating_plate",
     "/item replace entity @p hotbar.2 with criticalmass:circulation_pump",
     "/item replace entity @p hotbar.3 with criticalmass:condenser",
@@ -539,8 +534,6 @@
   {
    "cmds": [
     "/clear @p",
-    "/item replace entity @p hotbar.0 with criticalmass:emergency_coolant_tank",
-    "/item replace entity @p hotbar.1 with criticalmass:fuel_assembly_bench",
     "/item replace entity @p hotbar.2 with criticalmass:fuel_channel",
     "/item replace entity @p hotbar.3 with criticalmass:heat_exchanger",
     "/item replace entity @p hotbar.4 with minecraft:air",
@@ -682,16 +675,13 @@
     "/setblock 5 -56 24 criticalmass:control_rod_drive[facing=north]",
     "/setblock 5 -56 25 create:creative_motor[facing=north]",
     "/setblock 4 -56 23 criticalmass:relief_valve[facing=north]",
-    "/setblock 6 -57 21 criticalmass:alarm_siren[facing=north,powered=false]",
     "/setblock 7 -57 21 minecraft:redstone_block",
     "/setblock 13 -59 24 criticalmass:steam_turbine[axis=x]",
     "/setblock 12 -59 24 create:shaft[axis=x]",
     "/setblock 14 -59 24 create:shaft[axis=x]",
     "/setblock 15 -59 24 create:creative_motor[facing=west]",
-    "/setblock 0 -60 27 criticalmass:emergency_coolant_tank",
     "/setblock 9 -60 27 criticalmass:spent_fuel_rack",
     "/setblock 11 -60 27 criticalmass:shielded_cask",
-    "/setblock 13 -60 27 criticalmass:fuel_assembly_bench[facing=north]",
     "/fill -1 -60 29 15 -58 29 criticalmass:shielding_concrete"
    ],
    "wait": 40,
@@ -738,8 +728,7 @@
     "/setblock 103 -57 0 minecraft:air",
     "/setblock 103 -57 1 criticalmass:reactor_vessel_casing",
     "/setblock 100 -57 4 criticalmass:control_rod_drive[facing=north]",
-    "/setblock 100 -57 5 create:creative_motor[facing=north]",
-    "/setblock 106 -57 4 criticalmass:alarm_siren[facing=north,powered=false]"
+    "/setblock 100 -57 5 create:creative_motor[facing=north]"
    ],
    "wait": 30,
    "gui": false,

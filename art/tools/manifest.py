@@ -58,7 +58,6 @@ KINETIC = {
 
 STATE_NOTES = {
     "primary_coolant_port": "mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar",
-    "alarm_siren": "powered=true when the block receives redstone; powered model uses a lit, unshaded lamp",
     "docking_service_connector": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
     "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
     "relief_valve": "venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting",
@@ -73,7 +72,6 @@ REFS = {
     "control_rod_drive": ["aeronautics:block/gyroscopic_propeller_bearing", "create:block/gearbox"],
     "docking_service_connector": ["simulated:block/dock", "simulated:block/dock_powered"],
     "relief_valve": ["aeronautics:block/steam_vent", "create:block/fluid_valve"],
-    "emergency_coolant_tank": ["create:block/fluid_tank", "create:block/fluid_tank_window"],
     "heat_exchanger": ["create:block/fluid_tank_top", "create:block/pipes"],
     "primary_coolant_port": ["create:block/pipes"],
 }

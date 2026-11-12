@@ -4,7 +4,7 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
-import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
+import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlockEntityTypes;
@@ -74,12 +74,12 @@ public final class PipeTests {
     public static void drainingHotCoolantSparesCreatePipes(GameTestHelper h) {
         BlockPos hot = new BlockPos(1, 1, 1);
         List<BlockPos> run = List.of(hot.east(), hot.east(2), hot.east(3));
-        h.setBlock(hot, CMBlocks.EMERGENCY_COOLANT_TANK.get());
+        h.setBlock(hot, CMBlocks.SPENT_FUEL_RACK.get());
         TestVessels.pipes(h, run);
-        EmergencyTankBlockEntity tank = h.getBlockEntity(hot);
+        SpentFuelRackBlockEntity tank = h.getBlockEntity(hot);
         tank.coolant().set(CoolantLoopTests.coolant(1000), 1000 * heatAt(200));
         IFluidHandler handler = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(hot), Direction.EAST);
-        h.assertTrue(handler != null, "Tank should offer coolant on its side");
+        h.assertTrue(handler != null, "The rack should offer its water on its side");
         handler.drain(100, IFluidHandler.FluidAction.EXECUTE);
         h.startSequence()
                 .thenIdle(3)
@@ -95,10 +95,10 @@ public final class PipeTests {
     public static void coolantKeepsItsHeatThroughCreateTransfers(GameTestHelper h) {
         BlockPos from = new BlockPos(1, 1, 1);
         BlockPos to = new BlockPos(4, 1, 1);
-        h.setBlock(from, CMBlocks.EMERGENCY_COOLANT_TANK.get());
-        h.setBlock(to, CMBlocks.EMERGENCY_COOLANT_TANK.get());
-        EmergencyTankBlockEntity a = h.getBlockEntity(from);
-        EmergencyTankBlockEntity b = h.getBlockEntity(to);
+        h.setBlock(from, CMBlocks.SPENT_FUEL_RACK.get());
+        h.setBlock(to, CMBlocks.SPENT_FUEL_RACK.get());
+        SpentFuelRackBlockEntity a = h.getBlockEntity(from);
+        SpentFuelRackBlockEntity b = h.getBlockEntity(to);
         double perMb = heatAt(80);
         a.coolant().set(CoolantLoopTests.coolant(1000), 1000 * perMb);
         IFluidHandler source = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(from), Direction.UP);
@@ -120,6 +120,11 @@ public final class PipeTests {
             h.assertTrue(BuiltInRegistries.ITEM.get(CriticalMass.asResource(valve)) == AllBlocks.FLUID_VALVE.asItem(), "Old valve items should load as Create valves: " + valve);
             h.assertTrue(BuiltInRegistries.BLOCK_ENTITY_TYPE.get(CriticalMass.asResource(valve)) == AllBlockEntityTypes.FLUID_VALVE.get(), "Old valve data should load as Create valves: " + valve);
         }
+        for (String tank : List.of("tower_basin", "feedwater_tank", "emergency_coolant_tank")) {
+            h.assertTrue(BuiltInRegistries.BLOCK.get(CriticalMass.asResource(tank)) == AllBlocks.FLUID_TANK.get(), "Old tanks should load as Create Fluid Tanks: " + tank);
+            h.assertTrue(BuiltInRegistries.BLOCK_ENTITY_TYPE.get(CriticalMass.asResource(tank)) == AllBlockEntityTypes.FLUID_TANK.get(), "Old tank data should load as Create Fluid Tanks: " + tank);
+        }
+        h.assertTrue(BuiltInRegistries.BLOCK.get(CriticalMass.asResource("tower_distributor")) == AllBlocks.FLUID_PIPE.get(), "Old distributors should load as Create pipes");
         h.succeed();
     }
 }

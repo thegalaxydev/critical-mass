@@ -84,7 +84,6 @@ def main(which):
                 faces.append(("%s %d" % (n, y), iso.render(block_refs(n), 150, y)))
         grid(faces, "functional_faces.png", 4, "Functional faces: four views each (shafts, ports, fronts)")
         states = [("port inlet", ["criticalmass:block/primary_coolant_port_inlet"]), ("port outlet", ["criticalmass:block/primary_coolant_port_outlet"]),
-                  ("siren off", ["criticalmass:block/alarm_siren"]), ("siren powered", ["criticalmass:block/alarm_siren_powered"]),
                   ("dock free", ["criticalmass:block/docking_service_connector"]), ("dock connected", ["criticalmass:block/docking_service_connector_connected"])]
         grid([(l, iso.render(r, 160, 45)) for l, r in states], "block_states.png", 6, "Block states (shape and colour both change)")
     if which in ("all", "items"):

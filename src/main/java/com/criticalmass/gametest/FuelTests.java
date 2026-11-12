@@ -1,7 +1,6 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
-import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
@@ -482,10 +481,8 @@ public final class FuelTests {
         TestVessels.standardVessel(h, TestVessels.COOLED);
         BlockPos rackPos = new BlockPos(9, 1, 3);
         BlockPos caskPos = new BlockPos(9, 1, 5);
-        BlockPos benchPos = new BlockPos(9, 1, 7);
         h.setBlock(rackPos, CMBlocks.SPENT_FUEL_RACK.get());
         h.setBlock(caskPos, CMBlocks.SHIELDED_CASK.get());
-        h.setBlock(benchPos, CMBlocks.FUEL_ASSEMBLY_BENCH.get());
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         Set<UUID> ids = new HashSet<>();
         h.startSequence()
@@ -494,16 +491,12 @@ public final class FuelTests {
                     c.core().setAssembly(COLUMN_A, c.core().assembly(COLUMN_A).withRemaining(0));
                     FuelState r = FuelState.fresh().withRemaining(0);
                     FuelState k = FuelState.fresh().withRemaining(0);
-                    FuelState b = FuelState.fresh();
                     SpentFuelRackBlockEntity rack = h.getBlockEntity(rackPos);
                     ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
-                    FuelAssemblyBenchBlockEntity bench = h.getBlockEntity(benchPos);
                     rack.insert(assembly(r));
                     cask.insert(assembly(k));
-                    bench.setHeld(assembly(b));
                     ids.add(r.id());
                     ids.add(k.id());
-                    ids.add(b.id());
                     for (FuelState s : c.core().assemblies().values()) {
                         ids.add(s.id());
                     }
@@ -540,8 +533,6 @@ public final class FuelTests {
                             held.addAll(r.slots());
                         } else if (be instanceof ShieldedCaskBlockEntity k) {
                             held.addAll(k.slots());
-                        } else if (be instanceof FuelAssemblyBenchBlockEntity b) {
-                            held.add(b.held());
                         }
                         for (ItemStack st : held) {
                             if (state(st) != null && ids.contains(state(st).id())) {

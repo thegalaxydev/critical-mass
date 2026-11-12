@@ -4,6 +4,8 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantCircuit;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.PipeCoolant;
+import com.criticalmass.content.thermal.TankCoolant;
+import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMStress;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -54,13 +56,16 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         return status;
     }
 
-    public List<PipeCoolant> pipeContents() {
-        List<PipeCoolant> out = new ArrayList<>();
+    public List<ThermalNode> pipeContents() {
+        List<ThermalNode> out = new ArrayList<>();
         if (circuit == null || level == null) {
             return out;
         }
         for (CoolantCircuit.Hop h : circuit.passThrough) {
-            PipeCoolant p = PipeCoolant.at(level, h.pos());
+            ThermalNode p = PipeCoolant.at(level, h.pos());
+            if (p == null) {
+                p = TankCoolant.at(level, h.pos());
+            }
             if (p != null) {
                 out.add(p);
             }

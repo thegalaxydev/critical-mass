@@ -10,8 +10,6 @@ import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.AllBlocks;
-import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
-import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity.Outcome;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.registry.CMBlocks;
@@ -64,66 +62,6 @@ public final class ProductionTests {
                 "An empty fuel assembly should start the sequenced assembly");
         h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), AllRecipeTypes.FILLING.getType(), FillingRecipe.class).isPresent(),
                 "Spouting into an open waste canister should start its sequenced assembly");
-        h.succeed();
-    }
-
-    @GameTest(template = EMPTY)
-    public static void benchAssemblesFuelByHandAndResumes(GameTestHelper h) {
-        BlockPos a = new BlockPos(1, 1, 1);
-        BlockPos b = new BlockPos(4, 1, 1);
-        h.setBlock(a, CMBlocks.FUEL_ASSEMBLY_BENCH.get());
-        h.setBlock(b, CMBlocks.FUEL_ASSEMBLY_BENCH.get());
-        FuelAssemblyBenchBlockEntity bench = h.getBlockEntity(a);
-        FuelAssemblyBenchBlockEntity other = h.getBlockEntity(b);
-        HolderLookup.Provider reg = h.getLevel().registryAccess();
-        ItemStack cladding = new ItemStack(CMItems.FUEL_CLADDING.get());
-        ItemStack pellet = new ItemStack(CMItems.CERAMIC_FUEL_PELLET.get());
-        bench.setHeld(new ItemStack(CMItems.EMPTY_FUEL_ASSEMBLY.get()));
-        h.assertTrue(bench.work(pellet, false) == Outcome.WRONG, "Pellets before cladding are refused");
-        h.assertTrue(bench.work(ItemStack.EMPTY, true) == Outcome.WRONG, "Pressing before loading is refused");
-        FuelAssemblyBenchBlockEntity current = bench;
-        for (int loop = 0; loop < 4; loop++) {
-            h.assertTrue(current.work(cladding, false) == Outcome.CONSUME, "Cladding, loop " + loop);
-            h.assertTrue(current.work(pellet, false) == Outcome.CONSUME, "First pellet, loop " + loop);
-            if (loop == 1) {
-                CompoundTag tag = current.saveWithoutMetadata(reg);
-                other.loadWithComponents(tag, reg);
-                bench.setHeld(ItemStack.EMPTY);
-                current = other;
-                h.assertTrue(current.held().is(CMItems.INCOMPLETE_FUEL_ASSEMBLY.get()), "Reloaded bench keeps the incomplete assembly");
-            }
-            h.assertTrue(current.work(pellet, false) == Outcome.CONSUME, "Second pellet, loop " + loop);
-            h.assertTrue(current.work(ItemStack.EMPTY, true) == Outcome.KEEP, "Press, loop " + loop);
-        }
-        ItemStack done = current.held();
-        FuelState s = done.get(CMComponents.FUEL_STATE.get());
-        h.assertTrue(done.is(CMItems.FRESH_FUEL_ASSEMBLY.get()), "Sequence should finish a fresh assembly: " + done);
-        h.assertTrue(s != null && s.remaining() == 1 && s.condition() == 1 && s.burned() == 0, "Fresh assembly starts full with a new lifecycle ID: " + s);
-        h.succeed();
-    }
-
-    @GameTest(template = EMPTY)
-    public static void damagedFuelIsSealedIntoACanister(GameTestHelper h) {
-        BlockPos pos = new BlockPos(1, 1, 1);
-        h.setBlock(pos, CMBlocks.FUEL_ASSEMBLY_BENCH.get());
-        FuelAssemblyBenchBlockEntity bench = h.getBlockEntity(pos);
-        FuelState hot = FuelState.fresh().withBurned(5000).withCondition(0, "overheat").discharged(5);
-        FuelState cool = hot.withResidual(0.1);
-        ItemStack plate = new ItemStack(CMItems.STEEL_PLATE.get());
-        ItemStack gasket = new ItemStack(CMItems.SEALING_GASKET.get());
-        bench.setHeld(FuelAssemblyItem.stackFor(hot));
-        h.assertTrue(bench.work(plate, false) == Outcome.TOO_HOT, "Hot damaged fuel cannot be recovered yet");
-        bench.setHeld(FuelAssemblyItem.stackFor(cool));
-        h.assertTrue(bench.work(gasket, false) == Outcome.WRONG, "Gasket comes last");
-        h.assertTrue(bench.work(plate, false) == Outcome.CONSUME && bench.work(plate, false) == Outcome.CONSUME, "Two steel plates");
-        h.assertTrue(bench.held().is(CMItems.DAMAGED_FUEL_ASSEMBLY.get()) && bench.held().get(CMComponents.RECOVERY_STEP.get()) == 2, "Recovery progress is kept on the item");
-        h.assertTrue(bench.work(gasket, false) == Outcome.CONSUME, "Gasket seals it");
-        ItemStack canister = bench.held();
-        FuelState recorded = canister.get(CMComponents.FUEL_STATE.get());
-        h.assertTrue(canister.is(CMItems.SEALED_WASTE_CANISTER.get()), "Damaged fuel leaves as a canister: " + canister);
-        h.assertTrue(recorded != null && recorded.id().equals(cool.id()) && recorded.damageCause().equals("overheat") && recorded.burned() == 5000, "Canister records the lifecycle data: " + recorded);
-        h.assertTrue(canister.has(DataComponents.FIRE_RESISTANT) && canister.getEntityLifespan(h.getLevel()) == Integer.MAX_VALUE, "Canisters resist fire and never despawn");
-        h.assertTrue(FuelAssemblyItem.stackFor(cool).has(DataComponents.FIRE_RESISTANT), "Assemblies resist fire");
         h.succeed();
     }
 

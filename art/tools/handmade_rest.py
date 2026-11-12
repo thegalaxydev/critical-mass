@@ -268,27 +268,6 @@ def coolant_channel(jar):
     return channel(rods(COPPER), bores)
 
 
-def bench(jar):
-    def worktop(w, h):
-        img = casing(BRASS, ANDESITE)(w, h)
-        for x in range(4, w - 4):
-            put(img, x, h // 2, ANDESITE[1])
-        rect(img, w // 2 - 3, h // 2 - 2, w // 2 + 2, h // 2 + 1, ANDESITE[4])
-        bevel(img, w // 2 - 3, h // 2 - 2, w // 2 + 2, h // 2 + 1, ANDESITE, 4)
-        return img
-    spec = {"models": ["fuel_assembly_bench"], "faces": {
-        ("top", "up"): worktop,
-        ("top", "down"): plate(ANDESITE, 2),
-        ("top", "north"): edge_band(BRASS, ANDESITE),
-        ("top", "south"): edge_band(BRASS, ANDESITE),
-        ("leg", "north"): plate(IRON, 3),
-        ("leg", "down"): plate(IRON, 2),
-        ("clamp_jig", "up"): plate(BRASS, 4),
-        ("clamp_jig", "north"): plate(BRASS, 3),
-        ("clamp_jig", "east"): plate(BRASS, 2),
-    }}
-    return apply("fuel_assembly_bench", 64, spec)
-
 
 def edge_band(top, body):
     def paint(w, h):
@@ -369,43 +348,6 @@ def cask(jar):
     return apply("shielded_cask", 32, spec)
 
 
-def siren(jar):
-    def mouth(w, h):
-        img = tile(w, h)
-        bevel(img, 0, 0, w - 1, h - 1, BRASS, 4)
-        rect(img, 1, 1, w - 2, h - 2, HOLE)
-        for x in range(1, w - 1):
-            put(img, x, h // 2, (30, 30, 34))
-        return img
-
-    def lamp(lit):
-        ramp = RED if lit else [(40, 14, 12), (64, 22, 18), (92, 30, 24), (120, 40, 32), (140, 52, 40)]
-        def paint(w, h):
-            img = tile(w, h)
-            rect(img, 0, 0, w - 1, h - 1, ramp[2])
-            put(img, 0, 0, ramp[4])
-            if w > 1:
-                put(img, 1, 0, ramp[3])
-            return img
-        return paint
-    img = Image.open(os.path.join(OUT, "alarm_siren.png")).convert("RGBA")
-    spec = {"models": ["alarm_siren"], "faces": {
-        ("base", "north"): casing(IRON, STEEL),
-        ("base", "east"): plate(IRON, 2),
-        ("base", "up"): plate(IRON, 3),
-        ("horn", "east"): plate(BRASS, 3),
-        ("horn", "up"): plate(BRASS, 4),
-        ("horn", "north"): mouth,
-        ("beacon", "up"): lamp(False),
-        ("beacon", "north"): lamp(False),
-    }}
-    img = apply("alarm_siren", 32, spec, img)
-    spec_lit = {"models": ["alarm_siren_powered"], "faces": {
-        ("beacon", "up"): lamp(True),
-        ("beacon", "north"): lamp(True),
-    }}
-    return apply("alarm_siren", 32, spec_lit, img)
-
 
 def gauge(img, cx, cy, r):
     disc(img, cx, cy, r, lambda x, y, d: (BRASS[3] if x + y < cx + cy else BRASS[1]) if d > r - 1 else (232, 228, 214))
@@ -463,9 +405,7 @@ REST = {
     "fuel_channel": fuel_channel,
     "control_channel": control_channel,
     "coolant_channel": coolant_channel,
-    "fuel_assembly_bench": bench,
     "spent_fuel_rack": spent_rack,
     "shielded_cask": cask,
-    "alarm_siren": siren,
     "docking_service_connector": docking,
 }

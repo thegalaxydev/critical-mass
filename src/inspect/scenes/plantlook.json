@@ -16,7 +16,6 @@
    "cmds": [
     "/setblock 40 -59 40 criticalmass:heat_exchanger[facing=south]",
     "/setblock 42 -59 40 criticalmass:condenser[facing=south]",
-    "/setblock 44 -59 40 criticalmass:emergency_coolant_tank",
     "/setblock 46 -59 40 criticalmass:radiator_panel[facing=south]",
     "/setblock 48 -59 40 criticalmass:boiler_heating_plate",
     "/setblock 50 -59 40 criticalmass:relief_valve[facing=south]",

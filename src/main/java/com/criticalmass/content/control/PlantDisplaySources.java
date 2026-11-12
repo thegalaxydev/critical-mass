@@ -71,10 +71,6 @@ public final class PlantDisplaySources {
         add(CMBlockEntities.COOLING_TOWER.get(), buffer);
         add(CMBlockEntities.RADIATOR.get(), buffer);
         add(CMBlockEntities.RELIEF_VALVE.get(), buffer);
-        add(CMBlockEntities.EMERGENCY_TANK.get(), buffer);
-        add(CMBlockEntities.TOWER_BASIN.get(), buffer);
-        add(CMBlockEntities.TOWER_DISTRIBUTOR.get(), buffer);
-        add(CMBlockEntities.FEEDWATER_TANK.get(), buffer);
     }
 
     private static void add(BlockEntityType<?> type, PlantChannel... channels) {

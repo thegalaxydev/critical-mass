@@ -55,9 +55,6 @@ public final class CMThermal {
     public static final double ROD_MAX_RATE = 0.002;
     public static final double ROD_MANUAL_RATE = 0.001;
     public static final int ROD_FAILSAFE_TICKS = 40;
-    public static final int EMERGENCY_TANK_CAPACITY = 8000;
-    public static final int EMERGENCY_INJECTION_RATE = 50;
-    public static final double EMERGENCY_MAX_TILT = 30.0;
     public static final int BREACH_LEAK_RATE = 40;
     public static final int REPAIR_TICKS = 40;
     public static final double REPAIR_RESIDUAL_LIMIT = 20.0;
@@ -127,11 +124,8 @@ public final class CMThermal {
     public static final double TOWER_NATURAL_PER_BLOCK = 0.05;
     public static final double TOWER_NATURAL_MAX = 0.75;
     public static final float TOWER_FAN_RPM = 64.0f;
-    public static final int TOWER_BASIN_CAPACITY = 4000;
-    public static final int TOWER_DISTRIBUTOR_CAPACITY = 250;
     public static final int TOWER_SCAN_TICKS = 10;
     public static final double TOWER_PLUME_HEAT = 20.0;
-    public static final int FEEDWATER_CAPACITY = 4000;
     public static final double LOW_LEVEL_SHARE = 0.25;
     public static final double UNPRESSURIZED_BOILING = 350.0;
     public static final double BOILING_PER_BAR = 2.0;

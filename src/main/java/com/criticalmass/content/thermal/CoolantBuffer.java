@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import java.util.function.IntSupplier;
 import com.criticalmass.registry.CMFluids;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -16,12 +17,16 @@ public final class CoolantBuffer {
     private static FluidStack flightFluid = FluidStack.EMPTY;
     private static int flightAmount;
     private static double flightHeat;
-    private final int capacity;
+    private final IntSupplier capacity;
     private final Runnable onChange;
     private FluidStack fluid = FluidStack.EMPTY;
     private double heat;
 
     public CoolantBuffer(int capacity, Runnable onChange) {
+        this(() -> capacity, onChange);
+    }
+
+    public CoolantBuffer(IntSupplier capacity, Runnable onChange) {
         this.capacity = capacity;
         this.onChange = onChange;
     }
@@ -31,7 +36,7 @@ public final class CoolantBuffer {
     }
 
     public int capacity() {
-        return capacity;
+        return capacity.getAsInt();
     }
 
     public int amount() {
@@ -39,7 +44,7 @@ public final class CoolantBuffer {
     }
 
     public int space() {
-        return Math.max(0, capacity - amount());
+        return Math.max(0, capacity() - amount());
     }
 
     public FluidStack fluid() {
@@ -73,7 +78,7 @@ public final class CoolantBuffer {
         if (!steamMedium()) {
             return CMThermal.ATMOSPHERIC;
         }
-        return CMThermal.ATMOSPHERIC + CMThermal.PRESSURE_PER_LATENT * steamEnergy() / (capacity * CMThermal.LATENT_HEAT);
+        return CMThermal.ATMOSPHERIC + CMThermal.PRESSURE_PER_LATENT * steamEnergy() / (Math.max(1, capacity()) * CMThermal.LATENT_HEAT);
     }
 
     public double temperature() {
@@ -249,7 +254,7 @@ public final class CoolantBuffer {
 
         @Override
         public int getTankCapacity(int tank) {
-            return capacity;
+            return capacity();
         }
 
         @Override

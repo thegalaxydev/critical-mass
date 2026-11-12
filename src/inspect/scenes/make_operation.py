@@ -20,8 +20,7 @@ pipes, fix = loop(O)
 drives = ["/setblock %s criticalmass:control_rod_drive[facing=west]" % w(3, 6, z) for z in (2, 4)]
 drives += ["/setblock %s create:creative_motor[facing=west]" % w(4, 6, z) for z in (2, 4)]
 withdraw = ["/setblock %s minecraft:redstone_block" % w(2, 6, z) for z in (2, 4)]
-tank = ["/setblock %s criticalmass:emergency_coolant_tank" % w(0, 2, 2),
-        "/data merge block %s {Buffer:{Fluid:{id:\"criticalmass:primary_coolant\",amount:4000},Heat:0.0d}}" % w(0, 2, 2)]
+tank = []
 controller_view = ((-2, 0, 3), (1.0, 3.93, 3.12))
 drive_view = ((3, 7, -1), (3.5, 6.5, 2.5))
 L = {"cmds": ["/criticalmass ledger"], "wait": 2}

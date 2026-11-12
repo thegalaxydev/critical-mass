@@ -63,7 +63,9 @@ steps += [ledger(5), {"cmds": [desk], "wait": 40}, {"shot": "scram_a", "wait": 6
 steps += click("alarm_panel", 4.5, 3.4, 20)
 steps += [{"cmds": [desk], "wait": 40}, {"shot": "acknowledged", "wait": 2},
           {"wait": 200}, {"cmds": [wide], "wait": 40, "gui": False}, {"shot": "tripped", "wait": 2},
-          {"cmds": state, "wait": 5}, ledger(5)]
+          {"cmds": state, "wait": 5}, ledger(5),
+          {"cmds": ["/setblock %d %d %d minecraft:lever[face=floor,facing=north,powered=false]" % (OX + m.ECCS_LEVER[0], OY + m.ECCS_LEVER[1], OZ + m.ECCS_LEVER[2])], "wait": 200},
+          ledger(5)]
 steps += [{"cmds": ["/item replace entity @p hotbar.%d with criticalmass:%s" % (i, name) for i, name in enumerate(PANEL)] + ["/item replace entity @p hotbar.7 with criticalmass:plant_screen"], "wait": 20, "gui": True},
           {"shot": "items", "wait": 2}]
 json.dump({"name": "room", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "control_room.json"), "w", newline="\n"), indent=1)

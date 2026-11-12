@@ -8,7 +8,7 @@ def look(px, py, pz, tx, ty, tz):
     return "/tp @p %.2f %.2f %.2f facing %.2f %.2f %.2f" % (px, py, pz, tx, ty - EYE, tz)
 
 
-blocks = [("criticalmass:heat_exchanger[facing=south]", 40), ("criticalmass:condenser[facing=south]", 42), ("criticalmass:emergency_coolant_tank", 44),
+blocks = [("criticalmass:heat_exchanger[facing=south]", 40), ("criticalmass:condenser[facing=south]", 42),
           ("criticalmass:radiator_panel[facing=south]", 46), ("criticalmass:boiler_heating_plate", 48), ("criticalmass:relief_valve[facing=south]", 50),
           ("create:fluid_valve[facing=up,axis_along_first=false]", 52)]
 cmds = ["/setblock %d -59 40 %s" % (x, b) for b, x in blocks]

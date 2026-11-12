@@ -1,6 +1,5 @@
 {
   "values": [
-    "criticalmass:alarm_siren",
     "criticalmass:boiler_heating_plate",
     "criticalmass:circulation_pump",
     "criticalmass:condenser",
@@ -8,8 +7,6 @@
     "criticalmass:control_rod_drive",
     "criticalmass:coolant_channel",
     "criticalmass:docking_service_connector",
-    "criticalmass:emergency_coolant_tank",
-    "criticalmass:fuel_assembly_bench",
     "criticalmass:fuel_channel",
     "criticalmass:heat_exchanger",
     "criticalmass:primary_coolant_port",
@@ -32,10 +29,7 @@
     "criticalmass:sealed_waste_canister",
     "criticalmass:open_waste_canister",
     "criticalmass:reactor_viewport",
-    "criticalmass:tower_basin",
-    "criticalmass:tower_distributor",
     "criticalmass:tower_fan",
-    "criticalmass:feedwater_tank",
     "criticalmass:pressurizer",
     "criticalmass:corium",
     "criticalmass:ruined_channel",

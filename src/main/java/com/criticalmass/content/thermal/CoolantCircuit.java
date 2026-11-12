@@ -131,6 +131,16 @@ public final class CoolantCircuit {
                 d = exit;
                 continue;
             }
+            if (TankCoolant.isTank(state)) {
+                TankCoolant.Exit exit = TankCoolant.exit(level, next, back);
+                if (exit == null) {
+                    return w.fail("criticalmass.circuit.tank_end", next);
+                }
+                w.hops.add(new Hop(exit.controller(), downstream ? back : exit.face()));
+                cur = exit.block();
+                d = exit.face();
+                continue;
+            }
             if (state.getBlock() instanceof CoolantPortBlock) {
                 if (state.getValue(FacingBlock.FACING) != back) {
                     return w.fail("criticalmass.circuit.open_end", next);
@@ -167,7 +177,11 @@ public final class CoolantCircuit {
         if (!level.isLoaded(pos)) {
             return null;
         }
-        return level.getBlockEntity(pos) instanceof ThermalNode n ? n : PipeCoolant.at(level, pos);
+        if (level.getBlockEntity(pos) instanceof ThermalNode n) {
+            return n;
+        }
+        PipeCoolant pipe = PipeCoolant.at(level, pos);
+        return pipe != null ? pipe : TankCoolant.at(level, pos);
     }
 
     public Flow transfer(Level level, int requested) {
@@ -201,6 +215,9 @@ public final class CoolantCircuit {
             n.setCircuitPressure(peak, worst);
         }
         Flow result = closed ? transferClosed(nodes, chain, requested) : transferOpen(level, nodes, chain, requested);
+        for (ThermalNode n : nodes) {
+            n.settle();
+        }
         PipeCoolant weakest = null;
         for (ThermalNode n : nodes) {
             if (n instanceof PipeCoolant p && p.overPressure() && (weakest == null || p.coolant().pressure() > weakest.coolant().pressure())) {

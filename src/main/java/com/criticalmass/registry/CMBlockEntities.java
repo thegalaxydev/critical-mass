@@ -7,7 +7,6 @@ import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.control.PanelBlockEntity;
 import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.CriticalMass;
-import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
@@ -17,7 +16,6 @@ import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
-import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
@@ -55,8 +53,6 @@ public final class CMBlockEntities {
     public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReliefValveBlockEntity(CMBlockEntities.RELIEF_VALVE.get(), pos, state), CMBlocks.RELIEF_VALVE.get()).build(null));
 
-    public static final Supplier<BlockEntityType<EmergencyTankBlockEntity>> EMERGENCY_TANK = BLOCK_ENTITIES.register("emergency_coolant_tank",
-            () -> BlockEntityType.Builder.of((pos, state) -> new EmergencyTankBlockEntity(CMBlockEntities.EMERGENCY_TANK.get(), pos, state), CMBlocks.EMERGENCY_COOLANT_TANK.get()).build(null));
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
@@ -65,14 +61,8 @@ public final class CMBlockEntities {
                     CMBlocks.SCRAM_PANEL.get(), CMBlocks.ROD_PANEL.get(), CMBlocks.TURBINE_PANEL.get(), CMBlocks.ALARM_PANEL.get(), CMBlocks.LEVER_PANEL.get(), CMBlocks.DIAL_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
             () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
-    public static final Supplier<BlockEntityType<TowerParts.Basin>> TOWER_BASIN = BLOCK_ENTITIES.register("tower_basin",
-            () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.Basin(CMBlockEntities.TOWER_BASIN.get(), pos, state), CMBlocks.TOWER_BASIN.get()).build(null));
-    public static final Supplier<BlockEntityType<TowerParts.Distributor>> TOWER_DISTRIBUTOR = BLOCK_ENTITIES.register("tower_distributor",
-            () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.Distributor(CMBlockEntities.TOWER_DISTRIBUTOR.get(), pos, state), CMBlocks.TOWER_DISTRIBUTOR.get()).build(null));
     public static final Supplier<BlockEntityType<TowerParts.Fan>> TOWER_FAN = BLOCK_ENTITIES.register("tower_fan",
             () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.Fan(CMBlockEntities.TOWER_FAN.get(), pos, state), CMBlocks.TOWER_FAN.get()).build(null));
-    public static final Supplier<BlockEntityType<TowerParts.FeedwaterTank>> FEEDWATER_TANK = BLOCK_ENTITIES.register("feedwater_tank",
-            () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.FeedwaterTank(CMBlockEntities.FEEDWATER_TANK.get(), pos, state), CMBlocks.FEEDWATER_TANK.get()).build(null));
     public static final Supplier<BlockEntityType<PressurizerBlockEntity>> PRESSURIZER = BLOCK_ENTITIES.register("pressurizer",
             () -> BlockEntityType.Builder.of((pos, state) -> new PressurizerBlockEntity(CMBlockEntities.PRESSURIZER.get(), pos, state), CMBlocks.PRESSURIZER.get()).build(null));
     public static final Supplier<BlockEntityType<Corium.Entity_>> CORIUM = BLOCK_ENTITIES.register("corium",
@@ -87,8 +77,6 @@ public final class CMBlockEntities {
     public static final Supplier<BlockEntityType<SealedWasteCanisterBlockEntity>> SEALED_WASTE_CANISTER = BLOCK_ENTITIES.register("sealed_waste_canister",
             () -> BlockEntityType.Builder.of((pos, state) -> new SealedWasteCanisterBlockEntity(CMBlockEntities.SEALED_WASTE_CANISTER.get(), pos, state), CMBlocks.SEALED_WASTE_CANISTER.get()).build(null));
 
-    public static final Supplier<BlockEntityType<FuelAssemblyBenchBlockEntity>> FUEL_ASSEMBLY_BENCH = BLOCK_ENTITIES.register("fuel_assembly_bench",
-            () -> BlockEntityType.Builder.of((pos, state) -> new FuelAssemblyBenchBlockEntity(CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), pos, state), CMBlocks.FUEL_ASSEMBLY_BENCH.get()).build(null));
 
     private CMBlockEntities() {
     }

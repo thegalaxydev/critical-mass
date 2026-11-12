@@ -181,55 +181,6 @@ SIDES = {"north": "a", "south": "a", "east": "a", "west": "a", "up": "b", "down"
 CLEAR = (0, 0, 0, 0)
 
 
-def basin_texture():
-    def side(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        rect(img, 3, 9, 12, 12, BLUE[1])
-        rect(img, 3, 9, 12, 9, BLUE[3])
-        return img
-
-    def top(w, h):
-        img = plate(IRON, 3)(w, h)
-        rect(img, 2, 2, 13, 13, BLUE[1])
-        for k in range(2, 14, 3):
-            rect(img, k, 2, k, 13, BLUE[0])
-            rect(img, 2, k, 13, k, BLUE[0])
-        for x, y in ((4, 5), (9, 4), (6, 10), (11, 9)):
-            put(img, x, y, BLUE[3])
-        return img
-    return atlas({"a": side, "b": top, "c": plate(IRON, 2)})
-
-
-def distributor_texture():
-    def side(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        rect(img, 2, 6, 13, 8, COPPER[3])
-        rect(img, 2, 6, 13, 6, COPPER[5])
-        rect(img, 2, 8, 13, 8, COPPER[1])
-        for x in (4, 7, 10):
-            put(img, x, 10, COPPER[2])
-            put(img, x, 11, BLUE[3])
-            put(img, x, 12, BLUE[2])
-        return img
-
-    def top(w, h):
-        img = plate(IRON, 3)(w, h)
-        rect(img, 2, 2, 13, 13, STEEL[1])
-        rect(img, 7, 2, 8, 13, COPPER[3])
-        rect(img, 2, 7, 13, 8, COPPER[3])
-        for x, y in ((4, 4), (11, 4), (4, 11), (11, 11)):
-            put(img, x, y, COPPER[4])
-        return img
-
-    def bottom(w, h):
-        img = plate(IRON, 2)(w, h)
-        rect(img, 2, 2, 13, 13, STEEL[0])
-        for x in (4, 7, 10):
-            for y in (4, 7, 10):
-                put(img, x, y, COPPER[4])
-                put(img, x + 1, y + 1, COPPER[1])
-        return img
-    return atlas({"a": side, "b": top, "c": bottom})
 
 
 def fan_texture():
@@ -292,22 +243,6 @@ def fan_models():
             "tower_fan_rotor": {"textures": tex, "elements": rotor},
             "tower_fan_item": {"parent": "minecraft:block/block", "textures": tex, "elements": base + rotor, "render_type": "minecraft:cutout", "display": display}}
 
-
-def feedwater_texture():
-    def side(w, h):
-        img = casing(COPPER, STEEL)(w, h)
-        rect(img, 7, 3, 8, 12, BLUE[1])
-        rect(img, 7, 7, 8, 12, BLUE[3])
-        for y in (3, 12):
-            put(img, 6, y, BRASS[3])
-            put(img, 9, y, BRASS[3])
-        return img
-
-    def top(w, h):
-        img = plate(COPPER, 3)(w, h)
-        opening(img, 4, 4, 8, BLUE, COPPER)
-        return img
-    return atlas({"a": side, "b": top, "c": plate(COPPER, 2)})
 
 
 def pressurizer_texture():
@@ -379,10 +314,7 @@ BLOCKS = {
     "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
     "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
-    "tower_basin": {"lang": "Cooling Tower Basin", "texture": basin_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
-    "tower_distributor": {"lang": "Cooling Tower Distributor", "texture": distributor_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state, "item": "tower_fan_item"},
-    "feedwater_tank": {"lang": "Feedwater Tank", "texture": feedwater_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "reactor_viewport": {
         "lang": "Reactor Viewport",
@@ -397,15 +329,8 @@ LANG = {
     "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant",
     "criticalmass.goggles.corium": "Corium",
     "criticalmass.goggles.corium_decay": "Decay heat: %s HU/t",
-    "criticalmass.basin.ok": "Collecting",
-    "criticalmass.basin.low": "Water low: add makeup water",
-    "criticalmass.basin.dry": "Dry",
-    "criticalmass.feedwater.ok": "Level normal",
-    "criticalmass.feedwater.low": "Level low: add makeup water",
-    "criticalmass.feedwater.empty": "Empty",
-    "criticalmass.tower.no_fill": "No fill below: stack Cooling Tower Packing under the distributor",
-    "criticalmass.tower.no_basin": "No basin under the fill",
-    "criticalmass.goggles.tower_fill": "Fill: %s of up to %s blocks",
+    "criticalmass.goggles.tower_rejecting": "Whole tower: %s HU/t",
+    "criticalmass.circuit.tank_end": "Stopped: a Fluid Tank in the loop needs a second pipe to carry on from",
     "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
     "criticalmass.goggles.tower_fan": "Cooling Tower Fan",
     "criticalmass.goggles.pressurizer": "Pressurizer",

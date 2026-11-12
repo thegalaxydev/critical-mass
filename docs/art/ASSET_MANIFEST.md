@@ -23,18 +23,15 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 | `criticalmass:condenser` | `block/condenser.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:cooling_tower_packing` | `block/cooling_tower_packing.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:radiator_panel` | `block/radiator_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
-| `criticalmass:emergency_coolant_tank` | `block/emergency_coolant_tank.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:relief_valve` | `block/relief_valve.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:steam_bypass_valve` | `block/steam_bypass_valve.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:boiler_heating_plate` | `block/boiler_heating_plate.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:shielding_concrete` | `block/shielding_concrete.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:shielded_glass` | `block/shielded_glass.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes | Translucent; depth sorting against other translucent blocks has not been checked. |
 | `criticalmass:shielded_hatch` | `block/shielded_hatch.png` 16x16 | generated | integrated | iso: yes, in_game: yes |  |
-| `criticalmass:fuel_assembly_bench` | `block/fuel_assembly_bench.png` 64x64 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:spent_fuel_rack` | `block/spent_fuel_rack.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:shielded_cask` | `block/shielded_cask.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:reactor_signal_interface` | `block/reactor_signal_interface.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:alarm_siren` | `block/alarm_siren.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes |  |
 | `criticalmass:docking_service_connector` | `block/docking_service_connector.png` 32x32 | generated | integrated | iso: yes, in_game: yes | Connected state exists only as a blockstate; docking behaviour is not implemented. |
 
 ## Items (25)
@@ -137,18 +134,15 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (horizontal)
 - `cooling_tower_packing`: inventory = item model cooling_tower_packing (parent: block model); placed = blockstate cooling_tower_packing (simple)
 - `radiator_panel`: inventory = item model radiator_panel (parent: block model); placed = blockstate radiator_panel (horizontal)
-- `emergency_coolant_tank`: inventory = item model emergency_coolant_tank (parent: block model); placed = blockstate emergency_coolant_tank (simple)
 - `relief_valve`: inventory = item model relief_valve (parent: block model); placed = blockstate relief_valve (facing); venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting
 - `steam_bypass_valve`: inventory = item model steam_bypass_valve (parent: block model); placed = blockstate steam_bypass_valve (horizontal)
 - `boiler_heating_plate`: inventory = item model boiler_heating_plate (parent: block model); placed = blockstate boiler_heating_plate (horizontal)
 - `shielding_concrete`: inventory = item model shielding_concrete (parent: block model); placed = blockstate shielding_concrete (simple)
 - `shielded_glass`: inventory = item model shielded_glass (parent: block model); placed = blockstate shielded_glass (simple)
 - `shielded_hatch`: inventory = item model shielded_hatch (parent: block model); placed = blockstate shielded_hatch (raw); vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates
-- `fuel_assembly_bench`: inventory = item model fuel_assembly_bench (parent: block model); placed = blockstate fuel_assembly_bench (horizontal)
 - `spent_fuel_rack`: inventory = item model spent_fuel_rack (parent: block model); placed = blockstate spent_fuel_rack (multipart: shell plus one assembly model per stored assembly, fill=0..4)
 - `shielded_cask`: inventory = item model shielded_cask (parent: block model); placed = blockstate shielded_cask (simple)
 - `reactor_signal_interface`: inventory = item model reactor_signal_interface (parent: block model); placed = blockstate reactor_signal_interface (horizontal)
-- `alarm_siren`: inventory = item model alarm_siren (parent: block model); placed = blockstate alarm_siren (raw); powered=true when the block receives redstone; powered model uses a lit, unshaded lamp
 - `docking_service_connector`: inventory = item model docking_service_connector (parent: block model); placed = blockstate docking_service_connector (raw); connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)
 
 ## Equipment

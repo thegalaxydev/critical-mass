@@ -1,13 +1,14 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import java.util.List;
+import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.thermal.ChannelBlocks;
 import net.minecraft.world.level.block.state.BlockState;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
-import com.criticalmass.content.thermal.EmergencyTankBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ReactorCore;
 import com.criticalmass.content.thermal.WeldingTorchItem;
@@ -15,6 +16,7 @@ import com.criticalmass.content.thermal.VesselStructure;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMStress;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
@@ -25,6 +27,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -334,41 +337,6 @@ public final class OperationTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 200)
-    public static void emergencyTankInjectsWithoutErasingHeat(GameTestHelper h) {
-        TestVessels.standardVessel(h, TestVessels.STANDARD);
-        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
-        BlockPos tankPos = new BlockPos(0, 2, 2);
-        h.setBlock(tankPos, CMBlocks.EMERGENCY_COOLANT_TANK.get());
-        EmergencyTankBlockEntity tank = h.getBlockEntity(tankPos);
-        tank.coolant().set(CoolantLoopTests.coolant(4000), 0);
-        c.coolant().set(CoolantLoopTests.coolant(2000), 2000 * 200.0);
-        double[] heat = new double[1];
-        h.startSequence()
-                .thenIdle(3)
-                .thenExecute(() -> {
-                    h.assertTrue(tank.coolant().amount() == 4000, "No injection without an emergency: " + tank.status());
-                    c.core().setColumnHeat(2, 0, 200 * 3 * 400.0);
-                    heat[0] = c.coolant().heat();
-                })
-                .thenIdle(20)
-                .thenExecute(() -> {
-                    int injected = 4000 - tank.coolant().amount();
-                    h.assertTrue(injected > 0 && c.coolant().amount() == 2000 + injected, "Tank should inject into the vessel: " + tank.status());
-                    h.assertTrue(c.coolant().heat() == heat[0], "Injection must not change stored heat: " + c.coolant().heat() + " vs " + heat[0]);
-                    h.assertTrue(c.coolant().temperature() < CMThermal.AMBIENT + 200, "Injected coolant should lower the temperature");
-                    h.setBlock(tankPos.west(), Blocks.REDSTONE_BLOCK);
-                })
-                .thenIdle(3)
-                .thenExecute(() -> {
-                    int amount = tank.coolant().amount();
-                    h.assertTrue(tank.status().endsWith("disarmed"), "Redstone should disarm the tank");
-                    h.runAfterDelay(10, () -> h.assertTrue(tank.coolant().amount() == amount, "Disarmed tank injected"));
-                })
-                .thenIdle(12)
-                .thenSucceed();
-    }
-
-    @GameTest(template = EMPTY, timeoutTicks = 200)
     public static void breachLeaksAndRepairWaitsForResidualHeat(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
@@ -429,6 +397,41 @@ public final class OperationTests {
         h.startSequence()
                 .thenIdle(60)
                 .thenExecute(() -> h.assertTrue(c.warningPositions().isEmpty() && c.problemPositions().isEmpty(), "A sound core should have no warnings: " + c.warningReasons()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void createPumpInjectsCoolantThroughASparePort(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(4000), 0);
+        BlockPos port = new BlockPos(5, 2, 3);
+        BlockPos pump = port.east();
+        BlockPos tankPos = pump.east();
+        BlockPos motorPos = tankPos.above();
+        h.setBlock(port, TestVessels.port(Direction.EAST, CoolantPortBlock.Mode.INLET));
+        h.setBlock(tankPos, AllBlocks.FLUID_TANK.getDefaultState());
+        h.setBlock(pump, AllBlocks.MECHANICAL_PUMP.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
+        h.setBlock(pump.above(), AllBlocks.COGWHEEL.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.X));
+        FluidTankBlockEntity tank = h.getBlockEntity(tankPos);
+        tank.getTankInventory().setFluid(CoolantLoopTests.coolant(3000));
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    c.revalidate();
+                    h.assertTrue(c.problemPositions().isEmpty(), "A vessel may have a second inlet port: " + c.problemReasons());
+                    h.assertTrue(c.coolant().amount() == 4000, "A stopped pump should inject nothing: " + c.coolant().amount());
+                    h.setBlock(motorPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
+                    CreativeMotorBlockEntity motor = h.getBlockEntity(motorPos);
+                    motor.generatedSpeed.setValue(64);
+                })
+                .thenIdle(200)
+                .thenExecute(() -> {
+                    int vessel = c.coolant().amount();
+                    int left = tank.getTankInventory().getFluidAmount();
+                    h.assertTrue(vessel > 5000, "A turning Mechanical Pump should inject coolant from the tank through the port: " + vessel);
+                    h.assertTrue(vessel + left == 7000, "What leaves the tank should arrive in the vessel: " + vessel + " + " + left);
+                })
                 .thenSucceed();
     }
 }

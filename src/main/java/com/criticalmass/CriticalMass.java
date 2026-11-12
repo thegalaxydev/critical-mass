@@ -48,6 +48,7 @@ public class CriticalMass {
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation CREATE_PIPE = ResourceLocation.fromNamespaceAndPath("create", "fluid_pipe");
     private static final ResourceLocation CREATE_VALVE = ResourceLocation.fromNamespaceAndPath("create", "fluid_valve");
+    private static final ResourceLocation CREATE_TANK = ResourceLocation.fromNamespaceAndPath("create", "fluid_tank");
 
     public CriticalMass(IEventBus modEventBus, ModContainer modContainer) {
         CMBlocks.BLOCKS.register(modEventBus);
@@ -61,6 +62,14 @@ public class CriticalMass {
         CMBlocks.BLOCKS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
         CMItems.ITEMS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
+        for (String tank : List.of("tower_basin", "feedwater_tank", "emergency_coolant_tank")) {
+            CMBlocks.BLOCKS.addAlias(asResource(tank), CREATE_TANK);
+            CMItems.ITEMS.addAlias(asResource(tank), CREATE_TANK);
+            CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource(tank), CREATE_TANK);
+        }
+        CMBlocks.BLOCKS.addAlias(asResource("tower_distributor"), CREATE_PIPE);
+        CMItems.ITEMS.addAlias(asResource("tower_distributor"), CREATE_PIPE);
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("tower_distributor"), CREATE_PIPE);
         CMItems.ITEMS.addAlias(asResource("shielding_plate"), asResource("steel_plate"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
@@ -102,7 +111,6 @@ public class CriticalMass {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.EMERGENCY_TANK.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);
@@ -114,13 +122,9 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CIRCULATION_PUMP.get(), (be, side) -> side != null && side.getAxis() == be.getBlockState().getValue(CirculationPumpBlock.FACING).getAxis() ? EmptyFluidHandler.INSTANCE : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLANT_PORT.get(), (be, side) -> side == null || side == be.getBlockState().getValue(FacingBlock.FACING) ? new CoolantPortHandler(be.getLevel(), be.getBlockPos(), side) : null);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_BASIN.get(), (be, side) -> side == Direction.DOWN ? null : be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_DISTRIBUTOR.get(), CriticalMass::coolantFace);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.FEEDWATER_TANK.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), (be, side) -> be.depot().itemHandler);
     }
 
     private static String describe(ModList mods, String modId) {

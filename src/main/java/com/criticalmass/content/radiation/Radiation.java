@@ -1,6 +1,5 @@
 package com.criticalmass.content.radiation;
 
-import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
@@ -185,11 +184,6 @@ public final class Radiation {
                 double s = itemStrength(port.output()) * PORT_TRANSMISSION;
                 if (s > 0) {
                     out.add(new Source(c, s, null, body(be), null));
-                }
-            } else if (be instanceof FuelAssemblyBenchBlockEntity bench) {
-                double s = itemStrength(bench.held());
-                if (s > 0) {
-                    out.add(new Source(c.add(0, 0.5, 0), s, null, body(be), null));
                 }
             }
         }

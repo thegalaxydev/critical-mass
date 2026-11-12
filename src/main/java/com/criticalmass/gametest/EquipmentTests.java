@@ -6,9 +6,10 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
-import com.criticalmass.content.thermal.TowerParts;
+import com.criticalmass.content.thermal.TankCoolant;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
 import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
@@ -48,13 +49,12 @@ public final class EquipmentTests {
     public static void towerAirflowComesFromHowItIsBuilt(GameTestHelper h) {
         List<CoolingTowerBlockEntity> bare = fill(h, new BlockPos(1, 1, 1), 3);
         BlockPos naturalBase = new BlockPos(4, 1, 1);
-        h.setBlock(naturalBase, CMBlocks.TOWER_BASIN.get());
+        h.setBlock(naturalBase, AllBlocks.FLUID_TANK.getDefaultState());
         List<CoolingTowerBlockEntity> natural = fill(h, naturalBase.above(), 3);
-        h.setBlock(naturalBase.above(4), CMBlocks.TOWER_DISTRIBUTOR.get());
         BlockPos fanBase = new BlockPos(7, 1, 1);
-        h.setBlock(fanBase, CMBlocks.TOWER_BASIN.get());
+        h.setBlock(fanBase, AllBlocks.FLUID_TANK.getDefaultState());
         List<CoolingTowerBlockEntity> forced = fill(h, fanBase.above(), 3);
-        h.setBlock(fanBase.above(4), CMBlocks.TOWER_DISTRIBUTOR.get());
+        TestVessels.pipes(h, List.of(naturalBase.above(4), fanBase.above(4)));
         h.setBlock(fanBase.above(5), CMBlocks.TOWER_FAN.get());
         h.setBlock(fanBase.above(6), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
         CreativeMotorBlockEntity motor = h.getBlockEntity(fanBase.above(6));
@@ -74,11 +74,12 @@ public final class EquipmentTests {
                     double base = HOT * CMThermal.TOWER_RATE;
                     double tall = CMThermal.TOWER_NATURAL_DRAFT + 2 * CMThermal.TOWER_NATURAL_PER_BLOCK;
                     h.assertTrue(Math.abs(bare.get(0).lastRejected() - base * CMThermal.TOWER_NATURAL_DRAFT) < 1e-6, "Bare packing should only get natural draft: " + bare.get(0).lastRejected());
-                    h.assertTrue(Math.abs(natural.get(1).lastRejected() - base * tall) < 1e-6, "A built tower should draw more the taller it is: " + natural.get(1).lastRejected());
+                    h.assertTrue(Math.abs(natural.get(1).lastRejected() - base * tall) < 1e-6, "A tower fed from a pipe on top should draw more the taller it is: " + natural.get(1).lastRejected());
                     h.assertTrue(Math.abs(forced.get(2).lastRejected() - base * (CMThermal.TOWER_NATURAL_DRAFT + 1.0)) < 1e-6, "A fan at 64 RPM should add full airflow: " + forced.get(2).lastRejected());
-                    TowerParts.Distributor d = h.getBlockEntity(fanBase.above(4));
-                    h.assertTrue(d.packing() == 3 && Math.abs(d.airflow() - 1.25) < 1e-6 && d.status().endsWith("tower.ok"), "Distributor should report its tower: " + d.packing() + " " + d.airflow() + " " + d.status());
-                    h.assertTrue(Math.abs(d.rejecting() - 3 * base * 1.25) < base * 0.2, "Distributor should total the fill's heat rejection: " + d.rejecting());
+                    CoolingTowerBlockEntity top = forced.get(2);
+                    h.assertTrue(top.towerFill() == 3 && Math.abs(top.towerAirflow() - 1.25) < 1e-6 && top.status().endsWith("tower.ok"), "The top of the fill should report its tower: " + top.towerFill() + " " + top.towerAirflow() + " " + top.status());
+                    h.assertTrue(Math.abs(top.towerRejecting() - 3 * base * 1.25) < base * 0.2, "The top of the fill should total the heat rejection: " + top.towerRejecting());
+                    h.assertTrue(forced.get(0).towerFill() == 0, "Only the top block should carry the tower totals");
                     h.setBlock(naturalBase.above(5), Blocks.STONE);
                     h.setBlock(fanBase.above(6), Blocks.AIR);
                 })
@@ -92,34 +93,37 @@ public final class EquipmentTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 400)
-    public static void coolingWaterRunsThroughTheTower(GameTestHelper h) {
-        BlockPos basinPos = new BlockPos(4, 1, 4);
-        h.setBlock(basinPos, CMBlocks.TOWER_BASIN.get());
-        List<CoolingTowerBlockEntity> packing = fill(h, basinPos.above(), 2);
-        BlockPos distributorPos = basinPos.above(3);
-        h.setBlock(distributorPos, CMBlocks.TOWER_DISTRIBUTOR.get());
-        h.setBlock(distributorPos.above(), CMBlocks.TOWER_FAN.get());
-        h.setBlock(distributorPos.above(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
-        CreativeMotorBlockEntity fanMotor = h.getBlockEntity(distributorPos.above(2));
+    public static void coolingWaterRunsThroughTheTowerAndAFluidTank(GameTestHelper h) {
+        BlockPos tankPos = new BlockPos(4, 1, 4);
+        h.setBlock(tankPos, AllBlocks.FLUID_TANK.getDefaultState());
+        List<CoolingTowerBlockEntity> packing = fill(h, tankPos.above(), 2);
+        BlockPos inletPos = tankPos.above(3);
+        h.setBlock(inletPos.above(), CMBlocks.TOWER_FAN.get());
+        h.setBlock(inletPos.above(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity fanMotor = h.getBlockEntity(inletPos.above(2));
         fanMotor.generatedSpeed.setValue(128);
         BlockPos pumpPos = new BlockPos(5, 4, 4);
         h.setBlock(pumpPos, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
-        List<BlockPos> pipes = List.of(new BlockPos(5, 1, 4), new BlockPos(6, 1, 4), new BlockPos(6, 2, 4), new BlockPos(6, 3, 4), new BlockPos(6, 4, 4));
+        List<BlockPos> pipes = List.of(inletPos, new BlockPos(5, 1, 4), new BlockPos(6, 1, 4), new BlockPos(6, 2, 4), new BlockPos(6, 3, 4), new BlockPos(6, 4, 4));
         TestVessels.pipes(h, pipes);
         h.setBlock(pumpPos.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
-        TowerParts.Basin basin = h.getBlockEntity(basinPos);
-        TowerParts.Distributor distributor = h.getBlockEntity(distributorPos);
-        basin.coolant().set(new FluidStack(Fluids.WATER, 3000), 3000 * 60.0);
+        FluidTankBlockEntity tank = h.getBlockEntity(tankPos);
+        TankCoolant start = TankCoolant.at(h.getLevel(), h.absolutePos(tankPos));
+        start.coolant().set(new FluidStack(Fluids.WATER, 3000), 3000 * 60.0);
+        start.settle();
+        h.assertTrue(tank.getTankInventory().getFluidAmount() == 3000, "The Fluid Tank itself should hold the water");
         h.startSequence()
                 .thenIdle(300)
                 .thenExecute(() -> {
                     CirculationPumpBlockEntity pump = h.getBlockEntity(pumpPos);
-                    h.assertTrue(pump.flow() > 0, "Pump should circulate through the tower: " + pump.status());
+                    h.assertTrue(pump.flow() > 0, "Pump should circulate through the tower and the tank: " + pump.status());
+                    TankCoolant held = TankCoolant.at(h.getLevel(), h.absolutePos(tankPos));
+                    h.assertTrue(held.coolant().amount() == tank.getTankInventory().getFluidAmount(), "The tank and its heat record should agree on the volume");
                     long evaporated = 0;
                     double rejected = 0;
-                    int water = basin.coolant().amount() + distributor.coolant().amount() + TestVessels.pipeVolume(h, pipes);
-                    double heat = basin.coolant().heat() + distributor.coolant().heat() + TestVessels.pipeHeat(h, pipes);
+                    int water = held.coolant().amount() + TestVessels.pipeVolume(h, pipes);
+                    double heat = held.coolant().heat() + TestVessels.pipeHeat(h, pipes);
                     for (CoolingTowerBlockEntity t : packing) {
                         evaporated += t.sinks().evaporatedVolume;
                         rejected += t.sinks().rejectedHeat;
@@ -129,8 +133,13 @@ public final class EquipmentTests {
                     h.assertTrue(rejected > 0 && evaporated > 0, "The fill should reject heat and evaporate water: " + rejected + " HU, " + evaporated + " mB");
                     h.assertTrue(water + evaporated == 3000, "Water should be in the loop or evaporated: " + water + " + " + evaporated);
                     h.assertTrue(Math.abs(heat + rejected - 3000 * 60.0) < 1e-3, "Heat should be in the loop or rejected: " + (heat + rejected));
-                    h.assertTrue(basin.coolant().temperature() < 79, "Basin water should have cooled: " + basin.coolant().temperature());
-                    h.assertTrue(distributor.rejecting() > 0 && distributor.status().endsWith("tower.ok"), "Distributor should see the tower working: " + distributor.status());
+                    h.assertTrue(held.coolant().temperature() < 79, "Tank water should have cooled: " + held.coolant().temperature());
+                    h.assertTrue(packing.get(1).towerRejecting() > 0 && packing.get(1).status().endsWith("tower.ok"), "The top of the fill should see the tower working: " + packing.get(1).status());
+                    tank.getTankInventory().drain(500, net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction.EXECUTE);
+                    double before = held.coolant().heat();
+                    int volume = held.coolant().amount();
+                    TankCoolant after = TankCoolant.at(h.getLevel(), h.absolutePos(tankPos));
+                    h.assertTrue(after.coolant().amount() == volume - 500 && Math.abs(after.coolant().heat() - before * (volume - 500) / volume) < 1e-3, "Water a Create pump takes out should take its share of the heat");
                 })
                 .thenSucceed();
     }
