@@ -12,7 +12,7 @@ This is the working manual: what each circuit does, the smallest plant that runs
 
 The circuits never mix. Each one is a single pipe path with its own Circulation Pump. A closed valve, a missing pipe or a stopped pump stops that circuit only, and the plant feels it downstream: no primary flow trips the reactor, no steam flow starves the turbine, no cooling flow leaves the condenser hot and the steam loop pressure climbing to the relief valve.
 
-Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce the hot runs: use a Reactor Alloy Ingot on each pipe and valve that will carry steam or water at 100 °C or more. Plain pipes burst there. Any pipe bursts if its steam passes 12 bar, so put a Relief Valve in every loop that carries steam.
+Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce the runs that matter: use a Reactor Alloy Ingot on each pipe and valve that will carry steam, pressurized coolant, or primary coolant near where you work. Plain pipes leak under pressure, and primary coolant in them gives off radiation. Any pipe bursts if its steam passes 12 bar, so put a Relief Valve in every loop that carries steam.
 
 ## A minimal working plant
 
@@ -111,7 +111,8 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Turbine overspeed trip | Load lost too fast | Close the governor with a full redstone signal or the reset button, then reload in steps |
 | Relief valve venting | Steam not being used or condensed | Check the condenser, the cooling loop and the tower fan |
 | Tower fill says covered | No fan and no open sky | Add a fan or open the top |
-| A pipe burst | Hot water or steam in a plain Create pipe, or steam past 12 bar | Replace it and reinforce it with a Reactor Alloy Ingot. If it was already reinforced, fit a Relief Valve in that loop and find out why the steam was not being used or condensed |
+| A pipe burst | Steam passed 12 bar | Replace it, fit a Relief Valve in that loop, and find out why the steam was not being used or condensed |
+| A loop keeps losing water, or the pipes give a dose | Plain pipes or valves under pressure, or holding primary coolant | Reinforce them with a Reactor Alloy Ingot |
 | Ruined Fuel Channel | Fuel melted | Keep the vessel flooded so the corium cools inside. Then replace the ruined channels and any failed casing |
 | Corium outside the vessel | The floor failed | Stay off it. Flood it with water, wait for it to go dark, mine it and store it shielded. Decontaminate the area |
 

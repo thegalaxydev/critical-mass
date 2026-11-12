@@ -199,6 +199,10 @@ public final class LedgerCommand {
                 for (ThermalNode pipe : p.pipeContents()) {
                     coolant += pipe.coolant().amount();
                     stored += pipe.coolant().heat();
+                    if (pipe.sinks() != null) {
+                        sunk += pipe.sinks().totalHeat();
+                        lostVolume += pipe.sinks().totalVolume();
+                    }
                 }
                 source.sendSuccess(() -> Component.literal("pump " + where(p) + " flow=" + p.flow() + " moved=" + p.movedTotal() + " speed=" + p.getSpeed()
                         + " status=" + p.status()), false);

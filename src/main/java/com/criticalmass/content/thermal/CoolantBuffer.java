@@ -291,16 +291,12 @@ public final class CoolantBuffer {
             if (action.simulate()) {
                 return fluid.copyWithAmount(n);
             }
-            boolean hot = PipeCoolant.tooHot(CoolantBuffer.this);
             Packet p = take(n);
             if (level != null) {
                 flightTick = level.getGameTime();
                 flightFluid = p.fluid().copy();
                 flightAmount = p.amount();
                 flightHeat = p.heat();
-                if (hot && side != null && pos != null) {
-                    PipeBurst.queueFrom(level, pos, side);
-                }
             }
             return p.fluid();
         }

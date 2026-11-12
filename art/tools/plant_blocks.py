@@ -407,7 +407,6 @@ LANG = {
     "block.criticalmass.reinforced_valve": "Reinforced Valve",
     "criticalmass.valve.open": "Open",
     "criticalmass.valve.closed": "Closed: no coolant passes",
-    "criticalmass.circuit.pipe_hot": "A pipe burst: hot coolant and steam need Reinforced Pipe",
     "item.criticalmass.enriched_uranium": "Enriched Uranium",
     "item.criticalmass.depleted_uranium": "Depleted Uranium",
     "criticalmass.centrifuge.idle": "Waiting for Uranium Concentrate",

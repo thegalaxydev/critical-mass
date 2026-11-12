@@ -4,7 +4,10 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.radiation.ContaminationData;
+import com.criticalmass.content.radiation.Radiation;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.registry.CMBlocks;
@@ -70,7 +73,7 @@ public final class PipeTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 300)
-    public static void hotCoolantBurstsCreatePipesInTheLoop(GameTestHelper h) {
+    public static void hotCoolantRunsThroughPlainPipesWithoutPressure(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);
         TestVessels.createPipes(h, List.of(CREATE_PIPE));
@@ -80,45 +83,66 @@ public final class PipeTests {
                 .thenIdle(200)
                 .thenExecute(() -> {
                     CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
-                    h.assertBlockNotPresent(AllBlocks.FLUID_PIPE.get(), CREATE_PIPE);
-                    h.assertTrue(pump.flow() == 0, "The burst pipe should break the loop: " + pump.status());
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
+                    h.assertBlockPresent(AllBlocks.FLUID_PIPE.get(), CREATE_PIPE);
+                    h.assertTrue(pump.flow() > 0, "Hot coolant should keep circulating through a plain pipe: " + pump.status());
+                    int total = controller.coolant().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.PIPES);
+                    h.assertTrue(total == 6000, "An unpressurized plain pipe should not leak: " + total);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void plainPipesLeakUnderPressureAndRadiate(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.loop(h, true);
+        TestVessels.createPipes(h, List.of(CREATE_PIPE));
+        ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
+        controller.coolant().set(CoolantLoopTests.coolant(6000), 6000 * heatAt(40));
+        h.onEachTick(() -> controller.notePressure(100));
+        h.startSequence()
+                .thenIdle(200)
+                .thenExecute(() -> {
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
+                    SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
+                    PipeCoolant plain = PipeCoolant.at(h.getLevel(), h.absolutePos(CREATE_PIPE));
+                    long leaked = plain.sinks().ventedVolume;
+                    h.assertTrue(pump.flow() > 0, "A leaking pipe should not stop the loop: " + pump.status());
+                    h.assertTrue(leaked > 20, "A plain pipe on a loop at 100 bar should leak: " + leaked);
+                    int total = controller.coolant().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.PIPES);
+                    h.assertTrue(total + leaked == 6000, "What is missing from the loop should be what the plain pipe leaked: " + total + " + " + leaked);
                     for (BlockPos p : TestVessels.PIPES) {
                         if (!p.equals(CREATE_PIPE)) {
-                            h.assertBlockPresent(CMBlocks.REINFORCED_PIPE.get(), p);
+                            h.assertTrue(PipeCoolant.at(h.getLevel(), h.absolutePos(p)).sinks().ventedVolume == 0, "Reinforced pipes should not leak");
                         }
                     }
+                    Vec3 at = h.absolutePos(CREATE_PIPE).getCenter();
+                    Vec3 sealed = h.absolutePos(TestVessels.PIPES.get(0)).getCenter();
+                    List<Radiation.Source> sources = Radiation.blockSources(h.getLevel());
+                    h.assertTrue(sources.stream().anyMatch(src -> src.pos().equals(at) && src.strength() > 0), "A plain pipe holding primary coolant should give off radiation");
+                    h.assertTrue(sources.stream().noneMatch(src -> src.pos().equals(sealed)), "A reinforced pipe should not");
+                    h.assertTrue(ContaminationData.get(h.getLevel()).get(h.absolutePos(CREATE_PIPE)) > 0, "Leaked primary coolant should contaminate the spot");
                 })
                 .thenSucceed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 40)
-    public static void drainingHotCoolantBurstsTheNearestCreatePipe(GameTestHelper h) {
+    public static void drainingHotCoolantSparesPlainPipes(GameTestHelper h) {
         BlockPos hot = new BlockPos(1, 1, 1);
-        BlockPos cold = new BlockPos(1, 1, 4);
-        List<BlockPos> hotRun = List.of(hot.east(), hot.east(2), hot.east(3));
-        List<BlockPos> coldRun = List.of(cold.east(), cold.east(2));
+        List<BlockPos> run = List.of(hot.east(), hot.east(2), hot.east(3));
         h.setBlock(hot, CMBlocks.SPENT_FUEL_RACK.get());
-        h.setBlock(cold, CMBlocks.SPENT_FUEL_RACK.get());
-        TestVessels.pipes(h, List.of(hotRun.get(0)));
-        TestVessels.createPipes(h, List.of(hotRun.get(1), hotRun.get(2), coldRun.get(0), coldRun.get(1)));
-        TestVessels.connect(h, hotRun.get(0));
-        SpentFuelRackBlockEntity hotTank = h.getBlockEntity(hot);
-        SpentFuelRackBlockEntity coldTank = h.getBlockEntity(cold);
-        hotTank.coolant().set(CoolantLoopTests.coolant(1000), 1000 * heatAt(200));
-        coldTank.coolant().set(CoolantLoopTests.coolant(1000), 1000 * heatAt(30));
-        IFluidHandler hotHandler = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(hot), Direction.EAST);
-        IFluidHandler coldHandler = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(cold), Direction.EAST);
-        h.assertTrue(hotHandler != null && coldHandler != null, "Racks should offer their water on their sides");
-        hotHandler.drain(100, IFluidHandler.FluidAction.EXECUTE);
-        coldHandler.drain(100, IFluidHandler.FluidAction.EXECUTE);
+        TestVessels.createPipes(h, run);
+        SpentFuelRackBlockEntity rack = h.getBlockEntity(hot);
+        rack.coolant().set(CoolantLoopTests.coolant(1000), 1000 * heatAt(200));
+        IFluidHandler handler = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(hot), Direction.EAST);
+        h.assertTrue(handler != null, "The rack should offer its water on its side");
+        handler.drain(100, IFluidHandler.FluidAction.EXECUTE);
         h.startSequence()
                 .thenIdle(3)
                 .thenExecute(() -> {
-                    h.assertBlockPresent(CMBlocks.REINFORCED_PIPE.get(), hotRun.get(0));
-                    h.assertBlockNotPresent(AllBlocks.FLUID_PIPE.get(), hotRun.get(1));
-                    h.assertBlockPresent(AllBlocks.FLUID_PIPE.get(), hotRun.get(2));
-                    h.assertBlockPresent(AllBlocks.FLUID_PIPE.get(), coldRun.get(0));
-                    h.assertBlockPresent(AllBlocks.FLUID_PIPE.get(), coldRun.get(1));
+                    for (BlockPos p : run) {
+                        h.assertBlockPresent(AllBlocks.FLUID_PIPE.get(), p);
+                    }
                 })
                 .thenSucceed();
     }

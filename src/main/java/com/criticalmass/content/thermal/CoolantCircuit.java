@@ -224,22 +224,17 @@ public final class CoolantCircuit {
                 weakest = p;
             }
         }
-        List<BlockPos> hot = new ArrayList<>();
+        double primary = source != null && level.getBlockEntity(source) instanceof ReactorControllerBlockEntity c ? c.primaryPressure() : CMThermal.ATMOSPHERIC;
         for (ThermalNode n : nodes) {
-            if (n instanceof PipeCoolant p && p.shouldBurst()) {
-                hot.add(p.pos());
+            if (n instanceof PipeCoolant p && !p.reinforced()) {
+                p.leak(level, primary);
             }
         }
-        if (weakest == null && hot.isEmpty()) {
+        if (weakest == null) {
             return result;
         }
-        for (BlockPos p : hot) {
-            PipeBurst.burst(level, p);
-        }
-        if (weakest != null) {
-            PipeBurst.rupture(level, weakest.pos());
-        }
-        return new Flow(result.moved(), weakest != null ? "criticalmass.circuit.pipe_burst" : "criticalmass.circuit.pipe_hot");
+        PipeBurst.burst(level, weakest.pos());
+        return new Flow(result.moved(), "criticalmass.circuit.pipe_burst");
     }
 
     private Flow transferClosed(List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {

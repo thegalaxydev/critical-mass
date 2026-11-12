@@ -141,7 +141,10 @@ public final class CMThermal {
     public static final double ROD_JOG = 0.005;
     public static final double LOW_COOLANT_ALARM = 0.5;
     public static final int ROD_LINK_TICKS = 20;
-    public static final double PIPE_BURST_TEMPERATURE = BOILING;
+    public static final double PIPE_LEAK_PER_BAR = 0.004;
+    public static final double PIPE_LEAK_MAX = 1.0;
+    public static final double PLAIN_PIPE_DOSE = 1.0;
+    public static final double CONTAMINATED_PIPE_DOSE = 5.0;
     public static final float PIPE_BURST_DAMAGE = 4.0f;
     public static final int MAX_VESSEL_BLOCKS = 2048;
 

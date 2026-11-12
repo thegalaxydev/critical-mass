@@ -15,7 +15,6 @@ import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
-import com.criticalmass.content.thermal.PipeBurst;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMAttachments;
@@ -79,7 +78,6 @@ public class CriticalMass {
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
-        NeoForge.EVENT_BUS.addListener(PipeBurst::onLevelTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }

@@ -9,7 +9,10 @@ import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
 import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
+import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
+import com.criticalmass.content.thermal.PipeCoolant;
+import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
@@ -184,6 +187,13 @@ public final class Radiation {
                 double s = itemStrength(port.output()) * PORT_TRANSMISSION;
                 if (s > 0) {
                     out.add(new Source(c, s, null, body(be), null));
+                }
+            } else if (be instanceof CirculationPumpBlockEntity pump) {
+                for (ThermalNode node : pump.pipeContents()) {
+                    if (node instanceof PipeCoolant pipe && !pipe.reinforced() && pipe.coolant().amount() > 0 && CMThermal.isPrimaryMedium(pipe.coolant().fluid())) {
+                        double dose = CMThermal.isContaminated(pipe.coolant().fluid()) ? CMThermal.CONTAMINATED_PIPE_DOSE : CMThermal.PLAIN_PIPE_DOSE;
+                        out.add(new Source(pipe.pos().getCenter(), dose * pipe.coolant().amount() / CMThermal.PIPE_CAPACITY, null, body(be), null));
+                    }
                 }
             }
         }

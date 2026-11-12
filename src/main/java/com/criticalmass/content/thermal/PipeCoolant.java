@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.ReinforcedPipeBlock;
+import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.registry.CMAttachments;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
@@ -12,6 +13,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -25,6 +27,8 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
     @Nullable
     private final BlockEntity pipe;
     private final CoolantBuffer buffer;
+    private final ThermalSinks sinks = new ThermalSinks();
+    private double leakDebt;
 
     public PipeCoolant(IAttachmentHolder holder) {
         pipe = holder instanceof BlockEntity be ? be : null;
@@ -66,12 +70,28 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
         return pipe != null && isReinforced(pipe.getBlockState());
     }
 
-    public static boolean tooHot(CoolantBuffer b) {
-        return b.amount() > 0 && (b.quality() > 0 || b.temperature() >= CMThermal.PIPE_BURST_TEMPERATURE);
-    }
-
-    public boolean shouldBurst() {
-        return !reinforced() && tooHot(buffer);
+    public void leak(Level level, double primaryPressure) {
+        if (buffer.amount() == 0) {
+            return;
+        }
+        boolean primary = CMThermal.isPrimaryMedium(buffer.fluid());
+        double pressure = buffer.steamMedium() ? buffer.pressure() : primary ? primaryPressure : CMThermal.ATMOSPHERIC;
+        double excess = pressure - CMThermal.ATMOSPHERIC;
+        if (excess <= 0) {
+            return;
+        }
+        leakDebt += Math.min(CMThermal.PIPE_LEAK_MAX, excess * CMThermal.PIPE_LEAK_PER_BAR);
+        int amount = (int) leakDebt;
+        if (amount <= 0) {
+            return;
+        }
+        leakDebt -= amount;
+        CoolantBuffer.Packet lost = buffer.take(amount);
+        sinks.vent(lost);
+        if (primary && level instanceof ServerLevel server) {
+            ContaminationData.get(server).add(pos(), lost.amount() * (CMThermal.isContaminated(lost.fluid()) ? CMThermal.CONTAMINATED_SPILL : CMThermal.CLEAN_SPILL));
+        }
+        ThermalSafety.steamPuff(level, pos(), 0, 0.3, 0);
     }
 
     public boolean overPressure() {
@@ -90,6 +110,11 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
     @Override
     public CoolantBuffer coolant() {
         return buffer;
+    }
+
+    @Override
+    public ThermalSinks sinks() {
+        return sinks;
     }
 
     @Override
@@ -114,11 +139,14 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
 
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return buffer.save(provider);
+        CompoundTag tag = buffer.save(provider);
+        tag.put("Sinks", sinks.save());
+        return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         buffer.load(tag, provider);
+        sinks.load(tag.getCompound("Sinks"));
     }
 }
