@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.client.VesselHighlighter;
+import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.radiation.ContaminationData;
@@ -50,6 +51,12 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private boolean frozen;
     private boolean startingUp;
     private int noFlowTicks;
+    private double manualInsertion = 1.0;
+    private double boron;
+    private double clientNeutron;
+    private double clientReactivity;
+    private double clientStartupRate;
+    private double clientXenon;
     private String tripReason = "";
     private final ThermalSinks sinks = new ThermalSinks();
     private final Map<Long, Double> integrity = new HashMap<>();
@@ -192,7 +199,21 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     }
 
     public double insertion() {
-        return 1.0 - signal / 15.0;
+        return manualInsertion;
+    }
+
+    public double boron() {
+        return boron;
+    }
+
+    public void setManualInsertion(double value) {
+        manualInsertion = Math.max(0, Math.min(1, value));
+    }
+
+    public void setBoron(double ppm) {
+        boron = Math.max(0, ppm);
+        syncPending = true;
+        setChanged();
     }
 
     public int effectiveFlow() {
@@ -748,6 +769,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 trip(breached ? "breach" : damaged ? "damaged" : "invalid");
             } else if (core.maxTemperature() >= CMThermal.TRIP_TEMPERATURE) {
                 trip("overtemp");
+            } else if (core.neutronPower() >= CMThermal.HIGH_FLUX_TRIP) {
+                trip("high_flux");
+            } else if (core.startupRate() > 1 / CMThermal.PERIOD_TRIP_SECONDS) {
+                trip("short_period");
             } else if (effectiveFlow == 0) {
                 if (++noFlowTicks >= CMThermal.LOW_FLOW_TRIP_TICKS) {
                     trip("low_flow");
@@ -786,7 +811,17 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         reacting = canRun && !tripped && demand && permitted;
-        double fallback = insertion();
+        boolean dropped = tripped || !canRun;
+        double wanted = dropped ? 1.0 : 1.0 - signal / 15.0;
+        if (!permitted && wanted < manualInsertion) {
+            wanted = manualInsertion;
+        }
+        if (wanted > manualInsertion) {
+            manualInsertion = Math.min(wanted, manualInsertion + (dropped ? 1.0 / CMThermal.ROD_FAILSAFE_TICKS : CMThermal.ROD_MANUAL_RATE));
+        } else {
+            manualInsertion = Math.max(wanted, manualInsertion - CMThermal.ROD_MANUAL_RATE);
+        }
+        double fallback = manualInsertion;
         VesselStructure shape = structure != null && structure.valid() ? structure : lastValid;
         for (ControlRodDriveBlockEntity d : drives.values()) {
             d.linkToReactor(shape == null ? 0 : shape.interiorHeight, bankTargets[d.bank()]);
@@ -795,10 +830,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             visualClock = CMThermal.CHANNEL_VISUAL_TICKS;
             updateChannelVisuals(shape, drives, fallback);
         }
-        heatAdded += core.tick(reacting, k -> {
+        heatAdded += core.tick(k -> {
             ControlRodDriveBlockEntity d = drives.get(k);
             return d != null ? d.insertion() : fallback;
-        }, effectiveFlow, coolant);
+        }, effectiveFlow, coolant, boron);
         if (failures > 0) {
             coolant.contaminate();
         }
@@ -866,6 +901,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         if (reacting && core.lastFission() > 0) {
             return "criticalmass.reactor.status.running";
+        }
+        if (reacting) {
+            return "criticalmass.reactor.status.source_range";
         }
         if (core.residualPower() > CMThermal.RESIDUAL_COLD_LIMIT || core.maxTemperature() > CMThermal.COLD_TEMPERATURE) {
             return "criticalmass.reactor.status.cooling_down";
@@ -1016,6 +1054,12 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putDouble("Extracted", core.lastExtracted());
         tag.putDouble("MaxTemp", core.maxTemperature());
         tag.putInt("HotSpots", core.hotSpots());
+        tag.putDouble("Manual", manualInsertion);
+        tag.putDouble("Boron", boron);
+        tag.putDouble("NeutronPower", core.neutronPower());
+        tag.putDouble("Reactivity", core.reactivity());
+        tag.putDouble("StartupRate", core.startupRate());
+        tag.putDouble("XenonLevel", core.xenon());
     }
 
     @Override
@@ -1029,6 +1073,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         primaryPressure = tag.contains("PrimaryPressure") ? tag.getDouble("PrimaryPressure") : CMThermal.ATMOSPHERIC;
         flashing = tag.getBoolean("Flashing");
         startBlock = tag.getString("StartBlock");
+        manualInsertion = tag.contains("Manual") ? tag.getDouble("Manual") : 1.0;
+        boron = tag.getDouble("Boron");
         coriumFloor = tag.contains("CoriumFloor") ? tag.getInt("CoriumFloor") : Integer.MIN_VALUE;
         flashedVolume = tag.getDouble("Flashed");
         for (int i = 0; i < bankTargets.length; i++) {
@@ -1087,6 +1133,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         clientExtracted = tag.getDouble("Extracted");
         clientMaxTemp = tag.getDouble("MaxTemp");
         clientHotSpots = tag.getInt("HotSpots");
+        clientNeutron = tag.getDouble("NeutronPower");
+        clientReactivity = tag.getDouble("Reactivity");
+        clientStartupRate = tag.getDouble("StartupRate");
+        clientXenon = tag.getDouble("XenonLevel");
         clientLowestIntegrity = tag.contains("LowestIntegrity") ? tag.getDouble("LowestIntegrity") : 1.0;
         clientDamaged = tag.getInt("Damaged");
         clientResidual = tag.getDouble("Residual");
@@ -1103,7 +1153,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.controller")));
         boolean running = status.endsWith("running") || status.endsWith("starting");
-        boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down") || status.endsWith("unfueled");
+        boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down") || status.endsWith("unfueled") || status.endsWith("source_range");
         tooltip.add(ThermalTooltips.line(status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED));
         if (status.endsWith("tripped") && !tripReason.isEmpty()) {
             tooltip.add(ThermalTooltips.line("criticalmass.reactor.trip." + tripReason, ChatFormatting.RED));
@@ -1146,6 +1196,12 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 tooltip.add(ThermalTooltips.line("criticalmass.goggles.fuel_burnup", clientCondition < 0.5 ? ChatFormatting.RED : ChatFormatting.GRAY,
                         Math.round(clientBurnup * 100), Math.round(clientCondition * 100)));
             }
+            String state = clientReactivity > CMThermal.CRITICAL_BAND ? "supercritical" : clientReactivity < -CMThermal.CRITICAL_BAND ? "subcritical" : "critical";
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.neutron." + state, clientReactivity > CMThermal.CRITICAL_BAND ? ChatFormatting.GOLD : ChatFormatting.GRAY,
+                    PlantDisplaySources.number(clientNeutron * 100), Math.round(clientReactivity * 1.0e5)));
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.period", clientStartupRate > 1 / (2 * CMThermal.PERIOD_TRIP_SECONDS) ? ChatFormatting.RED : ChatFormatting.GRAY,
+                    Math.abs(clientStartupRate) < 1e-3 ? "\u221e" : PlantDisplaySources.number(1 / clientStartupRate)));
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.poisons", ChatFormatting.GRAY, Math.round(clientXenon * 100), Math.round(boron)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientFission)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.extracted", ChatFormatting.GRAY, ThermalTooltips.number(clientExtracted)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.core_temp", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));

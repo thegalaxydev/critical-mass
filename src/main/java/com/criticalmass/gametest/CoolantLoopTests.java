@@ -51,7 +51,7 @@ public final class CoolantLoopTests {
                 .thenIdle(2)
                 .thenExecute(() -> {
                     be.coolant().set(coolant(4321), 98765.4321);
-                    be.core().setColumnHeat(1, 0, 5555.5);
+                    be.core().setColumnHeat(2, 0, 5555.5);
                     double core = be.core().storedHeat();
                     h.assertTrue(core == 5555.5, "Column heat was not set: " + core);
                     CompoundTag saved = be.saveWithFullMetadata(h.getLevel().registryAccess());
@@ -71,6 +71,7 @@ public final class CoolantLoopTests {
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         controller.coolant().set(coolant(6000), 0);
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+        TestVessels.atPower(controller, 0.5);
         int[] volumes = new int[2];
         h.startSequence()
                 .thenIdle(300)

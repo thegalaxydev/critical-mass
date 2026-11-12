@@ -139,10 +139,12 @@ public final class PlantTests {
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
         HeatExchangerBlockEntity exchanger = h.getBlockEntity(TestVessels.EXCHANGER);
         SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.PLANT_TURBINE);
-        controller.coolant().set(CoolantLoopTests.coolant(6000), 0);
-        exchanger.secondary().set(water(1000), 0);
-        turbine.coolant().set(water(1000), 0);
+        controller.coolant().set(CoolantLoopTests.coolant(6000), 6000 * 90.0);
+        exchanger.secondary().set(water(1000), 1000 * CMThermal.SATURATION_ENERGY);
+        turbine.coolant().set(water(1000), 1000 * CMThermal.SATURATION_ENERGY);
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+        TestVessels.atPower(controller, 0.5);
+        double[] base = {Double.NaN};
         int[] checks = new int[1];
         String[] failure = new String[1];
         h.onEachTick(() -> {
@@ -153,8 +155,14 @@ public final class PlantTests {
             int secondary = exchanger.secondary().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.SECONDARY_PIPES);
             double stored = controller.coolant().heat() + controller.core().storedHeat() + exchanger.primary().heat() + exchanger.secondary().heat() + turbine.coolant().heat()
                     + TestVessels.pipeHeat(h, TestVessels.PRIMARY_PIPES) + TestVessels.pipeHeat(h, TestVessels.SECONDARY_PIPES);
-            double accounted = stored + turbine.heatExtracted();
-            if (primary != 6000 || secondary != 2000) {
+            if (Double.isNaN(base[0])) {
+                base[0] = stored + turbine.heatExtracted() - controller.heatAdded();
+            }
+            double accounted = stored + turbine.heatExtracted() - base[0];
+            if (controller.isTripped()) {
+                failure[0] = "tick " + h.getTick() + ": tripped on " + controller.tripReason() + " at power " + controller.core().neutronPower() + " reactivity " + controller.core().reactivity()
+                        + " rate " + controller.core().startupRate() + " coolant " + controller.coolant().temperature() + " fuel " + controller.core().maxTemperature() + " flow " + controller.effectiveFlow();
+            } else if (primary != 6000 || secondary != 2000) {
                 failure[0] = "tick " + h.getTick() + ": volume primary " + primary + " secondary " + secondary;
             } else if (!close(accounted, controller.heatAdded())) {
                 failure[0] = "tick " + h.getTick() + ": heat " + accounted + " vs added " + controller.heatAdded();
@@ -166,7 +174,7 @@ public final class PlantTests {
                 .thenExecute(() -> {
                     h.assertTrue(failure[0] == null, "Ledger broke at " + failure[0]);
                     h.assertTrue(checks[0] >= 10000, "Only " + checks[0] + " ticks checked");
-                    h.assertTrue(controller.isReacting(), "Reactor stopped: " + controller.status());
+                    h.assertTrue(controller.isReacting(), "Reactor stopped: " + controller.status() + " " + controller.tripReason());
                     h.assertTrue(turbine.stressCapacity() > 0, "Turbine produced no capacity through the exchanger");
                     h.assertTrue(controller.core().hotSpots() == 0 && controller.damagedBlocks() == 0, "Fully cooled core should not overheat or crack");
                     CriticalMass.LOGGER.info("plant after {} ticks: added {} HU, turbine extracted {} HU, exchanger moved {} HU, capacity {} SU",

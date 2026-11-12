@@ -41,7 +41,7 @@ public final class ReactorCoreTests {
         h.assertTrue(s.valid(), "Vessel should be valid: " + s.sizeError + " " + s.problems);
         h.assertTrue(s.complete(), "Vessel should be complete: " + s.missing);
         h.assertTrue(s.width() == 5 && s.height() == 5 && s.length() == 5, "Wrong dimensions");
-        h.assertTrue(s.count(VesselStructure.Kind.FUEL) == 3 && s.count(VesselStructure.Kind.CONTROL) == 2 && s.count(VesselStructure.Kind.COOLANT) == 4, "Wrong column counts");
+        h.assertTrue(s.count(VesselStructure.Kind.FUEL) == 5 && s.count(VesselStructure.Kind.CONTROL) == 2 && s.count(VesselStructure.Kind.COOLANT) == 2, "Wrong column counts");
         h.succeed();
     }
 
@@ -123,98 +123,168 @@ public final class ReactorCoreTests {
         return core;
     }
 
-    private static double settle(ReactorCore core, double insertion, CoolantBuffer buffer) {
-        double out = 0;
-        for (int i = 0; i <= CMThermal.POWER_RAMP_TICKS; i++) {
-            out = core.tick(true, insertion, 0, buffer);
-        }
-        return out;
-    }
+    private static final char[][] BARE = {{'.', '.', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}};
+    private static final char[][] RODDED = {{'.', '.', '.'}, {'r', 'f', 'r'}, {'.', '.', '.'}};
+    private static final char[][] COOLED = {{'.', 'c', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}};
 
-    @GameTest(template = EMPTY)
-    public static void heatFeedbackLowersPowerAndShutdownIsPrompt(GameTestHelper h) {
-        h.assertTrue(ReactorCore.feedback(300, 200) == 1.0, "Cool fuel and coolant should give full power");
-        h.assertTrue(Math.abs(ReactorCore.feedback(300, 400) - 0.75) < 1e-9, "Coolant at 400 C should cut power to 75%: " + ReactorCore.feedback(300, 400));
-        h.assertTrue(Math.abs(ReactorCore.feedback(1300, 200) - 0.75) < 1e-9, "Fuel at 1300 C should cut power to 75%: " + ReactorCore.feedback(1300, 200));
-        h.assertTrue(Math.abs(ReactorCore.feedback(5000, 5000) - 0.25) < 1e-9, "Feedback should bottom out at a quarter");
-        ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}});
-        CoolantBuffer cold = new CoolantBuffer(1000, () -> { });
-        CoolantBuffer hot = new CoolantBuffer(1000, () -> { });
-        hot.set(new net.neoforged.neoforge.fluids.FluidStack(com.criticalmass.registry.CMFluids.PRIMARY_COOLANT.source.get(), 1000), 1000 * (550 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
-        double full = settle(core, 0, cold);
-        double reduced = settle(core, 0, hot);
-        h.assertTrue(Math.abs(reduced - full * 0.5) < 1e-6, "Coolant at 550 C should halve the output: " + reduced + " of " + full);
-        double after = core.tick(false, 0, 0, cold);
-        h.assertTrue(after > 0 && after <= full * CMThermal.DECAY_FRACTION + 1e-9, "Shutdown should drop straight to decay heat: " + after + " of " + full);
-        h.succeed();
-    }
-
-    @GameTest(template = EMPTY)
-    public static void loneFuelColumnGivesBaseOutput(GameTestHelper h) {
-        ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}});
-        double first = core.tick(true, 0, 0, new CoolantBuffer(1000, () -> { }));
-        double out = settle(core, 0, new CoolantBuffer(1000, () -> { }));
-        double expected = CMThermal.FUEL_BASE_OUTPUT * 3;
-        h.assertTrue(Math.abs(first - expected / CMThermal.POWER_RAMP_TICKS) < 1e-9, "Power should ramp, first tick gave " + first);
-        h.assertTrue(Math.abs(out - expected) < 1e-9, "Lone column output " + out + " expected " + expected);
-        h.succeed();
-    }
-
-    @GameTest(template = EMPTY)
-    public static void adjacentFuelRaisesOutput(GameTestHelper h) {
-        ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'f', 'f', 'f'}, {'.', '.', '.'}});
-        double out = settle(core, 0, new CoolantBuffer(1000, () -> { }));
-        double base = CMThermal.FUEL_BASE_OUTPUT * 3;
-        double expected = base * (1 + CMThermal.FUEL_ADJACENCY_FACTOR) * 2 + base * (1 + 2 * CMThermal.FUEL_ADJACENCY_FACTOR);
-        h.assertTrue(Math.abs(out - expected) < 1e-9, "Row of three output " + out + " expected " + expected);
-        h.succeed();
-    }
-
-    @GameTest(template = EMPTY)
-    public static void controlInsertionSuppressesLinearly(GameTestHelper h) {
-        ReactorCore core = core(h, new char[][]{{'.', '.', '.'}, {'r', 'f', '.'}, {'.', '.', '.'}});
+    private static CoolantBuffer water(double temperature) {
         CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
-        double full = settle(core, 0, buffer);
-        double half = settle(core, 0.5, buffer);
-        double none = settle(core, 1.0, buffer);
-        h.assertTrue(Math.abs(half - full * 0.5) < 1e-9, "Half insertion gave " + half + " of " + full);
-        h.assertTrue(none == 0, "Full insertion should stop reaction heat, got " + none);
+        buffer.set(CoolantLoopTests.coolant(1000), 1000 * (temperature - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
+        return buffer;
+    }
+
+    private static double boronFor(double reactivity) {
+        return (CMThermal.FRESH_REACTIVITY - reactivity) / CMThermal.BORON_WORTH;
+    }
+
+    @GameTest(template = EMPTY)
+    public static void roddedCoreSitsAtSourceLevel(GameTestHelper h) {
+        ReactorCore core = core(h, RODDED);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        for (int i = 0; i < 2000; i++) {
+            core.tick(k -> 1.0, 0, buffer, 0);
+        }
+        double expected = CMThermal.FRESH_REACTIVITY - 2 * CMThermal.ROD_WORTH;
+        h.assertTrue(Math.abs(core.reactivity() - expected) < 1e-9, "Two rods fully in should leave " + expected + ", got " + core.reactivity());
+        h.assertTrue(core.neutronPower() > 0 && core.neutronPower() < 1e-7, "A shut-down core should sit at source level: " + core.neutronPower());
+        h.assertTrue(Math.abs(core.neutronPower() + CMThermal.NEUTRON_SOURCE / expected) < 1e-10, "Source level should follow subcritical multiplication: " + core.neutronPower());
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void positiveReactivityGivesTheStablePeriod(GameTestHelper h) {
+        ReactorCore core = core(h, BARE);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        double rho = 0.2 * CMThermal.DELAYED_FRACTION;
+        core.setKinetics(1e-7, 0, 0);
+        for (int i = 0; i < 400; i++) {
+            core.tick(k -> 0.0, 0, buffer, boronFor(rho));
+        }
+        double expected = (CMThermal.DELAYED_FRACTION - rho) / (CMThermal.PRECURSOR_DECAY * 20 * rho);
+        h.assertTrue(Math.abs(core.reactivity() - rho) < 1e-6, "Reactivity should be the fuel worth less boron: " + core.reactivity());
+        h.assertTrue(Math.abs(core.period() - expected) < expected * 0.1, "Period should be " + expected + " s, got " + core.period());
+        h.assertTrue(core.neutronPower() > 1e-7 && core.neutronPower() < 1e-3, "Power should be climbing through the source range: " + core.neutronPower());
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void rodWorthFollowsAnSCurve(GameTestHelper h) {
+        h.assertTrue(ReactorCore.rodCurve(0) == 0 && Math.abs(ReactorCore.rodCurve(0.5) - 0.5) < 1e-9 && Math.abs(ReactorCore.rodCurve(1) - 1) < 1e-9, "Rod worth should run from none to all");
+        double tip = ReactorCore.rodCurve(0.2) - ReactorCore.rodCurve(0);
+        double middle = ReactorCore.rodCurve(0.6) - ReactorCore.rodCurve(0.4);
+        h.assertTrue(middle > tip * 3, "The middle of the stroke should be worth far more than the tip: " + middle + " against " + tip);
+        ReactorCore core = core(h, RODDED);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        core.tick(k -> 0.0, 0, buffer, boronFor(0));
+        double out = core.rodReactivity();
+        core.tick(k -> 0.5, 0, buffer, boronFor(0));
+        double half = core.rodReactivity();
+        h.assertTrue(out == 0 && Math.abs(half + CMThermal.ROD_WORTH) < 1e-9, "Two half-inserted rods should be worth one rod: " + half);
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void hotFuelAndCoolantCostReactivity(GameTestHelper h) {
+        ReactorCore core = core(h, BARE);
+        core.tick(k -> 0.0, 0, water(CMThermal.AMBIENT), boronFor(0));
+        h.assertTrue(Math.abs(core.temperatureReactivity()) < 1e-9, "A cold core has no temperature defect: " + core.temperatureReactivity());
+        core.tick(k -> 0.0, 0, water(CMThermal.AMBIENT + 200), boronFor(0));
+        h.assertTrue(Math.abs(core.temperatureReactivity() + 200 * CMThermal.MODERATOR_COEFFICIENT) < 1e-6, "Hot coolant should cost reactivity: " + core.temperatureReactivity());
+        core.setColumnHeat(2, 0, 500 * CMThermal.FUEL_HEAT_CAPACITY * 3);
+        core.tick(k -> 0.0, 0, water(CMThermal.AMBIENT), boronFor(0));
+        h.assertTrue(Math.abs(core.temperatureReactivity() + 500 * CMThermal.FUEL_COEFFICIENT) < 1e-4, "Hot fuel should cost reactivity: " + core.temperatureReactivity());
+        CoolantBuffer empty = new CoolantBuffer(1000, () -> { });
+        core.tick(k -> 0.0, 0, empty, 0);
+        h.assertTrue(core.reactivity() < -0.1, "A core without water cannot be critical: " + core.reactivity());
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void fuelTemperatureSettlesThePower(GameTestHelper h) {
+        ReactorCore core = core(h, COOLED);
+        double rho = 0.002;
+        core.setKinetics(0.3, 0, 0);
+        for (int i = 0; i < 1500; i++) {
+            core.tick(k -> 0.0, CMThermal.COOLANT_REFERENCE_FLOW, water(CMThermal.AMBIENT), boronFor(rho));
+        }
+        double rise = rho / CMThermal.FUEL_COEFFICIENT;
+        double expected = rise * CMThermal.FUEL_CONDUCTANCE * 3 / (CMThermal.FUEL_BASE_OUTPUT * 3);
+        h.assertTrue(Math.abs(core.startupRate()) < 0.02, "Power should have settled: " + core.startupRate());
+        h.assertTrue(core.neutronPower() > expected * 0.6 && core.neutronPower() < expected * 1.1, "Power should settle near " + expected + " of rated, got " + core.neutronPower());
+        h.assertTrue(Math.abs(core.reactivity()) < 3e-4, "A steady core is critical: " + core.reactivity());
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void xenonPeaksAfterShutdownThenDecays(GameTestHelper h) {
+        ReactorCore core = core(h, RODDED);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        core.setKinetics(1.0, 1.0, 1.0);
+        double peak = 0;
+        int peakTick = 0;
+        for (int i = 0; i < 60000; i++) {
+            core.tick(k -> 1.0, 0, buffer, 0);
+            if (core.xenon() > peak) {
+                peak = core.xenon();
+                peakTick = i;
+            }
+        }
+        h.assertTrue(peak > 1.4 && peak < 1.7, "Xenon should peak about half again above its full-power level: " + peak);
+        h.assertTrue(peakTick > 6000 && peakTick < 13000, "The peak should come several minutes after shutdown: tick " + peakTick);
+        h.assertTrue(core.xenon() < 0.5, "Xenon should decay away afterwards: " + core.xenon());
+        h.assertTrue(Math.abs(core.xenonReactivity() + CMThermal.XENON_WORTH * core.xenon()) < 1e-5, "Xenon should cost reactivity in proportion");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void shutdownDropsToDecayHeat(GameTestHelper h) {
+        ReactorCore core = core(h, RODDED);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        core.setKinetics(1.0, 0, 0);
+        core.setColumnDecay(2, 0, CMThermal.DECAY_FRACTION * CMThermal.FUEL_BASE_OUTPUT * 3);
+        double full = CMThermal.FUEL_BASE_OUTPUT * 3;
+        double first = core.tick(k -> 1.0, 0, buffer, 0);
+        h.assertTrue(first < full * 0.2, "Dropping the rods should cut power at once: " + first + " of " + full);
+        double later = 0;
+        for (int i = 0; i < 1200; i++) {
+            later = core.tick(k -> 1.0, 0, buffer, 0);
+        }
+        h.assertTrue(later > 0 && later < full * CMThermal.DECAY_FRACTION, "A minute later only decay heat should remain: " + later);
+        h.assertTrue(core.neutronPower() < 1e-4, "Delayed neutrons should have died away: " + core.neutronPower());
         h.succeed();
     }
 
     @GameTest(template = EMPTY)
     public static void coolantExtractsOnlyWithFlow(GameTestHelper h) {
-        ReactorCore core = core(h, new char[][]{{'.', 'c', '.'}, {'.', 'f', '.'}, {'.', '.', '.'}});
-        CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
-        buffer.set(CoolantLoopTests.coolant(1000), 0);
-        core.tick(true, 0, 0, buffer);
+        ReactorCore core = core(h, COOLED);
+        CoolantBuffer buffer = water(CMThermal.AMBIENT);
+        core.setColumnHeat(2, 0, 300 * CMThermal.FUEL_HEAT_CAPACITY * 3);
+        core.tick(k -> 0.0, 0, buffer, 5000);
         h.assertTrue(core.lastExtracted() == 0 && buffer.heat() == 0, "Extraction without flow");
         double before = core.storedHeat();
-        core.tick(false, 1, CMThermal.COOLANT_REFERENCE_FLOW, buffer);
+        core.tick(k -> 0.0, CMThermal.COOLANT_REFERENCE_FLOW, buffer, 5000);
         h.assertTrue(core.lastExtracted() > 0, "No extraction with flow");
-        h.assertTrue(Math.abs(before + core.lastOutput() - core.storedHeat() - buffer.heat()) < 1e-9, "Extracted heat did not arrive in the coolant");
+        h.assertTrue(Math.abs(before + core.lastOutput() - core.storedHeat() - buffer.heat()) < 1e-6, "Extracted heat did not arrive in the coolant");
         h.succeed();
     }
 
     @GameTest(template = EMPTY)
-    public static void uncooledFuelBecomesHotSpot(GameTestHelper h) {
+    public static void fuelFollowsTheCoolantOnlyWhereItTouchesIt(GameTestHelper h) {
         ReactorCore core = core(h, new char[][]{{'c', '.', '.'}, {'f', '.', 'f'}, {'.', '.', '.'}});
-        CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
-        buffer.set(CoolantLoopTests.coolant(1000), 0);
-        for (int i = 0; i < 4000; i++) {
-            core.tick(true, 0, CMThermal.COOLANT_REFERENCE_FLOW, buffer);
+        double hotHeat = (900 - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3;
+        core.setColumnHeat(1, 0, hotHeat);
+        core.setColumnHeat(3, 0, hotHeat);
+        for (int i = 0; i < 2000; i++) {
+            core.tick(k -> 0.0, CMThermal.COOLANT_REFERENCE_FLOW, water(100), 5000);
         }
-        h.assertTrue(core.hotSpots() == 1, "Exactly the uncooled column should be a hot spot, got " + core.hotSpots());
-        double cooled = Double.MAX_VALUE;
-        double hot = 0;
+        h.assertTrue(core.hotSpots() == 1, "Exactly the uncooled column should stay a hot spot, got " + core.hotSpots());
         for (ReactorCore.FuelColumn f : core.columns()) {
             if (f.coolantNeighbours() > 0) {
-                cooled = f.temperature();
+                h.assertTrue(Math.abs(f.temperature() - 100) < 5, "Cooled fuel should come down to the coolant temperature: " + f.temperature());
             } else {
-                hot = f.temperature();
+                h.assertTrue(f.temperature() >= CMThermal.HOT_SPOT_TEMPERATURE, "Uncooled fuel should stay hot: " + f.temperature());
             }
         }
-        h.assertTrue(hot >= CMThermal.HOT_SPOT_TEMPERATURE && cooled < CMThermal.HOT_SPOT_TEMPERATURE, "Cooled " + cooled + " hot " + hot);
         h.succeed();
     }
 }

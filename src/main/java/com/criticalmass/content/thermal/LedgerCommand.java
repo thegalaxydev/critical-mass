@@ -33,6 +33,10 @@ public final class LedgerCommand {
                         .executes(ctx -> probe(ctx.getSource(), Vec3Argument.getVec3(ctx, "pos")))))
                 .then(Commands.literal("contaminate").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
                         .executes(ctx -> contaminate(ctx.getSource(), BlockPosArgument.getBlockPos(ctx, "pos"), DoubleArgumentType.getDouble(ctx, "amount"))))))
+                .then(Commands.literal("boron").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("ppm", DoubleArgumentType.doubleArg(0, 5000))
+                        .executes(ctx -> boron(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "ppm"))))))
+                .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
+                        .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
                         .then(Commands.literal("fill").executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), -1)))
                         .then(Commands.literal("burn").then(Commands.argument("remaining", DoubleArgumentType.doubleArg(0, 1))
@@ -58,6 +62,26 @@ public final class LedgerCommand {
     private static int contaminate(CommandSourceStack source, BlockPos pos, double amount) {
         ContaminationData.get(source.getLevel()).add(pos, amount);
         source.sendSuccess(() -> Component.literal("Contaminated " + pos.toShortString() + " by " + fmt(amount)), true);
+        return 1;
+    }
+
+    private static int boron(CommandSourceStack source, BlockPos pos, double ppm) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        c.setBoron(ppm);
+        source.sendSuccess(() -> Component.literal("Boron set to " + fmt(ppm) + " ppm"), true);
+        return 1;
+    }
+
+    private static int xenon(CommandSourceStack source, BlockPos pos, double level) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        c.core().setKinetics(c.core().neutronPower(), level, level);
+        source.sendSuccess(() -> Component.literal("Xenon and iodine set to " + fmt(level)), true);
         return 1;
     }
 
@@ -134,6 +158,10 @@ public final class LedgerCommand {
                         + " temp=" + fmt(c.coolant().temperature()) + " core=" + fmt(c.core().storedHeat()) + " coreMax=" + fmt(c.core().maxTemperature())
                         + " hotSpots=" + c.core().hotSpots() + " added=" + fmt(c.heatAdded()) + " insertion=" + fmt(c.insertion()) + " flow=" + c.effectiveFlow()
                         + " problems=" + c.problemPositions().size() + " warnings=" + c.warningPositions().size() + " missing=" + c.missing().size() + " fuel=" + c.core().assemblies().size() + " active=" + c.core().activeAssemblies()), false);
+                source.sendSuccess(() -> Component.literal("  neutron=" + String.format(java.util.Locale.ROOT, "%.3e", c.core().neutronPower()) + " rho=" + fmt(c.core().reactivity() * 1e5) + "pcm"
+                        + " fuel=" + fmt(c.core().fuelReactivity() * 1e5) + " rods=" + fmt(c.core().rodReactivity() * 1e5) + " temp=" + fmt(c.core().temperatureReactivity() * 1e5)
+                        + " xenon=" + fmt(c.core().xenonReactivity() * 1e5) + " boron=" + fmt(c.core().boronReactivity() * 1e5) + " period=" + fmt(c.core().period())
+                        + " xe=" + fmt(c.core().xenon()) + " iodine=" + fmt(c.core().iodine()) + " ppm=" + fmt(c.boron())), false);
             } else if (be instanceof SteamTurbineBlockEntity t) {
                 turbines++;
                 coolant += t.coolant().amount();

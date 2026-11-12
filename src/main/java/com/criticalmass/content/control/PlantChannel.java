@@ -27,9 +27,15 @@ public enum PlantChannel {
     RODS_C("rods_c", "%"),
     RODS_D("rods_d", "%"),
     SPEED("speed", "RPM"),
-    OUTPUT("output", "");
+    OUTPUT("output", ""),
+    NEUTRON("neutron", "%"),
+    PERIOD("period", "s"),
+    REACTIVITY("reactivity", "pcm"),
+    XENON("xenon", "%"),
+    BORON("boron", "ppm");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
+    public static final double STABLE_PERIOD = 999.0;
     public final String key;
     public final String unit;
 
@@ -83,6 +89,11 @@ public enum PlantChannel {
                     yield Double.isNaN(v) ? null : of(v * 100, 0, 100);
                 }
                 case PRESSURE -> of(c.primaryPressure(), 0, CMThermal.PRESSURIZER_MAX);
+                case NEUTRON -> of(c.core().neutronPower() * 100, 0, 120);
+                case PERIOD -> of(Double.isInfinite(c.core().period()) ? STABLE_PERIOD : Math.max(-STABLE_PERIOD, Math.min(STABLE_PERIOD, c.core().period())), -STABLE_PERIOD, STABLE_PERIOD);
+                case REACTIVITY -> of(c.core().reactivity() * 1.0e5, -10000, 1000);
+                case XENON -> of(c.core().xenon() * 100, 0, 200);
+                case BORON -> of(c.boron(), 0, 2500);
                 default -> buffer(c.coolant());
             };
         }

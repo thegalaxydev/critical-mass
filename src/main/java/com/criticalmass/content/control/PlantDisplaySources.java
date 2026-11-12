@@ -26,8 +26,11 @@ public final class PlantDisplaySources {
     public static final DeferredRegister<DisplaySource> SOURCES = DeferredRegister.create(CreateRegistries.DISPLAY_SOURCE, CriticalMass.MODID);
     public static final Map<PlantChannel, Supplier<Reading>> CHANNELS = new EnumMap<>(PlantChannel.class);
     public static final Supplier<Reading> ROD_INSERTION = SOURCES.register("rod_insertion", () -> new Reading(PlantChannel.RODS_A, "criticalmass.display_source.rod_insertion"));
-    public static final Supplier<Status> STATUS = SOURCES.register("reactor_status", Status::new);
+    public static final Supplier<Status> STATUS = SOURCES.register("reactor_status", () -> new Status(true,
+            PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.POWER));
     public static final Supplier<Alarms> ALARMS = SOURCES.register("reactor_alarms", Alarms::new);
+    public static final Supplier<Status> NEUTRONICS = SOURCES.register("reactor_neutronics", () -> new Status(false,
+            PlantChannel.NEUTRON, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.XENON, PlantChannel.BORON));
     private static final int REFRESH_TICKS = 20;
 
     static {
@@ -42,9 +45,12 @@ public final class PlantDisplaySources {
     public static void attach() {
         PlantChannel[] buffer = {PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL};
         PlantChannel[] reactor = {PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL, PlantChannel.FLOW,
-                PlantChannel.POWER, PlantChannel.RODS_A, PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D};
+                PlantChannel.POWER, PlantChannel.RODS_A, PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D,
+                PlantChannel.NEUTRON, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.XENON, PlantChannel.BORON};
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), STATUS.get());
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), ALARMS.get());
+        DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), NEUTRONICS.get());
+        DisplaySource.BY_BLOCK.add(CMBlocks.REACTOR_SIGNAL_INTERFACE.get(), NEUTRONICS.get());
         add(CMBlockEntities.REACTOR_CONTROLLER.get(), reactor);
         DisplaySource.BY_BLOCK.add(CMBlocks.REACTOR_SIGNAL_INTERFACE.get(), STATUS.get());
         DisplaySource.BY_BLOCK.add(CMBlocks.REACTOR_SIGNAL_INTERFACE.get(), ALARMS.get());
@@ -85,6 +91,9 @@ public final class PlantDisplaySources {
 
     public static String number(double v) {
         double a = Math.abs(v);
+        if (a > 0 && a < 0.01) {
+            return String.format(Locale.ROOT, "%.1e", v);
+        }
         return a >= 100 ? String.valueOf(Math.round(v)) : a >= 10 ? String.format(Locale.ROOT, "%.1f", v) : String.format(Locale.ROOT, "%.2f", v);
     }
 
@@ -127,7 +136,13 @@ public final class PlantDisplaySources {
     }
 
     public static class Status extends DisplaySource {
-        private static final PlantChannel[] LINES = {PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.POWER};
+        private final boolean headline;
+        private final PlantChannel[] lines;
+
+        public Status(boolean headline, PlantChannel... lines) {
+            this.headline = headline;
+            this.lines = lines;
+        }
 
         @Override
         public List<MutableComponent> provideText(DisplayLinkContext context, DisplayTargetStats stats) {
@@ -136,12 +151,14 @@ public final class PlantDisplaySources {
                 return EMPTY;
             }
             List<MutableComponent> lines = new ArrayList<>();
-            MutableComponent status = Component.translatable(c.status());
-            if (c.isTripped() && !c.tripReason().isEmpty()) {
-                status = status.append(": ").append(Component.translatable("criticalmass.reactor.trip." + c.tripReason()));
+            if (headline) {
+                MutableComponent status = Component.translatable(c.status());
+                if (c.isTripped() && !c.tripReason().isEmpty()) {
+                    status = status.append(": ").append(Component.translatable("criticalmass.reactor.trip." + c.tripReason()));
+                }
+                lines.add(status);
             }
-            lines.add(status);
-            for (PlantChannel channel : LINES) {
+            for (PlantChannel channel : this.lines) {
                 if (lines.size() >= stats.maxRows()) {
                     break;
                 }

@@ -87,7 +87,7 @@ public final class FuelTests {
     @GameTest(template = LARGE, timeoutTicks = 900)
     public static void burnupFollowsProducedHeat(GameTestHelper h) {
         ReactorControllerBlockEntity c = loop(h, true);
-        double start = 0.0005;
+        double start = 0.0002;
         h.startSequence()
                 .thenIdle(5)
                 .thenExecute(() -> {
@@ -95,6 +95,7 @@ public final class FuelTests {
                         c.core().setAssembly(e.getKey(), e.getValue().withRemaining(start));
                     }
                     h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
+                    TestVessels.atPower(c, 0.3);
                 })
                 .thenIdle(30)
                 .thenExecute(() -> {
@@ -108,7 +109,7 @@ public final class FuelTests {
                     double expected = start * CMConfig.fuelLifetime() * CMThermal.FUEL_BASE_OUTPUT * 3;
                     for (FuelState a : c.core().assemblies().values()) {
                         h.assertTrue(a.spent() && a.form() == FuelAssemblyItem.Form.SPENT, "Burnt-out fuel should be spent: " + a);
-                        h.assertTrue(Math.abs(a.burned() - expected) < expected * 0.01, "Burn history " + a.burned() + " should match the fuel burnt, " + expected);
+                        h.assertTrue(Math.abs(a.burned() - expected) < expected * 0.02, "Burn history " + a.burned() + " should match the fuel burnt, " + expected);
                         h.assertTrue(a.condition() < 1 && a.condition() > 0.99, "Normal burn should wear the assembly only slightly: " + a.condition());
                         burned += a.burned();
                     }

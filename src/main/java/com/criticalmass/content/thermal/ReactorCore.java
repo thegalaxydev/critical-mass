@@ -34,6 +34,17 @@ public final class ReactorCore {
     private double lastFission;
     private double lastExtracted;
     private boolean lastReacting;
+    private double neutron;
+    private double precursor;
+    private double iodine;
+    private double xenon;
+    private double logRate;
+    private double reactivity;
+    private double rodReactivity;
+    private double fuelReactivity;
+    private double temperatureReactivity;
+    private double xenonReactivity;
+    private double boronReactivity;
 
     public static final class FuelColumn {
         final int dx;
@@ -43,6 +54,8 @@ public final class ReactorCore {
         double decay;
         double lastShare;
         double power;
+        double rated;
+        double weight;
         int fuelNeighbours;
         int coolantNeighbours;
         final List<Long> controlNeighbours = new ArrayList<>();
@@ -161,18 +174,32 @@ public final class ReactorCore {
     }
 
     public double tick(boolean reacting, double insertion, int flow, CoolantBuffer vesselCoolant) {
-        return tick(reacting, k -> insertion, flow, vesselCoolant);
+        return tick(k -> reacting ? insertion : 1.0, flow, vesselCoolant, 0);
     }
 
-    public double tick(boolean reacting, ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant) {
-        double output = 0;
-        double fission = 0;
-        double coolantTemperature = vesselCoolant.temperature();
-        if (!reacting) {
-            for (FuelColumn f : fuel.values()) {
-                f.power = 0;
+    private static double worth(FuelState a) {
+        return 1 - CMThermal.BURNUP_LOSS * (1 - Math.max(0, Math.min(1, a.remaining())));
+    }
+
+    public double excessReactivity() {
+        double sum = 0;
+        for (FuelColumn f : fuel.values()) {
+            FuelState a = assemblies.get(key(f.dx, f.dz));
+            if (a != null && a.active()) {
+                sum += worth(a);
             }
         }
+        return fuel.isEmpty() ? 0 : CMThermal.FRESH_REACTIVITY * sum / fuel.size();
+    }
+
+    public static double rodCurve(double insertion) {
+        double x = Math.max(0, Math.min(1, insertion));
+        return x - Math.sin(2 * Math.PI * x) / (2 * Math.PI);
+    }
+
+    public double tick(ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant, double boron) {
+        double output = 0;
+        double coolantTemperature = vesselCoolant.temperature();
         double quenched = 0;
         if (coriumMass > 0) {
             coriumHeat += coriumDecay;
@@ -189,40 +216,89 @@ public final class ReactorCore {
         }
         double lifetime = CMConfig.fuelLifetime();
         double wear = CMConfig.fuelWear();
+        int columns = fuel.size();
+        double rated = 0;
+        double weightSum = 0;
+        double temperatureSum = 0;
+        double fuelWorth = 0;
+        double rods = 0;
+        for (FuelColumn f : fuel.values()) {
+            FuelState a = assemblies.get(key(f.dx, f.dz));
+            double local = 0;
+            for (long c : f.controlNeighbours) {
+                double x = Math.max(0, Math.min(1, insertion.applyAsDouble(c)));
+                local += x;
+                rods += CMThermal.ROD_WORTH * rodCurve(x) / columns;
+            }
+            if (!f.controlNeighbours.isEmpty()) {
+                local /= f.controlNeighbours.size();
+            }
+            f.rated = 0;
+            f.weight = 0;
+            if (a != null && a.active()) {
+                f.rated = CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours);
+                f.weight = f.rated * (1 - CMThermal.ROD_SHADOW * local);
+                fuelWorth += worth(a);
+                rated += f.rated;
+                weightSum += f.weight;
+                temperatureSum += f.weight * f.temperature();
+            }
+        }
+        double fuelTemperature = weightSum > 0 ? temperatureSum / weightSum : coolantTemperature;
+        double level = vesselCoolant.capacity() > 0 ? vesselCoolant.amount() / (double) vesselCoolant.capacity() : 0;
+        double moderated = Math.max(0, Math.min(1, level / CMThermal.MODERATOR_FULL_LEVEL));
+        fuelReactivity = columns == 0 ? 0 : CMThermal.FRESH_REACTIVITY * fuelWorth / columns;
+        rodReactivity = -rods;
+        boronReactivity = -CMThermal.BORON_WORTH * Math.max(0, boron) * moderated;
+        temperatureReactivity = -CMThermal.FUEL_COEFFICIENT * (fuelTemperature - CMThermal.AMBIENT) - CMThermal.MODERATOR_COEFFICIENT * (coolantTemperature - CMThermal.AMBIENT) * moderated;
+        xenonReactivity = -CMThermal.XENON_WORTH * xenon;
+        reactivity = fuelReactivity + rodReactivity + boronReactivity + temperatureReactivity + xenonReactivity - CMThermal.VOID_WORTH * (1 - moderated);
+        double before = neutron;
+        if (rated > 0) {
+            double beta = CMThermal.DELAYED_FRACTION;
+            double margin = Math.max(beta - reactivity, beta * CMThermal.PROMPT_FLOOR);
+            neutron = Math.min(CMThermal.NEUTRON_CAP, (beta * precursor + CMThermal.NEUTRON_SOURCE) / margin);
+        } else {
+            neutron = 0;
+        }
+        precursor += CMThermal.PRECURSOR_DECAY * (neutron - precursor);
+        double rate = before > 0 && neutron > 0 ? Math.log(neutron / before) * 20 : 0;
+        logRate += CMThermal.PERIOD_SMOOTHING * (rate - logRate);
+        iodine += CMThermal.IODINE_DECAY * (neutron - iodine);
+        xenon += (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT) * (CMThermal.IODINE_SHARE * iodine + (1 - CMThermal.IODINE_SHARE) * neutron)
+                - (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT * neutron) * xenon;
+        xenon = Math.max(0, xenon);
+        double fission = neutron * rated;
+        double produced = 0;
         for (FuelColumn f : fuel.values()) {
             long k = key(f.dx, f.dz);
             FuelState a = assemblies.get(k);
-            if (reacting && a != null && a.active()) {
-                double suppression = 1;
-                for (long c : f.controlNeighbours) {
-                    suppression *= Math.max(0, Math.min(1, 1 - insertion.applyAsDouble(c)));
+            double q = f.weight > 0 && weightSum > 0 ? fission * f.weight / weightSum : 0;
+            if (q < CMThermal.MIN_FISSION_HEAT) {
+                q = 0;
+            }
+            produced += q;
+            f.power = q;
+            f.lastShare = f.rated > 0 ? q / f.rated : 0;
+            double target = CMThermal.DECAY_FRACTION * q;
+            if (target > f.decay) {
+                f.decay += (target - f.decay) / CMThermal.DECAY_BUILDUP_TICKS;
+            } else {
+                f.decay = Math.max(target, f.decay * DECAY_FACTOR);
+                if (f.decay < 1e-6) {
+                    f.decay = 0;
                 }
-                double rated = CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours);
-                double wanted = rated * suppression * feedback(f.temperature(), coolantTemperature);
-                double step = rated / CMThermal.POWER_RAMP_TICKS;
-                f.power += Math.max(-step, Math.min(step, wanted - f.power));
-                double q = f.power;
-                f.heat += q;
-                f.lastShare = suppression;
-                f.decay += (CMThermal.DECAY_FRACTION * q - f.decay) / CMThermal.DECAY_BUILDUP_TICKS;
-                output += q;
+            }
+            double heat = q + Math.max(0, f.decay - target);
+            f.heat += heat;
+            output += heat;
+            if (q > 0 && a != null) {
                 double burn = q / (CMThermal.FUEL_BASE_OUTPUT * Math.max(1, f.height)) / lifetime;
-                fission += q;
                 a = a.withRemaining(a.remaining() - burn).withBurned(a.burned() + q).withCondition(a.condition() - wear * burn, "wear");
                 if (a.damaged()) {
                     failures++;
                 }
                 assemblies.put(k, a);
-            } else if (f.decay > 0) {
-                f.power = 0;
-                f.lastShare = 0;
-                double r = f.decay;
-                f.heat += r;
-                output += r;
-                f.decay *= DECAY_FACTOR;
-                if (f.decay < 1e-6) {
-                    f.decay = 0;
-                }
             }
         }
         for (FuelColumn f : fuel.values()) {
@@ -253,24 +329,82 @@ public final class ReactorCore {
         }
         double extracted = quenched;
         if (flow > 0 && vesselCoolant.amount() > 0) {
-            double factor = CMThermal.COOLANT_EXTRACTION * Math.min(1.0, flow / (double) CMThermal.COOLANT_REFERENCE_FLOW);
+            double flowFactor = Math.min(1.0, flow / (double) CMThermal.COOLANT_REFERENCE_FLOW);
+            double moved = 0;
             for (FuelColumn f : fuel.values()) {
-                if (f.coolantNeighbours == 0 || f.heat <= 0) {
+                if (f.coolantNeighbours == 0) {
                     continue;
                 }
-                double q = f.heat * Math.min(1.0, factor * f.coolantNeighbours);
+                double capacity = CMThermal.FUEL_HEAT_CAPACITY * Math.max(1, f.height);
+                double conductance = CMThermal.FUEL_CONDUCTANCE * Math.max(1, f.height) * f.coolantNeighbours * flowFactor;
+                double q = (f.temperature() - coolantTemperature) * capacity * (1 - Math.exp(-conductance / capacity));
                 f.heat -= q;
-                extracted += q;
+                moved += q;
             }
-            if (extracted > quenched) {
-                vesselCoolant.addHeat(extracted - quenched);
+            if (moved > 0) {
+                vesselCoolant.addHeat(moved);
+            } else if (moved < 0) {
+                moved = -vesselCoolant.removeHeat(-moved);
             }
+            extracted += moved;
         }
         lastOutput = output;
-        lastFission = fission;
+        lastFission = produced;
         lastExtracted = extracted;
-        lastReacting = reacting;
+        lastReacting = neutron >= CMThermal.POWER_RANGE;
         return output;
+    }
+
+    public double neutronPower() {
+        return neutron;
+    }
+
+    public double reactivity() {
+        return reactivity;
+    }
+
+    public double rodReactivity() {
+        return rodReactivity;
+    }
+
+    public double fuelReactivity() {
+        return fuelReactivity;
+    }
+
+    public double temperatureReactivity() {
+        return temperatureReactivity;
+    }
+
+    public double xenonReactivity() {
+        return xenonReactivity;
+    }
+
+    public double boronReactivity() {
+        return boronReactivity;
+    }
+
+    public double xenon() {
+        return xenon;
+    }
+
+    public double iodine() {
+        return iodine;
+    }
+
+    public double startupRate() {
+        return logRate;
+    }
+
+    public double period() {
+        return Math.abs(logRate) < 1e-3 ? Double.POSITIVE_INFINITY : 1 / logRate;
+    }
+
+    public void setKinetics(double neutron, double xenon, double iodine) {
+        this.neutron = neutron;
+        this.precursor = neutron;
+        this.xenon = xenon;
+        this.iodine = iodine;
+        this.logRate = 0;
     }
 
     public double coriumHeat() {
@@ -312,12 +446,6 @@ public final class ReactorCore {
         coriumHeat = heat;
     }
 
-    public static double feedback(double fuelTemperature, double coolantTemperature) {
-        double fuel = 1 - CMThermal.FUEL_FEEDBACK * Math.max(0, Math.min(1, (fuelTemperature - CMThermal.HOT_SPOT_TEMPERATURE) / CMThermal.FUEL_FEEDBACK_SPAN));
-        double water = 1 - CMThermal.COOLANT_FEEDBACK * Math.max(0, Math.min(1, (coolantTemperature - CMThermal.COOLANT_FEEDBACK_START) / CMThermal.COOLANT_FEEDBACK_SPAN));
-        return fuel * water;
-    }
-
     public double ratedOutput() {
         double total = 0;
         for (FuelColumn f : fuel.values()) {
@@ -334,7 +462,7 @@ public final class ReactorCore {
         if (f.temperature() >= CMThermal.HOT_SPOT_TEMPERATURE) {
             return ChannelBlocks.GLOW_HOT;
         }
-        if (lastReacting && a.active() && f.lastShare > 0) {
+        if (a.active() && f.lastShare >= 0.01) {
             return f.lastShare >= 0.5 ? 2 : 1;
         }
         return f.decay > CMThermal.RESIDUAL_COLD_LIMIT ? 1 : 0;
@@ -542,6 +670,10 @@ public final class ReactorCore {
             loaded.add(c);
         }
         tag.put("Assemblies", loaded);
+        tag.putDouble("Neutron", neutron);
+        tag.putDouble("Precursor", precursor);
+        tag.putDouble("Iodine", iodine);
+        tag.putDouble("Xenon", xenon);
         if (coriumMass > 0) {
             CompoundTag corium = new CompoundTag();
             corium.putDouble("Heat", coriumHeat);
@@ -571,6 +703,11 @@ public final class ReactorCore {
             CompoundTag c = (CompoundTag) t;
             pending.put(key(c.getInt("X"), c.getInt("Z")), new double[]{c.getDouble("Heat"), c.getDouble("Decay")});
         }
+        neutron = tag.getDouble("Neutron");
+        precursor = tag.getDouble("Precursor");
+        iodine = tag.getDouble("Iodine");
+        xenon = tag.getDouble("Xenon");
+        logRate = 0;
         assemblies.clear();
         for (Tag t : tag.getList("Assemblies", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) t;

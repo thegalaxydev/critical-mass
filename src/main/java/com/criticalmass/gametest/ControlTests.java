@@ -139,7 +139,7 @@ public final class ControlTests {
                     }
                     h.assertTrue(Math.abs(c.bankTarget(0) - 0.5) < 1e-9, "Ten presses should ask for half insertion: " + c.bankTarget(0));
                 })
-                .thenIdle(150)
+                .thenIdle(270)
                 .thenExecute(() -> {
                     h.assertTrue(Math.abs(a.insertion() - 0.5) < 1e-6 && Math.abs(b.insertion() - 0.5) < 1e-6, "Both bank A drives should follow: " + a.insertion() + " " + b.insertion());
                     h.assertTrue(c.isReacting(), "Reactor should run on withdrawn rods: " + c.status());
@@ -167,14 +167,14 @@ public final class ControlTests {
 
     private static double cooledColumn(ReactorControllerBlockEntity c) {
         for (com.criticalmass.content.thermal.ReactorCore.FuelColumn f : c.core().columns()) {
-            if (f.dx() == 1 && f.dz() == 0) {
+            if (f.dx() == 2 && f.dz() == 0) {
                 return f.temperature();
             }
         }
         return Double.NaN;
     }
 
-    @GameTest(template = LARGE, timeoutTicks = 2400)
+    @GameTest(template = LARGE, timeoutTicks = 3000)
     public static void plantStartsRunsGeneratesAndShutsDown(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.plant(h);
@@ -207,15 +207,18 @@ public final class ControlTests {
                     h.assertTrue(a.insertion() < 1 && a.insertion() > 0, "Rods should be on their way out, not there yet: " + a.insertion());
                     seen[0] = c.core().lastOutput();
                 })
-                .thenIdle(150)
+                .thenIdle(520)
                 .thenExecute(() -> {
-                    h.assertTrue(c.isReacting() && a.insertion() == 0 && b.insertion() == 0, "Reactor should be at power with rods out: " + c.status());
-                    h.assertTrue(c.core().lastOutput() > seen[0] && Math.abs(c.core().lastOutput() - c.core().ratedOutput()) < 1e-6, "Power should have climbed to rated: " + c.core().lastOutput());
-                    seen[1] = c.core().maxTemperature();
+                    h.assertTrue(c.isReacting() && a.insertion() == 0 && b.insertion() == 0, "Rods should be out with the reactor armed: " + c.status());
+                    h.assertTrue(c.core().lastOutput() == 0 && c.core().neutronPower() < 1e-4, "A borated core should still be at source level: " + c.core().neutronPower());
+                    TestVessels.atPower(c, 0.5);
                 })
                 .thenIdle(900)
                 .thenExecute(() -> {
-                    h.assertTrue(c.core().maxTemperature() > seen[1] + 20, "Fuel should keep warming long after the rods stopped: " + seen[1] + " to " + c.core().maxTemperature());
+                    h.assertTrue(c.isReacting() && !c.isTripped(), "The reactor should hold power without tripping: " + c.status() + " " + c.tripReason());
+                    h.assertTrue(c.core().lastOutput() > 0.05 * c.core().ratedOutput() && c.core().neutronPower() < CMThermal.HIGH_FLUX_TRIP, "The core should be making heat: " + c.core().lastOutput());
+                    h.assertTrue(Math.abs(c.core().reactivity()) < 2e-3, "A core holding power should sit near critical: " + c.core().reactivity());
+                    h.assertTrue(c.core().maxTemperature() > c.coolant().temperature() + 5, "Fuel at power should run hotter than its coolant: " + c.core().maxTemperature() + " over " + c.coolant().temperature());
                     h.assertTrue(exchanger.exchanged() > 0 && turbine.heatExtracted() > 0, "Heat should cross the exchanger and reach the turbine");
                     h.assertTrue(generator.generated() > 0 && generator.outputRate() > 1, "The generator should be making Forge Energy: " + generator.outputRate());
                     double perSu = com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.FE_PER_SU) * com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.GENERATOR_EFFICIENCY);
@@ -226,7 +229,7 @@ public final class ControlTests {
                 .thenIdle(60)
                 .thenExecute(() -> {
                     h.assertTrue(!c.isReacting() && c.isTripped() && a.insertion() == 1 && b.insertion() == 1, "SCRAM should stop the reaction and insert the rods");
-                    h.assertTrue(c.core().lastFission() == 0 && c.core().residualPower() > 0, "Fission should stop while decay heat remains: " + c.core().residualPower());
+                    h.assertTrue(c.core().neutronPower() < 0.1 && c.core().reactivity() < -0.05 && c.core().residualPower() > 0, "Fission should collapse while decay heat remains: " + c.core().neutronPower());
                     CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
                     h.assertTrue(pump.flow() > 0, "Cooling should keep running after the trip: " + pump.status());
                     seen[2] = cooledColumn(c);

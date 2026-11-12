@@ -1,5 +1,7 @@
 package com.criticalmass.gametest;
 
+import com.criticalmass.content.thermal.ReactorCore;
+import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
@@ -51,13 +53,33 @@ final class TestVessels {
 
     static final char[][] COOLED = {
             {'c', 'f', 'c'},
-            {'r', 'c', 'r'},
+            {'c', 'r', 'c'},
             {'c', 'f', 'c'}};
 
     static final char[][] STANDARD = {
+            {'f', 'r', 'f'},
+            {'c', 'f', 'c'},
+            {'f', 'r', 'f'}};
+
+    static final char[][] UNSOUND = {
             {'c', 'r', 'c'},
             {'f', 'f', 'f'},
             {'c', 'r', 'c'}};
+
+    static final double CRITICAL_BORON = CMThermal.FRESH_REACTIVITY / CMThermal.BORON_WORTH;
+
+    static void atPower(ReactorControllerBlockEntity c, double power) {
+        c.revalidate();
+        double coolant = c.coolant().temperature();
+        double xenon = (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT) * power / (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT * power);
+        for (ReactorCore.FuelColumn f : c.core().columns()) {
+            c.core().setColumnHeat(f.dx(), f.dz(), (coolant - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3);
+        }
+        double defect = (CMThermal.FUEL_COEFFICIENT + CMThermal.MODERATOR_COEFFICIENT) * (coolant - CMThermal.AMBIENT) + CMThermal.XENON_WORTH * xenon;
+        c.setBoron((c.core().excessReactivity() - 0.001 - defect) / CMThermal.BORON_WORTH);
+        c.setManualInsertion(0);
+        c.core().setKinetics(power, xenon, power);
+    }
 
     private TestVessels() {
     }
@@ -104,6 +126,9 @@ final class TestVessels {
                     c.loadFuel(2 + i - CONTROLLER.getX(), 2 + k - CONTROLLER.getZ(), FuelState.fresh());
                 }
             }
+        }
+        if (h.getBlockEntity(CONTROLLER) instanceof ReactorControllerBlockEntity c) {
+            c.setBoron(CRITICAL_BORON + 50);
         }
     }
 

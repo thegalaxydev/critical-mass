@@ -36,10 +36,6 @@ public final class OperationTests {
     private static final BlockPos DRIVE_A = new BlockPos(3, 6, 2);
     private static final BlockPos DRIVE_B = new BlockPos(3, 6, 4);
     private static final BlockPos CASING = new BlockPos(5, 2, 2);
-    private static final char[][] SOUND_CORE = {
-            {'f', 'r', 'f'},
-            {'c', 'f', 'c'},
-            {'f', 'r', 'f'}};
 
     private OperationTests() {
     }
@@ -71,9 +67,17 @@ public final class OperationTests {
                     h.assertTrue(c.status().endsWith("cold"), "Fresh reactor should be Cold: " + c.status());
                     h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
                 })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(c.status().endsWith("source_range") || c.status().endsWith("starting"), "Armed without power should read source range: " + c.status());
+                    TestVessels.atPower(c, 0.5);
+                })
                 .thenIdle(400)
                 .thenExecute(() -> {
                     h.assertTrue(c.status().endsWith("running"), "Withdrawn rods with cooling should be Running: " + c.status());
+                    for (ReactorCore.FuelColumn f : c.core().columns()) {
+                        c.core().setColumnDecay(f.dx(), f.dz(), 5.0);
+                    }
                     h.setBlock(CASING, Blocks.AIR);
                 })
                 .thenIdle(3)
@@ -100,7 +104,7 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = LARGE, timeoutTicks = 600)
+    @GameTest(template = LARGE, timeoutTicks = 1000)
     public static void rodBanksMoveSeparatelyAndShowInTheCore(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
         BlockPos posA = new BlockPos(3, 6, 2);
@@ -111,7 +115,7 @@ public final class OperationTests {
         c.setBankTarget(0, 0.0);
         c.setBankTarget(1, 1.0);
         h.startSequence()
-                .thenIdle(200)
+                .thenIdle(520)
                 .thenExecute(() -> {
                     h.assertTrue(a.insertion() == 0 && b.insertion() == 1, "Only bank A should withdraw: A " + a.insertion() + " B " + b.insertion());
                     h.assertTrue(a.travel() == 3 && b.travel() == 3, "Drives should learn the column height: " + a.travel());
@@ -120,18 +124,16 @@ public final class OperationTests {
                         h.assertTrue(h.getBlockState(new BlockPos(3, y, 4)).getValue(ChannelBlocks.Control.ROD) == ChannelBlocks.ROD_LEVELS, "Inserted column should show a full rod at y " + y);
                     }
                     h.assertTrue(c.isReacting(), "Reactor should run on bank A: " + c.status());
-                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 3)).getValue(ChannelBlocks.Fuel.GLOW) == 0, "Fuel beside an inserted rod should stay dark");
-                    BlockState side = h.getBlockState(new BlockPos(2, 3, 3));
-                    h.assertTrue(side.getValue(ChannelBlocks.Fuel.GLOW) == 2 && side.getLightEmission() > 0, "Unrodded fuel should glow at full power");
+                    h.assertTrue(Math.abs(c.core().rodReactivity() + CMThermal.ROD_WORTH * 3 / 5) < 1e-9, "Bank B alone should hold its three fuel columns down: " + c.core().rodReactivity());
                     c.setBankTarget(1, 0.5);
                 })
-                .thenIdle(120)
+                .thenIdle(270)
                 .thenExecute(() -> {
                     h.assertTrue(Math.abs(b.insertion() - 0.5) < 1e-6 && Math.abs(c.bankInsertion(1) - 0.5) < 1e-6, "Bank B should stop half way: " + b.insertion());
                     h.assertTrue(h.getBlockState(new BlockPos(3, 4, 4)).getValue(ChannelBlocks.Control.ROD) == ChannelBlocks.ROD_LEVELS, "Top of a half-inserted column holds the rod");
                     h.assertTrue(h.getBlockState(new BlockPos(3, 3, 4)).getValue(ChannelBlocks.Control.ROD) == 2, "Rod tip should sit half way down the middle block");
                     h.assertTrue(h.getBlockState(new BlockPos(3, 2, 4)).getValue(ChannelBlocks.Control.ROD) == 0, "Bottom of a half-inserted column is empty");
-                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 3)).getValue(ChannelBlocks.Fuel.GLOW) > 0, "Fuel should light up once its rod is half out");
+                    h.assertTrue(Math.abs(c.core().rodReactivity() + CMThermal.ROD_WORTH * 3 / 5 / 2) < 1e-6, "A half-inserted bank should be worth half: " + c.core().rodReactivity());
                     CompoundTag saved = b.saveWithFullMetadata(h.getLevel().registryAccess());
                     ControlRodDriveBlockEntity copy = (ControlRodDriveBlockEntity) BlockEntity.loadStatic(h.absolutePos(posB), b.getBlockState(), saved, h.getLevel().registryAccess());
                     h.assertTrue(copy.bank() == 1 && Math.abs(copy.insertion() - 0.5) < 1e-6 && copy.travel() == 3, "Bank, position and travel should survive saving");
@@ -142,7 +144,7 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = LARGE, timeoutTicks = 400)
+    @GameTest(template = LARGE, timeoutTicks = 900)
     public static void startNeedsFlowAndCoolant(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
@@ -169,7 +171,7 @@ public final class OperationTests {
                     h.assertTrue(d.insertion() == 1, "Rods should still be held in");
                     c.coolant().set(CoolantLoopTests.coolant(6000), 0);
                 })
-                .thenIdle(120)
+                .thenIdle(520)
                 .thenExecute(() -> {
                     h.assertTrue(c.isReacting() && d.insertion() == 0, "With flow and coolant the rods should withdraw and the reactor start: " + c.status() + " " + d.insertion());
                     flow[0] = false;
@@ -199,7 +201,12 @@ public final class OperationTests {
         h.setBlock(TestVessels.REDSTONE, Blocks.REDSTONE_BLOCK);
         h.startSequence()
                 .thenIdle(200)
-                .thenExecute(() -> h.setBlock(CASING, Blocks.AIR))
+                .thenExecute(() -> {
+                    for (ReactorCore.FuelColumn f : c.core().columns()) {
+                        c.core().setColumnDecay(f.dx(), f.dz(), 5.0);
+                    }
+                    h.setBlock(CASING, Blocks.AIR);
+                })
                 .thenIdle(3)
                 .thenExecute(() -> {
                     CompoundTag saved = c.saveWithFullMetadata(h.getLevel().registryAccess());
@@ -219,10 +226,10 @@ public final class OperationTests {
         core.rebuild(s, h.absolutePos(TestVessels.CONTROLLER));
         core.fillFresh();
         CoolantBuffer buffer = new CoolantBuffer(1000, () -> { });
-        for (int i = 0; i < 2400; i++) {
-            core.tick(true, 0, 0, buffer);
+        double full = core.ratedOutput();
+        for (ReactorCore.FuelColumn f : core.columns()) {
+            core.setColumnDecay(f.dx(), f.dz(), CMThermal.DECAY_FRACTION * full / core.fuelColumns());
         }
-        double full = core.lastOutput();
         core.tick(false, 1, 0, buffer);
         double first = core.lastOutput();
         double heat = core.storedHeat();
@@ -256,7 +263,7 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = EMPTY, timeoutTicks = 700)
     public static void rodDriveRateIsCappedAndHoldingIsFree(GameTestHelper h) {
         ControlRodDriveBlockEntity d = drive(h, new BlockPos(2, 1, 2), 256);
         h.setBlock(new BlockPos(1, 1, 2), Blocks.REDSTONE_BLOCK);
@@ -271,7 +278,7 @@ public final class OperationTests {
             }
         });
         h.startSequence()
-                .thenIdle(120)
+                .thenIdle(520)
                 .thenExecute(() -> {
                     h.assertTrue(d.insertion() == 0 && !d.moving(), "Drive should reach full withdrawal: " + d.insertion());
                     h.assertTrue(fastest[0] <= CMThermal.ROD_MAX_RATE + 1e-9 && fastest[0] > 0, "Insertion changed too fast: " + fastest[0]);
@@ -297,24 +304,32 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = LARGE, timeoutTicks = 400)
+    @GameTest(template = LARGE, timeoutTicks = 900)
     public static void rodDrivesSetReactorOutputAndScramOnTrip(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
         ControlRodDriveBlockEntity a = drive(h, DRIVE_A, 256);
         ControlRodDriveBlockEntity b = drive(h, DRIVE_B, 256);
         h.setBlock(DRIVE_A.west(), Blocks.REDSTONE_BLOCK);
         h.setBlock(DRIVE_B.west(), Blocks.REDSTONE_BLOCK);
-        double side = CMThermal.FUEL_BASE_OUTPUT * 3 * (1 + CMThermal.FUEL_ADJACENCY_FACTOR);
-        double center = CMThermal.FUEL_BASE_OUTPUT * 3 * (1 + 2 * CMThermal.FUEL_ADJACENCY_FACTOR);
+        double[] before = new double[1];
         h.startSequence()
-                .thenIdle(80)
+                .thenIdle(520)
                 .thenExecute(() -> {
-                    h.assertTrue(a.insertion() == 0 && b.insertion() == 0 && c.isReacting(), "Drives should withdraw and start the reactor: " + c.status());
-                    h.assertTrue(Math.abs(c.core().lastOutput() - (2 * side + center)) < 1e-6, "Output with rods out: " + c.core().lastOutput());
+                    h.assertTrue(a.insertion() == 0 && b.insertion() == 0 && c.isReacting(), "Drives should withdraw and arm the reactor: " + c.status());
+                    TestVessels.atPower(c, 0.5);
+                })
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    before[0] = c.core().neutronPower();
+                    h.assertTrue(!c.isTripped() && before[0] > 0.05 && c.core().lastOutput() > 0, "The core should be at power: " + before[0] + " " + c.tripReason());
+                    h.assertTrue(h.getBlockState(new BlockPos(3, 3, 3)).getValue(ChannelBlocks.Fuel.GLOW) > 0, "Fuel at power should glow");
                     h.setBlock(CASING, Blocks.AIR);
                 })
                 .thenIdle(CMThermal.ROD_FAILSAFE_TICKS + 5)
-                .thenExecute(() -> h.assertTrue(a.insertion() == 1 && b.insertion() == 1, "Trip should release the drive latches and insert the rods"))
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() == 1 && b.insertion() == 1, "Trip should release the drive latches and insert the rods");
+                    h.assertTrue(c.core().neutronPower() < before[0] * 0.2 && c.core().reactivity() < -0.05, "Dropped rods should collapse the power: " + c.core().neutronPower() + " from " + before[0]);
+                })
                 .thenSucceed();
     }
 
@@ -387,7 +402,7 @@ public final class OperationTests {
 
     @GameTest(template = EMPTY, timeoutTicks = 200)
     public static void fuelWithoutCoolantOrRodBesideItIsFlagged(GameTestHelper h) {
-        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.standardVessel(h, TestVessels.UNSOUND);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         h.startSequence()
                 .thenIdle(60)
@@ -409,7 +424,7 @@ public final class OperationTests {
 
     @GameTest(template = EMPTY, timeoutTicks = 200)
     public static void fuelBesideCoolantAndRodIsNotFlagged(GameTestHelper h) {
-        TestVessels.standardVessel(h, SOUND_CORE);
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         h.startSequence()
                 .thenIdle(60)
