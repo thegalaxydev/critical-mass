@@ -162,7 +162,7 @@ shaped("plant_linker", [" E", "B "], {"E": "create:electron_tube", "B": "#c:plat
 shaped("docking_service_connector", ["C", "P", "M"], {"C": "create:brass_casing", "P": "create:fluid_pipe", "M": "create:precision_mechanism"}, "docking_service_connector")
 shapeless("reactor_service_port", ["reactor_vessel_casing", "create:brass_casing", "minecraft:iron_trapdoor"], "reactor_service_port")
 shapeless("primary_coolant_port", ["reactor_vessel_casing", "create:fluid_pipe", "#c:plates/copper"], "primary_coolant_port")
-shapeless("circulation_pump", ["create:mechanical_pump", "create:fluid_pipe", "create:brass_casing"], "circulation_pump")
+shaped("circulation_pump", [" B ", "BPB", " B "], {"B": "#c:ingots/brass", "P": "reinforced_pipe"}, "circulation_pump")
 shapeless("relief_valve", ["create:fluid_valve", "create:fluid_pipe", "#c:plates/steel"], "relief_valve")
 shapeless("reactor_signal_interface", ["create:redstone_link", "create:brass_casing", "create:electron_tube"], "reactor_signal_interface")
 shapeless("welding_torch", ["#c:plates/steel", "#c:plates/copper", "minecraft:flint_and_steel"], "welding_torch")

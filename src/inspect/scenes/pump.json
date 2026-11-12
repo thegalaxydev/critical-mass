@@ -1,0 +1,85 @@
+{
+ "name": "pump",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -59 34 52 -54 50 minecraft:air",
+    "/setblock 40 -59 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 40 -58 40 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
+    "/setblock 39 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 38 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 41 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 42 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 39 -58 40 minecraft:air",
+    "/setblock 39 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 41 -58 40 minecraft:air",
+    "/setblock 41 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 45 -59 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 45 -58 40 criticalmass:circulation_pump[facing=north,axis_along_first=true]",
+    "/setblock 48 -59 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 48 -58 40 criticalmass:circulation_pump[facing=north,axis_along_first=false]",
+    "/setblock 45 -58 44 criticalmass:circulation_pump[facing=up,axis_along_first=true]",
+    "/setblock 46 -58 44 create:creative_motor[facing=west]{ScrollValue:32}",
+    "/item replace entity @p hotbar.0 with criticalmass:circulation_pump",
+    "/item replace entity @p hotbar.1 with minecraft:air"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/setblock 41 -58 36 minecraft:barrier",
+    "/tp @p 41.50 -56.60 36.40 facing 40.50 -59.02 40.50"
+   ],
+   "wait": 30,
+   "slot": 1
+  },
+  {
+   "shot": "side_a",
+   "wait": 3
+  },
+  {
+   "shot": "side_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 44 -57 34 minecraft:barrier",
+    "/tp @p 44.50 -56.00 34.50 facing 44.50 -59.22 41.00"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "wide",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/data get block 40 -58 40 Speed",
+    "/data get block 45 -58 40 Speed",
+    "/data get block 48 -58 40 Speed",
+    "/data get block 45 -58 44 Speed"
+   ],
+   "wait": 5
+  },
+  {
+   "slot": 0,
+   "gui": true,
+   "wait": 10
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  }
+ ]
+}

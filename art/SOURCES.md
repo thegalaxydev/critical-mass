@@ -15,7 +15,7 @@ All art is a candidate for replacement by hand-made art later.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - `shielding_concrete`: hand-drawn poured slabs.
 - Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `radiator_panel`, `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `circulation_pump`, `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -115,39 +115,9 @@ Atlas for a boiler heating plate (thin slab under a boiler): top face is a coppe
 
 ## circulation_pump
 
-- Used by: `textures/block/circulation_pump.png`
-- Raw output: `art/generated/circulation_pump-v3.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: circulation pump, 64x64 game pixels.
-Atlas for a shaft-driven coolant circulation pump. Regions: copper pipe flanges with dark bore holes (outlet flange has a red collar ring, inlet flange a blue collar ring), copper pipe body strips with iron bands, dark steel pump housing faces with rivets and a horizontal seam, housing faces with a brass ring around a black shaft socket, and a housing plate with an embossed brass flow arrow. Copper should look like Create's copper pipes.
-The brass double-chevron flow markers must keep their exact chevron shape and direction.
-```
-
-## circulation_pump_rotor
-
-- Used by: `textures/block/circulation_pump_rotor.png`
-- Raw output: `art/generated/circulation_pump_rotor-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: circulation pump rotor, 16x16 game pixels.
-Atlas for the pump drive hub: a square brass drive flange plate with a darker outline, notch marks at the middle of each edge and an iron centre boss, plus a thin brass edge strip.
-
-```
+- Used by: `textures/block/circulation_pump.png` and the pump's body, wheel and item models
+- Source: modelled and painted by the author in Blockbench, saved as `art/blockbench/mechanical_pump.bbmodel`. `art/tools/pump_model.py` splits its "pipe" and "flywheel" groups into the game models. The flywheel started from `art/tools/flywheel_bbmodel.py` and the pipe faces from the Reinforced Pipe flange.
+- Date: 2026-11-12
 
 ## condenser
 

@@ -150,23 +150,6 @@ def apply(name, size, spec, base=None):
     return img
 
 
-def pump(jar):
-    spec = {"models": ["circulation_pump", "circulation_pump_vertical"], "faces": {
-        ("outlet", "north"): port(COPPER, RED),
-        ("inlet", "south"): port(COPPER, BLUE),
-        ("outlet", "*"): collar_ring(COPPER),
-        ("inlet", "*"): collar_ring(COPPER),
-        ("pipe", "*"): collar_ring(COPPER),
-        ("housing", "north"): casing(ANDESITE, STEEL),
-        ("housing", "south"): casing(ANDESITE, STEEL),
-        ("housing", "east"): chevrons(ANDESITE),
-        ("housing", "west"): chevrons(ANDESITE),
-        ("housing", "up"): socket(ANDESITE),
-        ("housing", "down"): socket(ANDESITE),
-    }}
-    return apply("circulation_pump", 64, spec)
-
-
 def turbine(jar):
     spec = {"models": ["steam_turbine"], "faces": {
         ("end_plate", "east"): socket(IRON),
@@ -399,7 +382,6 @@ def docking(jar):
 
 
 REST = {
-    "circulation_pump": pump,
     "steam_turbine": turbine,
     "control_rod_drive": rod_drive,
     "fuel_channel": fuel_channel,
