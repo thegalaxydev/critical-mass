@@ -61,10 +61,9 @@ public final class PlantDisplaySources {
         for (PlantChannel c : reactor) {
             DisplaySource.BY_BLOCK.add(CMBlocks.REACTOR_SIGNAL_INTERFACE.get(), CHANNELS.get(c).get());
         }
-        add(CMBlockEntities.PRESSURIZER.get(), PlantChannel.PRESSURE, PlantChannel.LEVEL);
+        add(CMBlockEntities.PRESSURIZER.get(), PlantChannel.PRESSURE);
         add(CMBlockEntities.TOWER_FAN.get(), PlantChannel.SPEED, PlantChannel.FLOW);
         add(CMBlockEntities.STEAM_TURBINE.get(), PlantChannel.SPEED, PlantChannel.POWER, PlantChannel.OUTPUT, PlantChannel.FLOW, PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL);
-        add(CMBlockEntities.GENERATOR.get(), PlantChannel.OUTPUT, PlantChannel.LEVEL, PlantChannel.SPEED);
         add(CMBlockEntities.CIRCULATION_PUMP.get(), PlantChannel.FLOW, PlantChannel.SPEED);
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ROD_INSERTION.get());
         add(CMBlockEntities.HEAT_EXCHANGER.get(), buffer);

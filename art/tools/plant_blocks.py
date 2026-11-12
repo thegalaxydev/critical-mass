@@ -51,39 +51,6 @@ def atlas(quads):
     return img
 
 
-def generator_texture():
-    def front(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        for y in (4, 7, 10):
-            rect(img, 4, y, 11, y, COPPER[3])
-            put(img, 4, y, COPPER[5])
-            put(img, 11, y, COPPER[1])
-        put(img, 12, 12, AMBER[3])
-        put(img, 3, 12, BRASS[4])
-        return img
-
-    def back(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        opening(img, 4, 4, 8, BRASS, IRON)
-        return img
-
-    def side(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        for x in range(3, 13):
-            ramp = COPPER if x % 2 else STEEL
-            for y in range(4, 12):
-                put(img, x, y, ramp[4 if y == 4 else 1 if y == 11 else 3] if x % 2 else STEEL[2])
-        rect(img, 3, 7, 12, 8, IRON[2])
-        return img
-
-    def top(w, h):
-        img = plate(IRON, 3)(w, h)
-        for x in range(3, 13, 2):
-            rect(img, x, 3, x, 12, IRON[1])
-            rect(img, x + 1, 3, x + 1, 12, IRON[4])
-        return img
-    return atlas({"a": front, "b": back, "c": side, "d": top})
-
 
 def viewport_base():
     img = casing(IRON, STEEL)(16, 16)
@@ -423,12 +390,6 @@ BLOCKS = {
         "models": viewport_models,
         "state": viewport_state,
     },
-    "generator": {
-        "lang": "Generator",
-        "texture": generator_texture,
-        "model": lambda n: cube(n, {"north": "a", "south": "b", "east": "c", "west": "c", "up": "d", "down": "d"}),
-        "state": horizontal,
-    },
 }
 
 LANG = {
@@ -455,7 +416,7 @@ LANG = {
     "criticalmass.pressurizer.off": "Heaters off: redstone signal",
     "criticalmass.pressurizer.heating": "Heaters on: raising pressure",
     "criticalmass.pressurizer.holding": "Holding pressure",
-    "criticalmass.pressurizer.no_power": "Pressure falling: heaters need Forge Energy",
+    "criticalmass.pressurizer.no_heat": "Pressure falling: heaters need a lit Blaze Burner underneath",
     "criticalmass.alarm.pressure": "Vessel coolant boiling: pressure too low for its temperature",
     "item.criticalmass.plant_linker": "Plant Linker",
     "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a control panel to link it",
@@ -502,11 +463,6 @@ LANG = {
     "criticalmass.alarm.pressure.short": "BOIL",
     "criticalmass.goggles.rod_bank": "Rod bank %s (use with an empty hand to change)",
     "criticalmass.rod.bank_set": "Rod bank %s",
-    "criticalmass.generator.load": "Electrical load",
-    "criticalmass.generator.breaker_open": "Breaker open: full redstone signal",
-    "criticalmass.goggles.generator": "Generator",
-    "criticalmass.goggles.generator_output": "Output: %s FE/t (set to %s)",
-    "criticalmass.goggles.generator_stored": "Buffer: %s / %s FE",
 }
 
 

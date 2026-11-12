@@ -11,7 +11,6 @@ import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
@@ -50,8 +49,6 @@ import net.minecraft.world.level.block.RedstoneLampBlock;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -65,7 +62,7 @@ public final class PanelTests {
     }
 
     private static List<Block> panels() {
-        return List.of(CMBlocks.SCRAM_PANEL.get(), CMBlocks.ROD_PANEL.get(), CMBlocks.TURBINE_PANEL.get(), CMBlocks.BREAKER_PANEL.get(),
+        return List.of(CMBlocks.SCRAM_PANEL.get(), CMBlocks.ROD_PANEL.get(), CMBlocks.TURBINE_PANEL.get(),
                 CMBlocks.ALARM_PANEL.get(), CMBlocks.LEVER_PANEL.get(), CMBlocks.DIAL_PANEL.get());
     }
 
@@ -133,9 +130,7 @@ public final class PanelTests {
         ControlRodDriveBlockEntity b = drive(h, new BlockPos(3, 6, 4));
         BlockPos turbinePos = new BlockPos(9, 1, 2);
         h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
-        h.setBlock(turbinePos.east(), CMBlocks.GENERATOR.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
         SteamTurbineBlockEntity turbine = h.getBlockEntity(turbinePos);
-        GeneratorBlockEntity generator = h.getBlockEntity(turbinePos.east());
         BlockPos controller = h.absolutePos(TestVessels.CONTROLLER);
         BlockPos scramPos = new BlockPos(8, 1, 10);
         BlockPos leverPos = scramPos.east();
@@ -146,16 +141,14 @@ public final class PanelTests {
         PanelBlockEntity rods = panel(h, CMBlocks.ROD_PANEL.get(), new BlockPos(10, 1, 10), Direction.NORTH);
         PanelBlockEntity alarms = panel(h, CMBlocks.ALARM_PANEL.get(), alarmPos, Direction.NORTH);
         PanelBlockEntity trip = panel(h, CMBlocks.TURBINE_PANEL.get(), tripPos, Direction.NORTH);
-        PanelBlockEntity breaker = panel(h, CMBlocks.BREAKER_PANEL.get(), new BlockPos(10, 1, 7), Direction.NORTH);
-        h.assertTrue(scram.press(Action.SCRAM).endsWith("result.unbound") && trip.press(Action.TURBINE_TRIP).endsWith("result.unbound") && breaker.press(Action.BREAKER).endsWith("result.unbound"),
+        h.assertTrue(scram.press(Action.SCRAM).endsWith("result.unbound") && trip.press(Action.TURBINE_TRIP).endsWith("result.unbound"),
                 "An unlinked panel should say so");
-        h.assertTrue(!scram.bind(h.absolutePos(turbinePos)) && !trip.bind(controller) && !breaker.bind(controller) && !lever.bind(controller), "A panel should only link to the machine it controls");
+        h.assertTrue(!scram.bind(h.absolutePos(turbinePos)) && !trip.bind(controller) && !lever.bind(controller), "A panel should only link to the machine it controls");
         h.assertTrue(scram.bind(controller) && rods.bind(controller) && alarms.bind(controller), "Reactor panels should link to the controller");
-        h.assertTrue(trip.bind(h.absolutePos(turbinePos)) && breaker.bind(h.absolutePos(turbinePos.east())), "Turbine and breaker panels should link to their machines");
+        h.assertTrue(trip.bind(h.absolutePos(turbinePos)), "The turbine panel should link to the turbine");
         h.startSequence()
                 .thenIdle(12)
                 .thenExecute(() -> {
-                    h.assertTrue(breaker.on(), "The breaker switch should follow a closed breaker");
                     for (int i = 0; i < 101; i++) {
                         rods.press(Action.ROD_OUT);
                     }
@@ -168,7 +161,6 @@ public final class PanelTests {
                     h.assertTrue(turbine.overspeedTripped(), "The trip button should trip the turbine");
                     trip.press(Action.TURBINE_RESET);
                     h.assertTrue(!turbine.overspeedTripped(), "The reset button should clear the turbine trip");
-                    h.assertTrue(breaker.press(Action.BREAKER).endsWith("breaker_open") && !breaker.on(), "The breaker switch should open the breaker");
                     lever.press(Action.TOGGLE);
                     h.assertTrue(signal(h, leverPos) == 15, "A lever panel that is on should give a full signal");
                 })
@@ -178,7 +170,6 @@ public final class PanelTests {
                     h.assertTrue(Math.abs(a.insertion() - 0.5) < 1e-6 && Math.abs(b.insertion() - 0.5) < 1e-6, "Both drives should follow: " + a.insertion() + " " + b.insertion());
                     h.assertTrue(c.isReacting() && !c.isTripped(), "A lever panel beside the SCRAM panel should not press it: " + c.status());
                     h.assertTrue(!alarms.sounding() && alarms.activeAlarms() == 0 && signal(h, alarmPos) == 0, "No alarms while running normally");
-                    h.assertTrue(generator.breakerOpen() && !breaker.on(), "The generator breaker should be open");
                     h.setBlock(scramPos.north(), Blocks.REDSTONE_BLOCK);
                     h.setBlock(tripPos.north(), Blocks.REDSTONE_BLOCK);
                 })
@@ -196,12 +187,10 @@ public final class PanelTests {
                     String result = scram.press(Action.REACTOR_RESET);
                     h.assertTrue(result.endsWith("result.reset") && !c.isTripped(), "Reset should clear the trip: " + result);
                     h.assertTrue(c.bankTarget(0) == 1.0, "Reset should leave the rods commanded in");
-                    h.assertTrue(breaker.press(Action.BREAKER).endsWith("breaker_close"), "The breaker switch should close the breaker again");
                 })
                 .thenIdle(25)
                 .thenExecute(() -> {
                     h.assertTrue(!c.isTripped() && !alarms.alarm(PlantAlarms.Alarm.TRIP), "A held signal should not press SCRAM again, and the trip lamp should clear");
-                    h.assertTrue(!generator.breakerOpen() && breaker.on(), "The generator breaker should be closed again");
                 })
                 .thenSucceed();
     }
@@ -251,29 +240,29 @@ public final class PanelTests {
 
     @GameTest(template = EMPTY, timeoutTicks = 40)
     public static void linkerLinksAPanelToItsMachine(GameTestHelper h) {
-        BlockPos generatorPos = new BlockPos(2, 1, 2);
+        BlockPos turbinePos = new BlockPos(2, 1, 2);
         BlockPos tankPos = new BlockPos(4, 1, 2);
-        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
+        h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
         h.setBlock(tankPos, CMBlocks.EMERGENCY_COOLANT_TANK.get());
-        PanelBlockEntity breaker = panel(h, CMBlocks.BREAKER_PANEL.get(), new BlockPos(3, 1, 5), Direction.NORTH);
+        PanelBlockEntity trip = panel(h, CMBlocks.TURBINE_PANEL.get(), new BlockPos(3, 1, 5), Direction.NORTH);
         Player player = h.makeMockPlayer(GameType.CREATIVE);
         ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
         player.setItemInHand(InteractionHand.MAIN_HAND, linker);
-        BlockPos panelAbs = breaker.getBlockPos();
-        BlockPos generatorAbs = h.absolutePos(generatorPos);
+        BlockPos panelAbs = trip.getBlockPos();
+        BlockPos turbineAbs = h.absolutePos(turbinePos);
         BlockPos tankAbs = h.absolutePos(tankPos);
         linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(panelAbs), Direction.UP, panelAbs, false)));
-        h.assertTrue(breaker.target() == null, "An empty linker should link nothing");
+        h.assertTrue(trip.target() == null, "An empty linker should link nothing");
         linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(tankAbs), Direction.UP, tankAbs, false)));
         linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(panelAbs), Direction.UP, panelAbs, false)));
-        h.assertTrue(breaker.target() == null, "A breaker panel should refuse a machine that is not a generator");
-        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(generatorAbs), Direction.UP, generatorAbs, false)));
+        h.assertTrue(trip.target() == null, "A turbine panel should refuse a machine that is not a turbine");
+        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(turbineAbs), Direction.UP, turbineAbs, false)));
         linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(panelAbs), Direction.UP, panelAbs, false)));
-        h.assertTrue(generatorAbs.equals(breaker.target()), "The linker should link the panel to the remembered generator: " + breaker.target());
+        h.assertTrue(turbineAbs.equals(trip.target()), "The linker should link the panel to the remembered turbine: " + trip.target());
         h.succeed();
     }
 
-    @GameTest(template = LARGE, timeoutTicks = 300)
+    @GameTest(template = LARGE, timeoutTicks = 700)
     public static void screenWallSharesPowerAndShowsLinkedText(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         List<ScreenBlockEntity> screens = new ArrayList<>();
@@ -304,20 +293,20 @@ public final class PanelTests {
                     h.assertTrue(main.lines().size() <= 6, "A three by two wall holds six lines: " + main.lines().size());
                     main.setLine(6, "overflow");
                     h.assertTrue(main.lines().size() <= 6, "Lines past the bottom of the wall should be dropped");
-                    IEnergyStorage input = h.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, h.absolutePos(corner), Direction.DOWN);
-                    h.assertTrue(input != null && input.receiveEnergy(1000, false) == ScreenBlockEntity.CAPACITY, "A screen should take energy up to its buffer");
-                    h.assertTrue(input.extractEnergy(100, false) == 0, "A screen should not give energy back");
+                    h.setBlock(corner.south(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
                 })
                 .thenIdle(20)
                 .thenExecute(() -> {
                     for (ScreenBlockEntity s : screens) {
-                        h.assertTrue(s.powered(), "Power fed into one screen should reach the whole wall");
+                        h.assertTrue(s.powered(), "A shaft turning behind one screen should power the whole wall");
                     }
+                    h.assertTrue(((ScreenBlockEntity) h.getBlockEntity(corner)).getSpeed() != 0, "The screen should be turned through its back");
+                    h.setBlock(corner.south(), Blocks.AIR);
                 })
-                .thenIdle(120)
+                .thenIdle(ScreenBlockEntity.CAPACITY + 20)
                 .thenExecute(() -> {
                     for (ScreenBlockEntity s : screens) {
-                        h.assertTrue(!s.powered(), "The wall should go dark when the power runs out");
+                        h.assertTrue(!s.powered(), "The wall should go dark a while after the shaft stops");
                     }
                     h.assertTrue(!main.lines().isEmpty(), "A dark wall should keep its text for when power returns");
                 })
@@ -329,8 +318,8 @@ public final class PanelTests {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * (300 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
-        BlockPos generatorPos = new BlockPos(8, 1, 2);
-        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
+        BlockPos turbinePos = new BlockPos(8, 1, 2);
+        h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
         List<ScreenBlockEntity> wall = new ArrayList<>();
         BlockPos corner = new BlockPos(4, 1, 13);
         for (int y = 0; y < ScreenBlockEntity.BOARD_HEIGHT; y++) {
@@ -346,15 +335,15 @@ public final class PanelTests {
         ScreenBlockEntity main = h.getBlockEntity(corner.offset(ScreenBlockEntity.BOARD_WIDTH - 1, ScreenBlockEntity.BOARD_HEIGHT - 1, 0));
         h.onEachTick(() -> {
             for (ScreenBlockEntity s : wall) {
-                s.energy().receiveEnergy(ScreenBlockEntity.CAPACITY, false);
+                s.charge();
             }
-            small.energy().receiveEnergy(ScreenBlockEntity.CAPACITY, false);
+            small.charge();
         });
         Player player = h.makeMockPlayer(GameType.CREATIVE);
         ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
         player.setItemInHand(InteractionHand.MAIN_HAND, linker);
         BlockPos controller = h.absolutePos(TestVessels.CONTROLLER);
-        BlockPos generatorAbs = h.absolutePos(generatorPos);
+        BlockPos turbineAbs = h.absolutePos(turbinePos);
         BlockPos screenAbs = h.absolutePos(corner);
         BlockPos smallAbs = h.absolutePos(smallPos);
         BlockPos stone = h.absolutePos(new BlockPos(8, 1, 5));
@@ -369,16 +358,16 @@ public final class PanelTests {
                     h.assertTrue(main.linked() && controller.equals(main.reactor()), "Linking any screen should link the whole wall: " + main.reactor());
                     linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(smallAbs), Direction.NORTH, smallAbs, false)));
                     h.assertTrue(small.linked() && !small.bigEnough(), "A small wall should link and report that it is too small");
-                    linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(generatorAbs), Direction.UP, generatorAbs, false)));
+                    linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(turbineAbs), Direction.UP, turbineAbs, false)));
                     linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(screenAbs), Direction.NORTH, screenAbs, false)));
-                    h.assertTrue(main.hasGenerator() && !main.hasTurbine() && controller.equals(main.reactor()), "A generator should join the display without replacing the reactor");
+                    h.assertTrue(main.hasTurbine() && controller.equals(main.reactor()), "A turbine should join the display without replacing the reactor");
                 })
                 .thenIdle(70)
                 .thenExecute(() -> {
                     h.assertTrue(main.samples() >= 3, "A powered, linked wall should sample once a second: " + main.samples());
                     h.assertTrue(main.values().size() == ScreenBlockEntity.ROWS.size() && main.status().endsWith(".short"), "The wall should hold a status and every reading: " + main.status() + " " + main.values());
                     h.assertTrue(Math.abs(main.latest(ScreenBlockEntity.Trend.COOLANT) - 300) < 15, "The coolant trend should follow the coolant temperature: " + main.latest(ScreenBlockEntity.Trend.COOLANT));
-                    h.assertTrue(!main.output().isEmpty(), "A linked generator should show its output");
+                    h.assertTrue(!main.speed().isEmpty() && !main.output().isEmpty(), "A linked turbine should show its speed and shaft load");
                     CompoundTag sent = main.getUpdateTag(h.getLevel().registryAccess());
                     h.assertTrue(sent.getByteArray("Trend2").length == main.samples() && sent.getFloat("Scale2") == 500f, "The trend should be sent scaled to a round maximum: " + sent.getFloat("Scale2"));
                     h.assertTrue((sent.getByteArray("Trend2")[0] & 255) > 130 && (sent.getByteArray("Trend2")[0] & 255) < 175, "300 on a scale of 500 should plot at three fifths");

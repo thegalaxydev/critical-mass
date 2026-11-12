@@ -1,17 +1,16 @@
 package com.criticalmass.content.control;
 
 import com.criticalmass.registry.CMBlockEntities;
-import com.mojang.serialization.MapCodec;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,12 +18,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class ScreenBlock extends HorizontalDirectionalBlock implements EntityBlock, IWrenchable {
-    public static final MapCodec<ScreenBlock> CODEC = simpleCodec(ScreenBlock::new);
+public class ScreenBlock extends HorizontalKineticBlock implements EntityBlock {
+    public static final Property<Direction> FACING = HORIZONTAL_FACING;
     private static final VoxelShape NORTH = Block.box(0, 0, 13, 16, 16, 16);
     private static final VoxelShape SOUTH = Block.box(0, 0, 0, 16, 16, 3);
     private static final VoxelShape EAST = Block.box(0, 0, 0, 3, 16, 16);
@@ -40,8 +40,13 @@ public class ScreenBlock extends HorizontalDirectionalBlock implements EntityBlo
     }
 
     @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
+    public boolean hasShaftTowards(LevelReader level, BlockPos pos, BlockState state, Direction face) {
+        return face == state.getValue(FACING).getOpposite();
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(FACING).getAxis();
     }
 
     @Override
@@ -88,7 +93,7 @@ public class ScreenBlock extends HorizontalDirectionalBlock implements EntityBlo
     }
 
     @Override
-    protected void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
         super.onPlace(state, level, pos, oldState, movedByPiston);
         BlockState now = joined(state, level, pos);
         if (now != state && !level.isClientSide) {

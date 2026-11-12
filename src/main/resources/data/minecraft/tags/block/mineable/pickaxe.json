@@ -31,7 +31,6 @@
     "criticalmass:reactor_alloy_block",
     "criticalmass:sealed_waste_canister",
     "criticalmass:open_waste_canister",
-    "criticalmass:generator",
     "criticalmass:reactor_viewport",
     "criticalmass:tower_basin",
     "criticalmass:tower_distributor",
@@ -44,7 +43,6 @@
     "criticalmass:scram_panel",
     "criticalmass:rod_panel",
     "criticalmass:turbine_panel",
-    "criticalmass:breaker_panel",
     "criticalmass:alarm_panel",
     "criticalmass:lever_panel",
     "criticalmass:dial_panel"

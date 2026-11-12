@@ -21,13 +21,14 @@ NS = "criticalmass_demo"
 TAG = "cm_reactor_origin"
 AREA = ((-9, -2), (14, 13))
 TEMP = "cm_bind"
-PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
+PUMP1, TURBINE = (4, 3, 6), (6, 6, 6)
 SCREENS = ((-9, 2), (-1, 6), 12)
-STATION = (0, 2, 12)
-STATION_MOTOR = (1, 2, 12)
+SCREEN_SHAFT = (-5, 4, 13)
+SCREEN_MOTOR = (-5, 4, 14)
+PRESSURIZER = (6, 5, 5)
 DESK = ((-8, -2), 12)
 PANELS = [((-2, 1, 12), "scram_panel", CONTROLLER), ((-3, 1, 12), "rod_panel", CONTROLLER), ((-4, 1, 12), "alarm_panel", CONTROLLER),
-          ((-5, 1, 12), "turbine_panel", TURBINE), ((-6, 1, 12), "breaker_panel", GENERATOR), ((-7, 1, 12), "lever_panel", None), ((-8, 1, 12), "dial_panel", None)]
+          ((-5, 1, 12), "turbine_panel", TURBINE), ((-6, 1, 12), "lever_panel", None), ((-7, 1, 12), "dial_panel", None)]
 SIREN = (-4, 0, 12)
 RUN_POWER = 0.7
 RUN_COOLANT = 125
@@ -72,7 +73,7 @@ plant = [
     setblock((6, 4, 6), "criticalmass:relief_valve[facing=south]"),
     setblock((6, 6, 6), "criticalmass:steam_turbine[axis=x]"),
     setblock((7, 6, 6), "create:stressometer[facing=south,axis_along_first=true]"),
-    setblock((5, 6, 6), "criticalmass:generator[facing=west]"),
+    setblock((5, 6, 6), "create:mechanical_press[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
     setblock((8, 1, 9), "criticalmass:tower_basin"),
     "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 5, 9)),
@@ -85,7 +86,8 @@ plant = [
     setblock((6, 2, 9), "create:cogwheel[axis=x]"),
     setblock((5, 2, 9), "create:creative_motor[facing=east]"),
     setblock(FEEDWATER, "criticalmass:feedwater_tank"),
-    setblock((5, 6, 5), "criticalmass:pressurizer"),
+    setblock(PRESSURIZER, "criticalmass:pressurizer"),
+    setblock((PRESSURIZER[0], PRESSURIZER[1] - 1, PRESSURIZER[2]), "create:blaze_burner[blaze=kindled]{isCreative:1b}"),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
     setblock((11, 4, 9), "criticalmass:radiator_panel[facing=south]"),
     setblock(VALVE, "create:fluid_valve[facing=up,axis_along_first=true]"),
@@ -121,16 +123,16 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
        setblock((-8, 0, 2), "criticalmass:deepslate_uranium_ore")]
 
 (bx0, by0), (bx1, by1), bz = SCREENS
-desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(STATION_MOTOR[0], by1 + 1, bz + 1)),
+desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(bx1 + 1, by1 + 1, bz + 1)),
         "fill %s %s criticalmass:plant_screen[facing=north]" % (w(bx0, by0, bz), w(bx1, by1, bz)),
-        setblock(STATION, "criticalmass:generator[facing=west]{ScrollValue:8}"),
-        setblock(STATION_MOTOR, "create:creative_motor[facing=west]")]
+        setblock(SCREEN_SHAFT, "create:shaft[axis=z]"),
+        setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
 desk += [setblock(pos, "criticalmass:%s[facing=north]" % name) for pos, name, _ in PANELS] + [setblock(SIREN, "criticalmass:alarm_siren[facing=north]")]
 wiring = []
 for pos, _, target in PANELS:
     if target:
         wiring += bind(pos, target)
-wiring += bind((bx1, by1, bz), CONTROLLER, key="Reactor") + bind((bx1, by1, bz), TURBINE, key="Turbine") + bind((bx1, by1, bz), GENERATOR, key="Generator")
+wiring += bind((bx1, by1, bz), CONTROLLER, key="Reactor") + bind((bx1, by1, bz), TURBINE, key="Turbine")
 
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
          "fill %s %s minecraft:smooth_stone" % (w(x0, -1, z0), w(x1, -1, z1))]

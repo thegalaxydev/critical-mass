@@ -22,8 +22,6 @@ public final class CMConfig {
     public static final ModConfigSpec.BooleanValue MELTDOWN;
     public static final ModConfigSpec.IntValue CORIUM_DEPTH;
     public static final ModConfigSpec.DoubleValue CORIUM_CONTAMINATION;
-    public static final ModConfigSpec.DoubleValue FE_PER_SU;
-    public static final ModConfigSpec.DoubleValue GENERATOR_EFFICIENCY;
     public static final int DEFAULT_FUEL_LIFETIME = 120000;
     public static final double DEFAULT_FUEL_WEAR = 0.25;
 
@@ -39,10 +37,6 @@ public final class CMConfig {
         MELTDOWN = b.comment("Whether fuel above 1800 C melts into corium and ruins its channel").define("meltdown", true);
         CORIUM_DEPTH = b.comment("How many solid blocks hot corium can melt down through after leaving the vessel").defineInRange("coriumDepth", 3, 0, 64);
         CORIUM_CONTAMINATION = b.comment("Multiplier on the contamination released when corium breaches the vessel").defineInRange("coriumContamination", 1.0, 0.0, 100.0);
-        b.pop();
-        b.push("power");
-        FE_PER_SU = b.comment("Forge Energy per tick for each SU of shaft power a Generator absorbs, before efficiency").defineInRange("fePerSu", 0.25, 0.0, 1000.0);
-        GENERATOR_EFFICIENCY = b.comment("Share of absorbed shaft power a Generator turns into Forge Energy").defineInRange("generatorEfficiency", 0.9, 0.0, 1.0);
         b.pop();
         b.push("radiation");
         RADIATION_ENABLED = b.comment("Whether players receive dose and contamination").define("enabled", true);

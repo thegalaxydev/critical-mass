@@ -1,14 +1,12 @@
 package com.criticalmass.content.control;
 
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
-import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.target.DisplayTargetStats;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,10 +25,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
-public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
+public class ScreenBlockEntity extends KineticBlockEntity {
     public static final int LINES_PER_BLOCK = 3;
     public static final int CHARACTERS_PER_BLOCK = 5;
     public static final int CAPACITY = 400;
@@ -76,8 +73,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     private BlockPos reactor;
     @Nullable
     private BlockPos turbine;
-    @Nullable
-    private BlockPos generator;
     private int sampleIn;
     private int samples;
     private final float[][] history = new float[Trend.values().length][HISTORY];
@@ -85,47 +80,10 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     private final byte[][] plot = new byte[Trend.values().length][0];
     private String status = "";
     private final List<String> values = new ArrayList<>();
-    private String speed = "";
+    private String turbineSpeed = "";
     private String output = "";
     private final List<Event> events = new ArrayList<>();
     private int lastAlarms;
-    private final IEnergyStorage storage = new IEnergyStorage() {
-        @Override
-        public int receiveEnergy(int amount, boolean simulate) {
-            int taken = Math.max(0, Math.min(amount, CAPACITY - energy));
-            if (!simulate && taken > 0) {
-                energy += taken;
-                setChanged();
-            }
-            return taken;
-        }
-
-        @Override
-        public int extractEnergy(int amount, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int getEnergyStored() {
-            return energy;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            return CAPACITY;
-        }
-
-        @Override
-        public boolean canExtract() {
-            return false;
-        }
-
-        @Override
-        public boolean canReceive() {
-            return true;
-        }
-    };
-
     public ScreenBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -134,8 +92,8 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
     }
 
-    public IEnergyStorage energy() {
-        return storage;
+    public void charge() {
+        energy = CAPACITY;
     }
 
     public Direction facing() {
@@ -179,10 +137,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         return turbine != null;
     }
 
-    public boolean hasGenerator() {
-        return generator != null;
-    }
-
     public String status() {
         return status;
     }
@@ -192,7 +146,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     }
 
     public String speed() {
-        return speed;
+        return turbineSpeed;
     }
 
     public String output() {
@@ -260,8 +214,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
             reactor = pos.immutable();
         } else if (be instanceof SteamTurbineBlockEntity) {
             turbine = pos.immutable();
-        } else if (be instanceof GeneratorBlockEntity) {
-            generator = pos.immutable();
         } else {
             return false;
         }
@@ -274,7 +226,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     public void unlink() {
         reactor = null;
         turbine = null;
-        generator = null;
         clearReadings();
         setChanged();
         sendData();
@@ -284,7 +235,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         samples = 0;
         status = "";
         values.clear();
-        speed = "";
+        turbineSpeed = "";
         output = "";
         events.clear();
         lastAlarms = 0;
@@ -298,12 +249,8 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         if (turbine == null) {
             turbine = other.turbine;
         }
-        if (generator == null) {
-            generator = other.generator;
-        }
         other.reactor = null;
         other.turbine = null;
-        other.generator = null;
         other.clearReadings();
         sampleIn = 0;
         setChanged();
@@ -322,7 +269,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
             while (nowHeight < MAX_SPAN && joins(level, worldPosition.below(nowHeight), facing)) {
                 nowHeight++;
             }
-        } else if (reactor != null || turbine != null || generator != null) {
+        } else if (reactor != null || turbine != null) {
             ScreenBlockEntity main = controllerOf(level, worldPosition);
             if (main != null && main != this) {
                 main.adopt(this);
@@ -408,8 +355,8 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
             }
         }
         lastAlarms = alarms;
-        speed = turbine == null ? "" : shown(PlantChannel.SPEED.read(level, turbine));
-        output = generator == null ? "" : shown(PlantChannel.OUTPUT.read(level, generator));
+        turbineSpeed = turbine == null ? "" : shown(PlantChannel.SPEED.read(level, turbine));
+        output = turbine == null ? "" : shown(PlantChannel.OUTPUT.read(level, turbine));
         setChanged();
         sendData();
     }
@@ -431,7 +378,9 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
             scanIn = SCAN_TICKS;
             scan();
         }
-        if (energy > 0) {
+        if (getSpeed() != 0) {
+            charge();
+        } else if (energy > 0) {
             energy--;
         }
         for (Direction d : Direction.values()) {
@@ -481,7 +430,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         tag.put("Lines", list);
         putPos(tag, "Reactor", reactor);
         putPos(tag, "Turbine", turbine);
-        putPos(tag, "Generator", generator);
         ListTag log = new ListTag();
         for (Event e : events) {
             CompoundTag entry = new CompoundTag();
@@ -499,7 +447,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
                 shown.add(StringTag.valueOf(value));
             }
             tag.put("Values", shown);
-            tag.putString("Speed", speed);
+            tag.putString("TurbineSpeed", turbineSpeed);
             tag.putString("Output", output);
             tag.putInt("Samples", samples);
             for (Trend trend : Trend.values()) {
@@ -534,7 +482,6 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         }
         reactor = getPos(tag, "Reactor");
         turbine = getPos(tag, "Turbine");
-        generator = getPos(tag, "Generator");
         events.clear();
         for (Tag t : tag.getList("Events", Tag.TAG_COMPOUND)) {
             CompoundTag entry = (CompoundTag) t;
@@ -547,7 +494,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
             for (Tag t : tag.getList("Values", Tag.TAG_STRING)) {
                 values.add(t.getAsString());
             }
-            speed = tag.getString("Speed");
+            turbineSpeed = tag.getString("TurbineSpeed");
             output = tag.getString("Output");
             samples = tag.getInt("Samples");
             for (Trend trend : Trend.values()) {
@@ -563,7 +510,7 @@ public class ScreenBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.screen")));
-        tooltip.add(powered ? ThermalTooltips.line("criticalmass.screen.powered", ChatFormatting.GREEN, energy) : ThermalTooltips.line("criticalmass.screen.unpowered", ChatFormatting.GOLD));
+        tooltip.add(powered ? ThermalTooltips.line("criticalmass.screen.powered", ChatFormatting.GREEN) : ThermalTooltips.line("criticalmass.screen.unpowered", ChatFormatting.GOLD));
         ScreenBlockEntity main = level == null ? null : controllerOf(level, worldPosition);
         if (main != null) {
             tooltip.add(ThermalTooltips.line("criticalmass.screen.size", ChatFormatting.GRAY, main.width, main.height, main.height * LINES_PER_BLOCK, main.width * CHARACTERS_PER_BLOCK));

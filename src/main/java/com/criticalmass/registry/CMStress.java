@@ -6,6 +6,7 @@ public final class CMStress {
     public static final double CIRCULATION_PUMP_IMPACT = 4.0;
     public static final double CONTROL_ROD_DRIVE_IMPACT = 1.0;
     public static final double TOWER_FAN_IMPACT = 2.0;
+    public static final double PLANT_SCREEN_IMPACT = 1.0;
 
     private CMStress() {
     }
@@ -14,5 +15,6 @@ public final class CMStress {
         BlockStressValues.IMPACTS.register(CMBlocks.CIRCULATION_PUMP.get(), () -> CIRCULATION_PUMP_IMPACT);
         BlockStressValues.IMPACTS.register(CMBlocks.CONTROL_ROD_DRIVE.get(), () -> CONTROL_ROD_DRIVE_IMPACT);
         BlockStressValues.IMPACTS.register(CMBlocks.TOWER_FAN.get(), () -> TOWER_FAN_IMPACT);
+        BlockStressValues.IMPACTS.register(CMBlocks.PLANT_SCREEN.get(), () -> PLANT_SCREEN_IMPACT);
     }
 }

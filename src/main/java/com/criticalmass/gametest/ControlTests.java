@@ -5,7 +5,6 @@ import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
@@ -101,7 +100,7 @@ public final class ControlTests {
     }
 
     @GameTest(template = LARGE, timeoutTicks = 3000)
-    public static void plantStartsRunsGeneratesAndShutsDown(GameTestHelper h) {
+    public static void plantStartsRunsDrivesAMachineAndShutsDown(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.plant(h);
         h.setBlock(TestVessels.MOTOR, Blocks.AIR);
@@ -111,12 +110,7 @@ public final class ControlTests {
         c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * 230.0);
         exchanger.secondary().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
         turbine.coolant().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
-        BlockPos generatorPos = TestVessels.PLANT_TURBINE.west();
-        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
-        GeneratorBlockEntity generator = h.getBlockEntity(generatorPos);
-        generator.setSetting(64);
-        net.neoforged.neoforge.energy.IEnergyStorage out = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, h.absolutePos(generatorPos), Direction.UP);
-        h.onEachTick(() -> out.extractEnergy(100000, false));
+        h.setBlock(TestVessels.PLANT_TURBINE.west(), AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
         ControlRodDriveBlockEntity a = drive(h, new BlockPos(3, 6, 2));
         ControlRodDriveBlockEntity b = drive(h, new BlockPos(3, 6, 4));
         c.setBankTarget(0, 0.0);
@@ -145,10 +139,8 @@ public final class ControlTests {
                     h.assertTrue(Math.abs(c.core().reactivity()) < 2e-3, "A core holding power should sit near critical: " + c.core().reactivity());
                     h.assertTrue(c.core().maxTemperature() > c.coolant().temperature() + 5, "Fuel at power should run hotter than its coolant: " + c.core().maxTemperature() + " over " + c.coolant().temperature());
                     h.assertTrue(exchanger.exchanged() > 0 && turbine.heatExtracted() > 0, "Heat should cross the exchanger and reach the turbine");
-                    h.assertTrue(generator.generated() > 0 && generator.outputRate() > 1, "The generator should be making Forge Energy: " + generator.outputRate());
-                    double perSu = com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.FE_PER_SU) * com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.GENERATOR_EFFICIENCY);
-                    h.assertTrue(Math.abs(generator.generated() - generator.shaftWork() * perSu) <= 2, "Energy made should match shaft work");
-                    h.assertTrue(generator.shaftWork() <= turbine.heatExtracted() * CMThermal.SU_PER_HEAT + 1e-6, "Shaft work cannot exceed the steam energy the turbine took: " + generator.shaftWork() + " vs " + turbine.heatExtracted() * CMThermal.SU_PER_HEAT);
+                    h.assertTrue(turbine.getSpeed() != 0 && turbine.shaftLoad() > 0, "The turbine should be turning the press on its shaft: " + turbine.shaftLoad());
+                    h.assertTrue(turbine.shaftLoad() <= turbine.heatRate() * CMThermal.SU_PER_HEAT + 1e-6, "Shaft work cannot exceed the steam energy the turbine takes: " + turbine.shaftLoad() + " vs " + turbine.heatRate() * CMThermal.SU_PER_HEAT);
                     c.scram();
                 })
                 .thenIdle(60)

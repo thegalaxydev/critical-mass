@@ -9,7 +9,6 @@ import com.criticalmass.content.control.PanelBlock;
 import com.criticalmass.content.control.PanelBlockEntity;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.thermal.ChannelBlocks;
-import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.AlarmSirenBlock;
 import com.criticalmass.content.CoolantPortBlock;
@@ -70,7 +69,6 @@ public final class CMBlocks {
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f));
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
-    public static final DeferredBlock<GeneratorBlock> GENERATOR = register("generator", GeneratorBlock::new, metal(4.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));
     public static final DeferredBlock<CoolingTowerBlock> COOLING_TOWER_PACKING = register("cooling_tower_packing", CoolingTowerBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.WOOD).strength(2.0f).sound(SoundType.WOOD).noOcclusion());
@@ -89,7 +87,6 @@ public final class CMBlocks {
     public static final DeferredBlock<PanelBlock> SCRAM_PANEL = register("scram_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.SCRAM), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> ROD_PANEL = register("rod_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.RODS), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> TURBINE_PANEL = register("turbine_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.TURBINE), metal(2.5f).noOcclusion());
-    public static final DeferredBlock<PanelBlock> BREAKER_PANEL = register("breaker_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.BREAKER), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> ALARM_PANEL = register("alarm_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.ALARMS), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> LEVER_PANEL = register("lever_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.LEVER), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> DIAL_PANEL = register("dial_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.DIAL), metal(2.5f).noOcclusion());

@@ -1,8 +1,6 @@
 package com.criticalmass.client;
 
 import com.criticalmass.content.thermal.TowerParts;
-import com.criticalmass.content.kinetics.GeneratorBlock;
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.simibubi.create.AllPartialModels;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
@@ -48,7 +46,6 @@ public class CriticalMassClient {
                 return new AABB(be.getBlockPos()).inflate(1, 0, 1);
             }
         });
-        event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), ctx -> new HalfShaftRenderer<GeneratorBlockEntity>(ctx, GeneratorBlock::inputSide));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
     }
 
@@ -63,10 +60,6 @@ public class CriticalMassClient {
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.TOWER_FAN.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.TOWER_FAN_ROTOR))
-                .skipVanillaRender(be -> true)
-                .apply();
-        SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
-                .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.SOUTH, GeneratorBlock.inputSide(be.getBlockState()), Models.partial(AllPartialModels.SHAFT_HALF)))
                 .skipVanillaRender(be -> true)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.STEAM_TURBINE.get())

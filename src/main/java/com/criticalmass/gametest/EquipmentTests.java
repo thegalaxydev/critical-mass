@@ -9,6 +9,8 @@ import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlock;
+import com.simibubi.create.content.processing.burner.BlazeBurnerBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
@@ -134,19 +136,13 @@ public final class EquipmentTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 500)
-    public static void pressurizerHoldsOffBoilingWhileItHasPower(GameTestHelper h) {
+    public static void pressurizerHoldsOffBoilingOverALitBlazeBurner(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         double hot = 6000 * (450 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY;
         c.coolant().set(CoolantLoopTests.coolant(6000), hot);
         BlockPos pos = new BlockPos(6, 3, 3);
-        boolean[] powered = {false};
         PressurizerBlockEntity[] p = new PressurizerBlockEntity[1];
-        h.onEachTick(() -> {
-            if (powered[0] && p[0] != null) {
-                p[0].input().receiveEnergy(1000, false);
-            }
-        });
         h.startSequence()
                 .thenIdle(40)
                 .thenExecute(() -> {
@@ -159,12 +155,14 @@ public final class EquipmentTests {
                 })
                 .thenIdle(60)
                 .thenExecute(() -> {
-                    h.assertTrue(p[0].linked() && p[0].status().endsWith("no_power") && p[0].pressure() < 2, "An unpowered pressurizer should not build pressure: " + p[0].status() + " " + p[0].pressure());
-                    powered[0] = true;
+                    h.assertTrue(p[0].linked() && p[0].status().endsWith("no_heat") && p[0].pressure() < 2, "A pressurizer with no burner should not build pressure: " + p[0].status() + " " + p[0].pressure());
+                    h.setBlock(pos.below(), AllBlocks.BLAZE_BURNER.getDefaultState().setValue(BlazeBurnerBlock.HEAT_LEVEL, BlazeBurnerBlock.HeatLevel.KINDLED));
+                    BlazeBurnerBlockEntity burner = h.getBlockEntity(pos.below());
+                    burner.isCreative = true;
                 })
                 .thenIdle(300)
                 .thenExecute(() -> {
-                    h.assertTrue(Math.abs(p[0].pressure() - 60) < 1.0 && p[0].status().endsWith("holding") || p[0].status().endsWith("heating"), "Powered heaters should reach the setpoint: " + p[0].pressure() + " " + p[0].status());
+                    h.assertTrue(Math.abs(p[0].pressure() - 60) < 1.0 && p[0].status().endsWith("holding") || p[0].status().endsWith("heating"), "Heaters over a lit burner should reach the setpoint: " + p[0].pressure() + " " + p[0].status());
                     double expected = CMThermal.UNPRESSURIZED_BOILING + CMThermal.BOILING_PER_BAR * (p[0].pressure() - 1);
                     h.assertTrue(Math.abs(c.boilingPoint() - expected) < 1.0, "Reactor should follow the pressurizer: " + c.boilingPoint() + " vs " + expected);
                     int left = c.coolant().amount();
@@ -173,7 +171,6 @@ public final class EquipmentTests {
                 .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(!c.flashing() && Math.abs(c.coolant().temperature() - 450) < 1, "Pressurized coolant at 450 C should stay liquid: " + c.coolant().temperature());
-                    powered[0] = false;
                 })
                 .thenSucceed();
     }

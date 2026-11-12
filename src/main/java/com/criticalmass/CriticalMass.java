@@ -3,7 +3,6 @@ package com.criticalmass;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.PipeConnectable;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
-import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.content.thermal.CoolantPortHandler;
 import com.criticalmass.content.thermal.ThermalNode;
 import net.minecraft.core.Direction;
@@ -118,9 +117,6 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_BASIN.get(), (be, side) -> side == Direction.DOWN ? null : be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_DISTRIBUTOR.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.FEEDWATER_TANK.get(), CriticalMass::coolantFace);
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.PRESSURIZER.get(), (be, side) -> be.input());
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.PLANT_SCREEN.get(), (be, side) -> be.energy());
-        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.GENERATOR.get(), (be, side) -> side == GeneratorBlock.inputSide(be.getBlockState()) ? null : be.output());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());

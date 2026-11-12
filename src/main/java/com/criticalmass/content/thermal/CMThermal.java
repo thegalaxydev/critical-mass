@@ -139,8 +139,7 @@ public final class CMThermal {
     public static final double PRESSURIZER_HEAT_RATE = 0.25;
     public static final double PRESSURIZER_SPRAY_RATE = 0.5;
     public static final double PRESSURIZER_LEAK = 0.02;
-    public static final int PRESSURIZER_FE_PER_TICK = 64;
-    public static final int PRESSURIZER_FE_BUFFER = 8000;
+    public static final double PRESSURIZER_MAX_BURNER = 2.0;
     public static final int PRESSURE_LINK_TICKS = 20;
     public static final double FLASH_SHARE = 0.25;
     public static final int CHANNEL_VISUAL_TICKS = 5;

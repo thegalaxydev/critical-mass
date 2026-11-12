@@ -240,8 +240,6 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<ScreenBlockEntity> {
                 text(Component.translatable("criticalmass.screen.row.turbine").getString(), x0, y, size, DIM, LEFT, width * 0.5f);
                 text(be.speed().isEmpty() ? "--" : be.speed(), x1, y, size, GREEN, RIGHT, width * 0.48f);
                 y += row;
-            }
-            if (be.hasGenerator()) {
                 text(Component.translatable("criticalmass.screen.row.output").getString(), x0, y, size, DIM, LEFT, width * 0.5f);
                 text(be.output().isEmpty() ? "--" : be.output(), x1, y, size, GREEN, RIGHT, width * 0.48f);
                 y += row;

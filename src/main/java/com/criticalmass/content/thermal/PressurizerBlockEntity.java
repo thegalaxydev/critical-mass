@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
@@ -17,14 +18,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.energy.IEnergyStorage;
 import org.jetbrains.annotations.Nullable;
 
 public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     private ScrollValueBehaviour setpoint;
-    private final IEnergyStorage input = new Input();
     private double pressure = CMThermal.ATMOSPHERIC;
-    private int energy;
     private boolean heating;
     private boolean linked;
     private String status = "criticalmass.pressurizer.no_vessel";
@@ -43,10 +41,6 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         behaviours.add(setpoint);
     }
 
-    public IEnergyStorage input() {
-        return input;
-    }
-
     public double pressure() {
         return pressure;
     }
@@ -63,8 +57,12 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         setpoint.setValue(bar);
     }
 
-    public int energy() {
-        return energy;
+    public double burnerHeat() {
+        if (level == null) {
+            return 0;
+        }
+        BlockPos below = worldPosition.below();
+        return Math.max(0, Math.min(CMThermal.PRESSURIZER_MAX_BURNER, BoilerHeater.findHeat(level, below, level.getBlockState(below))));
     }
 
     public boolean heating() {
@@ -105,9 +103,9 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         boolean off = level.hasNeighborSignal(worldPosition);
         int target = setpoint();
         boolean nowHeating = false;
-        if (!off && pressure < target && energy >= CMThermal.PRESSURIZER_FE_PER_TICK) {
-            energy -= CMThermal.PRESSURIZER_FE_PER_TICK;
-            pressure = Math.min(target, pressure + CMThermal.PRESSURIZER_HEAT_RATE);
+        double burner = off ? 0 : burnerHeat();
+        if (pressure < target && burner > 0) {
+            pressure = Math.min(target, pressure + CMThermal.PRESSURIZER_HEAT_RATE * burner);
             nowHeating = true;
         } else if (pressure > target + 1) {
             pressure = Math.max(target, pressure - CMThermal.PRESSURIZER_SPRAY_RATE);
@@ -119,7 +117,7 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
             c.notePressure(pressure);
         }
         String nowStatus = !nowLinked ? "criticalmass.pressurizer.no_vessel" : off ? "criticalmass.pressurizer.off"
-                : nowHeating ? "criticalmass.pressurizer.heating" : pressure < target - 1 ? "criticalmass.pressurizer.no_power" : "criticalmass.pressurizer.holding";
+                : nowHeating ? "criticalmass.pressurizer.heating" : pressure < target - 1 ? "criticalmass.pressurizer.no_heat" : "criticalmass.pressurizer.holding";
         boolean changed = nowHeating != heating || nowLinked != linked || !nowStatus.equals(status);
         heating = nowHeating;
         linked = nowLinked;
@@ -135,7 +133,6 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
         tag.putDouble("Pressure", pressure);
-        tag.putInt("Energy", energy);
         tag.putBoolean("Heating", heating);
         tag.putBoolean("Linked", linked);
         tag.putString("Status", status);
@@ -145,7 +142,6 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
         pressure = tag.contains("Pressure") ? tag.getDouble("Pressure") : CMThermal.ATMOSPHERIC;
-        energy = tag.getInt("Energy");
         heating = tag.getBoolean("Heating");
         linked = tag.getBoolean("Linked");
         status = tag.getString("Status");
@@ -157,7 +153,6 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         tooltip.add(ThermalTooltips.line(status, status.endsWith("holding") || status.endsWith("heating") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.pressurizer_pressure", ChatFormatting.AQUA, ThermalTooltips.number(pressure), setpoint()));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.pressurizer_boiling", ChatFormatting.GOLD, ThermalTooltips.number(boilingPoint(pressure))));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.generator_stored", ChatFormatting.GRAY, energy, CMThermal.PRESSURIZER_FE_BUFFER));
         return true;
     }
 
@@ -170,43 +165,6 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         @Override
         protected boolean isSideActive(BlockState state, Direction direction) {
             return direction.getAxis().isHorizontal();
-        }
-    }
-
-    private final class Input implements IEnergyStorage {
-        @Override
-        public int receiveEnergy(int toReceive, boolean simulate) {
-            int n = Math.max(0, Math.min(toReceive, CMThermal.PRESSURIZER_FE_BUFFER - energy));
-            if (!simulate && n > 0) {
-                energy += n;
-                setChanged();
-            }
-            return n;
-        }
-
-        @Override
-        public int extractEnergy(int toExtract, boolean simulate) {
-            return 0;
-        }
-
-        @Override
-        public int getEnergyStored() {
-            return energy;
-        }
-
-        @Override
-        public int getMaxEnergyStored() {
-            return CMThermal.PRESSURIZER_FE_BUFFER;
-        }
-
-        @Override
-        public boolean canExtract() {
-            return false;
-        }
-
-        @Override
-        public boolean canReceive() {
-            return true;
         }
     }
 }

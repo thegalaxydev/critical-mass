@@ -2,7 +2,6 @@ package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
@@ -55,7 +54,7 @@ public enum PlantChannel {
     }
 
     public static boolean isTarget(@Nullable BlockEntity be) {
-        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof TowerParts.Fan || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity || be instanceof GeneratorBlockEntity;
+        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof TowerParts.Fan || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity;
     }
 
     private Reading of(double value, double min, double max) {
@@ -100,7 +99,6 @@ public enum PlantChannel {
             return switch (this) {
                 case PRESSURE -> of(z.pressure(), 0, CMThermal.PRESSURIZER_MAX);
                 case TEMPERATURE, COOLANT_TEMPERATURE -> of(PressurizerBlockEntity.boilingPoint(z.pressure()), CMThermal.AMBIENT, PressurizerBlockEntity.boilingPoint(CMThermal.PRESSURIZER_MAX));
-                case LEVEL -> of(100.0 * z.energy() / CMThermal.PRESSURIZER_FE_BUFFER, 0, 100);
                 default -> null;
             };
         }
@@ -114,14 +112,6 @@ public enum PlantChannel {
                 case OUTPUT -> new Reading(t.shaftLoad(), 0, Math.max(CMThermal.TURBINE_MIN_SU, t.stressCapacity()), "SU");
                 case FLOW -> of(t.admission() * 100, 0, 100);
                 default -> buffer(t.coolant());
-            };
-        }
-        if (be instanceof GeneratorBlockEntity g) {
-            return switch (this) {
-                case OUTPUT, POWER -> new Reading(g.outputRate(), 0, Math.max(GeneratorBlockEntity.FE_PER_STEP, g.setting()), "FE/t");
-                case LEVEL -> of(100.0 * g.stored() / Math.max(1, g.capacity()), 0, 100);
-                case SPEED -> of(Math.abs(g.getSpeed()), 0, CMThermal.TURBINE_MAX_RPM);
-                default -> null;
             };
         }
         if (be instanceof CirculationPumpBlockEntity p) {

@@ -24,13 +24,13 @@ Every circuit is plumbed with Create's own fluid pipes and Fluid Valves, hot or 
 6. **Cooling loop.** Condenser cooling side to a tower: Basin, two or more Packing blocks, Distributor on top, a Fan above that if you want more than natural draft. Basin outlet, pump, back to the condenser. Fill the basin with water.
    - **Size it for the core.** Nearly all of the core's heat ends up in the tower. Five fuel columns at full power make 750 HU/t, which takes four Packing blocks under a fan at 128 RPM. A tower that is too small shows as steam that never condenses and a relief valve that starts venting after a few minutes.
    - **Make-up water.** At that rate the tower evaporates about 370 mB a minute, enough to empty a full basin in about ten minutes. Pump water into a side of the basin with Create pipes. The basin sends loop water out of the first piped side it finds, checking north, east, south, then west, so put the make-up pipe on a later side than the loop outlet.
-7. **Power.** A Generator on the turbine shaft. Everything else on that shaft shares what the generator leaves.
+7. **Power.** The turbine shaft is the output. Put Create machinery on it, through a Clutch if you want to be able to drop the load.
 
 ## Wiring a control room
 
-Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They need Forge Energy, 1 FE/t per screen: feed any one screen, for example from a small Generator standing against the wall, and it shares with the rest.
+Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They run on rotation, like a Display Board: turn a shaft into the back of any one screen and it shares with the rest.
 
-Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine and the generator the same way to add speed and output. If the wall is too small it tells you so.
+Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine the same way to add its speed and shaft load. If the wall is too small it tells you so.
 
 A wall you have not linked shows Display Link text instead, three green lines to a block. Put a Create Display Link on a machine, point it at any screen of the wall, and pick what to show. Create's Display Board, Nixie Tubes and signs take the same links.
 
@@ -39,7 +39,6 @@ A wall you have not linked shows Display Link text instead, three green lines to
 | Reactor Controller or a Reactor Signal Interface | Status summary: status, hottest fuel, coolant temperature, pressure, flow and heat output |
 | Reactor Controller or a Reactor Signal Interface | Active alarms |
 | Turbine | Speed |
-| Generator | Output |
 | Primary pump | Flow |
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
@@ -52,7 +51,6 @@ Controls are separate panels that you place and link yourself. Each is a thin wa
 | Rod Control Panel | Reactor Controller | Rods in, rods out |
 | Alarm Panel | Reactor Controller | Six alarm lamps and acknowledge. Put an Alarm Siren beside it |
 | Turbine Panel | Steam Turbine | Trip, reset |
-| Breaker Panel | Generator | Breaker switch |
 | Lever Panel | Nothing | A redstone signal you switch on and off |
 | Dial Panel | Nothing | A redstone signal of the strength you set. Sneak-use raises it |
 
@@ -74,8 +72,8 @@ A cold core with its rods in is thousands of pcm below critical. Starting it mea
 6. As reactivity nears zero, slow down. Neutron power climbs on its own as the core approaches critical. Once reactivity is positive, stop pressing and let the period do the work. A period between 10 and 30 seconds is a comfortable climb. Under 3 seconds trips the reactor.
 7. Power climbs through many decades before it makes any heat. When neutron power reaches a few percent the fuel warms, reactivity falls back toward zero and the power levels off by itself.
 8. Raise power in small steps from there. Each step raises power until the hotter fuel and coolant cancel it.
-9. When the steam loop boils, the turbine comes up to its rated speed. Close the generator breaker and raise its load in steps.
-10. Once the generator is feeding the Pressurizer and the plant's own shafts, the outside supply can be disconnected.
+9. When the steam loop boils, the turbine comes up to its rated speed. Put the load on its shaft a machine or two at a time.
+10. Once the turbine shaft is driving the plant's own pumps and fans, the outside supply can be disconnected.
 
 Never hold a lever to pull the rods. Continuous withdrawal goes straight through critical and trips on a short period, or worse.
 
@@ -86,13 +84,13 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **Less power:** insert rods. After a power cut xenon rises for several minutes before it falls, so expect to pull rods again later.
 - **Cold water is reactivity:** anything that cools the primary coolant quickly, such as starting a big steam demand, adds reactivity fast. Do it in steps.
 - **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the boiling alarm lamp means you are losing coolant.
-- **Load changes:** change generator load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
+- **Load changes:** change the shaft load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
 - **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the basin topped up, or pipe make-up water into it.
 - **Tower fan:** a fan that is too fast cools the steam loop below boiling at part power and the turbine stops. Slow it until the loop boils again.
 
 ## Shutdown
 
-1. Lower the generator load and open the breaker.
+1. Take the load off the turbine shaft, a machine at a time or with a Clutch once it is light.
 2. Insert the rods with the IN button, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
 3. **Keep the pumps and tower running.** Decay heat starts at 7% of the power you were making and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
 4. When the controller reads Cold, the pumps can stop.
@@ -122,7 +120,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **Bigger core:** fuel columns next to each other give more power each, and need coolant channels beside every one of them. Check the hottest fuel column, not the average.
 - **More rods:** put drives in separate banks so you can move a few at a time.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
-- **More pressure:** a hotter primary loop makes more steam but depends on the Pressurizer's electricity. Give it a second supply.
+- **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
 - **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose.
 
 ## The reference plant
@@ -134,9 +132,9 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
+It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a nine by five wall of Plant Screens linked to the reactor, the turbine and the generator, so it shows the reactor display. A small Generator on a creative motor beside the wall powers the screens. Under the screens runs a row of seven panels: SCRAM, rods, alarms, turbine and breaker, each linked to its machine, plus a spare lever and dial. An Alarm Siren sits under the Alarm Panel.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. Under the screens runs a row of six panels: SCRAM, rods, alarms and turbine, each linked to its machine, plus a spare lever and dial. An Alarm Siren sits under the Alarm Panel.
 
 To skip the start-up, run:
 

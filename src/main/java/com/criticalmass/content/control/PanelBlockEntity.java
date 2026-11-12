@@ -1,6 +1,5 @@
 package com.criticalmass.content.control;
 
-import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
@@ -51,11 +50,11 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
     }
 
     public enum Action {
-        SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, BREAKER, ACK, TOGGLE, NONE
+        SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, ACK, TOGGLE, NONE
     }
 
     public enum Link {
-        REACTOR, TURBINE, GENERATOR, NONE
+        REACTOR, TURBINE, NONE
     }
 
     public record Control(Kind kind, Action action, double u, double v, float scale, int color, String key, double labelU, double labelV, int alarm) {
@@ -97,9 +96,6 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         TURBINE("turbine", Link.TURBINE, Action.TURBINE_TRIP,
                 Control.button(Action.TURBINE_TRIP, 4.5, 7.8, RED, "trip"),
                 Control.button(Action.TURBINE_RESET, 11.5, 7.8, GREEN, "reset")),
-        BREAKER("breaker", Link.GENERATOR, Action.NONE,
-                new Control(Kind.SWITCH, Action.BREAKER, 8, 6.0, 1.5f, CREAM, "", 0, 0, -1),
-                Control.light(8, 11.2)),
         ALARMS("alarms", Link.REACTOR, Action.NONE,
                 Control.lamp(PlantAlarms.Alarm.TRIP, 3.5, 11.2), Control.lamp(PlantAlarms.Alarm.LOW_FLOW, 8, 11.2), Control.lamp(PlantAlarms.Alarm.CORE_HOT, 12.5, 11.2),
                 Control.lamp(PlantAlarms.Alarm.LOW_COOLANT, 3.5, 7.8), Control.lamp(PlantAlarms.Alarm.CASING, 8, 7.8), Control.lamp(PlantAlarms.Alarm.PRESSURE, 12.5, 7.8),
@@ -127,7 +123,7 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         }
 
         public boolean latches() {
-            return this == BREAKER || this == LEVER || this == DIAL;
+            return this == LEVER || this == DIAL;
         }
 
         public boolean emits() {
@@ -239,7 +235,6 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
         boolean fits = switch (type().link) {
             case REACTOR -> be instanceof ReactorControllerBlockEntity;
             case TURBINE -> be instanceof SteamTurbineBlockEntity;
-            case GENERATOR -> be instanceof GeneratorBlockEntity;
             case NONE -> false;
         };
         if (!fits) {
@@ -399,15 +394,6 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
                 t.resetTrip();
                 return "criticalmass.panel.result.turbine_reset";
             }
-            case BREAKER -> {
-                if (!(be instanceof GeneratorBlockEntity g)) {
-                    return "criticalmass.panel.result.unbound";
-                }
-                on = !on;
-                readIn = 2 * READ_TICKS;
-                g.setBreakerLatched(!on);
-                return on ? "criticalmass.panel.result.breaker_close" : "criticalmass.panel.result.breaker_open";
-            }
             case ACK -> {
                 acknowledged = alarms;
                 outputChanged();
@@ -474,9 +460,6 @@ public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInf
                     }
                     dirty = true;
                 }
-            } else if (type == Type.BREAKER && be instanceof GeneratorBlockEntity g && on == g.breakerOpen()) {
-                on = !g.breakerOpen();
-                dirty = true;
             }
         }
         if (dirty) {
