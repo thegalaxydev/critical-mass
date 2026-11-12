@@ -45,6 +45,8 @@ public final class ReactorCore {
     private double temperatureReactivity;
     private double xenonReactivity;
     private double boronReactivity;
+    private double ratedActive;
+    private double weightTotal;
 
     public static final class FuelColumn {
         final int dx;
@@ -197,25 +199,8 @@ public final class ReactorCore {
         return x - Math.sin(2 * Math.PI * x) / (2 * Math.PI);
     }
 
-    public double tick(ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant, double boron) {
-        double output = 0;
+    public double evaluate(ToDoubleFunction<Long> insertion, CoolantBuffer vesselCoolant, double boron) {
         double coolantTemperature = vesselCoolant.temperature();
-        double quenched = 0;
-        if (coriumMass > 0) {
-            coriumHeat += coriumDecay;
-            output += coriumDecay;
-            coriumDecay *= DECAY_FACTOR;
-            if (coriumDecay < 1e-6) {
-                coriumDecay = 0;
-            }
-            if (vesselCoolant.amount() > 0) {
-                quenched = coriumHeat * CMThermal.CORIUM_QUENCH;
-                coriumHeat -= quenched;
-                vesselCoolant.addHeat(quenched);
-            }
-        }
-        double lifetime = CMConfig.fuelLifetime();
-        double wear = CMConfig.fuelWear();
         int columns = fuel.size();
         double rated = 0;
         double weightSum = 0;
@@ -253,6 +238,69 @@ public final class ReactorCore {
         temperatureReactivity = -CMThermal.FUEL_COEFFICIENT * (fuelTemperature - CMThermal.AMBIENT) - CMThermal.MODERATOR_COEFFICIENT * (coolantTemperature - CMThermal.AMBIENT) * moderated;
         xenonReactivity = -CMThermal.XENON_WORTH * xenon;
         reactivity = fuelReactivity + rodReactivity + boronReactivity + temperatureReactivity + xenonReactivity - CMThermal.VOID_WORTH * (1 - moderated);
+        ratedActive = rated;
+        weightTotal = weightSum;
+        return reactivity;
+    }
+
+    public static double conducted(double difference, int height, int coolantNeighbours, int flow) {
+        double capacity = CMThermal.FUEL_HEAT_CAPACITY * Math.max(1, height);
+        double conductance = CMThermal.FUEL_CONDUCTANCE * Math.max(1, height) * coolantNeighbours * Math.min(1.0, flow / (double) CMThermal.COOLANT_REFERENCE_FLOW);
+        return difference * capacity * (1 - Math.exp(-conductance / capacity));
+    }
+
+    public double steadyInsertion(double power, int flow, CoolantBuffer vesselCoolant, double boron) {
+        double xenonLevel = (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT) * power / (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT * power);
+        setKinetics(power, xenonLevel, power);
+        double coolantTemperature = vesselCoolant.temperature();
+        double low = 0;
+        double high = 1;
+        for (int round = 0; round < 3; round++) {
+            double guess = (low + high) / 2;
+            evaluate(k -> guess, vesselCoolant, boron);
+            for (FuelColumn f : fuel.values()) {
+                double q = weightTotal > 0 ? power * ratedActive * f.weight / weightTotal : 0;
+                double perDegree = f.coolantNeighbours > 0 && flow > 0 ? conducted(1, f.height, f.coolantNeighbours, flow) : 0;
+                double rise = perDegree > 0 ? q / perDegree : 0;
+                f.heat = (coolantTemperature + rise - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * Math.max(1, f.height);
+                f.decay = CMThermal.DECAY_FRACTION * q;
+            }
+            low = 0;
+            high = 1;
+            for (int i = 0; i < 40; i++) {
+                double mid = (low + high) / 2;
+                if (evaluate(k -> mid, vesselCoolant, boron) > 0) {
+                    low = mid;
+                } else {
+                    high = mid;
+                }
+            }
+        }
+        return (low + high) / 2;
+    }
+
+    public double tick(ToDoubleFunction<Long> insertion, int flow, CoolantBuffer vesselCoolant, double boron) {
+        double output = 0;
+        double coolantTemperature = vesselCoolant.temperature();
+        double quenched = 0;
+        if (coriumMass > 0) {
+            coriumHeat += coriumDecay;
+            output += coriumDecay;
+            coriumDecay *= DECAY_FACTOR;
+            if (coriumDecay < 1e-6) {
+                coriumDecay = 0;
+            }
+            if (vesselCoolant.amount() > 0) {
+                quenched = coriumHeat * CMThermal.CORIUM_QUENCH;
+                coriumHeat -= quenched;
+                vesselCoolant.addHeat(quenched);
+            }
+        }
+        double lifetime = CMConfig.fuelLifetime();
+        double wear = CMConfig.fuelWear();
+        evaluate(insertion, vesselCoolant, boron);
+        double rated = ratedActive;
+        double weightSum = weightTotal;
         double before = neutron;
         if (rated > 0) {
             double beta = CMThermal.DELAYED_FRACTION;
@@ -329,15 +377,12 @@ public final class ReactorCore {
         }
         double extracted = quenched;
         if (flow > 0 && vesselCoolant.amount() > 0) {
-            double flowFactor = Math.min(1.0, flow / (double) CMThermal.COOLANT_REFERENCE_FLOW);
             double moved = 0;
             for (FuelColumn f : fuel.values()) {
                 if (f.coolantNeighbours == 0) {
                     continue;
                 }
-                double capacity = CMThermal.FUEL_HEAT_CAPACITY * Math.max(1, f.height);
-                double conductance = CMThermal.FUEL_CONDUCTANCE * Math.max(1, f.height) * f.coolantNeighbours * flowFactor;
-                double q = (f.temperature() - coolantTemperature) * capacity * (1 - Math.exp(-conductance / capacity));
+                double q = conducted(f.temperature() - coolantTemperature, f.height, f.coolantNeighbours, flow);
                 f.heat -= q;
                 moved += q;
             }

@@ -55,27 +55,39 @@ Controls are panels, and they do nothing until they are bound. Use the Plant Lin
 
 ## Start-up
 
+A cold core with its rods in is thousands of pcm below critical. Starting it means taking that away slowly and watching the period.
+
 1. Bring outside rotation to all three pumps. A cold plant makes none of its own.
 2. Check the annunciator is clear and the vessel is at least half full.
 3. Start the primary pump. The controller will not let rods move until coolant is flowing.
 4. Start the steam and cooling pumps and the tower fan.
-5. Withdraw bank A a step at a time with the bank out button. Watch the rod stand up out of its drive and the fuel start to glow through a viewport. Power follows over about 3 seconds; temperatures follow over minutes.
-6. When the steam loop boils, the turbine comes up to its rated speed. Close the generator breaker and raise its load in steps.
-7. Once the generator is feeding the Pressurizer and the plant's own shafts, the outside supply can be disconnected.
+5. Press bank A out a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
+6. As reactivity nears zero, slow down. Neutron power climbs on its own as the core approaches critical. Once reactivity is positive, stop pressing and let the period do the work. A period between 10 and 30 seconds is a comfortable climb. Under 3 seconds trips the reactor.
+7. Power climbs through many decades before it makes any heat. When neutron power reaches a few percent the fuel warms, reactivity falls back toward zero and the power levels off by itself.
+8. Raise power in small steps from there. Each step raises power until the hotter fuel and coolant cancel it.
+9. When the steam loop boils, the turbine comes up to its rated speed. Close the generator breaker and raise its load in steps.
+10. Once the generator is feeding the Pressurizer and the plant's own shafts, the outside supply can be disconnected.
+
+Never hold a lever to pull the rods. Continuous withdrawal goes straight through critical and trips on a short period, or worse.
 
 ## Running
 
+- **Holding power:** a steady core sits at zero reactivity. Xenon builds over the first half hour at power and costs up to 2,500 pcm, so power sags unless you keep feeding the rods out. Fuel burn-up does the same more slowly.
 - **More power:** withdraw rods, or draw more steam. Drawing steam cools the coolant, and cooler coolant raises reactor power by itself.
+- **Less power:** insert rods. After a power cut xenon rises for several minutes before it falls, so expect to pull rods again later.
+- **Cold water is reactivity:** anything that cools the primary coolant quickly, such as starting a big steam demand, adds reactivity fast. Do it in steps.
 - **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the annunciator's boiling window means you are losing coolant.
 - **Load changes:** change generator load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
 - **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the basin topped up, or pipe make-up water into it.
+- **Tower fan:** a fan that is too fast cools the steam loop below boiling at part power and the turbine stops. Slow it until the loop boils again.
 
 ## Shutdown
 
 1. Lower the generator load and open the breaker.
-2. Insert the rods with the bank in buttons, or press SCRAM.
-3. **Keep the pumps and tower running.** Decay heat starts at 7% of full power and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
+2. Insert the rods with the bank in buttons, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
+3. **Keep the pumps and tower running.** Decay heat starts at 7% of the power you were making and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
 4. When the controller reads Cold, the pumps can stop.
+5. If you plan to restart, do it within a couple of minutes or wait out the xenon peak.
 
 ## Faults and recovery
 
@@ -83,6 +95,10 @@ Controls are panels, and they do nothing until they are bound. Use the Plant Lin
 | --- | --- | --- |
 | Start blocked | No primary flow, or the vessel under half full | Start the pump, open the valve, fix the pipe, add coolant |
 | Trip: low flow | Primary pump stopped for 2 seconds | Restore flow, then reset. The Emergency Coolant Tank injects by itself |
+| Trip: short period | Reactivity added too fast | Reset, then withdraw in smaller steps and wait between them |
+| Trip: high flux | Neutron power passed 118% | Find what cooled the coolant or moved the rods, then restart in steps |
+| Power sags with the rods untouched | Xenon building, or fuel burning out | Withdraw rods a little at a time |
+| Cannot reach critical after a shutdown | Xenon peak | Wait for it to decay, about an hour at worst |
 | Hot window, casing cracking | A fuel column without enough cooling | Insert rods, raise flow, add coolant channels next to that column. Weld the casing once it is cool |
 | Boiling window | Coolant above its boiling point | Lower power, or restore the Pressurizer's power and setpoint. Refill the vessel |
 | Turbine overspeed trip | Load lost too fast | Close the governor with a full redstone signal or the reset button, then reload in steps |
@@ -109,6 +125,14 @@ Controls are panels, and they do nothing until they are bound. Use the Plant Lin
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound and running plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power. The control wall is a Display Board fed by three Display Links: the reactor summary from a Signal Interface, the turbine speed and the generator output. The buttons and the annunciator sit below it.
+It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the bank A out button.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t with the rods fully out. The tower has four Packing blocks under a fan at 128 RPM, and a creative tank pumps make-up water into the basin. At full power the plant settles within about four minutes: fuel near 30 °C, the tower rejecting about 615 HU/t, the generator at 64 FE/t, and no alarms. To operate it: the levers by the rod drives withdraw the rods, the lever on the controller's west side is its redstone signal, and the control wall's buttons SCRAM, reset and move bank A. Once you press a bank button or reset, the bank target takes over from the levers.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control wall is a Display Board fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. The buttons and the annunciator sit below it.
+
+To skip the start-up, run:
+
+```
+/function criticalmass_demo:reactor/run
+```
+
+That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the bank A buttons hold it.

@@ -35,6 +35,10 @@ public final class LedgerCommand {
                         .executes(ctx -> contaminate(ctx.getSource(), BlockPosArgument.getBlockPos(ctx, "pos"), DoubleArgumentType.getDouble(ctx, "amount"))))))
                 .then(Commands.literal("boron").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("ppm", DoubleArgumentType.doubleArg(0, 5000))
                         .executes(ctx -> boron(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "ppm"))))))
+                .then(Commands.literal("steady").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("power", DoubleArgumentType.doubleArg(0.001, 1))
+                        .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), Double.NaN))
+                        .then(Commands.argument("coolant", DoubleArgumentType.doubleArg(20, 340))
+                                .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), DoubleArgumentType.getDouble(ctx, "coolant")))))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -72,6 +76,19 @@ public final class LedgerCommand {
         }
         c.setBoron(ppm);
         source.sendSuccess(() -> Component.literal("Boron set to " + fmt(ppm) + " ppm"), true);
+        return 1;
+    }
+
+    private static int steady(CommandSourceStack source, BlockPos pos, double power, double coolant) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        if (!Double.isNaN(coolant) && c.coolant().amount() > 0) {
+            c.coolant().set(c.coolant().fluid().copy(), c.coolant().amount() * (coolant - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
+        }
+        double insertion = c.setSteadyPower(power);
+        source.sendSuccess(() -> Component.literal("Reactor set to " + fmt(power * 100) + "% power with rods " + fmt(insertion * 100) + "% inserted"), true);
         return 1;
     }
 
@@ -158,7 +175,7 @@ public final class LedgerCommand {
                         + " temp=" + fmt(c.coolant().temperature()) + " core=" + fmt(c.core().storedHeat()) + " coreMax=" + fmt(c.core().maxTemperature())
                         + " hotSpots=" + c.core().hotSpots() + " added=" + fmt(c.heatAdded()) + " insertion=" + fmt(c.insertion()) + " flow=" + c.effectiveFlow()
                         + " problems=" + c.problemPositions().size() + " warnings=" + c.warningPositions().size() + " missing=" + c.missing().size() + " fuel=" + c.core().assemblies().size() + " active=" + c.core().activeAssemblies()), false);
-                source.sendSuccess(() -> Component.literal("  neutron=" + String.format(java.util.Locale.ROOT, "%.3e", c.core().neutronPower()) + " rho=" + fmt(c.core().reactivity() * 1e5) + "pcm"
+                source.sendSuccess(() -> Component.literal("  trip=" + c.tripReason() + " neutron=" + String.format(java.util.Locale.ROOT, "%.3e", c.core().neutronPower()) + " rho=" + fmt(c.core().reactivity() * 1e5) + "pcm"
                         + " fuel=" + fmt(c.core().fuelReactivity() * 1e5) + " rods=" + fmt(c.core().rodReactivity() * 1e5) + " temp=" + fmt(c.core().temperatureReactivity() * 1e5)
                         + " xenon=" + fmt(c.core().xenonReactivity() * 1e5) + " boron=" + fmt(c.core().boronReactivity() * 1e5) + " period=" + fmt(c.core().period())
                         + " xe=" + fmt(c.core().xenon()) + " iodine=" + fmt(c.core().iodine()) + " ppm=" + fmt(c.boron())), false);

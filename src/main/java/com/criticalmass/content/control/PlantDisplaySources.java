@@ -152,11 +152,7 @@ public final class PlantDisplaySources {
             }
             List<MutableComponent> lines = new ArrayList<>();
             if (headline) {
-                MutableComponent status = Component.translatable(c.status());
-                if (c.isTripped() && !c.tripReason().isEmpty()) {
-                    status = status.append(": ").append(Component.translatable("criticalmass.reactor.trip." + c.tripReason()));
-                }
-                lines.add(status);
+                lines.add(c.isTripped() && !c.tripReason().isEmpty() ? Component.translatable("criticalmass.reactor.trip." + c.tripReason() + ".short") : Component.translatable(c.status() + ".short"));
             }
             for (PlantChannel channel : this.lines) {
                 if (lines.size() >= stats.maxRows()) {

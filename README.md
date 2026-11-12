@@ -44,13 +44,21 @@ Values live in `content/thermal/CMThermal.java`.
 
 With goggles on, invalid blocks are outlined in red, and the controller lists problems and missing parts.
 
-**Core.**
-- Each fuel column makes 50 HU/t per block, plus 25% for each neighbouring fuel column.
-- Each neighbouring control column scales that by (1 - rod insertion).
-- Rods withdraw with the controller's redstone signal (15 = fully withdrawn) until control rod drives move them.
-- Coolant columns pass 5% per tick of a neighbouring fuel column's heat into the vessel coolant, but only while the pump moves coolant through the vessel.
-- A fuel column without enough cooling heats up and is flagged as a hot spot at 800 °C.
-- If the vessel breaks while running, the reactor trips. It stays tripped until the redstone signal is removed.
+**Core.** The core is a neutron chain reaction, not a heater with a dial. What it does depends on its reactivity, measured in pcm (1 pcm is a change of 0.001%).
+- **Reactivity balance:** fresh fuel is worth +8,500 pcm, falling to 65% of that as it burns out. Against it stand the control rods, boron in the coolant (7 pcm per ppm), hot fuel (2 pcm per °C), hot coolant (10 pcm per °C) and xenon. A vessel under half full loses its moderator and cannot be critical.
+- **Subcritical, critical, supercritical:** below zero the core sits at a tiny source level. At zero it holds whatever power it has. Above zero power climbs, and the reactor period says how fast: the time for power to grow by a factor of 2.7. A period under 3 seconds trips the reactor, and so does neutron power above 118%.
+- **Delayed neutrons:** 650 pcm of the reaction waits on delayed neutrons, which is what makes it controllable. Add more than that at once and the core is prompt critical: power multiplies several times a second and the fuel melts before the rods arrive.
+- **Rods:** a rod fully in takes 10,000 pcm off each fuel column it touches, averaged over the whole core, so a rod only controls the fuel beside it. Worth follows an S-curve: the middle of the stroke does most of the work, the ends very little. A rod also pushes power away from the fuel beside it.
+- **Rod motion:** a Control Rod Drive moves its rod at up to 4% a second, and a rod bank button moves the bank by 0.5%. Without drives the controller's redstone signal moves the rods at 2% a second. On a trip every rod drops in 2 seconds.
+- **Power:** each fuel column makes 50 HU/t per block at 100% neutron power, plus 25% for each neighbouring fuel column.
+- **Temperature feedback:** fuel runs hotter than the coolant in proportion to its power, and both push reactivity down as they heat. Raise the rods a little and power rises until the extra heat cancels what you added. Cool the coolant and power rises by itself, so drawing more steam raises reactor power.
+- **Fuel cooling:** each coolant column beside a fuel column carries 0.25 HU/t per block for every degree the fuel is above the coolant, at 64 mB/t of flow or more, and less in proportion below that. Nothing moves without flow. A fuel column with no coolant column beside it is not cooled at all. A hot spot is flagged at 800 °C and the fuel melts at 1,800 °C.
+- **Xenon:** fission makes iodine, which decays into xenon, which absorbs neutrons. At steady full power xenon costs 2,500 pcm. After a shutdown the iodine keeps decaying, so xenon climbs to about one and a half times that around 8 minutes later, then fades over the next hour. A core without enough spare reactivity cannot restart until it has.
+- **Decay heat:** fission products give 7% of the power the fuel was making, halving every minute after shutdown.
+- **Readings:** goggles on the controller show neutron power, reactivity, period, xenon and boron. The same readings are Display Link sources, with a neutronics summary for a Display Board.
+- **Boron:** the reactivity term is modelled, but nothing in the world adds or removes boron yet. Operators with permission can set it with `/criticalmass boron <controller> <ppm>`.
+- **Jump to power:** `/criticalmass steady <controller> <fraction> [coolant °C]` puts a reactor at that power with matching fuel temperatures and xenon, optionally sets the coolant temperature, and sets the rods to the position that holds it.
+- If the vessel breaks while running, the reactor trips. It stays tripped until it is reset with the rods commanded in.
 
 **Casing integrity.**
 - Casing next to a fuel column hotter than 800 °C loses integrity and shows cracks: stage 1 below 75%, stage 2 below 50%, stage 3 below 25%.

@@ -210,6 +210,22 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         manualInsertion = Math.max(0, Math.min(1, value));
     }
 
+    public double setSteadyPower(double power) {
+        revalidate();
+        double insertion = core.steadyInsertion(power, Math.max(effectiveFlow, lastTickFlow), coolant, boron);
+        manualInsertion = insertion;
+        for (int i = 0; i < bankTargets.length; i++) {
+            bankTargets[i] = insertion;
+        }
+        for (ControlRodDriveBlockEntity d : findDrives().values()) {
+            d.setInsertion(insertion);
+        }
+        tripped = false;
+        syncPending = true;
+        setChanged();
+        return insertion;
+    }
+
     public void setBoron(double ppm) {
         boron = Math.max(0, ppm);
         syncPending = true;

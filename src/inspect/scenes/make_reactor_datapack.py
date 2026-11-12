@@ -23,10 +23,13 @@ AREA = ((-9, -2), (14, 13))
 TEMP = "cm_bind"
 FUNCTIONS = {"scram": 0, "reset": 1, "a_in": 2, "a_out": 3, "all_in": 10, "turbine_trip": 11, "turbine_reset": 12, "breaker_open": 13, "breaker_close": 14, "ack": 15}
 PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
-BOARD = ((-7, 2), (-2, 5), 8)
+BOARD = ((-7, 2), (-2, 8), 8)
 BOARD_COG = (-8, 2, 8)
 BOARD_MOTOR = (-8, 2, 9)
-LINKS = [((0, 4, 2), "west", "reactor_status", "", 0), ((6, 6, 7), "south", "speed", "TURBINE", 6), ((5, 6, 7), "south", "output", "OUTPUT", 7)]
+LINKS = [((0, 4, 2), "west", "reactor_status", "", 0), ((0, 4, 4), "west", "reactor_neutronics", "", 6), ((2, 6, 2), "west", "rod_insertion", "RODS", 11),
+         ((6, 6, 7), "south", "speed", "TURBINE", 12), ((5, 6, 7), "south", "output", "OUTPUT", 13)]
+RUN_POWER = 0.7
+RUN_COOLANT = 125
 BUTTONS = [((-7, 1, 8), CONTROLLER, "scram"), ((-6, 1, 8), CONTROLLER, "reset"), ((-5, 1, 8), CONTROLLER, "a_in"), ((-4, 1, 8), CONTROLLER, "a_out"),
            ((-7, 0, 8), TURBINE, "turbine_trip"), ((-6, 0, 8), TURBINE, "turbine_reset"), ((-5, 0, 8), GENERATOR, "breaker_open"), ((-4, 0, 8), GENERATOR, "breaker_close")]
 ANNUNCIATOR = (-3, 1, 8)
@@ -78,7 +81,7 @@ plant = [
     "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 5, 9)),
     setblock((8, 6, 9), "criticalmass:tower_distributor"),
     setblock((8, 7, 9), "criticalmass:tower_fan"),
-    setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:128}"),
+    setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:24}"),
     setblock((7, 1, 9), "create:fluid_pipe[east=true,west=true]"),
     setblock((6, 1, 9), "create:mechanical_pump[facing=east]"),
     setblock(MAKEUP, "create:creative_fluid_tank"),
@@ -102,6 +105,7 @@ plant = [
 
 safety = [
     setblock((1, 4, 2), "criticalmass:reactor_signal_interface[facing=west]"),
+    setblock((1, 4, 4), "criticalmass:reactor_signal_interface[facing=west]"),
     setblock((0, 2, 2), "criticalmass:emergency_coolant_tank"),
     setblock((5, 4, 6), "criticalmass:alarm_siren[facing=west]"),
     setblock((4, 6, 3), "criticalmass:docking_service_connector[facing=up]"),
@@ -126,9 +130,10 @@ desk = ["fill %s %s criticalmass:shielding_concrete" % (w(-8, 0, 9), w(-1, by1, 
 for by in range(by0, by1 + 1):
     desk.append("fill %s %s create:display_board[facing=north,up=%s,down=%s]" % (w(bx0, by, bz), w(bx1, by, bz), str(by < by1).lower(), str(by > by0).lower()))
 desk += [setblock(BOARD_COG, "create:cogwheel[axis=z]"), setblock(BOARD_MOTOR, "create:creative_motor[facing=north]{ScrollValue:32}")]
+links = []
 for pos, facing, source, label, line in LINKS:
     offset = (bx0 - pos[0], by1 - pos[1], bz - pos[2])
-    desk.append(setblock(pos, "create:display_link[facing=%s]{TargetOffset:[I;%d,%d,%d],TargetLine:%d,Source:{Id:\"criticalmass:%s\",Label:\"%s\"}}" % ((facing,) + offset + (line, source, label))))
+    links.append(setblock(pos, "create:display_link[facing=%s]{TargetOffset:[I;%d,%d,%d],TargetLine:%d,Source:{Id:\"criticalmass:%s\",Label:\"%s\"}}" % ((facing,) + offset + (line, source, label))))
 desk += [setblock(pos, "criticalmass:control_button[facing=north]") for pos, _, _ in BUTTONS]
 desk += [setblock(ANNUNCIATOR, "criticalmass:annunciator[facing=north]"), setblock(ACK, "criticalmass:control_button[facing=north]"),
          setblock((-2, 1, 8), "criticalmass:alarm_siren[facing=north]")]
@@ -142,9 +147,9 @@ place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
 place += vessel + [setblock(p, "criticalmass:reactor_viewport") for p in VIEWPORTS] + plant + safety + bay + desk
 place += [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
 place += [setblock(p, "minecraft:air") for p in PIPES] + [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
-place += ["schedule function %s:reactor/start 40t replace" % NS]
+place += ["schedule function %s:reactor/start 100t replace" % NS]
 
-start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000, 6000 * 200.0),
+start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000, 6000 * 80.0),
               merge((6, 3, 6), "Secondary", "minecraft:water", 1000, 1000 * 80.0),
               merge((6, 6, 6), "Coolant", "minecraft:water", 1000, 1000 * 80.0),
               merge((8, 7, 6), "Primary", "minecraft:water", 1000, 1000 * 80.0),
@@ -162,22 +167,24 @@ start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),
                setblock((8, 3, 4), "create:copper_valve_handle[facing=east]"),
                setblock((4, 2, 6), "create:creative_motor[facing=up]"),
                setblock((7, 0, 6), "create:creative_motor[facing=up]"),
-               setblock((10, 0, 9), "create:creative_motor[facing=up]"),
-               setblock(REDSTONE, "minecraft:lever[face=wall,facing=west,powered=true]")]
+               setblock((10, 0, 9), "create:creative_motor[facing=up]")]
 for pos, facing, motor, lever in DRIVES:
     start_here += [setblock(pos, "criticalmass:control_rod_drive[facing=%s]" % facing),
-                   setblock(motor, "create:creative_motor[facing=%s]" % facing),
-                   setblock(lever, "minecraft:lever[face=floor,facing=north,powered=true]")]
-start_here += ["tellraw @a {\"text\":\"Reactor plant filled, fuelled and started. The levers by the rod drives and the controller run it; flip them off to shut it down.\",\"color\":\"green\"}"]
+                   setblock(motor, "create:creative_motor[facing=%s]" % facing)]
+start_here += links
+start_here += ["tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it with the bank A out button and watch the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"]
+
+run_here = ["criticalmass steady %s %.2f %d" % (w(*CONTROLLER), RUN_POWER, RUN_COOLANT)]
+run_here += ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the bank A buttons.\",\"color\":\"green\"}"]
 
 build = ["kill @e[type=minecraft:marker,tag=%s]" % TAG,
          "summon minecraft:marker ~%d ~ ~%d {Tags:[\"%s\"]}" % (1 - x0, 1 - z0, TAG),
          "execute at @e[type=minecraft:marker,tag=%s,limit=1] run function %s:reactor/place" % (TAG, NS),
-         "tellraw @s {\"text\":\"Building the reactor plant. It starts in 2 seconds.\",\"color\":\"yellow\"}"]
-start = ["execute as @e[type=minecraft:marker,tag=%s] at @s run function %s:reactor/start_here" % (TAG, NS),
-         "kill @e[type=minecraft:marker,tag=%s]" % TAG]
+         "tellraw @s {\"text\":\"Building the reactor plant. It is filled and fuelled in 5 seconds.\",\"color\":\"yellow\"}"]
+start = ["execute as @e[type=minecraft:marker,tag=%s] at @s run function %s:reactor/start_here" % (TAG, NS)]
+run = ["execute as @e[type=minecraft:marker,tag=%s,limit=1] at @s run function %s:reactor/run_here" % (TAG, NS)]
 
-FILES = {"build": build, "place": place, "start": start, "start_here": start_here}
+FILES = {"build": build, "place": place, "start": start, "start_here": start_here, "run": run, "run_here": run_here}
 
 
 def write(root):

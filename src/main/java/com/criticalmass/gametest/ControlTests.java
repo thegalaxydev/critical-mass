@@ -134,10 +134,10 @@ public final class ControlTests {
         h.startSequence()
                 .thenIdle(10)
                 .thenExecute(() -> {
-                    for (int i = 0; i < 10; i++) {
+                    for (int i = 0; i < 100; i++) {
                         out.press();
                     }
-                    h.assertTrue(Math.abs(c.bankTarget(0) - 0.5) < 1e-9, "Ten presses should ask for half insertion: " + c.bankTarget(0));
+                    h.assertTrue(Math.abs(c.bankTarget(0) - 0.5) < 1e-9, "A hundred presses should ask for half insertion: " + c.bankTarget(0));
                 })
                 .thenIdle(270)
                 .thenExecute(() -> {
