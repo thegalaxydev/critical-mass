@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "K": {
+      "tag": "c:ingots/copper"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    "KL",
+    "EP"
+  ],
+  "result": {
+    "id": "criticalmass:breaker_panel"
+  }
+}

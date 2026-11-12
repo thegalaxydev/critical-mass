@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    }
+  },
+  "pattern": [
+    "L",
+    "E",
+    "P"
+  ],
+  "result": {
+    "id": "criticalmass:lever_panel"
+  }
+}

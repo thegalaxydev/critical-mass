@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "criticalmass:turbine_blade"
+    },
+    "B": {
+      "tag": "minecraft:buttons"
+    }
+  },
+  "pattern": [
+    "TB",
+    "EP"
+  ],
+  "result": {
+    "id": "criticalmass:turbine_panel"
+  }
+}

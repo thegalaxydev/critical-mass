@@ -92,8 +92,15 @@
     "/fill ~-8 ~2 ~12 ~-2 ~6 ~12 criticalmass:plant_screen[facing=north]",
     "/setblock ~-1 ~2 ~12 criticalmass:generator[facing=west]{ScrollValue:8}",
     "/setblock ~0 ~2 ~12 create:creative_motor[facing=west]",
-    "/setblock ~-5 ~0 ~9 criticalmass:control_console[facing=north]",
-    "/setblock ~-8 ~0 ~10 criticalmass:alarm_siren[facing=north]",
+    "/fill ~-8 ~0 ~12 ~-2 ~0 ~12 create:industrial_iron_block",
+    "/setblock ~-2 ~1 ~12 criticalmass:scram_panel[facing=north]",
+    "/setblock ~-3 ~1 ~12 criticalmass:rod_panel[facing=north]",
+    "/setblock ~-4 ~1 ~12 criticalmass:alarm_panel[facing=north]",
+    "/setblock ~-5 ~1 ~12 criticalmass:turbine_panel[facing=north]",
+    "/setblock ~-6 ~1 ~12 criticalmass:breaker_panel[facing=north]",
+    "/setblock ~-7 ~1 ~12 criticalmass:lever_panel[facing=north]",
+    "/setblock ~-8 ~1 ~12 criticalmass:dial_panel[facing=north]",
+    "/setblock ~-4 ~0 ~12 criticalmass:alarm_siren[facing=north]",
     "/setblock ~3 ~3 ~6 criticalmass:reinforced_pipe",
     "/setblock ~5 ~3 ~6 criticalmass:reinforced_pipe",
     "/setblock ~7 ~3 ~6 criticalmass:reinforced_pipe",
@@ -245,23 +252,35 @@
     "/data merge block ~8 ~1 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:2500},Heat:0.0d}}",
     "/data merge block ~9 ~1 ~6 {Buffer:{Fluid:{id:\"minecraft:water\",amount:1500},Heat:120000.0d}}",
     "/data merge block ~11 ~4 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:250},Heat:0.0d}}",
-    "/data merge block ~-5 ~0 ~9 {Reactor:[I;0,0,0]}",
+    "/data merge block ~-2 ~1 ~12 {Target:[I;0,0,0]}",
     "/summon minecraft:marker ~1 ~3 ~3 {Tags:[\"cm_bind\"]}",
-    "/execute store result block ~-5 ~0 ~9 Reactor[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
-    "/execute store result block ~-5 ~0 ~9 Reactor[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
-    "/execute store result block ~-5 ~0 ~9 Reactor[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
+    "/execute store result block ~-2 ~1 ~12 Target[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
+    "/execute store result block ~-2 ~1 ~12 Target[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
+    "/execute store result block ~-2 ~1 ~12 Target[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
     "/kill @e[type=minecraft:marker,tag=cm_bind]",
-    "/data merge block ~-5 ~0 ~9 {Turbine:[I;0,0,0]}",
+    "/data merge block ~-3 ~1 ~12 {Target:[I;0,0,0]}",
+    "/summon minecraft:marker ~1 ~3 ~3 {Tags:[\"cm_bind\"]}",
+    "/execute store result block ~-3 ~1 ~12 Target[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
+    "/execute store result block ~-3 ~1 ~12 Target[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
+    "/execute store result block ~-3 ~1 ~12 Target[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
+    "/kill @e[type=minecraft:marker,tag=cm_bind]",
+    "/data merge block ~-4 ~1 ~12 {Target:[I;0,0,0]}",
+    "/summon minecraft:marker ~1 ~3 ~3 {Tags:[\"cm_bind\"]}",
+    "/execute store result block ~-4 ~1 ~12 Target[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
+    "/execute store result block ~-4 ~1 ~12 Target[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
+    "/execute store result block ~-4 ~1 ~12 Target[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
+    "/kill @e[type=minecraft:marker,tag=cm_bind]",
+    "/data merge block ~-5 ~1 ~12 {Target:[I;0,0,0]}",
     "/summon minecraft:marker ~6 ~6 ~6 {Tags:[\"cm_bind\"]}",
-    "/execute store result block ~-5 ~0 ~9 Turbine[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
-    "/execute store result block ~-5 ~0 ~9 Turbine[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
-    "/execute store result block ~-5 ~0 ~9 Turbine[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
+    "/execute store result block ~-5 ~1 ~12 Target[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
+    "/execute store result block ~-5 ~1 ~12 Target[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
+    "/execute store result block ~-5 ~1 ~12 Target[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
     "/kill @e[type=minecraft:marker,tag=cm_bind]",
-    "/data merge block ~-5 ~0 ~9 {Generator:[I;0,0,0]}",
+    "/data merge block ~-6 ~1 ~12 {Target:[I;0,0,0]}",
     "/summon minecraft:marker ~5 ~6 ~6 {Tags:[\"cm_bind\"]}",
-    "/execute store result block ~-5 ~0 ~9 Generator[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
-    "/execute store result block ~-5 ~0 ~9 Generator[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
-    "/execute store result block ~-5 ~0 ~9 Generator[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
+    "/execute store result block ~-6 ~1 ~12 Target[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
+    "/execute store result block ~-6 ~1 ~12 Target[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[1]",
+    "/execute store result block ~-6 ~1 ~12 Target[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[2]",
     "/kill @e[type=minecraft:marker,tag=cm_bind]",
     "/criticalmass fuel ~1 ~3 ~3 fill",
     "/setblock ~6 ~3 ~4 minecraft:air",
@@ -278,13 +297,13 @@
     "/setblock ~2 ~6 ~2 create:display_link[facing=west]{TargetOffset:[I;-4,0,10],TargetLine:11,Source:{Id:\"criticalmass:rod_insertion\",Label:\"RODS\"}}",
     "/setblock ~6 ~6 ~7 create:display_link[facing=south]{TargetOffset:[I;-8,0,5],TargetLine:12,Source:{Id:\"criticalmass:speed\",Label:\"TURBINE\"}}",
     "/setblock ~5 ~6 ~7 create:display_link[facing=south]{TargetOffset:[I;-7,0,5],TargetLine:13,Source:{Id:\"criticalmass:output\",Label:\"OUTPUT\"}}",
-    "/tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out at the console and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"
+    "/tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out at the rod panel and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"
    ],
    "wait": 200
   },
   {
    "cmds": [
-    "/tp @p 295.50 -59.00 305.50 facing 295.500 -58.620 312.000"
+    "/tp @p 295.50 -60.00 307.00 facing 295.500 -58.220 312.000"
    ],
    "wait": 40,
    "closeScreen": true
@@ -303,7 +322,7 @@
    "cmds": [
     "/criticalmass ledger",
     "/criticalmass steady ~1 ~3 ~3 0.70 125",
-    "/tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod buttons on the console.\",\"color\":\"green\"}"
+    "/tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod panel.\",\"color\":\"green\"}"
    ],
    "wait": 400
   },
@@ -315,7 +334,7 @@
   },
   {
    "cmds": [
-    "/tp @p 295.50 -59.00 305.50 facing 295.500 -58.620 312.000"
+    "/tp @p 295.50 -60.00 307.00 facing 295.500 -58.220 312.000"
    ],
    "wait": 40
   },
@@ -325,18 +344,7 @@
   },
   {
    "cmds": [
-    "/tp @p 295.50 -60.00 308.40 facing 295.500 -57.420 312.000"
-   ],
-   "wait": 40
-  },
-  {
-   "shot": "wall",
-   "wait": 2
-  },
-  {
-   "cmds": [
-    "/setblock 295 -58 307 minecraft:barrier",
-    "/tp @p 295.50 -57.00 307.60 facing 295.500 -60.220 309.900"
+    "/tp @p 295.50 -60.00 308.70 facing 295.500 -60.120 312.000"
    ],
    "wait": 40
   },
@@ -346,72 +354,149 @@
   },
   {
    "cmds": [
-    "/setblock 295 -58 307 minecraft:air"
+    "/tp @p 297.50 -60.00 310.20 facing 297.500 -60.120 312.000"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "desk_left",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 293.50 -60.00 310.20 facing 293.500 -60.120 312.000"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "desk_right",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 301.00 -60.00 310.00 facing 295.500 -60.120 312.000"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "desk_side",
+   "wait": 2
+  },
+  {
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 297.72 -60.00 310.40 facing 297.719 -60.133 312.125"
+   ],
+   "wait": 12,
+   "sneak": false
+  },
+  {
+   "use": [
+    297,
+    -59,
+    312,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/tp @p 293.50 -60.00 310.40 facing 293.500 -60.245 312.125"
+   ],
+   "wait": 12,
+   "sneak": false
+  },
+  {
+   "use": [
+    293,
+    -59,
+    312,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/tp @p 292.50 -60.00 310.40 facing 292.500 -60.133 312.125"
+   ],
+   "wait": 12,
+   "sneak": false
+  },
+  {
+   "use": [
+    292,
+    -59,
+    312,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "cmds": [
+    "/tp @p 292.50 -60.00 310.40 facing 292.500 -59.783 312.125"
+   ],
+   "wait": 12,
+   "sneak": true
+  },
+  {
+   "use": [
+    292,
+    -59,
+    312,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 292.50 -60.00 310.40 facing 292.500 -59.783 312.125"
+   ],
+   "wait": 12,
+   "sneak": true
+  },
+  {
+   "use": [
+    292,
+    -59,
+    312,
+    "up"
+   ],
+   "wait": 3
+  },
+  {
+   "sneak": false,
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/data get block 298 -59 312",
+    "/data get block 297 -59 312",
+    "/data get block 296 -59 312",
+    "/data get block 295 -59 312",
+    "/data get block 294 -59 312",
+    "/data get block 293 -59 312",
+    "/data get block 292 -59 312"
    ],
    "wait": 5
   },
   {
    "cmds": [
-    "/tp @p 297.50 -60.00 307.60 facing 297.500 -60.306 309.577"
+    "/tp @p 298.69 -60.00 310.40 facing 298.688 -60.133 312.125"
    ],
-   "wait": 12
+   "wait": 12,
+   "sneak": false
   },
   {
    "use": [
-    295,
-    -60,
-    309,
-    "up"
-   ],
-   "wait": 3
-  },
-  {
-   "cmds": [
-    "/data get block 295 -60 309"
-   ],
-   "wait": 5
-  },
-  {
-   "cmds": [
-    "/tp @p 294.72 -60.00 307.60 facing 294.719 -59.995 310.328"
-   ],
-   "wait": 12
-  },
-  {
-   "use": [
-    295,
-    -60,
-    309,
-    "up"
-   ],
-   "wait": 3
-  },
-  {
-   "cmds": [
-    "/tp @p 293.28 -60.00 307.60 facing 293.281 -60.306 309.577"
-   ],
-   "wait": 12
-  },
-  {
-   "use": [
-    295,
-    -60,
-    309,
-    "up"
-   ],
-   "wait": 3
-  },
-  {
-   "cmds": [
-    "/tp @p 297.50 -60.00 307.60 facing 297.500 -59.995 310.328"
-   ],
-   "wait": 12
-  },
-  {
-   "use": [
-    295,
-    -60,
-    309,
+    298,
+    -59,
+    312,
     "up"
    ],
    "wait": 40
@@ -424,8 +509,7 @@
   },
   {
    "cmds": [
-    "/setblock 295 -58 307 minecraft:barrier",
-    "/tp @p 295.50 -57.00 307.60 facing 295.500 -60.220 309.900"
+    "/tp @p 295.50 -60.00 308.70 facing 295.500 -60.120 312.000"
    ],
    "wait": 40
   },
@@ -438,30 +522,27 @@
    "wait": 2
   },
   {
-   "cmds": [
-    "/setblock 295 -58 307 minecraft:air"
-   ],
-   "wait": 5
+   "wait": 2
   },
   {
    "cmds": [
-    "/tp @p 295.50 -60.00 307.60 facing 295.500 -60.330 309.520"
+    "/tp @p 296.72 -60.00 310.40 facing 296.719 -60.407 312.125"
    ],
-   "wait": 12
+   "wait": 12,
+   "sneak": false
   },
   {
    "use": [
-    295,
-    -60,
-    309,
+    296,
+    -59,
+    312,
     "up"
    ],
    "wait": 20
   },
   {
    "cmds": [
-    "/setblock 295 -58 307 minecraft:barrier",
-    "/tp @p 295.50 -57.00 307.60 facing 295.500 -60.220 309.900"
+    "/tp @p 295.50 -60.00 308.70 facing 295.500 -60.120 312.000"
    ],
    "wait": 40
   },
@@ -471,8 +552,7 @@
   },
   {
    "cmds": [
-    "/setblock 295 -58 307 minecraft:air",
-    "/tp @p 295.50 -59.00 305.50 facing 295.500 -58.620 312.000"
+    "/tp @p 295.50 -60.00 307.00 facing 295.500 -58.220 312.000"
    ],
    "wait": 40
   },
@@ -482,7 +562,13 @@
   },
   {
    "cmds": [
-    "/data get block 295 -60 309"
+    "/data get block 298 -59 312",
+    "/data get block 297 -59 312",
+    "/data get block 296 -59 312",
+    "/data get block 295 -59 312",
+    "/data get block 294 -59 312",
+    "/data get block 293 -59 312",
+    "/data get block 292 -59 312"
    ],
    "wait": 5
   },
@@ -491,6 +577,24 @@
     "/criticalmass ledger"
    ],
    "wait": 5
+  },
+  {
+   "cmds": [
+    "/item replace entity @p hotbar.0 with criticalmass:scram_panel",
+    "/item replace entity @p hotbar.1 with criticalmass:rod_panel",
+    "/item replace entity @p hotbar.2 with criticalmass:alarm_panel",
+    "/item replace entity @p hotbar.3 with criticalmass:turbine_panel",
+    "/item replace entity @p hotbar.4 with criticalmass:breaker_panel",
+    "/item replace entity @p hotbar.5 with criticalmass:lever_panel",
+    "/item replace entity @p hotbar.6 with criticalmass:dial_panel",
+    "/item replace entity @p hotbar.7 with criticalmass:plant_screen"
+   ],
+   "wait": 20,
+   "gui": true
+  },
+  {
+   "shot": "items",
+   "wait": 2
   }
  ]
 }

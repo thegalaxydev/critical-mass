@@ -35,8 +35,6 @@
     "criticalmass:open_waste_canister",
     "criticalmass:generator",
     "criticalmass:reactor_viewport",
-    "criticalmass:control_button",
-    "criticalmass:annunciator",
     "criticalmass:tower_basin",
     "criticalmass:tower_distributor",
     "criticalmass:tower_fan",
@@ -44,7 +42,13 @@
     "criticalmass:pressurizer",
     "criticalmass:corium",
     "criticalmass:ruined_channel",
-    "criticalmass:control_console",
-    "criticalmass:plant_screen"
+    "criticalmass:plant_screen",
+    "criticalmass:scram_panel",
+    "criticalmass:rod_panel",
+    "criticalmass:turbine_panel",
+    "criticalmass:breaker_panel",
+    "criticalmass:alarm_panel",
+    "criticalmass:lever_panel",
+    "criticalmass:dial_panel"
   ]
 }

@@ -11,16 +11,16 @@ public final class CMPartialModels {
     public static final PartialModel CONTROL_ROD_SHAFT = block("control_rod_shaft");
     public static final PartialModel TOWER_FAN_ROTOR = block("tower_fan_rotor");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
-    public static final PartialModel CONSOLE_BUTTON = block("console/button");
-    public static final PartialModel CONSOLE_BUTTON_COLLAR = block("console/button_collar");
-    public static final PartialModel CONSOLE_BIG_BUTTON = block("console/big_button");
-    public static final PartialModel CONSOLE_BIG_BUTTON_COLLAR = block("console/big_button_collar");
-    public static final PartialModel CONSOLE_SWITCH_BASE = block("console/switch_base");
-    public static final PartialModel CONSOLE_SWITCH_LEVER = block("console/switch_lever");
-    public static final PartialModel CONSOLE_DIAL = block("console/dial");
-    public static final PartialModel CONSOLE_DIAL_POINTER = block("console/dial_pointer");
-    public static final PartialModel CONSOLE_DIAL_COLLAR = block("console/dial_collar");
-    public static final PartialModel CONSOLE_LAMP = block("console/lamp");
+    public static final PartialModel PANEL_BUTTON = block("panel/button");
+    public static final PartialModel PANEL_BUTTON_COLLAR = block("panel/button_collar");
+    public static final PartialModel PANEL_BIG_BUTTON = block("panel/big_button");
+    public static final PartialModel PANEL_BIG_BUTTON_COLLAR = block("panel/big_button_collar");
+    public static final PartialModel PANEL_SWITCH_BASE = block("panel/switch_base");
+    public static final PartialModel PANEL_SWITCH_LEVER = block("panel/switch_lever");
+    public static final PartialModel PANEL_DIAL = block("panel/dial");
+    public static final PartialModel PANEL_DIAL_POINTER = block("panel/dial_pointer");
+    public static final PartialModel PANEL_DIAL_COLLAR = block("panel/dial_collar");
+    public static final PartialModel PANEL_LAMP = block("panel/lamp");
 
     private CMPartialModels() {
     }

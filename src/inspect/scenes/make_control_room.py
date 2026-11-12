@@ -1,40 +1,44 @@
 import json
-import math
 import os
 
 import make_reactor_datapack as m
 
 EYE = 1.62
-SLOPE = math.tan(math.radians(22.5))
-STRETCH = 1 / math.cos(math.radians(22.5))
-BASE = (16 + 1.2) / 16.0
+SNEAK_EYE = 1.27
+FACE_Z = 2 / 16.0
 OX, OY, OZ = 300, -60, 300
-CX, CY, CZ = m.CONSOLE
 HOME = "/tp @p %d %d %d" % (OX, OY, OZ)
+PANEL = {name: pos for pos, name, _ in m.PANELS}
+MID = sum(pos[0] for pos in PANEL.values()) / len(PANEL) + 0.5
+DESK_Z = m.DESK[1]
 
 
-def look(pos, target):
-    return "/tp @p %.2f %.2f %.2f facing %.3f %.3f %.3f" % (OX + pos[0], OY + pos[1], OZ + pos[2], OX + target[0], OY + target[1] - EYE, OZ + target[2])
+def look(pos, target, eye=EYE):
+    return "/tp @p %.2f %.2f %.2f facing %.3f %.3f %.3f" % (OX + pos[0], OY + pos[1], OZ + pos[2], OX + target[0], OY + target[1] - eye, OZ + target[2])
 
 
-def ctl(column, u, v):
-    across = column * 16 + u
-    depth = v / STRETCH / 16
-    return (CX + 3 - across / 16.0, CY + BASE + depth * SLOPE, CZ + depth)
+def ctl(name, u, v):
+    x, y, z = PANEL[name]
+    return (x + 1 - u / 16.0, y + v / 16.0, z + FACE_Z)
 
 
-def click(column, u, v, wait=3):
-    x, y, z = ctl(column, u, v)
-    return [{"cmds": [look((x, 0, CZ - 1.4), (x, y, z))], "wait": 12}, {"use": [OX + CX, OY + CY, OZ + CZ, "up"], "wait": wait}]
+def click(name, u, v, wait=3, sneak=False):
+    x, y, z = ctl(name, u, v)
+    px, py, pz = PANEL[name]
+    steps = [{"cmds": [look((x, 0, DESK_Z - 1.6), (x, y, z), SNEAK_EYE if sneak else EYE)], "wait": 12, "sneak": sneak}, {"use": [OX + px, OY + py, OZ + pz, "up"], "wait": wait}]
+    return steps + ([{"sneak": False, "wait": 2}] if sneak else [])
 
 
 def ledger(wait):
     return {"cmds": ["/criticalmass ledger"], "wait": wait}
 
 
-wide = look((CX + 0.5, 1, 5.5), (CX + 0.5, 3.0, 12.0))
-desk = look((CX + 0.5, 3, 7.6), (CX + 0.5, 1.4, 9.9))
-wall = look((CX + 0.5, 0, 8.4), (CX + 0.5, 4.2, 12.0))
+wide = look((MID, 0, 7.0), (MID, 3.4, 12.0))
+desk = look((MID, 0, 8.7), (MID, 1.5, 12.0))
+left = look((MID + 2.0, 0, 10.2), (MID + 2.0, 1.5, 12.0))
+right = look((MID - 2.0, 0, 10.2), (MID - 2.0, 1.5, 12.0))
+side = look((MID + 5.5, 0, 10.0), (MID, 1.5, 12.0))
+state = ["/data get block %d %d %d" % (OX + pos[0], OY + pos[1], OZ + pos[2]) for pos in PANEL.values()]
 steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weather clear", "/gamemode creative", "/clear @p", HOME], "wait": 60, "gui": False, "camera": "first", "slot": 1},
          {"cmds": ["/" + c for c in m.place], "wait": 100},
          {"cmds": ["/" + c for c in m.start_here], "wait": 200},
@@ -43,17 +47,20 @@ steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weathe
          {"cmds": ["/criticalmass ledger"] + ["/" + c for c in m.run_here], "wait": 400},
          ledger(5),
          {"cmds": [wide], "wait": 40}, {"shot": "running", "wait": 2},
-         {"cmds": [wall], "wait": 40}, {"shot": "wall", "wait": 2},
-         {"cmds": ["/setblock %d %d %d minecraft:barrier" % (OX + CX, OY + 2, OZ + 7), desk], "wait": 40}, {"shot": "desk", "wait": 2},
-         {"cmds": ["/setblock %d %d %d minecraft:air" % (OX + CX, OY + 2, OZ + 7)], "wait": 5}]
-steps += click(0, 8, 10) + [{"cmds": ["/data get block %d %d %d" % (OX + CX, OY + CY, OZ + CZ)], "wait": 5}]
-steps += click(3, 4.5, 23) + click(4, 11.5, 10)
-steps += click(0, 8, 23, 40)
-steps += [ledger(5), {"cmds": ["/setblock %d %d %d minecraft:barrier" % (OX + CX, OY + 2, OZ + 7), desk], "wait": 40}, {"shot": "scram_a", "wait": 6}, {"shot": "scram_b", "wait": 2},
-          {"cmds": ["/setblock %d %d %d minecraft:air" % (OX + CX, OY + 2, OZ + 7)], "wait": 5}]
-steps += click(2, 8, 9, 20)
-steps += [{"cmds": ["/setblock %d %d %d minecraft:barrier" % (OX + CX, OY + 2, OZ + 7), desk], "wait": 40}, {"shot": "acknowledged", "wait": 2},
-          {"cmds": ["/setblock %d %d %d minecraft:air" % (OX + CX, OY + 2, OZ + 7), wide], "wait": 40}, {"shot": "tripped", "wait": 2},
-          {"cmds": ["/data get block %d %d %d" % (OX + CX, OY + CY, OZ + CZ)], "wait": 5}, ledger(5)]
+         {"cmds": [desk], "wait": 40}, {"shot": "desk", "wait": 2},
+         {"cmds": [left], "wait": 30}, {"shot": "desk_left", "wait": 2},
+         {"cmds": [right], "wait": 30}, {"shot": "desk_right", "wait": 2},
+         {"cmds": [side], "wait": 30}, {"shot": "desk_side", "wait": 2},
+         {"wait": 2}]
+steps += click("rod_panel", 4.5, 7.8) + click("lever_panel", 8, 6.0) + click("dial_panel", 8, 7.8) + click("dial_panel", 8, 7.8, sneak=True) + click("dial_panel", 8, 7.8, sneak=True)
+steps += [{"cmds": state, "wait": 5}]
+steps += click("scram_panel", 5.0, 7.8, 40)
+steps += [ledger(5), {"cmds": [desk], "wait": 40}, {"shot": "scram_a", "wait": 6}, {"shot": "scram_b", "wait": 2}, {"wait": 2}]
+steps += click("alarm_panel", 4.5, 3.4, 20)
+steps += [{"cmds": [desk], "wait": 40}, {"shot": "acknowledged", "wait": 2},
+          {"cmds": [wide], "wait": 40}, {"shot": "tripped", "wait": 2},
+          {"cmds": state, "wait": 5}, ledger(5)]
+steps += [{"cmds": ["/item replace entity @p hotbar.%d with criticalmass:%s" % (i, name) for i, name in enumerate(PANEL)] + ["/item replace entity @p hotbar.7 with criticalmass:plant_screen"], "wait": 20, "gui": True},
+          {"shot": "items", "wait": 2}]
 json.dump({"name": "room", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "control_room.json"), "w", newline="\n"), indent=1)
 print(len(steps), "steps")

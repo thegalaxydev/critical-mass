@@ -55,8 +55,7 @@ public enum PlantChannel {
     }
 
     public static boolean isTarget(@Nullable BlockEntity be) {
-        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof TowerParts.Fan || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity || be instanceof GeneratorBlockEntity
-                || be instanceof AnnunciatorBlockEntity;
+        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof TowerParts.Fan || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity || be instanceof GeneratorBlockEntity;
     }
 
     private Reading of(double value, double min, double max) {

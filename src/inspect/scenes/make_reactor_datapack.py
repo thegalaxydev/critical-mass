@@ -23,10 +23,12 @@ AREA = ((-9, -2), (14, 13))
 TEMP = "cm_bind"
 PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
 SCREENS = ((-8, 2), (-2, 6), 12)
-CONSOLE = (-5, 0, 9)
 STATION = (-1, 2, 12)
 STATION_MOTOR = (0, 2, 12)
-SIREN = (-8, 0, 10)
+DESK = ((-8, -2), 12)
+PANELS = [((-2, 1, 12), "scram_panel", CONTROLLER), ((-3, 1, 12), "rod_panel", CONTROLLER), ((-4, 1, 12), "alarm_panel", CONTROLLER),
+          ((-5, 1, 12), "turbine_panel", TURBINE), ((-6, 1, 12), "breaker_panel", GENERATOR), ((-7, 1, 12), "lever_panel", None), ((-8, 1, 12), "dial_panel", None)]
+SIREN = (-4, 0, 12)
 LINKS = [((0, 4, 2), "west", "reactor_status", "", 0), ((0, 4, 4), "west", "reactor_neutronics", "", 6), ((2, 6, 2), "west", "rod_insertion", "RODS", 11),
          ((6, 6, 7), "south", "speed", "TURBINE", 12), ((5, 6, 7), "south", "output", "OUTPUT", 13)]
 RUN_POWER = 0.7
@@ -127,13 +129,16 @@ desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0 - 1, 0, bz + 1), w
         "fill %s %s criticalmass:plant_screen[facing=north]" % (w(bx0, by0, bz), w(bx1, by1, bz)),
         setblock(STATION, "criticalmass:generator[facing=west]{ScrollValue:8}"),
         setblock(STATION_MOTOR, "create:creative_motor[facing=west]"),
-        setblock(CONSOLE, "criticalmass:control_console[facing=north]"),
-        setblock(SIREN, "criticalmass:alarm_siren[facing=north]")]
+        "fill %s %s create:industrial_iron_block" % (w(DESK[0][0], 0, DESK[1]), w(DESK[0][1], 0, DESK[1]))]
+desk += [setblock(pos, "criticalmass:%s[facing=north]" % name) for pos, name, _ in PANELS] + [setblock(SIREN, "criticalmass:alarm_siren[facing=north]")]
 links = []
 for pos, facing, source, label, line in LINKS:
     offset = (bx1 - pos[0], by1 - pos[1], bz - pos[2])
     links.append(setblock(pos, "create:display_link[facing=%s]{TargetOffset:[I;%d,%d,%d],TargetLine:%d,Source:{Id:\"criticalmass:%s\",Label:\"%s\"}}" % ((facing,) + offset + (line, source, label))))
-wiring = bind(CONSOLE, CONTROLLER, key="Reactor") + bind(CONSOLE, TURBINE, key="Turbine") + bind(CONSOLE, GENERATOR, key="Generator")
+wiring = []
+for pos, _, target in PANELS:
+    if target:
+        wiring += bind(pos, target)
 
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
          "fill %s %s minecraft:smooth_stone" % (w(x0, -1, z0), w(x1, -1, z1))]
@@ -165,10 +170,10 @@ for pos, facing, motor, lever in DRIVES:
     start_here += [setblock(pos, "criticalmass:control_rod_drive[facing=%s]" % facing),
                    setblock(motor, "create:creative_motor[facing=%s]" % facing)]
 start_here += links
-start_here += ["tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out at the console and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"]
+start_here += ["tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out at the rod panel and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"]
 
 run_here = ["criticalmass steady %s %.2f %d" % (w(*CONTROLLER), RUN_POWER, RUN_COOLANT)]
-run_here += ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod buttons on the console.\",\"color\":\"green\"}"]
+run_here += ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod panel.\",\"color\":\"green\"}"]
 
 build = ["kill @e[type=minecraft:marker,tag=%s]" % TAG,
          "summon minecraft:marker ~%d ~ ~%d {Tags:[\"%s\"]}" % (1 - x0, 1 - z0, TAG),

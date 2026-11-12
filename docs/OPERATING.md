@@ -40,20 +40,21 @@ Readings go on a wall of Plant Screens. Put a Create Display Link on a machine, 
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
-Controls sit on a Control Console. It is one desk, five blocks wide, two deep and two high, and it centres on the block you click and faces you. It does nothing until it is bound: use the Plant Linker on the Reactor Controller and then on the console, and do the same for the turbine and the generator. Then look at a control and use it.
+Controls are separate panels that you place and link yourself. Each is a single block with its controls on the front face. Set them side by side or stack them into a board. Use the Plant Linker on a machine and then on the panel that controls it. Then look at a control and use it.
 
-| Section | Controls |
-| --- | --- |
-| Reactor | SCRAM, reset, rods in, rods out |
-| Turbine | Trip, reset, generator breaker switch |
-| Alarms | Six alarm lamps and acknowledge |
-| Switches and dials | Four of each for your own wiring |
+| Panel | Link to | Controls |
+| --- | --- | --- |
+| SCRAM Panel | Reactor Controller | SCRAM, reset |
+| Rod Control Panel | Reactor Controller | Rods in, rods out |
+| Alarm Panel | Reactor Controller | Six alarm lamps and acknowledge. Put an Alarm Siren beside it |
+| Turbine Panel | Steam Turbine | Trip, reset |
+| Breaker Panel | Generator | Breaker switch |
+| Lever Panel | Nothing | A redstone signal you switch on and off |
+| Dial Panel | Nothing | A redstone signal of the strength you set. Sneak-use raises it |
 
-The switches and dials latch on or off and power the back of the console. Switches 1 to 4 power the lower back blocks from left to right, dials 1 to 4 the upper ones. The fifth back column gives the alarm signal below and the trip signal above, so an Alarm Siren beside it sounds on any new alarm.
+Name a panel in an anvil and the name shows on its face, which is how you tell one lever from the next.
 
-Single Control Buttons and the Annunciator are wall panels that do one job each. They are bound the same way, and a redstone pulse presses a button, which the console does not offer.
-
-**Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse presses a button. Compare that signal against one you set and feed the result to the SCRAM button, and you have an earlier high-temperature trip. The Annunciator gives a redstone signal on any new alarm, so wiring it to a button trips on any alarm. If you remove the wire, the trip is gone.
+**Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into the SCRAM Panel presses SCRAM. Compare that signal against one you set and feed the result into the SCRAM Panel, and you have an earlier high-temperature trip. The Alarm Panel gives a redstone signal on any new alarm. Panels ignore each other's signals, so run it through dust or a repeater on its way to the SCRAM Panel to trip on any alarm. If you remove the wire, the trip is gone.
 
 **Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Reinforced Valve.
 
@@ -65,7 +66,7 @@ A cold core with its rods in is thousands of pcm below critical. Starting it mea
 2. Check the alarm lamps are dark and the vessel is at least half full.
 3. Start the primary pump. The controller will not let rods move until coolant is flowing.
 4. Start the steam and cooling pumps and the tower fan.
-5. Press rods out a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
+5. Press OUT on the Rod Control Panel a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
 6. As reactivity nears zero, slow down. Neutron power climbs on its own as the core approaches critical. Once reactivity is positive, stop pressing and let the period do the work. A period between 10 and 30 seconds is a comfortable climb. Under 3 seconds trips the reactor.
 7. Power climbs through many decades before it makes any heat. When neutron power reaches a few percent the fuel warms, reactivity falls back toward zero and the power levels off by itself.
 8. Raise power in small steps from there. Each step raises power until the hotter fuel and coolant cancel it.
@@ -88,7 +89,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 ## Shutdown
 
 1. Lower the generator load and open the breaker.
-2. Insert the rods with the rods in button, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
+2. Insert the rods with the IN button, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
 3. **Keep the pumps and tower running.** Decay heat starts at 7% of the power you were making and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
 4. When the controller reads Cold, the pumps can stop.
 5. If you plan to restart, do it within a couple of minutes or wait out the xenon peak.
@@ -129,9 +130,9 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the rods out button on the console.
+It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a wall of Plant Screens fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. A small Generator on a creative motor beside the wall powers the screens. The Control Console in front of the wall is bound to the reactor, the turbine and the generator, and an Alarm Siren stands on its alarm output.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a wall of Plant Screens fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. A small Generator on a creative motor beside the wall powers the screens. Under the screens runs a row of seven panels: SCRAM, rods, alarms, turbine and breaker, each linked to its machine, plus a spare lever and dial. An Alarm Siren sits under the Alarm Panel.
 
 To skip the start-up, run:
 
@@ -139,4 +140,4 @@ To skip the start-up, run:
 /function criticalmass_demo:reactor/run
 ```
 
-That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons on the console hold it.
+That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the Rod Control Panel holds it.

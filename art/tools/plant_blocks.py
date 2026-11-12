@@ -6,7 +6,7 @@ from PIL import Image
 from handmade import AMBER, BLUE, BRASS, COPPER, GREEN, IRON, OUT, RED, STEEL, bevel, put, rect
 from handmade_plant import disc, opening
 from handmade_rest import LEAD, casing, plate
-import console_blocks
+import panel_blocks
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RES = os.path.join(ROOT, "src", "main", "resources")
@@ -187,60 +187,6 @@ def rod_partials():
 
 GLASS_DARK = (20, 22, 26)
 ITEM_OUT = os.path.join(os.path.dirname(OUT), "item")
-
-
-def panel_model(name, x0, y0, x1, y1):
-    w, h = x1 - x0, y1 - y0
-    plain = {"uv": [8, 0, 8 + w / 2, h / 2], "texture": "#0"}
-    edge = {"uv": [8, 0, 9.5, h / 2], "texture": "#0"}
-    cap = {"uv": [8, 0, 8 + w / 2, 1.5], "texture": "#0"}
-    return {"parent": "minecraft:block/block", "textures": {"0": M + "block/" + name, "particle": M + "block/" + name},
-            "elements": [{"from": [x0, y0, 13], "to": [x1, y1, 16], "faces": {
-                "north": {"uv": [x0 / 2, (16 - y1) / 2, x1 / 2, (16 - y0) / 2], "texture": "#0"},
-                "south": plain, "east": edge, "west": edge, "up": cap, "down": cap}}]}
-
-
-def panel_atlas(front):
-    img = atlas({"a": front, "b": plate(IRON, 3)})
-    return img
-
-
-def gauge_texture():
-    def front(w, h):
-        img = Image.new("RGBA", (w, h))
-        bevel(img, 1, 1, 14, 14, IRON, 3)
-        rect(img, 2, 2, 13, 13, STEEL[2])
-        rect(img, 2, 2, 13, 3, GLASS_DARK)
-        rect(img, 2, 12, 13, 13, GLASS_DARK)
-        disc(img, 8, 7.9, 3.7, lambda x, y, d: (BRASS[3] if x + y < 15.5 else BRASS[1]) if d > 2.9 else (232, 228, 214))
-        for x, y in ((5, 9), (5, 6), (7, 5), (8, 5), (10, 6), (10, 9)):
-            put(img, x, y, (150, 144, 128))
-        return img
-    return panel_atlas(front)
-
-
-def button_texture():
-    def front(w, h):
-        img = Image.new("RGBA", (w, h))
-        bevel(img, 4, 4, 11, 11, IRON, 3)
-        rect(img, 5, 5, 10, 10, STEEL[1])
-        rect(img, 5, 5, 10, 5, GLASS_DARK)
-        return img
-    return panel_atlas(front)
-
-
-def annunciator_texture():
-    def front(w, h):
-        img = Image.new("RGBA", (w, h))
-        bevel(img, 1, 1, 14, 14, IRON, 3)
-        rect(img, 2, 2, 13, 13, IRON[1])
-        rect(img, 2, 3, 13, 7, (24, 26, 30))
-        rect(img, 2, 9, 13, 13, (24, 26, 30))
-        for x in (5, 9):
-            for y in list(range(3, 8)) + list(range(9, 14)):
-                put(img, x, y, (34, 37, 42))
-        return img
-    return panel_atlas(front)
 
 
 def linker_item():
@@ -471,8 +417,6 @@ BLOCKS = {
     "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state, "item": "tower_fan_item"},
     "feedwater_tank": {"lang": "Feedwater Tank", "texture": feedwater_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
-    "control_button": {"lang": "Control Button", "texture": button_texture, "model": lambda n: panel_model(n, 4, 4, 12, 12), "state": horizontal},
-    "annunciator": {"lang": "Annunciator", "texture": annunciator_texture, "model": lambda n: panel_model(n, 1, 1, 15, 15), "state": horizontal},
     "reactor_viewport": {
         "lang": "Reactor Viewport",
         "textures": viewport_textures,
@@ -514,17 +458,13 @@ LANG = {
     "criticalmass.pressurizer.no_power": "Pressure falling: heaters need Forge Energy",
     "criticalmass.alarm.pressure": "Vessel coolant boiling: pressure too low for its temperature",
     "item.criticalmass.plant_linker": "Plant Linker",
-    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a button or annunciator to bind it",
+    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a control panel to link it",
     "criticalmass.linker.tooltip_stored": "Remembers the block at %s %s %s (sneak-use in the air to clear)",
     "criticalmass.linker.stored": "Remembered %s at %s %s %s",
-    "criticalmass.linker.bound": "Bound to %s at %s %s %s",
-    "criticalmass.linker.refused": "That panel cannot use the remembered block",
+    "criticalmass.linker.bound": "Linked to %s at %s %s %s",
+    "criticalmass.linker.refused": "This panel cannot use the remembered block",
     "criticalmass.linker.nothing_stored": "Use the linker on a machine first",
     "criticalmass.linker.cleared": "Linker cleared",
-    "criticalmass.panel.unbound": "Not bound: use a Plant Linker",
-    "criticalmass.panel.bound": "Bound to %s at %s %s %s",
-    "criticalmass.goggles.button": "Control Button",
-    "criticalmass.goggles.annunciator": "Annunciator",
     "criticalmass.channel.temperature": "Temperature",
     "criticalmass.channel.coolant_temperature": "Coolant temperature",
     "criticalmass.channel.pressure": "Pressure",
@@ -549,55 +489,6 @@ LANG = {
     "criticalmass.channel.rods_d.short": "RODS D",
     "criticalmass.channel.speed.short": "SPEED",
     "criticalmass.channel.output.short": "OUTPUT",
-    "criticalmass.button.function": "Button function",
-    "criticalmass.button.does": "Function: %s",
-    "criticalmass.button.hint": "Use to press; a redstone pulse presses it too",
-    "criticalmass.button.scram": "SCRAM the reactor",
-    "criticalmass.button.reset": "Reset the reactor trip",
-    "criticalmass.button.bank_a_in": "Rod bank A in 0.5%",
-    "criticalmass.button.bank_a_out": "Rod bank A out 0.5%",
-    "criticalmass.button.bank_b_in": "Rod bank B in 0.5%",
-    "criticalmass.button.bank_b_out": "Rod bank B out 0.5%",
-    "criticalmass.button.bank_c_in": "Rod bank C in 0.5%",
-    "criticalmass.button.bank_c_out": "Rod bank C out 0.5%",
-    "criticalmass.button.bank_d_in": "Rod bank D in 0.5%",
-    "criticalmass.button.bank_d_out": "Rod bank D out 0.5%",
-    "criticalmass.button.all_rods_in": "All rod banks fully in",
-    "criticalmass.button.turbine_trip": "Trip the turbine",
-    "criticalmass.button.turbine_reset": "Reset the turbine trip",
-    "criticalmass.button.breaker_open": "Open the generator breaker",
-    "criticalmass.button.breaker_close": "Close the generator breaker",
-    "criticalmass.button.acknowledge": "Acknowledge alarms",
-    "criticalmass.button.scram.short": "SCRAM",
-    "criticalmass.button.reset.short": "RESET",
-    "criticalmass.button.bank_a_in.short": "A IN",
-    "criticalmass.button.bank_a_out.short": "A OUT",
-    "criticalmass.button.bank_b_in.short": "B IN",
-    "criticalmass.button.bank_b_out.short": "B OUT",
-    "criticalmass.button.bank_c_in.short": "C IN",
-    "criticalmass.button.bank_c_out.short": "C OUT",
-    "criticalmass.button.bank_d_in.short": "D IN",
-    "criticalmass.button.bank_d_out.short": "D OUT",
-    "criticalmass.button.all_rods_in.short": "RODS IN",
-    "criticalmass.button.turbine_trip.short": "TRIP",
-    "criticalmass.button.turbine_reset.short": "RESET",
-    "criticalmass.button.breaker_open.short": "OPEN",
-    "criticalmass.button.breaker_close.short": "CLOSE",
-    "criticalmass.button.acknowledge.short": "ACK",
-    "criticalmass.button.result.unbound": "Button is not bound to anything",
-    "criticalmass.button.result.wrong_target": "The bound block cannot do that",
-    "criticalmass.button.result.scram": "Reactor tripped by hand",
-    "criticalmass.button.result.reset": "Rods commanded in and trip reset",
-    "criticalmass.button.result.reset_refused": "Rods commanded in; reset refused (clear the fault and the controller signal first)",
-    "criticalmass.button.result.rods_in": "All rod banks commanded in",
-    "criticalmass.button.result.jog": "Rod bank target moved 0.5%",
-    "criticalmass.button.result.turbine_trip": "Turbine tripped by hand",
-    "criticalmass.button.result.turbine_reset": "Turbine trip reset",
-    "criticalmass.button.result.breaker_open": "Generator breaker open",
-    "criticalmass.button.result.breaker_close": "Generator breaker closed",
-    "criticalmass.button.result.acknowledged": "Alarms acknowledged",
-    "criticalmass.alarm.none": "No alarms",
-    "criticalmass.alarm.hint": "Use to acknowledge. New alarms flash and give a redstone signal until acknowledged",
     "criticalmass.alarm.trip": "Reactor trip",
     "criticalmass.alarm.low_flow": "No coolant flow through a hot core",
     "criticalmass.alarm.core_hot": "Fuel overheating",
@@ -660,9 +551,9 @@ def main():
     channel_variants()
     rod_partials()
     linker_item()
-    console_blocks.write_all(write, ASSETS, DATA, OUT)
-    entries.update(console_blocks.LANG)
-    pickaxe(list(BLOCKS) + ["control_console", "plant_screen"])
+    panel_blocks.write_all(write, ASSETS, DATA, OUT)
+    entries.update(panel_blocks.LANG)
+    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen"])
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))
 

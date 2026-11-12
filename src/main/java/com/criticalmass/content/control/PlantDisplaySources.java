@@ -183,9 +183,9 @@ public final class PlantDisplaySources {
             if (!(context.level().getBlockEntity(source) instanceof ReactorControllerBlockEntity c)) {
                 return EMPTY;
             }
-            int mask = AnnunciatorBlockEntity.evaluate(c);
+            int mask = PlantAlarms.evaluate(c);
             List<MutableComponent> lines = new ArrayList<>();
-            for (AnnunciatorBlockEntity.Alarm a : AnnunciatorBlockEntity.Alarm.values()) {
+            for (PlantAlarms.Alarm a : PlantAlarms.Alarm.values()) {
                 if ((mask & 1 << a.ordinal()) != 0 && lines.size() < stats.maxRows()) {
                     lines.add(Component.translatable(a.langKey()));
                 }
