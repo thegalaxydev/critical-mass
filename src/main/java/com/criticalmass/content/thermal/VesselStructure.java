@@ -35,16 +35,18 @@ public final class VesselStructure {
     public final BlockPos min;
     public final BlockPos max;
     public final List<Problem> problems;
+    public final List<Problem> warnings;
     public final List<String> missing;
     public final List<Column> columns;
     public final java.util.Map<BlockPos, Integer> cracked;
     public final String sizeError;
     public final int interiorHeight;
 
-    private VesselStructure(BlockPos min, BlockPos max, List<Problem> problems, List<String> missing, List<Column> columns, String sizeError, int interiorHeight, java.util.Map<BlockPos, Integer> cracked) {
+    private VesselStructure(BlockPos min, BlockPos max, List<Problem> problems, List<Problem> warnings, List<String> missing, List<Column> columns, String sizeError, int interiorHeight, java.util.Map<BlockPos, Integer> cracked) {
         this.min = min;
         this.max = max;
         this.problems = problems;
+        this.warnings = warnings;
         this.missing = missing;
         this.columns = columns;
         this.sizeError = sizeError;
@@ -236,11 +238,39 @@ public final class VesselStructure {
         if (!service) {
             missing.add("criticalmass.vessel.missing.service_port");
         }
-        return new VesselStructure(min, max, List.copyOf(problems), List.copyOf(missing), List.copyOf(columns), sizeError, interiorHeight, java.util.Map.copyOf(cracked));
+        return new VesselStructure(min, max, List.copyOf(problems), List.copyOf(layoutWarnings(columns, minY + 1)), List.copyOf(missing), List.copyOf(columns), sizeError, interiorHeight, java.util.Map.copyOf(cracked));
     }
 
     private static VesselStructure failed(BlockPos at, String key) {
-        return new VesselStructure(at, at, List.of(), List.of(), List.of(), key, 0, java.util.Map.of());
+        return new VesselStructure(at, at, List.of(), List.of(), List.of(), List.of(), key, 0, java.util.Map.of());
+    }
+
+    private static List<Problem> layoutWarnings(List<Column> columns, int bottom) {
+        java.util.Map<Long, Kind> kinds = new java.util.HashMap<>();
+        for (Column c : columns) {
+            kinds.put(BlockPos.asLong(c.x(), 0, c.z()), c.kind());
+        }
+        List<Problem> warnings = new ArrayList<>();
+        for (Column c : columns) {
+            if (c.kind() != Kind.FUEL) {
+                continue;
+            }
+            boolean coolant = false;
+            boolean control = false;
+            for (Direction d : Direction.Plane.HORIZONTAL) {
+                Kind k = kinds.get(BlockPos.asLong(c.x() + d.getStepX(), 0, c.z() + d.getStepZ()));
+                coolant |= k == Kind.COOLANT;
+                control |= k == Kind.CONTROL;
+            }
+            BlockPos pos = new BlockPos(c.x(), bottom, c.z());
+            if (!coolant) {
+                add(warnings, pos, "criticalmass.vessel.warning.no_coolant");
+            }
+            if (!control) {
+                add(warnings, pos, "criticalmass.vessel.warning.no_control");
+            }
+        }
+        return warnings;
     }
 
     private static void add(List<Problem> problems, BlockPos pos, String reason) {

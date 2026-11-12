@@ -36,6 +36,10 @@ public final class OperationTests {
     private static final BlockPos DRIVE_A = new BlockPos(3, 6, 2);
     private static final BlockPos DRIVE_B = new BlockPos(3, 6, 4);
     private static final BlockPos CASING = new BlockPos(5, 2, 2);
+    private static final char[][] SOUND_CORE = {
+            {'f', 'r', 'f'},
+            {'c', 'f', 'c'},
+            {'f', 'r', 'f'}};
 
     private OperationTests() {
     }
@@ -378,6 +382,38 @@ public final class OperationTests {
                     h.assertTrue(!c.isBreached() && c.integrity(abs) == CMThermal.REPAIR_AMOUNT, "Repair should close the breach");
                     h.assertTrue(!c.status().endsWith("breached") && !c.status().endsWith("damaged"), "Repaired vessel should be usable again: " + c.status());
                 })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void fuelWithoutCoolantOrRodBesideItIsFlagged(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        h.startSequence()
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    BlockPos centre = h.absolutePos(new BlockPos(3, 2, 3));
+                    BlockPos west = h.absolutePos(new BlockPos(2, 2, 3));
+                    BlockPos east = h.absolutePos(new BlockPos(4, 2, 3));
+                    h.assertTrue(c.warningPositions().size() == 3, "Three fuel columns should be flagged: " + c.warningPositions() + " " + c.warningReasons());
+                    for (int i = 0; i < c.warningPositions().size(); i++) {
+                        BlockPos p = c.warningPositions().get(i);
+                        String r = c.warningReasons().get(i);
+                        boolean right = p.equals(centre) ? r.endsWith("no_coolant") : (p.equals(west) || p.equals(east)) && r.endsWith("no_control");
+                        h.assertTrue(right, "Wrong warning at " + p + ": " + r);
+                    }
+                    h.assertTrue(c.problemPositions().isEmpty(), "A layout warning should not make the vessel invalid: " + c.problemReasons());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void fuelBesideCoolantAndRodIsNotFlagged(GameTestHelper h) {
+        TestVessels.standardVessel(h, SOUND_CORE);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        h.startSequence()
+                .thenIdle(60)
+                .thenExecute(() -> h.assertTrue(c.warningPositions().isEmpty() && c.problemPositions().isEmpty(), "A sound core should have no warnings: " + c.warningReasons()))
                 .thenSucceed();
     }
 }

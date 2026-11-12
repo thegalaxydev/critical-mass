@@ -30,6 +30,16 @@ public final class VesselHighlighter {
                     .colored(0xFF4A3A)
                     .lineWidth(1 / 16f);
         }
+        List<BlockPos> warnings = controller.warningPositions();
+        for (int i = 0; i < warnings.size(); i++) {
+            BlockPos p = warnings.get(i);
+            Outliner.getInstance().showAABB(new Column(controller.getBlockPos(), p), new AABB(p).expandTowards(0, controller.columnHeight() - 1, 0).inflate(0.03))
+                    .colored(0xFFA630)
+                    .lineWidth(1 / 16f);
+        }
+    }
+
+    private record Column(BlockPos controller, BlockPos pos) {
     }
 
     private record Key(BlockPos controller, BlockPos pos) {

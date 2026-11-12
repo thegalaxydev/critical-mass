@@ -77,6 +77,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int[] dims = new int[3];
     private final List<BlockPos> problemPos = new ArrayList<>();
     private final List<String> problemReason = new ArrayList<>();
+    private final List<BlockPos> warningPos = new ArrayList<>();
+    private final List<String> warningReason = new ArrayList<>();
     private final List<String> missing = new ArrayList<>();
     private int fuelColumns;
     private int controlColumns;
@@ -161,6 +163,18 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     public List<String> problemReasons() {
         return problemReason;
+    }
+
+    public List<BlockPos> warningPositions() {
+        return warningPos;
+    }
+
+    public List<String> warningReasons() {
+        return warningReason;
+    }
+
+    public int columnHeight() {
+        return Math.max(1, dims[2] - 2);
     }
 
     public List<String> missing() {
@@ -669,7 +683,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             return;
         }
         if (level.isClientSide) {
-            if (!problemPos.isEmpty()) {
+            if (!problemPos.isEmpty() || !warningPos.isEmpty()) {
                 VesselHighlighter.show(this);
             }
             return;
@@ -877,6 +891,12 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             problemPos.add(p.pos());
             problemReason.add(p.reason());
         }
+        warningPos.clear();
+        warningReason.clear();
+        for (VesselStructure.Problem p : structure.warnings) {
+            warningPos.add(p.pos());
+            warningReason.add(p.reason());
+        }
         missing.clear();
         missing.addAll(structure.missing);
         sizeError = structure.sizeError;
@@ -961,6 +981,15 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             problems.add(p);
         }
         tag.put("Problems", problems);
+        ListTag warnings = new ListTag();
+        for (int i = 0; i < warningPos.size(); i++) {
+            CompoundTag p = new CompoundTag();
+            BlockPos rel = warningPos.get(i).subtract(worldPosition);
+            p.putIntArray("P", new int[]{rel.getX(), rel.getY(), rel.getZ()});
+            p.putString("R", warningReason.get(i));
+            warnings.add(p);
+        }
+        tag.put("Warnings", warnings);
         ListTag miss = new ListTag();
         for (String m : missing) {
             miss.add(StringTag.valueOf(m));
@@ -1018,6 +1047,16 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 problemReason.add(p.getString("R"));
             }
         }
+        warningPos.clear();
+        warningReason.clear();
+        for (Tag t : tag.getList("Warnings", Tag.TAG_COMPOUND)) {
+            CompoundTag p = (CompoundTag) t;
+            int[] rel = p.getIntArray("P");
+            if (rel.length == 3) {
+                warningPos.add(worldPosition.offset(rel[0], rel[1], rel[2]));
+                warningReason.add(p.getString("R"));
+            }
+        }
         missing.clear();
         for (Tag t : tag.getList("Missing", Tag.TAG_STRING)) {
             missing.add(t.getAsString());
@@ -1069,6 +1108,14 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         for (String m : missing) {
             tooltip.add(ThermalTooltips.line(m, ChatFormatting.GOLD));
+        }
+        if (!warningPos.isEmpty()) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.warnings", ChatFormatting.GOLD, warningPos.size()));
+            for (int i = 0; i < Math.min(4, warningPos.size()); i++) {
+                BlockPos p = warningPos.get(i);
+                tooltip.add(Component.literal("       " + p.getX() + " " + p.getZ() + ": ").withStyle(ChatFormatting.DARK_GRAY)
+                        .append(Component.translatable(warningReason.get(i)).withStyle(ChatFormatting.GOLD)));
+            }
         }
         if (clientDrives > 0) {
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.drive_insertion", ChatFormatting.GRAY, clientDrives, Math.round(clientDriveInsertion * 100)));
