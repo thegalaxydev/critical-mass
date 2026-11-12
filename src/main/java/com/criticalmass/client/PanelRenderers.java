@@ -36,7 +36,6 @@ public final class PanelRenderers {
     private static final class Face {
         final PoseStack ms;
         final MultiBufferSource buffer;
-        final VertexConsumer vc;
         final Matrix4f pose;
         final float u;
         final float v;
@@ -50,21 +49,25 @@ public final class PanelRenderers {
             ms.mulPose(Axis.YP.rotationDegrees(180 - facing.toYRot()));
             ms.translate(-0.5, -0.5, -0.5);
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(CriticalMass.asResource("block/instrumentation_panel"));
-            vc = buffer.getBuffer(RenderType.entityCutoutNoCull(InventoryMenu.BLOCK_ATLAS));
             u = sprite.getU(WHITE_U);
             v = sprite.getV(WHITE_V);
             pose = ms.last().pose();
         }
 
-        void vertex(float sx, float sy, float depth, int color, int light) {
+        VertexConsumer quads() {
+            return buffer.getBuffer(RenderType.entityCutoutNoCull(InventoryMenu.BLOCK_ATLAS));
+        }
+
+        void vertex(VertexConsumer vc, float sx, float sy, float depth, int color, int light) {
             vc.addVertex(pose, (16 - sx) * PX, sy * PX, FRONT - depth).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(ms.last(), 0, 0, -1);
         }
 
         void rect(float x0, float y0, float x1, float y1, float depth, int color, int light) {
-            vertex(x0, y0, depth, color, light);
-            vertex(x1, y0, depth, color, light);
-            vertex(x1, y1, depth, color, light);
-            vertex(x0, y1, depth, color, light);
+            VertexConsumer vc = quads();
+            vertex(vc, x0, y0, depth, color, light);
+            vertex(vc, x1, y0, depth, color, light);
+            vertex(vc, x1, y1, depth, color, light);
+            vertex(vc, x0, y1, depth, color, light);
         }
 
         void needle(float cx, float cy, float fraction, float length, float half, int color, int light) {
@@ -73,10 +76,11 @@ public final class PanelRenderers {
             float dy = (float) Math.cos(angle);
             float px = dy * half;
             float py = -dx * half;
-            vertex(cx - px, cy - py, 0, color, light);
-            vertex(cx + dx * length - px * 0.4f, cy + dy * length - py * 0.4f, 0, color, light);
-            vertex(cx + dx * length + px * 0.4f, cy + dy * length + py * 0.4f, 0, color, light);
-            vertex(cx + px, cy + py, 0, color, light);
+            VertexConsumer vc = quads();
+            vertex(vc, cx - px, cy - py, 0, color, light);
+            vertex(vc, cx + dx * length - px * 0.4f, cy + dy * length - py * 0.4f, 0, color, light);
+            vertex(vc, cx + dx * length + px * 0.4f, cy + dy * length + py * 0.4f, 0, color, light);
+            vertex(vc, cx + px, cy + py, 0, color, light);
         }
 
         void text(String s, float cx, float cy, float height, float maxWidth, int color, int light) {
