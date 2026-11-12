@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.content.CoolantPortBlockEntity;
+import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.thermal.InstrumentationPanelBlockEntity;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.criticalmass.CriticalMass;
@@ -60,6 +61,8 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<GeneratorBlockEntity>> GENERATOR = BLOCK_ENTITIES.register("generator",
+            () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
     public static final Supplier<BlockEntityType<InstrumentationPanelBlockEntity>> INSTRUMENTATION_PANEL = BLOCK_ENTITIES.register("instrumentation_panel",
             () -> BlockEntityType.Builder.of((pos, state) -> new InstrumentationPanelBlockEntity(CMBlockEntities.INSTRUMENTATION_PANEL.get(), pos, state), CMBlocks.INSTRUMENTATION_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<CoolantPortBlockEntity>> COOLANT_PORT = BLOCK_ENTITIES.register("primary_coolant_port",

@@ -139,6 +139,7 @@ shaped("fuel_channel", [" L ", "LPL", " L "], {"L": "fuel_cladding", "P": "reinf
 shaped("coolant_channel", [" C ", "CPC", " C "], {"C": "#c:plates/copper", "P": "reinforced_pipe"}, "coolant_channel")
 shaped("shielded_glass", [" G ", "GPG", " G "], {"G": "#c:glass_blocks/colorless", "P": "#c:plates/steel"}, "shielded_glass", 4)
 shaped("reinforced_pipe", ["S", "F", "S"], {"S": "#c:plates/steel", "F": "create:fluid_pipe"}, "reinforced_pipe", 2)
+shaped("generator", ["CSC", "CRC", "PAP"], {"C": "#c:plates/copper", "S": "create:shaft", "R": "create:rotation_speed_controller", "P": "#c:plates/steel", "A": "create:andesite_casing"}, "generator")
 shaped("control_rod_drive", ["G", "P", "A"], {"G": "create:gearbox", "P": "create:precision_mechanism", "A": "create:andesite_casing"}, "control_rod_drive")
 shaped("condenser", ["CTC", "CFC"], {"C": "#c:plates/copper", "T": "create:fluid_tank", "F": "create:encased_fan"}, "condenser")
 shaped("cooling_tower_packing", ["PAP", "APA", "PAP"], {"P": "#minecraft:planks", "A": "create:andesite_alloy"}, "cooling_tower_packing", 8)

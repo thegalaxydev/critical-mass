@@ -19,6 +19,8 @@ public final class CMConfig {
     public static final ModConfigSpec.DoubleValue SHIELD_SOLID;
     public static final ModConfigSpec.DoubleValue GEAR_CONTAMINATION_PROTECTION;
     public static final ModConfigSpec.DoubleValue GEAR_DOSE_PROTECTION;
+    public static final ModConfigSpec.DoubleValue FE_PER_SU;
+    public static final ModConfigSpec.DoubleValue GENERATOR_EFFICIENCY;
     public static final int DEFAULT_FUEL_LIFETIME = 120000;
     public static final double DEFAULT_FUEL_WEAR = 0.25;
 
@@ -29,6 +31,10 @@ public final class CMConfig {
                 .defineInRange("lifetimeTicks", DEFAULT_FUEL_LIFETIME, 1200, 100_000_000);
         FUEL_WEAR = b.comment("Condition lost over a full burn at normal temperature")
                 .defineInRange("normalWear", DEFAULT_FUEL_WEAR, 0.0, 0.95);
+        b.pop();
+        b.push("power");
+        FE_PER_SU = b.comment("Forge Energy per tick for each SU of shaft power a Generator absorbs, before efficiency").defineInRange("fePerSu", 0.25, 0.0, 1000.0);
+        GENERATOR_EFFICIENCY = b.comment("Share of absorbed shaft power a Generator turns into Forge Energy").defineInRange("generatorEfficiency", 0.9, 0.0, 1.0);
         b.pop();
         b.push("radiation");
         RADIATION_ENABLED = b.comment("Whether players receive dose and contamination").define("enabled", true);

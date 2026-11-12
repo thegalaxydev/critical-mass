@@ -66,6 +66,14 @@ public final class CMThermal {
     public static final double SU_PER_HEAT = 4.0;
     public static final float TURBINE_RPM = 16.0f;
     public static final double TURBINE_MIN_SU = 64.0;
+    public static final int TURBINE_MAX_RPM = 256;
+    public static final double TURBINE_WINDAGE_SU = 16.0;
+    public static final double TURBINE_WINDAGE_SHARE = 0.02;
+    public static final double GOVERNOR_RATE = 0.05;
+    public static final double ROTOR_INERTIA_TICKS = 50.0;
+    public static final double ROTOR_DAMPING = 0.02;
+    public static final double OVERSPEED_TRIP = 0.1;
+    public static final int LOAD_SAMPLE_TICKS = 5;
     public static final int PUMP_FLOW_PER_RPM = 2;
     public static final int PUMP_MAX_FLOW = 256;
     public static final int PIPE_CAPACITY = 100;

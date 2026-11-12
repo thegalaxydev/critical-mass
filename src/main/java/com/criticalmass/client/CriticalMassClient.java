@@ -1,5 +1,8 @@
 package com.criticalmass.client;
 
+import com.criticalmass.content.kinetics.GeneratorBlock;
+import com.criticalmass.content.kinetics.GeneratorBlockEntity;
+import com.simibubi.create.AllPartialModels;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlock;
@@ -37,6 +40,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), BenchRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.INSTRUMENTATION_PANEL.get(), InstrumentationPanelRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), ctx -> new HalfShaftRenderer<GeneratorBlockEntity>(ctx, GeneratorBlock::inputSide));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ctx -> new InputSideRotorRenderer<ControlRodDriveBlockEntity>(ctx, CMPartialModels.CONTROL_ROD_DRIVE_PINION));
     }
 
@@ -47,6 +51,10 @@ public class CriticalMassClient {
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
                 .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.UP, ControlRodDriveBlock.inputSide(be.getBlockState()), Models.partial(CMPartialModels.CONTROL_ROD_DRIVE_PINION)))
+                .skipVanillaRender(be -> true)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
+                .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.SOUTH, GeneratorBlock.inputSide(be.getBlockState()), Models.partial(AllPartialModels.SHAFT_HALF)))
                 .skipVanillaRender(be -> true)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.REINFORCED_VALVE.get())

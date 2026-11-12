@@ -50,6 +50,7 @@ plant = [
     setblock((6, 4, 6), "criticalmass:relief_valve[facing=south]"),
     setblock((6, 6, 6), "criticalmass:steam_turbine[axis=x]"),
     setblock((7, 6, 6), "create:stressometer[facing=south,axis_along_first=true]"),
+    setblock((5, 6, 6), "criticalmass:generator[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
     "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 1, 9), w(8, 4, 9)),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),

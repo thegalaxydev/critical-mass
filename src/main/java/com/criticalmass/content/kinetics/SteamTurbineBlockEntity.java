@@ -10,7 +10,15 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.content.kinetics.KineticNetwork;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import java.util.List;
+import net.createmod.catnip.math.VecHelper;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +35,12 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     private double heatExtracted;
     private double appliedCapacity;
     private double admission;
+    private double potential;
+    private double shaftLoad;
+    private double overspeed;
+    private boolean overspeedTrip;
+    private int loadCooldown;
+    private ScrollValueBehaviour ratedSpeed;
     private String status = "criticalmass.turbine.no_steam";
     private final ThermalSinks sinks = new ThermalSinks();
     private int updateCooldown;
@@ -34,6 +48,57 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
     public SteamTurbineBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        ratedSpeed = new ScrollValueBehaviour(Component.translatable("criticalmass.turbine.rated_speed"), this, new RatedSpeedBox());
+        ratedSpeed.between(1, CMThermal.TURBINE_MAX_RPM);
+        ratedSpeed.value = (int) CMThermal.TURBINE_RPM;
+        ratedSpeed.withCallback(i -> updateGeneratedRotation());
+        behaviours.add(ratedSpeed);
+    }
+
+    public int ratedSpeed() {
+        return ratedSpeed == null ? (int) CMThermal.TURBINE_RPM : Math.max(1, ratedSpeed.getValue());
+    }
+
+    public void setRatedSpeed(int rpm) {
+        ratedSpeed.setValue(Math.max(1, Math.min(CMThermal.TURBINE_MAX_RPM, rpm)));
+    }
+
+    public double availableRate() {
+        return potential;
+    }
+
+    public double shaftLoad() {
+        return shaftLoad;
+    }
+
+    public double overspeed() {
+        return overspeed;
+    }
+
+    public boolean overspeedTripped() {
+        return overspeedTrip;
+    }
+
+    public void resetTrip() {
+        overspeedTrip = false;
+        overspeed = 0;
+    }
+
+    private double measureLoad() {
+        if (!hasNetwork() || appliedCapacity <= 0) {
+            return 0;
+        }
+        KineticNetwork network = getOrCreateNetwork();
+        float capacity = network.calculateCapacity();
+        if (capacity <= 0) {
+            return 0;
+        }
+        return network.calculateStress() * Math.min(1.0, appliedCapacity / capacity);
     }
 
     @Override
@@ -108,10 +173,24 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         }
         boolean connected = shaftConnected();
         double governor = level.getBestNeighborSignal(worldPosition) / 15.0;
-        admission = connected ? 1 - governor : 0;
+        if (overspeedTrip && governor >= 1) {
+            resetTrip();
+        }
+        double limit = connected && !overspeedTrip ? 1 - governor : 0;
         double steam = coolant.steamEnergy();
+        double wideOpen = steam * CMThermal.TURBINE_EXTRACTION;
+        if (loadCooldown-- <= 0) {
+            loadCooldown = CMThermal.LOAD_SAMPLE_TICKS;
+            shaftLoad = measureLoad();
+        }
+        double windage = Math.max(CMThermal.TURBINE_WINDAGE_SU, appliedCapacity * CMThermal.TURBINE_WINDAGE_SHARE);
+        double want = wideOpen > 0 ? Math.min(limit, (shaftLoad + windage) / (wideOpen * CMThermal.SU_PER_HEAT)) : 0;
+        admission += Math.max(-CMThermal.GOVERNOR_RATE, Math.min(CMThermal.GOVERNOR_RATE, want - admission));
+        admission = Math.max(0, Math.min(limit, admission));
         if (!connected) {
             status = "criticalmass.turbine.disconnected";
+        } else if (overspeedTrip) {
+            status = "criticalmass.turbine.overspeed_trip";
         } else if (steam <= 0) {
             status = "criticalmass.turbine.no_steam";
         } else if (governor >= 1) {
@@ -119,13 +198,26 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         } else {
             status = "criticalmass.turbine.ok";
         }
-        double extracted = steam > 0 ? coolant.removeHeat(steam * CMThermal.TURBINE_EXTRACTION * admission) : 0;
+        double extracted = steam > 0 ? coolant.removeHeat(wideOpen * admission) : 0;
         heatExtracted += extracted;
         heatRate += (extracted - heatRate) * 0.1;
         if (heatRate < 1e-3) {
             heatRate = 0;
         }
-        double target = heatRate * CMThermal.SU_PER_HEAT;
+        potential += (wideOpen * limit - potential) * 0.1;
+        if (potential < 1e-3) {
+            potential = 0;
+        }
+        double rated = Math.max(appliedCapacity, CMThermal.TURBINE_MIN_SU);
+        double surplus = appliedCapacity > 0 ? extracted * CMThermal.SU_PER_HEAT - shaftLoad - windage : 0;
+        overspeed += surplus / (rated * CMThermal.ROTOR_INERTIA_TICKS) - overspeed * CMThermal.ROTOR_DAMPING;
+        overspeed = Math.max(-0.25, Math.min(0.5, overspeed));
+        if (overspeed > CMThermal.OVERSPEED_TRIP && !overspeedTrip) {
+            overspeedTrip = true;
+            admission = 0;
+            level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.6f);
+        }
+        double target = potential * CMThermal.SU_PER_HEAT;
         if (target < CMThermal.TURBINE_MIN_SU) {
             target = 0;
         }
@@ -148,12 +240,12 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
     @Override
     public float getGeneratedSpeed() {
-        return appliedCapacity > 0 ? CMThermal.TURBINE_RPM : 0;
+        return appliedCapacity > 0 ? ratedSpeed() : 0;
     }
 
     @Override
     public float calculateAddedStressCapacity() {
-        float perRpm = appliedCapacity > 0 ? (float) (appliedCapacity / CMThermal.TURBINE_RPM) : 0;
+        float perRpm = appliedCapacity > 0 ? (float) (appliedCapacity / ratedSpeed()) : 0;
         lastCapacityProvided = perRpm;
         return perRpm;
     }
@@ -168,6 +260,10 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         tag.put("Sinks", sinks.save());
         tag.putDouble("Admission", admission);
         tag.putString("Status", status);
+        tag.putDouble("Potential", potential);
+        tag.putDouble("ShaftLoad", shaftLoad);
+        tag.putDouble("Overspeed", overspeed);
+        tag.putBoolean("OverspeedTrip", overspeedTrip);
     }
 
     @Override
@@ -180,6 +276,22 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         sinks.load(tag.getCompound("Sinks"));
         admission = tag.getDouble("Admission");
         status = tag.getString("Status");
+        potential = tag.contains("Potential") ? tag.getDouble("Potential") : heatRate;
+        shaftLoad = tag.getDouble("ShaftLoad");
+        overspeed = tag.getDouble("Overspeed");
+        overspeedTrip = tag.getBoolean("OverspeedTrip");
+    }
+
+    static class RatedSpeedBox extends ValueBoxTransform.Sided {
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 8, 16.05);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            return direction.getAxis().isHorizontal() && direction.getAxis() != state.getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS);
+        }
     }
 
     @Override
@@ -189,6 +301,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
         ThermalTooltips.coolant(tooltip, coolant);
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.admission", ChatFormatting.GRAY, Math.round(admission * 100)));
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rotor", Math.abs(overspeed) > CMThermal.OVERSPEED_TRIP * 0.5 ? ChatFormatting.RED : ChatFormatting.GRAY,
+                ThermalTooltips.number(ratedSpeed() * (1 + overspeed)), ratedSpeed()));
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.shaft_load", ChatFormatting.GRAY, ThermalTooltips.number(shaftLoad)));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.heat_rate", ChatFormatting.GOLD, ThermalTooltips.number(heatRate)));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.capacity", appliedCapacity > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(appliedCapacity)));
         return true;

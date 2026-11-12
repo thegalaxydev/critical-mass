@@ -64,6 +64,10 @@
   "fluid.criticalmass.contaminated_coolant": "Contaminated Coolant",
   "fluid_type.criticalmass.contaminated_coolant": "Contaminated Coolant",
   "criticalmass.goggles.controller": "Reactor Controller",
+  "criticalmass.turbine.rated_speed": "Rated speed (RPM)",
+  "criticalmass.turbine.overspeed_trip": "Overspeed trip: close the governor (full redstone signal) to reset",
+  "criticalmass.goggles.rotor": "Rotor: %s RPM (rated %s)",
+  "criticalmass.goggles.shaft_load": "Shaft load: %s SU",
   "criticalmass.goggles.panel": "Instrumentation Panel",
   "criticalmass.panel.no_reactor": "No reactor: mount it on a vessel or place it within %s blocks of a controller",
   "criticalmass.panel.coolant_temp": "Vessel coolant: %s °C",
@@ -271,5 +275,11 @@
   "criticalmass.decon.clean": "Nothing to clean here",
   "criticalmass.decon.self_clean": "You are not contaminated",
   "criticalmass.decon.no_runoff": "No tank within %s blocks can take the runoff",
-  "criticalmass.decon.done": "Cleaned; %s mB of runoff collected"
+  "criticalmass.decon.done": "Cleaned; %s mB of runoff collected",
+  "criticalmass.generator.load": "Electrical load",
+  "criticalmass.generator.breaker_open": "Breaker open: full redstone signal",
+  "criticalmass.goggles.generator": "Generator",
+  "criticalmass.goggles.generator_output": "Output: %s FE/t (set to %s)",
+  "criticalmass.goggles.generator_stored": "Buffer: %s / %s FE",
+  "block.criticalmass.generator": "Generator"
 }

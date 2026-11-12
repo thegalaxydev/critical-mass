@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/generator"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/generator",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/generator",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/generator",
+   "y": 270
+  }
+ }
+}

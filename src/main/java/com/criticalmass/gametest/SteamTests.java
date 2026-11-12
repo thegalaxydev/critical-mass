@@ -91,8 +91,9 @@ public final class SteamTests {
                 .thenExecute(() -> {
                     h.assertTrue(hotWater.heatExtracted() == 0 && hotWater.stressCapacity() == 0 && hotWater.status().endsWith("no_steam"), "Hot water below boiling gave capacity");
                     double perTick = 20000 * CMThermal.TURBINE_EXTRACTION;
-                    h.assertTrue(Math.abs(steam.heatRate() - perTick) / perTick < 0.02, "Turbine took " + steam.heatRate() + " HU/t, expected " + perTick);
-                    h.assertTrue(Math.abs(steam.stressCapacity() - perTick * CMThermal.SU_PER_HEAT) / (perTick * CMThermal.SU_PER_HEAT) < 0.03, "Capacity should be the consumed steam energy times SU per HU: " + steam.stressCapacity());
+                    h.assertTrue(Math.abs(steam.availableRate() - perTick) / perTick < 0.02, "Turbine could take " + steam.availableRate() + " HU/t, expected " + perTick);
+                    h.assertTrue(steam.heatRate() < perTick * 0.05, "With nothing on the shaft the governor should hold the steam back: " + steam.heatRate());
+                    h.assertTrue(Math.abs(steam.stressCapacity() - perTick * CMThermal.SU_PER_HEAT) / (perTick * CMThermal.SU_PER_HEAT) < 0.03, "Capacity should be the usable steam energy times SU per HU: " + steam.stressCapacity());
                     h.assertTrue(steam.getGeneratedSpeed() == CMThermal.TURBINE_RPM, "Turbine speed is fixed, so RPM cannot add energy");
                 })
                 .thenSucceed();

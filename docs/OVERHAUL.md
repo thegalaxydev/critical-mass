@@ -1,0 +1,44 @@
+# Plant overhaul
+
+Goal: a pressurized-water plant the player builds, wires and operates: moving rods, bound controls and instruments, a real cooling tower, a turbine that drives Create machinery and a Forge Energy generator, and accidents that grow out of the simulated state.
+
+## What stays
+
+- **Vessel:** casing shell with fuel, control and coolant columns in any valid size, the controller, ports, per-block diagnostics and casing integrity.
+- **Process state:** `CoolantBuffer` carries fluid, heat, phase and pressure. Splits and merges conserve mass and heat. Create transfers keep heat between coolant machines.
+- **Circuits:** the Circulation Pump traces a single-path loop and moves coolant through every tank and pipe on it. Pipes hold coolant, and hot coolant bursts ordinary Create pipes.
+- **Fuel lifecycle, radiation, contamination and shielding.**
+
+## What changes
+
+| Area | Before | After |
+| --- | --- | --- |
+| Turbine | Fixed 16 RPM, takes 2% of steam energy every tick whatever the load | Rated speed set on the turbine. A governor valve follows the shaft load, with rotor overspeed and an overspeed trip on sudden load loss |
+| Electricity | None | Generator block: shaft load set in FE/t, eases off when its buffer fills, redstone opens the breaker |
+| Control rods | Drive holds a number | Visible rod assembly that travels with the real insertion, rod banks, bank controls |
+| Inspection | Goggles only | Vessel viewport block; rods and fuel glow visible through it |
+| Controls | Redstone on the controller and drives | Panel blocks bound to a target with the Plant Linker: buttons, bank controls, switches, gauges, lamps, annunciator |
+| Primary pressure | None (liquid coolant has no pressure) | Pressurizer on the primary loop: heaters, spray, relief; low pressure lets coolant boil in the core |
+| Cooling tower | Stack of packing blocks | Built tower: basin, fill, distributor, Create-driven fan; capacity from fill, water and airflow; makeup water and evaporation |
+| Feedwater | Loop pump only | Feedwater tank (hotwell) with level, makeup connection |
+| Reactivity | Rods and fuel only | Fuel-temperature and coolant-temperature feedback; operating modes with start-up permissives |
+| Accidents | Trip, cracks, breach leak | Fuel damage, clad failure, core melt, corium, burn-through, wreckage and contaminated blocks that persist |
+| Guidance | README | Ponder scenes, reference plant function |
+
+## Phases (dependency order)
+
+1. **A. Energy chain.** Turbine governor and overspeed, Generator, gross and net accounting.
+2. **B. Rods and inspection.** Visible rod travel, banks, viewport.
+3. **C. Controls and instruments.** Plant Linker bindings, panel components, annunciator.
+4. **D. Plant equipment.** Pressurizer, feedwater tank, built cooling tower with fans.
+5. **E. Reactor behaviour.** Temperature feedback, operating modes, permissives, protective trips through installed equipment.
+6. **F. Accidents.** Progressive core damage, corium, persistent wreckage, config limits.
+7. **G. Guidance.** Ponder scenes, reference plant, end-to-end scenario tests.
+
+Each phase lands with game tests and an in-game check before the next starts. Saves: existing blocks keep their ids and data; new state defaults to the old behaviour when absent.
+
+## Units
+
+- Heat: HU. Water: 1 HU per mB per °C, boils at 80 HU/mB above ambient, 540 HU/mB latent.
+- Shaft power: SU. 1 HU/t of steam work is 4 SU.
+- Electricity: FE. Default 1 SU for one tick is 0.1 FE at 90% generator efficiency (configurable).
