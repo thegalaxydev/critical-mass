@@ -43,6 +43,8 @@
     "criticalmass:feedwater_tank",
     "criticalmass:pressurizer",
     "criticalmass:corium",
-    "criticalmass:ruined_channel"
+    "criticalmass:ruined_channel",
+    "criticalmass:control_console",
+    "criticalmass:plant_screen"
   ]
 }

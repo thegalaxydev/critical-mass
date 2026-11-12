@@ -28,7 +28,7 @@ Use Reinforced Pipe wherever the water is at or above 100 °C or is steam. Creat
 
 ## Wiring a control room
 
-Readings go on Create's own displays. Put a Display Link on a machine, point it at a Display Board, and pick what to show.
+Readings go on a wall of Plant Screens. Put a Create Display Link on a machine, point it at any screen of the wall, and pick what to show. Screens placed beside and above each other join into one wall, three lines to a block, and show the text in green. They need Forge Energy, 1 FE/t per screen: feed any one screen, for example from a small Generator standing against the wall, and it shares with the rest. Create's Display Board, Nixie Tubes and signs take the same links.
 
 | Display Link on | Shows |
 | --- | --- |
@@ -40,14 +40,18 @@ Readings go on Create's own displays. Put a Display Link on a machine, point it 
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
-Controls are panels, and they do nothing until they are bound. Use the Plant Linker on a machine, then on the panel.
+Controls sit on a Control Console. It is one desk, five blocks wide, two deep and two high, and it centres on the block you click and faces you. It does nothing until it is bound: use the Plant Linker on the Reactor Controller and then on the console, and do the same for the turbine and the generator. Then look at a control and use it.
 
-| Panel | Bind to | Setting |
-| --- | --- | --- |
-| Control Button | Reactor Controller | SCRAM, reset, bank A in, bank A out |
-| Control Button | Turbine | Trip, reset |
-| Control Button | Generator | Breaker open, breaker close |
-| Annunciator | Reactor Controller | With an Alarm Siren beside it |
+| Section | Controls |
+| --- | --- |
+| Reactor | SCRAM, reset, rods in, rods out |
+| Turbine | Trip, reset, generator breaker switch |
+| Alarms | Six alarm lamps and acknowledge |
+| Switches and dials | Four of each for your own wiring |
+
+The switches and dials latch on or off and power the back of the console. Switches 1 to 4 power the lower back blocks from left to right, dials 1 to 4 the upper ones. The fifth back column gives the alarm signal below and the trip signal above, so an Alarm Siren beside it sounds on any new alarm.
+
+Single Control Buttons and the Annunciator are wall panels that do one job each. They are bound the same way, and a redstone pulse presses a button, which the console does not offer.
 
 **Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse presses a button. Compare that signal against one you set and feed the result to the SCRAM button, and you have an earlier high-temperature trip. The Annunciator gives a redstone signal on any new alarm, so wiring it to a button trips on any alarm. If you remove the wire, the trip is gone.
 
@@ -58,10 +62,10 @@ Controls are panels, and they do nothing until they are bound. Use the Plant Lin
 A cold core with its rods in is thousands of pcm below critical. Starting it means taking that away slowly and watching the period.
 
 1. Bring outside rotation to all three pumps. A cold plant makes none of its own.
-2. Check the annunciator is clear and the vessel is at least half full.
+2. Check the alarm lamps are dark and the vessel is at least half full.
 3. Start the primary pump. The controller will not let rods move until coolant is flowing.
 4. Start the steam and cooling pumps and the tower fan.
-5. Press bank A out a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
+5. Press rods out a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
 6. As reactivity nears zero, slow down. Neutron power climbs on its own as the core approaches critical. Once reactivity is positive, stop pressing and let the period do the work. A period between 10 and 30 seconds is a comfortable climb. Under 3 seconds trips the reactor.
 7. Power climbs through many decades before it makes any heat. When neutron power reaches a few percent the fuel warms, reactivity falls back toward zero and the power levels off by itself.
 8. Raise power in small steps from there. Each step raises power until the hotter fuel and coolant cancel it.
@@ -76,7 +80,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **More power:** withdraw rods, or draw more steam. Drawing steam cools the coolant, and cooler coolant raises reactor power by itself.
 - **Less power:** insert rods. After a power cut xenon rises for several minutes before it falls, so expect to pull rods again later.
 - **Cold water is reactivity:** anything that cools the primary coolant quickly, such as starting a big steam demand, adds reactivity fast. Do it in steps.
-- **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the annunciator's boiling window means you are losing coolant.
+- **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the boiling alarm lamp means you are losing coolant.
 - **Load changes:** change generator load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
 - **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the basin topped up, or pipe make-up water into it.
 - **Tower fan:** a fan that is too fast cools the steam loop below boiling at part power and the turbine stops. Slow it until the loop boils again.
@@ -84,7 +88,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 ## Shutdown
 
 1. Lower the generator load and open the breaker.
-2. Insert the rods with the bank in buttons, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
+2. Insert the rods with the rods in button, or press SCRAM. Power falls to a few percent at once and then fades over about 20 seconds as the delayed neutrons die away.
 3. **Keep the pumps and tower running.** Decay heat starts at 7% of the power you were making and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
 4. When the controller reads Cold, the pumps can stop.
 5. If you plan to restart, do it within a couple of minutes or wait out the xenon peak.
@@ -125,9 +129,9 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the bank A out button.
+It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the rods out button on the console.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control wall is a Display Board fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. The buttons and the annunciator sit below it.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a wall of Plant Screens fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. A small Generator on a creative motor beside the wall powers the screens. The Control Console in front of the wall is bound to the reactor, the turbine and the generator, and an Alarm Siren stands on its alarm output.
 
 To skip the start-up, run:
 
@@ -135,4 +139,4 @@ To skip the start-up, run:
 /function criticalmass_demo:reactor/run
 ```
 
-That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the bank A buttons hold it.
+That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons on the console hold it.

@@ -63,6 +63,7 @@ public class CriticalMass {
         CMComponents.COMPONENTS.register(modEventBus);
         CMAttachments.ATTACHMENTS.register(modEventBus);
         PlantDisplaySources.SOURCES.register(modEventBus);
+        PlantDisplaySources.TARGETS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
@@ -113,6 +114,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_DISTRIBUTOR.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.FEEDWATER_TANK.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.PRESSURIZER.get(), (be, side) -> be.input());
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.PLANT_SCREEN.get(), (be, side) -> be.energy());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.GENERATOR.get(), (be, side) -> side == GeneratorBlock.inputSide(be.getBlockState()) ? null : be.output());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());

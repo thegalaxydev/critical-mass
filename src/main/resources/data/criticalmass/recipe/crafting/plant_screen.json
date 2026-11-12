@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "GGG",
+    "PEP"
+  ],
+  "result": {
+    "id": "criticalmass:plant_screen",
+    "count": 2
+  }
+}

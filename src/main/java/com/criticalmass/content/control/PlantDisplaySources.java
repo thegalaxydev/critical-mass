@@ -6,6 +6,7 @@ import com.criticalmass.content.thermal.VesselLookup;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.api.registry.CreateRegistries;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkContext;
 import com.simibubi.create.content.redstone.displayLink.source.SingleLineDisplaySource;
@@ -24,6 +25,8 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 
 public final class PlantDisplaySources {
     public static final DeferredRegister<DisplaySource> SOURCES = DeferredRegister.create(CreateRegistries.DISPLAY_SOURCE, CriticalMass.MODID);
+    public static final DeferredRegister<DisplayTarget> TARGETS = DeferredRegister.create(CreateRegistries.DISPLAY_TARGET, CriticalMass.MODID);
+    public static final Supplier<ScreenBlockEntity.Target> SCREEN = TARGETS.register("plant_screen", ScreenBlockEntity.Target::new);
     public static final Map<PlantChannel, Supplier<Reading>> CHANNELS = new EnumMap<>(PlantChannel.class);
     public static final Supplier<Reading> ROD_INSERTION = SOURCES.register("rod_insertion", () -> new Reading(PlantChannel.RODS_A, "criticalmass.display_source.rod_insertion"));
     public static final Supplier<Status> STATUS = SOURCES.register("reactor_status", () -> new Status(true,
@@ -43,6 +46,7 @@ public final class PlantDisplaySources {
     }
 
     public static void attach() {
+        DisplayTarget.BY_BLOCK.register(CMBlocks.PLANT_SCREEN.get(), SCREEN.get());
         PlantChannel[] buffer = {PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL};
         PlantChannel[] reactor = {PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL, PlantChannel.FLOW,
                 PlantChannel.POWER, PlantChannel.RODS_A, PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D,

@@ -5,7 +5,9 @@ import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.control.AnnunciatorBlockEntity;
+import com.criticalmass.content.control.ConsoleBlockEntity;
 import com.criticalmass.content.control.ControlButtonBlockEntity;
+import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.criticalmass.CriticalMass;
@@ -67,6 +69,10 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
     public static final Supplier<BlockEntityType<ControlButtonBlockEntity>> CONTROL_BUTTON = BLOCK_ENTITIES.register("control_button",
             () -> BlockEntityType.Builder.of((pos, state) -> new ControlButtonBlockEntity(CMBlockEntities.CONTROL_BUTTON.get(), pos, state), CMBlocks.CONTROL_BUTTON.get()).build(null));
+    public static final Supplier<BlockEntityType<ConsoleBlockEntity>> CONTROL_CONSOLE = BLOCK_ENTITIES.register("control_console",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ConsoleBlockEntity(CMBlockEntities.CONTROL_CONSOLE.get(), pos, state), CMBlocks.CONTROL_CONSOLE.get()).build(null));
+    public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
     public static final Supplier<BlockEntityType<AnnunciatorBlockEntity>> ANNUNCIATOR = BLOCK_ENTITIES.register("annunciator",
             () -> BlockEntityType.Builder.of((pos, state) -> new AnnunciatorBlockEntity(CMBlockEntities.ANNUNCIATOR.get(), pos, state), CMBlocks.ANNUNCIATOR.get()).build(null));
     public static final Supplier<BlockEntityType<TowerParts.Basin>> TOWER_BASIN = BLOCK_ENTITIES.register("tower_basin",

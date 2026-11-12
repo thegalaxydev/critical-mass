@@ -1,0 +1,76 @@
+{
+ "textures": {
+  "0": "criticalmass:block/control_console",
+  "particle": "criticalmass:block/control_console"
+ },
+ "elements": [
+  {
+   "from": [
+    -2.7,
+    0,
+    -2.7
+   ],
+   "to": [
+    2.7,
+    0.35,
+    2.7
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      8,
+      8,
+      16,
+      16
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

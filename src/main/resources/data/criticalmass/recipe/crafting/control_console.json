@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "tag": "minecraft:buttons"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "P": {
+      "tag": "c:plates/steel"
+    }
+  },
+  "pattern": [
+    "BLB",
+    "PEP",
+    "PPP"
+  ],
+  "result": {
+    "id": "criticalmass:control_console"
+  }
+}

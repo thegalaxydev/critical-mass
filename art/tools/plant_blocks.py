@@ -6,6 +6,7 @@ from PIL import Image
 from handmade import AMBER, BLUE, BRASS, COPPER, GREEN, IRON, OUT, RED, STEEL, bevel, put, rect
 from handmade_plant import disc, opening
 from handmade_rest import LEAD, casing, plate
+import console_blocks
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RES = os.path.join(ROOT, "src", "main", "resources")
@@ -659,7 +660,9 @@ def main():
     channel_variants()
     rod_partials()
     linker_item()
-    pickaxe(BLOCKS)
+    console_blocks.write_all(write, ASSETS, DATA, OUT)
+    entries.update(console_blocks.LANG)
+    pickaxe(list(BLOCKS) + ["control_console", "plant_screen"])
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))
 

@@ -43,6 +43,8 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_BUTTON.get(), PanelRenderers.Button::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ANNUNCIATOR.get(), PanelRenderers.Annunciator::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_CONSOLE.get(), ConsoleRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.PLANT_SCREEN.get(), ScreenRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR) {
             @Override
             public AABB getRenderBoundingBox(TowerParts.Fan be) {

@@ -1,0 +1,24 @@
+{
+ "type": "minecraft:block",
+ "pools": [
+  {
+   "rolls": 1,
+   "entries": [
+    {
+     "type": "minecraft:item",
+     "name": "criticalmass:control_console",
+     "conditions": [
+      {
+       "condition": "minecraft:block_state_property",
+       "block": "criticalmass:control_console",
+       "properties": {
+        "column": "2",
+        "part": "front_bottom"
+       }
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

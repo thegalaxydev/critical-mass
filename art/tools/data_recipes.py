@@ -155,6 +155,8 @@ shaped("boiler_heating_plate", ["CCC", "PRP"], {"C": "#c:plates/copper", "P": "r
 shaped("fuel_assembly_bench", ["M", "P", "C"], {"M": "create:mechanical_press", "P": "create:precision_mechanism", "C": "create:brass_casing"}, "fuel_assembly_bench")
 shaped("spent_fuel_rack", ["BBB", "BVB", "BBB"], {"B": "minecraft:iron_bars", "V": "reactor_vessel_casing"}, "spent_fuel_rack")
 shaped("control_button", ["B", "E", "S"], {"B": "#minecraft:buttons", "E": "create:electron_tube", "S": "#c:plates/steel"}, "control_button", 2)
+shaped("control_console", ["BLB", "PEP", "PPP"], {"B": "#minecraft:buttons", "L": "minecraft:lever", "E": "create:electron_tube", "P": "#c:plates/steel"}, "control_console")
+shaped("plant_screen", ["GGG", "PEP"], {"G": "#c:glass_panes/colorless", "E": "create:electron_tube", "P": "#c:plates/steel"}, "plant_screen", 2)
 shaped("annunciator", ["LLL", "ESE"], {"L": "minecraft:redstone_lamp", "E": "create:electron_tube", "S": "#c:plates/steel"}, "annunciator")
 shaped("plant_linker", [" E", "B "], {"E": "create:electron_tube", "B": "#c:plates/brass"}, "plant_linker")
 shaped("alarm_siren", ["S", "N", "L"], {"S": "#c:plates/brass", "N": "minecraft:note_block", "L": "minecraft:redstone_lamp"}, "alarm_siren")

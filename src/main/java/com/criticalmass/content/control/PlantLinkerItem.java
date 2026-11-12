@@ -33,6 +33,24 @@ public class PlantLinkerItem extends Item {
         if (player == null) {
             return InteractionResult.PASS;
         }
+        ConsoleBlockEntity console = ConsoleBlock.console(level, pos);
+        if (console != null) {
+            if (level.isClientSide) {
+                return InteractionResult.SUCCESS;
+            }
+            BlockPos stored = stack.get(CMComponents.LINK_TARGET.get());
+            if (stored == null) {
+                player.displayClientMessage(Component.translatable("criticalmass.linker.nothing_stored"), true);
+                return InteractionResult.FAIL;
+            }
+            if (!console.bind(stored)) {
+                player.displayClientMessage(Component.translatable("criticalmass.linker.refused"), true);
+                return InteractionResult.FAIL;
+            }
+            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
+            player.displayClientMessage(Component.translatable("criticalmass.linker.bound", level.getBlockState(stored).getBlock().getName(), stored.getX(), stored.getY(), stored.getZ()), true);
+            return InteractionResult.SUCCESS;
+        }
         if (be instanceof BoundPanelBlockEntity panel && !(player.isShiftKeyDown() && PlantChannel.isTarget(be))) {
             if (level.isClientSide) {
                 return InteractionResult.SUCCESS;
