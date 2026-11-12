@@ -1,9 +1,20 @@
 package com.criticalmass;
 
+import com.criticalmass.content.FacingBlock;
+import com.criticalmass.content.PipeConnectable;
+import com.criticalmass.content.kinetics.CirculationPumpBlock;
+import com.criticalmass.content.thermal.CoolantPortHandler;
+import com.criticalmass.content.thermal.PipeBurst;
+import com.criticalmass.content.thermal.ThermalNode;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
+import org.jetbrains.annotations.Nullable;
 import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
-import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMAttachments;
@@ -54,6 +65,7 @@ public class CriticalMass {
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
+        NeoForge.EVENT_BUS.addListener(PipeBurst::onLevelTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }
@@ -71,22 +83,32 @@ public class CriticalMass {
                 describe(mods, "create"), describe(mods, "sable"), describe(mods, "aeronautics"));
     }
 
+    private static boolean pipeFace(BlockState state, @Nullable Direction side) {
+        return side == null || !(state.getBlock() instanceof PipeConnectable c) || c.connectsOn(state, side);
+    }
+
+    private static <T extends BlockEntity & ThermalNode> IFluidHandler coolantFace(T be, @Nullable Direction side) {
+        return pipeFace(be.getBlockState(), side) ? be.coolant().handler(be.getLevel(), be.getBlockPos(), side) : null;
+    }
+
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.EMERGENCY_TANK.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), (be, side) -> side == null || side.getAxis() == ReinforcedValveBlock.getPipeAxis(be.getBlockState()) ? be.coolant().handler() : null);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> be.coolant().handler());
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.coolant().handler());
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.EMERGENCY_TANK.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> side == null || side.getAxis() == Direction.Axis.Y ? be.coolant().handler(be.getLevel(), be.getBlockPos(), side) : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CIRCULATION_PUMP.get(), (be, side) -> side != null && side.getAxis() == be.getBlockState().getValue(CirculationPumpBlock.FACING).getAxis() ? EmptyFluidHandler.INSTANCE : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLANT_PORT.get(), (be, side) -> side == null || side == be.getBlockState().getValue(FacingBlock.FACING) ? new CoolantPortHandler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), (be, side) -> be.depot().itemHandler);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : be.bufferFor(side).handler());
     }
 
     private static String describe(ModList mods, String modId) {

@@ -80,9 +80,10 @@ public final class CoolantLoopTests {
                     h.assertTrue(controller.isReacting(), "Reactor should run: " + controller.status() + " problems " + controller.problemReasons() + " missing " + controller.missing());
                     h.assertTrue(pump.flow() == CMThermal.pumpFlow(pump.getSpeed()) && pump.flow() > 0, "Pump flow " + pump.flow() + " status " + pump.status());
                     h.assertTrue(controller.core().lastExtracted() > 0, "Coolant channels extracted nothing");
-                    int total = controller.coolant().amount() + turbine.coolant().amount();
+                    int total = controller.coolant().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.PIPES);
                     h.assertTrue(total == 6000, "Coolant volume not conserved: " + total);
-                    h.assertTrue(close(ledger(controller, turbine), controller.heatAdded()), "Heat not conserved: " + ledger(controller, turbine) + " vs " + controller.heatAdded());
+                    double books = ledger(controller, turbine) + TestVessels.pipeHeat(h, TestVessels.PIPES);
+                    h.assertTrue(close(books, controller.heatAdded()), "Heat not conserved: " + books + " vs " + controller.heatAdded());
                     h.assertTrue(turbine.heatExtracted() == 0, "Primary coolant is not steam, so the turbine should take nothing: " + turbine.status());
                     h.setBlock(TestVessels.MOTOR, Blocks.AIR);
                 })
@@ -99,7 +100,7 @@ public final class CoolantLoopTests {
                 .thenExecute(() -> {
                     SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.TURBINE);
                     h.assertTrue(controller.coolant().amount() == volumes[0] && turbine.coolant().amount() == volumes[1], "Coolant moved with the shaft stopped");
-                    h.assertTrue(close(ledger(controller, turbine), controller.heatAdded()), "Heat not conserved after stopping");
+                    h.assertTrue(close(ledger(controller, turbine) + TestVessels.pipeHeat(h, TestVessels.PIPES), controller.heatAdded()), "Heat not conserved after stopping");
                 })
                 .thenSucceed();
     }

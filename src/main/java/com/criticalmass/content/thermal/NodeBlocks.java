@@ -1,6 +1,5 @@
 package com.criticalmass.content.thermal;
 
-import com.criticalmass.content.ReinforcedPipeBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -8,7 +7,6 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import org.jetbrains.annotations.Nullable;
@@ -21,14 +19,15 @@ public final class NodeBlocks {
         if (buffer == null) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
-        return FluidUtil.interactWithFluidHandler(player, hand, buffer.handler())
+        return FluidUtil.interactWithFluidHandler(player, hand, buffer.handler(level, pos, null))
                 ? ItemInteractionResult.sidedSuccess(level.isClientSide)
                 : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
     public static boolean pipeOn(BlockGetter level, BlockPos pos, Direction face) {
-        BlockState s = level.getBlockState(pos.relative(face));
-        return s.getBlock() instanceof ReinforcedPipeBlock && s.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(face.getOpposite()));
+        BlockPos at = pos.relative(face);
+        BlockState s = level.getBlockState(at);
+        return PipeCoolant.isPipe(s) && PipeCoolant.open(level, at, s, face.getOpposite());
     }
 
     @Nullable

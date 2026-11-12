@@ -38,7 +38,7 @@ public final class PlantTests {
     }
 
     @GameTest(template = LARGE)
-    public static void createPipesDoNotConnectToPorts(GameTestHelper h) {
+    public static void createPipesConnectToPorts(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         BlockPos pipe = TestVessels.OUTLET.south();
         BlockPos portAbs = h.absolutePos(TestVessels.OUTLET);
@@ -47,7 +47,7 @@ public final class PlantTests {
         h.setBlock(tank, AllBlocks.FLUID_TANK.getDefaultState());
         BlockPos tankAbs = h.absolutePos(tank);
         boolean control = FluidPipeBlock.canConnectTo(h.getLevel(), tankAbs, h.getLevel().getBlockState(tankAbs), Direction.NORTH);
-        h.assertTrue(!port, "A Create fluid pipe would connect to a primary coolant port at " + pipe);
+        h.assertTrue(port, "A Create fluid pipe should connect to a primary coolant port at " + pipe);
         h.assertTrue(control, "Control failed: a Create fluid pipe should connect to a fluid tank");
         h.succeed();
     }
@@ -116,16 +116,16 @@ public final class PlantTests {
         HeatExchangerBlockEntity exchanger = h.getBlockEntity(TestVessels.EXCHANGER);
         SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.PLANT_TURBINE);
         controller.coolant().set(CoolantLoopTests.coolant(6000), 900000);
-        exchanger.secondary().set(water(1000), 0);
-        turbine.coolant().set(water(1000), 0);
+        exchanger.secondary().set(water(1000), 1000 * CMThermal.SATURATION_ENERGY);
+        turbine.coolant().set(water(1000), 1000 * CMThermal.SATURATION_ENERGY);
         h.startSequence()
                 .thenIdle(200)
                 .thenExecute(() -> {
                     h.assertTrue(exchanger.primary().fluid().is(CoolantLoopTests.coolant(1).getFluid()), "Primary side should hold primary coolant");
                     h.assertTrue(exchanger.secondary().steamMedium() && turbine.coolant().steamMedium(), "Water and steam left the secondary circuit or coolant entered it");
                     h.assertTrue(controller.coolant().fluid().is(CoolantLoopTests.coolant(1).getFluid()), "Water reached the vessel");
-                    h.assertTrue(controller.coolant().amount() + exchanger.primary().amount() == 6000, "Primary volume changed");
-                    h.assertTrue(exchanger.secondary().amount() + turbine.coolant().amount() == 2000, "Secondary volume changed");
+                    h.assertTrue(controller.coolant().amount() + exchanger.primary().amount() + TestVessels.pipeVolume(h, TestVessels.PRIMARY_PIPES) == 6000, "Primary volume changed");
+                    h.assertTrue(exchanger.secondary().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.SECONDARY_PIPES) == 2000, "Secondary volume changed");
                     h.assertTrue(exchanger.exchanged() > 0, "No heat crossed the exchanger");
                     h.assertTrue(turbine.heatExtracted() > 0, "Turbine received no heat");
                 })
@@ -149,9 +149,10 @@ public final class PlantTests {
             if (failure[0] != null) {
                 return;
             }
-            int primary = controller.coolant().amount() + exchanger.primary().amount();
-            int secondary = exchanger.secondary().amount() + turbine.coolant().amount();
-            double stored = controller.coolant().heat() + controller.core().storedHeat() + exchanger.primary().heat() + exchanger.secondary().heat() + turbine.coolant().heat();
+            int primary = controller.coolant().amount() + exchanger.primary().amount() + TestVessels.pipeVolume(h, TestVessels.PRIMARY_PIPES);
+            int secondary = exchanger.secondary().amount() + turbine.coolant().amount() + TestVessels.pipeVolume(h, TestVessels.SECONDARY_PIPES);
+            double stored = controller.coolant().heat() + controller.core().storedHeat() + exchanger.primary().heat() + exchanger.secondary().heat() + turbine.coolant().heat()
+                    + TestVessels.pipeHeat(h, TestVessels.PRIMARY_PIPES) + TestVessels.pipeHeat(h, TestVessels.SECONDARY_PIPES);
             double accounted = stored + turbine.heatExtracted();
             if (primary != 6000 || secondary != 2000) {
                 failure[0] = "tick " + h.getTick() + ": volume primary " + primary + " secondary " + secondary;

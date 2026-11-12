@@ -1,13 +1,21 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.registry.CMFluids;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 
 public final class CoolantBuffer {
+    private static long flightTick = -1;
+    private static FluidStack flightFluid = FluidStack.EMPTY;
+    private static int flightAmount;
+    private static double flightHeat;
     private final int capacity;
     private final Runnable onChange;
     private FluidStack fluid = FluidStack.EMPTY;
@@ -181,7 +189,15 @@ public final class CoolantBuffer {
     }
 
     public IFluidHandler handler() {
-        return new Handler();
+        return new Handler(null, null, null);
+    }
+
+    public IFluidHandler handler(@Nullable Level level, @Nullable BlockPos pos, @Nullable Direction side) {
+        return new Handler(level, pos, side);
+    }
+
+    private static boolean sameMedium(FluidStack a, FluidStack b) {
+        return (isSteamMedium(a) && isSteamMedium(b)) || (CMThermal.isPrimaryMedium(a) && CMThermal.isPrimaryMedium(b)) || FluidStack.isSameFluid(a, b);
     }
 
     public record Packet(FluidStack fluid, double heat) {
@@ -197,6 +213,30 @@ public final class CoolantBuffer {
     }
 
     private final class Handler implements IFluidHandler {
+        @Nullable
+        private final Level level;
+        @Nullable
+        private final BlockPos pos;
+        @Nullable
+        private final Direction side;
+
+        Handler(@Nullable Level level, @Nullable BlockPos pos, @Nullable Direction side) {
+            this.level = level;
+            this.pos = pos;
+            this.side = side;
+        }
+
+        private double arrivingHeat(FluidStack resource, int n) {
+            if (level == null || flightTick != level.getGameTime() || flightAmount <= 0 || !sameMedium(flightFluid, resource)) {
+                return 0;
+            }
+            int k = Math.min(n, flightAmount);
+            double h = flightHeat * k / flightAmount;
+            flightAmount -= k;
+            flightHeat -= h;
+            return h;
+        }
+
         @Override
         public int getTanks() {
             return 1;
@@ -224,7 +264,7 @@ public final class CoolantBuffer {
             }
             int n = Math.min(resource.getAmount(), space());
             if (n > 0 && action.execute()) {
-                give(new Packet(resource.copyWithAmount(n), 0));
+                give(new Packet(resource.copyWithAmount(n), arrivingHeat(resource, n)));
             }
             return n;
         }
@@ -246,7 +286,18 @@ public final class CoolantBuffer {
             if (action.simulate()) {
                 return fluid.copyWithAmount(n);
             }
-            return take(n).fluid();
+            boolean hot = PipeCoolant.tooHot(CoolantBuffer.this);
+            Packet p = take(n);
+            if (level != null) {
+                flightTick = level.getGameTime();
+                flightFluid = p.fluid().copy();
+                flightAmount = p.amount();
+                flightHeat = p.heat();
+                if (hot && side != null && pos != null) {
+                    PipeBurst.queueFrom(level, pos, side);
+                }
+            }
+            return p.fluid();
         }
     }
 }

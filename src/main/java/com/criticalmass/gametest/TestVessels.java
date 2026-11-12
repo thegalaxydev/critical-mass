@@ -4,6 +4,7 @@ import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.ReinforcedPipeBlock;
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
@@ -117,6 +118,24 @@ final class TestVessels {
         for (BlockPos p : pipes) {
             h.setBlock(p, ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(p), CMBlocks.REINFORCED_PIPE.get().defaultBlockState()));
         }
+    }
+
+    static int pipeVolume(GameTestHelper h, List<BlockPos> pipes) {
+        int total = 0;
+        for (BlockPos p : pipes) {
+            PipeCoolant c = PipeCoolant.at(h.getLevel(), h.absolutePos(p));
+            total += c == null ? 0 : c.coolant().amount();
+        }
+        return total;
+    }
+
+    static double pipeHeat(GameTestHelper h, List<BlockPos> pipes) {
+        double total = 0;
+        for (BlockPos p : pipes) {
+            PipeCoolant c = PipeCoolant.at(h.getLevel(), h.absolutePos(p));
+            total += c == null ? 0 : c.coolant().heat();
+        }
+        return total;
     }
 
     static void plant(GameTestHelper h) {

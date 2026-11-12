@@ -3,9 +3,11 @@ package com.criticalmass.content.kinetics;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantCircuit;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMStress;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -50,6 +52,20 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
 
     public String status() {
         return status;
+    }
+
+    public List<PipeCoolant> pipeContents() {
+        List<PipeCoolant> out = new ArrayList<>();
+        if (circuit == null || level == null) {
+            return out;
+        }
+        for (CoolantCircuit.Hop h : circuit.passThrough) {
+            PipeCoolant p = PipeCoolant.at(level, h.pos());
+            if (p != null) {
+                out.add(p);
+            }
+        }
+        return out;
     }
 
     public void invalidateCircuit() {

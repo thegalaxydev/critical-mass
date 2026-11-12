@@ -32,7 +32,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class SteamPlantTests {
     private static final String LARGE = "empty_large";
-    private static final BlockPos PLATE = new BlockPos(5, 3, 6);
+    private static final BlockPos PLATE = new BlockPos(7, 3, 2);
     private static final BlockPos RELIEF = new BlockPos(6, 5, 6);
     private static final BlockPos CONDENSER = new BlockPos(8, 7, 6);
 
@@ -70,7 +70,7 @@ public final class SteamPlantTests {
     public static void boilerPlateAndTurbineNeverShareHeat(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.COOLED);
         TestVessels.plant(h);
-        replace(h, PLATE, CMBlocks.BOILER_HEATING_PLATE.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.EAST));
+        replace(h, PLATE, CMBlocks.BOILER_HEATING_PLATE.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.SOUTH));
         h.setBlock(PLATE.above(), AllBlocks.FLUID_TANK.getDefaultState());
         h.setBlock(PLATE.above(2), AllBlocks.STEAM_WHISTLE.getDefaultState());
         ReactorControllerBlockEntity controller = h.getBlockEntity(TestVessels.CONTROLLER);
@@ -95,7 +95,7 @@ public final class SteamPlantTests {
                 return;
             }
             double stored = controller.coolant().heat() + controller.core().storedHeat() + exchanger.primary().heat() + exchanger.secondary().heat()
-                    + turbine.coolant().heat() + plate.coolant().heat();
+                    + turbine.coolant().heat() + plate.coolant().heat() + TestVessels.pipeHeat(h, TestVessels.PRIMARY_PIPES) + TestVessels.pipeHeat(h, TestVessels.SECONDARY_PIPES);
             double outputs = turbine.heatExtracted() + plate.sinks().boilerHeat;
             if (Double.isNaN(baseline[0])) {
                 baseline[0] = stored + outputs - controller.heatAdded();

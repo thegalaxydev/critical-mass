@@ -2,7 +2,6 @@ package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
-import com.criticalmass.content.ReinforcedPipeBlock;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.Set;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
@@ -110,13 +108,13 @@ public final class CoolantCircuit {
             }
             BlockState state = level.getBlockState(next);
             Direction back = d.getOpposite();
-            if (state.getBlock() instanceof ReinforcedPipeBlock) {
-                if (!state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(back))) {
+            if (PipeCoolant.isPipe(state)) {
+                if (!PipeCoolant.open(level, next, state, back)) {
                     return w.fail("criticalmass.circuit.open_end", next);
                 }
                 Direction exit = null;
                 for (Direction e : Direction.values()) {
-                    if (e == back || !state.getValue(PipeBlock.PROPERTY_BY_DIRECTION.get(e))) {
+                    if (e == back || !PipeCoolant.open(level, next, state, e)) {
                         continue;
                     }
                     if (exit != null) {
@@ -128,6 +126,7 @@ public final class CoolantCircuit {
                     return w.fail("criticalmass.circuit.open_end", next);
                 }
                 w.pipes++;
+                w.hops.add(new Hop(next, downstream ? back : exit));
                 cur = next;
                 d = exit;
                 continue;
@@ -165,7 +164,10 @@ public final class CoolantCircuit {
 
     @Nullable
     private static ThermalNode node(Level level, BlockPos pos) {
-        return level.isLoaded(pos) && level.getBlockEntity(pos) instanceof ThermalNode n ? n : null;
+        if (!level.isLoaded(pos)) {
+            return null;
+        }
+        return level.getBlockEntity(pos) instanceof ThermalNode n ? n : PipeCoolant.at(level, pos);
     }
 
     public Flow transfer(Level level, int requested) {
@@ -198,49 +200,114 @@ public final class CoolantCircuit {
         for (ThermalNode n : nodes) {
             n.setCircuitPressure(peak, worst);
         }
-        return closed ? transferClosed(nodes, chain, requested) : transferOpen(level, nodes, chain, requested);
+        Flow result = closed ? transferClosed(nodes, chain, requested) : transferOpen(level, nodes, chain, requested);
+        List<BlockPos> burst = new ArrayList<>();
+        for (ThermalNode n : nodes) {
+            if (n instanceof PipeCoolant p && p.shouldBurst()) {
+                burst.add(p.pos());
+            }
+        }
+        for (BlockPos p : burst) {
+            PipeBurst.burst(level, p);
+        }
+        return burst.isEmpty() ? result : new Flow(result.moved(), "criticalmass.circuit.pipe_burst");
     }
 
     private Flow transferClosed(List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {
-        int n = chain.size();
-        int source = -1;
-        for (int i = n - 1; i >= 0; i--) {
-            if (chain.get(i).amount() > 0) {
-                source = i;
-                break;
-            }
+        boolean any = false;
+        for (CoolantBuffer b : chain) {
+            any |= b.amount() > 0;
         }
-        if (source < 0) {
+        if (!any) {
             return new Flow(0, "criticalmass.circuit.source_empty");
         }
-        CoolantBuffer from = chain.get(source);
-        for (CoolantBuffer b : chain) {
-            if (!b.canMix(from.fluid())) {
-                return new Flow(0, "criticalmass.circuit.mixed");
+        if (!mixable(chain)) {
+            return new Flow(0, "criticalmass.circuit.mixed");
+        }
+        int moved = 0;
+        int steps = steps(chain, requested);
+        for (int s = 0; s < steps; s++) {
+            int[] out = move(chain, true, share(requested, steps, s), nodes, 0);
+            int most = 0;
+            for (int o : out) {
+                most = Math.max(most, o);
             }
+            moved += most;
         }
-        CoolantBuffer.Packet packet = from.take(requested);
-        int moved = packet.amount();
-        List<Integer> order = new ArrayList<>(n);
-        for (int k = 1; k <= n; k++) {
-            order.add((source + k) % n);
-        }
-        pass(nodes, chain, order, packet);
         return new Flow(moved, null);
     }
 
-    private CoolantBuffer.Packet pass(List<ThermalNode> nodes, List<CoolantBuffer> chain, List<Integer> order, CoolantBuffer.Packet packet) {
-        for (int i : order) {
-            CoolantBuffer b = chain.get(i);
-            b.give(packet);
-            nodes.get(i).onCoolantPassed(passThrough.get(i).enteredFrom(), packet.amount());
-            int over = b.amount() - b.capacity();
-            packet = over > 0 ? b.take(over) : CoolantBuffer.Packet.EMPTY;
-            if (packet.isEmpty()) {
+    private static int steps(List<CoolantBuffer> stations, int requested) {
+        int smallest = Integer.MAX_VALUE;
+        for (CoolantBuffer b : stations) {
+            smallest = Math.min(smallest, b.capacity());
+        }
+        return Math.max(1, Math.min(CMThermal.MAX_FLOW_STEPS, (requested + smallest - 1) / Math.max(1, smallest)));
+    }
+
+    private static int share(int requested, int steps, int step) {
+        return requested / steps + (step < requested % steps ? 1 : 0);
+    }
+
+    private static boolean mixable(List<CoolantBuffer> buffers) {
+        CoolantBuffer first = null;
+        for (CoolantBuffer b : buffers) {
+            if (b.amount() > 0) {
+                first = b;
                 break;
             }
         }
-        return packet;
+        if (first == null) {
+            return true;
+        }
+        for (CoolantBuffer b : buffers) {
+            if (!b.canMix(first.fluid())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private int[] move(List<CoolantBuffer> stations, boolean cyclic, int requested, List<ThermalNode> nodes, int chainOffset) {
+        int n = stations.size();
+        int[] out = new int[n];
+        for (int i = 0; i < n; i++) {
+            out[i] = Math.min(requested, stations.get(i).amount());
+        }
+        if (!cyclic) {
+            out[n - 1] = 0;
+        }
+        boolean changed = true;
+        for (int pass = 0; changed && pass < 4 * n + 4; pass++) {
+            changed = false;
+            for (int i = n - 1; i >= 0; i--) {
+                if (!cyclic && i == n - 1) {
+                    continue;
+                }
+                int j = (i + 1) % n;
+                int room = stations.get(j).space() + out[j];
+                if (out[i] > room) {
+                    out[i] = Math.max(0, room);
+                    changed = true;
+                }
+            }
+        }
+        CoolantBuffer.Packet[] packets = new CoolantBuffer.Packet[n];
+        for (int i = 0; i < n; i++) {
+            packets[i] = stations.get(i).take(out[i]);
+        }
+        for (int i = 0; i < n; i++) {
+            if (packets[i].isEmpty()) {
+                continue;
+            }
+            int j = (i + 1) % n;
+            stations.get(j).give(packets[i]);
+            int k = j - chainOffset;
+            if (k >= 0 && k < nodes.size()) {
+                nodes.get(k).onCoolantPassed(passThrough.get(k).enteredFrom(), packets[i].amount());
+            }
+        }
+        return out;
     }
 
     private Flow transferOpen(Level level, List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {
@@ -250,34 +317,28 @@ public final class CoolantCircuit {
             return new Flow(0, "criticalmass.circuit.unloaded");
         }
         CoolantBuffer src = from.coolant();
+        CoolantBuffer dst = to.coolant();
         if (src.amount() == 0) {
             return new Flow(0, "criticalmass.circuit.source_empty");
         }
-        for (CoolantBuffer b : chain) {
-            if (!b.canMix(src.fluid())) {
-                return new Flow(0, "criticalmass.circuit.mixed");
-            }
+        List<CoolantBuffer> stations = new ArrayList<>(chain.size() + 2);
+        stations.add(src);
+        stations.addAll(chain);
+        boolean cyclic = src == dst;
+        if (!cyclic) {
+            stations.add(dst);
         }
-        if (!to.coolant().canMix(src.fluid())) {
+        if (!mixable(stations)) {
             return new Flow(0, "criticalmass.circuit.mixed");
         }
-        CoolantBuffer.Packet packet = src.take(requested);
-        int free = to.coolant().space();
-        if (packet.amount() > free) {
-            int back = packet.amount() - free;
-            double backHeat = packet.heat() * back / packet.amount();
-            src.give(new CoolantBuffer.Packet(packet.fluid().copyWithAmount(back), backHeat));
-            if (free == 0) {
-                return new Flow(0, "criticalmass.circuit.dest_full");
-            }
-            packet = new CoolantBuffer.Packet(packet.fluid().copyWithAmount(free), packet.heat() - backHeat);
+        int moved = 0;
+        int steps = steps(stations, requested);
+        for (int s = 0; s < steps; s++) {
+            moved += move(stations, cyclic, share(requested, steps, s), nodes, 1)[0];
         }
-        int moved = packet.amount();
-        List<Integer> order = new ArrayList<>(chain.size());
-        for (int i = 0; i < chain.size(); i++) {
-            order.add(i);
+        if (moved == 0) {
+            return new Flow(0, "criticalmass.circuit.dest_full");
         }
-        to.coolant().give(pass(nodes, chain, order, packet));
         if (from instanceof ReactorControllerBlockEntity c) {
             c.noteFlow(moved);
         }

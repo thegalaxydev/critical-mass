@@ -1,5 +1,7 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.CoolantPortBlockEntity;
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
@@ -57,6 +59,10 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<CoolantPortBlockEntity>> COOLANT_PORT = BLOCK_ENTITIES.register("primary_coolant_port",
+            () -> BlockEntityType.Builder.of((pos, state) -> new CoolantPortBlockEntity(CMBlockEntities.COOLANT_PORT.get(), pos, state), CMBlocks.PRIMARY_COOLANT_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<FluidPipeBlockEntity>> REINFORCED_PIPE = BLOCK_ENTITIES.register("reinforced_pipe",
+            () -> BlockEntityType.Builder.of((pos, state) -> new FluidPipeBlockEntity(CMBlockEntities.REINFORCED_PIPE.get(), pos, state), CMBlocks.REINFORCED_PIPE.get()).build(null));
     public static final Supplier<BlockEntityType<SpentFuelRackBlockEntity>> SPENT_FUEL_RACK = BLOCK_ENTITIES.register("spent_fuel_rack",
             () -> BlockEntityType.Builder.of((pos, state) -> new SpentFuelRackBlockEntity(CMBlockEntities.SPENT_FUEL_RACK.get(), pos, state), CMBlocks.SPENT_FUEL_RACK.get()).build(null));
     public static final Supplier<BlockEntityType<ShieldedCaskBlockEntity>> SHIELDED_CASK = BLOCK_ENTITIES.register("shielded_cask",

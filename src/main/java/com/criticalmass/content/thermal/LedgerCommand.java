@@ -151,6 +151,10 @@ public final class LedgerCommand {
                         + "C secondary=" + x.secondary().amount() + "/" + fmt(x.secondary().temperature()) + "C rate=" + fmt(x.lastExchange()) + " total=" + fmt(x.exchanged())), false);
             } else if (be instanceof CirculationPumpBlockEntity p) {
                 pumps++;
+                for (PipeCoolant pipe : p.pipeContents()) {
+                    coolant += pipe.coolant().amount();
+                    stored += pipe.coolant().heat();
+                }
                 source.sendSuccess(() -> Component.literal("pump " + where(p) + " flow=" + p.flow() + " moved=" + p.movedTotal() + " speed=" + p.getSpeed()
                         + " status=" + p.status()), false);
             } else if (be instanceof ReinforcedValveBlockEntity v) {

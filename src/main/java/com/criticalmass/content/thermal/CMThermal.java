@@ -68,8 +68,12 @@ public final class CMThermal {
     public static final double TURBINE_MIN_SU = 64.0;
     public static final int PUMP_FLOW_PER_RPM = 2;
     public static final int PUMP_MAX_FLOW = 256;
+    public static final int PIPE_CAPACITY = 100;
+    public static final int MAX_FLOW_STEPS = 8;
     public static final float PUMP_IDLE_STRESS = 0.25f;
     public static final int MAX_PIPE_LENGTH = 256;
+    public static final double PIPE_BURST_TEMPERATURE = BOILING;
+    public static final float PIPE_BURST_DAMAGE = 4.0f;
     public static final int MAX_VESSEL_BLOCKS = 2048;
 
     public static final double FUEL_OVERHEAT_WEAR = 0.0005;

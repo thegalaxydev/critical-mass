@@ -1,5 +1,8 @@
 package com.criticalmass.content;
 
+import com.criticalmass.registry.CMBlockEntities;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.StringRepresentable;
@@ -12,7 +15,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
-public class CoolantPortBlock extends FacingBlock implements IWrenchable {
+public class CoolantPortBlock extends FacingBlock implements IWrenchable, EntityBlock {
     public static final EnumProperty<Mode> MODE = EnumProperty.create("mode", Mode.class);
 
     public CoolantPortBlock(Properties properties) {
@@ -24,6 +27,11 @@ public class CoolantPortBlock extends FacingBlock implements IWrenchable {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(MODE);
+    }
+
+    @Override
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new CoolantPortBlockEntity(CMBlockEntities.COOLANT_PORT.get(), pos, state);
     }
 
     @Override

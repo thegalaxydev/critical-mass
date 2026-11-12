@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.radiation.RadiationData;
 import java.util.function.Supplier;
@@ -12,6 +13,8 @@ public final class CMAttachments {
 
     public static final Supplier<AttachmentType<RadiationData>> RADIATION = ATTACHMENTS.register("radiation",
             () -> AttachmentType.serializable(RadiationData::new).copyOnDeath().build());
+    public static final Supplier<AttachmentType<PipeCoolant>> PIPE_COOLANT = ATTACHMENTS.register("pipe_coolant",
+            () -> AttachmentType.serializable(PipeCoolant::new).build());
 
     private CMAttachments() {
     }
