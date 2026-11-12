@@ -10,7 +10,7 @@ def look(px, py, pz, tx, ty, tz):
 
 blocks = [("criticalmass:heat_exchanger[facing=south]", 40), ("criticalmass:condenser[facing=south]", 42),
           ("criticalmass:radiator_panel[facing=south]", 46), ("criticalmass:boiler_heating_plate", 48), ("criticalmass:relief_valve[facing=south]", 50),
-          ("create:fluid_valve[facing=up,axis_along_first=false]", 52)]
+          ("criticalmass:reinforced_valve[facing=up,axis_along_first=false]", 52)]
 cmds = ["/setblock %d -59 40 %s" % (x, b) for b, x in blocks]
 cmds += ["/fill 54 -59 40 54 -57 40 criticalmass:cooling_tower_packing"]
 steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/gamemode creative", "/tp @p 46 -60 34"], "wait": 40, "gui": False, "camera": "first"},

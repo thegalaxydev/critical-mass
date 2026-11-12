@@ -15,6 +15,7 @@ import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
+import com.criticalmass.content.thermal.PipeBurst;
 import com.criticalmass.content.thermal.VesselEvents;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMAttachments;
@@ -47,21 +48,15 @@ public class CriticalMass {
     public static final String MODID = "criticalmass";
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation CREATE_PIPE = ResourceLocation.fromNamespaceAndPath("create", "fluid_pipe");
-    private static final ResourceLocation CREATE_VALVE = ResourceLocation.fromNamespaceAndPath("create", "fluid_valve");
     private static final ResourceLocation CREATE_TANK = ResourceLocation.fromNamespaceAndPath("create", "fluid_tank");
 
     public CriticalMass(IEventBus modEventBus, ModContainer modContainer) {
         CMBlocks.BLOCKS.register(modEventBus);
         CMItems.ITEMS.register(modEventBus);
         CMBlockEntities.BLOCK_ENTITIES.register(modEventBus);
-        for (String valve : List.of("steam_bypass_valve", "reinforced_valve")) {
-            CMBlocks.BLOCKS.addAlias(asResource(valve), CREATE_VALVE);
-            CMItems.ITEMS.addAlias(asResource(valve), CREATE_VALVE);
-            CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource(valve), CREATE_VALVE);
-        }
-        CMBlocks.BLOCKS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
-        CMItems.ITEMS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
-        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
+        CMBlocks.BLOCKS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        CMItems.ITEMS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
         for (String tank : List.of("tower_basin", "feedwater_tank", "emergency_coolant_tank")) {
             CMBlocks.BLOCKS.addAlias(asResource(tank), CREATE_TANK);
             CMItems.ITEMS.addAlias(asResource(tank), CREATE_TANK);
@@ -84,6 +79,7 @@ public class CriticalMass {
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
+        NeoForge.EVENT_BUS.addListener(PipeBurst::onLevelTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }
@@ -115,6 +111,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> side == null || side.getAxis() == Direction.Axis.Y ? be.coolant().handler(be.getLevel(), be.getBlockPos(), side) : null);

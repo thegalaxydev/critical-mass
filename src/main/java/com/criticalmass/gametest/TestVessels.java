@@ -138,6 +138,15 @@ final class TestVessels {
 
     static void pipes(GameTestHelper h, List<BlockPos> pipes) {
         for (BlockPos p : pipes) {
+            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+        }
+        for (BlockPos p : pipes) {
+            connect(h, p);
+        }
+    }
+
+    static void createPipes(GameTestHelper h, List<BlockPos> pipes) {
+        for (BlockPos p : pipes) {
             h.setBlock(p, AllBlocks.FLUID_PIPE.getDefaultState());
         }
         for (BlockPos p : pipes) {
@@ -146,8 +155,10 @@ final class TestVessels {
     }
 
     static void connect(GameTestHelper h, BlockPos p) {
-        FluidPipeBlock block = AllBlocks.FLUID_PIPE.get();
-        h.setBlock(p, block.updateBlockState(h.getBlockState(p), Direction.NORTH, null, h.getLevel(), h.absolutePos(p)));
+        BlockState state = h.getBlockState(p);
+        if (state.getBlock() instanceof FluidPipeBlock block) {
+            h.setBlock(p, block.updateBlockState(state, Direction.NORTH, null, h.getLevel(), h.absolutePos(p)));
+        }
     }
 
     static int pipeVolume(GameTestHelper h, List<BlockPos> pipes) {

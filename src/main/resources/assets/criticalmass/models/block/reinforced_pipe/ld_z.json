@@ -1,0 +1,7 @@
+{
+ "parent": "create:block/fluid_pipe/ld_z",
+ "textures": {
+  "0": "criticalmass:block/reinforced_pipe_connected",
+  "particle": "criticalmass:block/reinforced_pipe"
+ }
+}

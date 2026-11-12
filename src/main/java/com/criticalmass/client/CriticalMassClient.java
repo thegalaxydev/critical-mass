@@ -38,6 +38,7 @@ public class CriticalMassClient {
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(CMBlockEntities.CIRCULATION_PUMP.get(), ctx -> new AxialRotorRenderer<CirculationPumpBlockEntity>(ctx, CMPartialModels.CIRCULATION_PUMP_ROTOR));
         event.registerBlockEntityRenderer(CMBlockEntities.STEAM_TURBINE.get(), ctx -> new AxialRotorRenderer<SteamTurbineBlockEntity>(ctx, CMPartialModels.STEAM_TURBINE_ROTOR));
+        event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_PANEL.get(), PanelRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.PLANT_SCREEN.get(), ScreenRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CENTRIFUGE.get(), ctx -> new AxialRotorRenderer<CentrifugeBlockEntity>(ctx, CMPartialModels.CENTRIFUGE_ROTOR));
@@ -66,6 +67,10 @@ public class CriticalMassClient {
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.TOWER_FAN.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.TOWER_FAN_ROTOR))
                 .skipVanillaRender(be -> true)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.REINFORCED_VALVE.get())
+                .factory(ReinforcedValveVisual::new)
+                .skipVanillaRender(be -> false)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.STEAM_TURBINE.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.STEAM_TURBINE_ROTOR))

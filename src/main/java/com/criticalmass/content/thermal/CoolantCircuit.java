@@ -224,11 +224,22 @@ public final class CoolantCircuit {
                 weakest = p;
             }
         }
-        if (weakest == null) {
+        List<BlockPos> hot = new ArrayList<>();
+        for (ThermalNode n : nodes) {
+            if (n instanceof PipeCoolant p && p.shouldBurst()) {
+                hot.add(p.pos());
+            }
+        }
+        if (weakest == null && hot.isEmpty()) {
             return result;
         }
-        PipeBurst.burst(level, weakest.pos());
-        return new Flow(result.moved(), "criticalmass.circuit.pipe_burst");
+        for (BlockPos p : hot) {
+            PipeBurst.burst(level, p);
+        }
+        if (weakest != null) {
+            PipeBurst.rupture(level, weakest.pos());
+        }
+        return new Flow(result.moved(), weakest != null ? "criticalmass.circuit.pipe_burst" : "criticalmass.circuit.pipe_hot");
     }
 
     private Flow transferClosed(List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {

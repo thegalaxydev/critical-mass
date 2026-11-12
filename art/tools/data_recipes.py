@@ -94,6 +94,8 @@ processing("reactor_alloy_sheet", "pressing", ["#c:ingots/reactor_alloy"], [out(
 processing("fuel_cladding", "pressing", ["#c:plates/reactor_alloy"], [out("fuel_cladding", 2)])
 processing("turbine_blade", "pressing", ["#c:plates/steel"], [out("turbine_blade")])
 processing("sealing_gasket", "compacting", ["minecraft:dried_kelp", "minecraft:dried_kelp", "#c:nuggets/iron"], [out("sealing_gasket", 2)])
+processing("reinforced_pipe", "item_application", ["create:fluid_pipe", "reactor_alloy_ingot"], [out("reinforced_pipe")])
+processing("reinforced_valve", "item_application", ["create:fluid_valve", "reactor_alloy_ingot"], [out("reinforced_valve")])
 processing("shielding_concrete", "mixing", ["minecraft:gravel", "minecraft:gravel", "#c:nuggets/iron", "#c:nuggets/iron", "#c:nuggets/iron", fluid("minecraft:water", 250)], [out("shielding_concrete", 2)])
 processing("shielding_concrete_from_depleted_uranium", "mixing", ["minecraft:gravel", "minecraft:gravel", "depleted_uranium", fluid("minecraft:water", 250)], [out("shielding_concrete", 4)])
 processing("primary_coolant", "mixing", ["minecraft:lapis_lazuli", fluid("minecraft:water", 1000)], [{"amount": 1000, "id": M + "primary_coolant"}])

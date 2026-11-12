@@ -403,6 +403,11 @@ LANG = {
     "criticalmass.circuit.tank_end": "Stopped: a Fluid Tank in the loop needs a second pipe to carry on from",
     "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
     "criticalmass.goggles.tower_fan": "Cooling Tower Fan",
+    "block.criticalmass.reinforced_pipe": "Reinforced Pipe",
+    "block.criticalmass.reinforced_valve": "Reinforced Valve",
+    "criticalmass.valve.open": "Open",
+    "criticalmass.valve.closed": "Closed: no coolant passes",
+    "criticalmass.circuit.pipe_hot": "A pipe burst: hot coolant and steam need Reinforced Pipe",
     "item.criticalmass.enriched_uranium": "Enriched Uranium",
     "item.criticalmass.depleted_uranium": "Depleted Uranium",
     "criticalmass.centrifuge.idle": "Waiting for Uranium Concentrate",
@@ -513,7 +518,7 @@ def main():
     uranium_items()
     panel_blocks.write_all(write, ASSETS, DATA, OUT)
     entries.update(panel_blocks.LANG)
-    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen"])
+    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen", "reinforced_pipe", "reinforced_valve"])
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))
 

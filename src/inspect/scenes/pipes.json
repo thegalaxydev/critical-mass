@@ -1,0 +1,215 @@
+{
+ "name": "pipes",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 52 -55 34 0 35"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 40 create:fluid_pipe",
+    "/setblock 45 -59 40 create:fluid_pipe",
+    "/setblock 46 -59 40 create:fluid_pipe",
+    "/setblock 47 -59 40 create:fluid_pipe",
+    "/setblock 50 -59 40 create:fluid_pipe",
+    "/setblock 51 -59 40 create:fluid_pipe",
+    "/setblock 51 -59 41 create:fluid_pipe",
+    "/setblock 55 -59 40 create:fluid_pipe",
+    "/setblock 56 -59 40 create:fluid_pipe",
+    "/setblock 57 -59 40 create:fluid_pipe",
+    "/setblock 56 -59 41 create:fluid_pipe",
+    "/setblock 60 -59 40 create:fluid_pipe",
+    "/setblock 61 -59 40 create:fluid_pipe",
+    "/setblock 62 -59 40 create:fluid_pipe",
+    "/setblock 61 -59 41 create:fluid_pipe",
+    "/setblock 61 -59 39 create:fluid_pipe",
+    "/setblock 61 -58 40 create:fluid_pipe",
+    "/setblock 65 -59 40 create:fluid_pipe",
+    "/setblock 65 -58 40 create:fluid_pipe",
+    "/setblock 65 -57 40 create:fluid_pipe",
+    "/setblock 66 -57 40 create:fluid_pipe",
+    "/setblock 40 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 45 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 47 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 50 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 55 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 57 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 60 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 62 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 44 criticalmass:reinforced_pipe",
+    "/setblock 61 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -57 45 criticalmass:reinforced_pipe",
+    "/setblock 66 -57 45 criticalmass:reinforced_pipe"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 45 minecraft:air",
+    "/setblock 45 -59 45 minecraft:air",
+    "/setblock 46 -59 45 minecraft:air",
+    "/setblock 47 -59 45 minecraft:air",
+    "/setblock 50 -59 45 minecraft:air",
+    "/setblock 51 -59 45 minecraft:air",
+    "/setblock 51 -59 46 minecraft:air",
+    "/setblock 55 -59 45 minecraft:air",
+    "/setblock 56 -59 45 minecraft:air",
+    "/setblock 57 -59 45 minecraft:air",
+    "/setblock 56 -59 46 minecraft:air",
+    "/setblock 60 -59 45 minecraft:air",
+    "/setblock 61 -59 45 minecraft:air",
+    "/setblock 62 -59 45 minecraft:air",
+    "/setblock 61 -59 46 minecraft:air",
+    "/setblock 61 -59 44 minecraft:air",
+    "/setblock 61 -58 45 minecraft:air",
+    "/setblock 65 -59 45 minecraft:air",
+    "/setblock 65 -58 45 minecraft:air",
+    "/setblock 65 -57 45 minecraft:air",
+    "/setblock 66 -57 45 minecraft:air"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 45 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 47 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 50 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 55 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 57 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 60 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 62 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 44 criticalmass:reinforced_pipe",
+    "/setblock 61 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -57 45 criticalmass:reinforced_pipe",
+    "/setblock 66 -57 45 criticalmass:reinforced_pipe",
+    "/setblock 66 -57 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -57 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 65 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -58 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 44 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 62 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 61 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 60 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 57 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 56 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 55 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 46 criticalmass:reinforced_pipe",
+    "/setblock 51 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 50 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 47 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 46 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 45 -59 45 criticalmass:reinforced_pipe",
+    "/setblock 40 -59 45 criticalmass:reinforced_pipe"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/setblock 53 -56 33 minecraft:barrier",
+    "/tp @p 53.5 -55 33.5 facing 53.5 -60.6 44.0"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "overview",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 43 -58 50 minecraft:barrier",
+    "/tp @p 43.5 -57 50.5 facing 46.0 -60.4 44.5"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 58 -58 50 minecraft:barrier",
+    "/tp @p 58.5 -57 50.5 facing 56.0 -60.4 44.5"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "close2",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 66 -58 50 minecraft:barrier",
+    "/tp @p 66.5 -57 50.5 facing 65.5 -58.5 45.5"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "riser",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 51 -59 37 minecraft:barrier",
+    "/tp @p 51.5 -58 37.5 facing 51.5 -60.1 40.5"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "straight_copper",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 51 -59 42 minecraft:barrier",
+    "/tp @p 51.5 -58 42.5 facing 51.5 -60.1 45.5"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "straight_steel",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/item replace entity @p weapon.mainhand with criticalmass:reinforced_pipe",
+    "/item replace entity @p hotbar.1 with create:fluid_pipe",
+    "/tp @p 53.5 -55 33.5 facing 53.5 -60.6 44.0"
+   ],
+   "wait": 10,
+   "gui": true
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  }
+ ]
+}

@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.registry.CMAttachments;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
@@ -39,6 +40,10 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
         return b instanceof FluidPipeBlock || b instanceof EncasedPipeBlock || b instanceof GlassFluidPipeBlock || b instanceof FluidValveBlock;
     }
 
+    public static boolean isReinforced(BlockState state) {
+        return state.getBlock() instanceof ReinforcedPipeBlock;
+    }
+
     public static boolean open(BlockGetter level, BlockPos pos, BlockState state, Direction face) {
         FluidTransportBehaviour t = BlockEntityBehaviour.get(level, pos, FluidTransportBehaviour.TYPE);
         return t != null && t.canHaveFlowToward(state, face);
@@ -55,6 +60,18 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
 
     public BlockPos pos() {
         return pipe == null ? BlockPos.ZERO : pipe.getBlockPos();
+    }
+
+    public boolean reinforced() {
+        return pipe != null && isReinforced(pipe.getBlockState());
+    }
+
+    public static boolean tooHot(CoolantBuffer b) {
+        return b.amount() > 0 && (b.quality() > 0 || b.temperature() >= CMThermal.PIPE_BURST_TEMPERATURE);
+    }
+
+    public boolean shouldBurst() {
+        return !reinforced() && tooHot(buffer);
     }
 
     public boolean overPressure() {

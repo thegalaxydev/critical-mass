@@ -458,5 +458,10 @@
   "criticalmass.centrifuge.running": "Enriching",
   "criticalmass.centrifuge.contents": "Concentrate %s, enriched %s, depleted %s",
   "criticalmass.centrifuge.progress": "Batch %s%% done",
-  "block.criticalmass.centrifuge": "Centrifuge"
+  "block.criticalmass.centrifuge": "Centrifuge",
+  "block.criticalmass.reinforced_pipe": "Reinforced Pipe",
+  "block.criticalmass.reinforced_valve": "Reinforced Valve",
+  "criticalmass.valve.open": "Open",
+  "criticalmass.valve.closed": "Closed: no coolant passes",
+  "criticalmass.circuit.pipe_hot": "A pipe burst: hot coolant and steam need Reinforced Pipe"
 }

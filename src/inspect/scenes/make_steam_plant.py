@@ -32,8 +32,8 @@ build = vessel(O) + [
     "/fill %s %s criticalmass:cooling_tower_packing" % (w(8, 1, 9), w(8, 4, 9)),
     "/setblock %s criticalmass:circulation_pump[facing=east,axis_along_first=true]" % w(10, 1, 9),
     "/setblock %s criticalmass:radiator_panel[facing=south]" % w(11, 4, 9),
-] + ["/setblock %s create:fluid_pipe" % w(*p) for p in PIPES]
-fix = ["/setblock %s minecraft:air" % w(*p) for p in PIPES] + ["/setblock %s create:fluid_pipe" % w(*p) for p in PIPES]
+] + ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in PIPES]
+fix = ["/setblock %s minecraft:air" % w(*p) for p in PIPES] + ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in PIPES]
 fill = [merge((1, 3, 3), "Coolant", "criticalmass:primary_coolant", 6000, 6000 * 200.0),
         merge((6, 3, 6), "Secondary", "minecraft:water", 1000, 1000 * 80.0),
         merge((6, 6, 6), "Coolant", "minecraft:water", 1000, 1000 * 80.0),

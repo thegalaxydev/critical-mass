@@ -1,0 +1,16 @@
+{
+  "type": "create:item_application",
+  "ingredients": [
+    {
+      "item": "create:fluid_pipe"
+    },
+    {
+      "item": "criticalmass:reactor_alloy_ingot"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:reinforced_pipe"
+    }
+  ]
+}

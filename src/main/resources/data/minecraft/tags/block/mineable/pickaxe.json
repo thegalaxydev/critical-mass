@@ -40,6 +40,8 @@
     "criticalmass:alarm_panel",
     "criticalmass:lever_panel",
     "criticalmass:dial_panel",
-    "criticalmass:centrifuge"
+    "criticalmass:centrifuge",
+    "criticalmass:reinforced_pipe",
+    "criticalmass:reinforced_valve"
   ]
 }

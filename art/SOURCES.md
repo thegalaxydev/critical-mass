@@ -881,3 +881,14 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 - Used by: `textures/block/centrifuge.png`, `textures/item/enriched_uranium.png`, `textures/item/depleted_uranium.png`
 - Source: drawn by `art/tools/plant_blocks.py`. The two item textures are recolours of `uranium_concentrate.png`.
 - Date: 2026-11-12
+
+## reinforced_valve, reinforced_valve_open and reinforced_valve_closed
+
+- Used by: `textures/block/reinforced_valve.png`, `textures/block/reinforced_valve_open.png`, `textures/block/reinforced_valve_closed.png`
+- Source: hand-made by the author in `art/originals/`, laid out like Create's `fluid_valve.png`, `valve_open.png` and `valve_closed.png`. The installed textures have their greys recoloured to the reactor alloy's shades by `art/tools/valve_paint.py`; the brass ring and the dial keep the original colours. The models parent Create's fluid valve models.
+- Date: 2026-11-10
+## reinforced_pipe and reinforced_pipe_connected
+
+- Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
+- Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to the reactor alloy's blue-grey shades by `art/tools/pipe_paint.py`, flange rims included. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
+- Date: 2026-10-19

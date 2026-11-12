@@ -36,9 +36,9 @@ kin = [
     "/setblock 20 -60 -10 criticalmass:control_rod_drive[facing=north]", "/setblock 20 -60 -9 create:creative_motor[facing=north]",
     "/setblock 24 -60 -10 criticalmass:control_rod_drive[facing=east]", "/setblock 23 -60 -10 create:creative_motor[facing=east]",
     "/setblock 28 -60 -10 criticalmass:circulation_pump[facing=north,axis_along_first=true]", "/setblock 27 -60 -10 create:creative_motor[facing=east]",
-    "/setblock 28 -60 -9 create:fluid_pipe", "/setblock 28 -60 -8 create:fluid_pipe", "/setblock 28 -60 -7 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
-    "/setblock 28 -60 -11 create:fluid_pipe", "/setblock 28 -60 -12 create:fluid_pipe", "/setblock 29 -60 -12 create:fluid_pipe",
-    "/setblock 30 -60 -12 create:fluid_pipe", "/setblock 30 -59 -12 create:fluid_pipe",
+    "/setblock 28 -60 -9 criticalmass:reinforced_pipe", "/setblock 28 -60 -8 criticalmass:reinforced_pipe", "/setblock 28 -60 -7 criticalmass:primary_coolant_port[facing=north,mode=inlet]",
+    "/setblock 28 -60 -11 criticalmass:reinforced_pipe", "/setblock 28 -60 -12 criticalmass:reinforced_pipe", "/setblock 29 -60 -12 criticalmass:reinforced_pipe",
+    "/setblock 30 -60 -12 criticalmass:reinforced_pipe", "/setblock 30 -59 -12 criticalmass:reinforced_pipe",
 ]
 steps.append({"cmds": kin, "wait": 20})
 
@@ -129,10 +129,10 @@ inst = ["/fill 2 -60 22 6 -57 26 criticalmass:reactor_vessel_casing", "/fill 3 -
         "/fill 3 -59 22 5 -58 22 criticalmass:shielded_glass", "/setblock 4 -60 22 criticalmass:reactor_controller[facing=north]",
         "/setblock 2 -59 21 minecraft:air", "/setblock 6 -60 22 criticalmass:reactor_signal_interface[facing=north]",
         "/setblock 2 -60 22 criticalmass:reactor_service_port[facing=north]",
-        "/setblock 6 -59 24 criticalmass:primary_coolant_port[facing=east,mode=outlet]", "/setblock 7 -59 24 create:fluid_pipe[east=true,west=true,north=false,south=false,up=false,down=false]",
+        "/setblock 6 -59 24 criticalmass:primary_coolant_port[facing=east,mode=outlet]", "/setblock 7 -59 24 criticalmass:reinforced_pipe[east=true,west=true]",
         "/setblock 8 -59 24 criticalmass:circulation_pump[facing=east,axis_along_first=true]", "/setblock 8 -60 24 create:creative_motor[facing=up]",
-        "/setblock 9 -59 24 create:fluid_pipe[east=true,west=true,north=false,south=false,up=false,down=false]", "/setblock 10 -59 24 criticalmass:heat_exchanger[facing=north]",
-        "/setblock 2 -59 24 criticalmass:primary_coolant_port[facing=west,mode=inlet]", "/setblock 1 -59 24 create:fluid_pipe[east=true,west=true,north=false,south=false,up=false,down=false]",
+        "/setblock 9 -59 24 criticalmass:reinforced_pipe[east=true,west=true]", "/setblock 10 -59 24 criticalmass:heat_exchanger[facing=north]",
+        "/setblock 2 -59 24 criticalmass:primary_coolant_port[facing=west,mode=inlet]", "/setblock 1 -59 24 criticalmass:reinforced_pipe[east=true,west=true]",
         "/setblock 3 -56 24 criticalmass:control_rod_drive[facing=north]", "/setblock 3 -56 25 create:creative_motor[facing=north]",
         "/setblock 5 -56 24 criticalmass:control_rod_drive[facing=north]", "/setblock 5 -56 25 create:creative_motor[facing=north]",
         "/setblock 4 -56 23 criticalmass:relief_valve[facing=north]",

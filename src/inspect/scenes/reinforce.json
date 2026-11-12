@@ -1,0 +1,103 @@
+{
+ "name": "reinforce",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 36 -59 36 52 -54 44 minecraft:air",
+    "/setblock 39 -59 40 create:fluid_tank",
+    "/setblock 40 -59 40 create:fluid_pipe",
+    "/setblock 41 -59 40 create:fluid_pipe",
+    "/setblock 42 -59 40 create:fluid_valve[facing=up,axis_along_first=false]",
+    "/setblock 43 -59 40 create:fluid_pipe",
+    "/setblock 44 -59 40 create:fluid_pipe",
+    "/setblock 44 -58 40 create:fluid_pipe",
+    "/setblock 45 -59 40 create:fluid_tank",
+    "/setblock 40 -59 40 minecraft:air",
+    "/setblock 40 -59 40 create:fluid_pipe",
+    "/setblock 44 -59 40 minecraft:air",
+    "/setblock 44 -59 40 create:fluid_pipe",
+    "/gamemode survival",
+    "/item replace entity @p hotbar.0 with criticalmass:reactor_alloy_ingot 8"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/setblock 42 -59 36 minecraft:barrier",
+    "/tp @p 42.50 -57.40 36.20 facing 42.50 -60.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "plain",
+   "wait": 2
+  },
+  {
+   "slot": 0,
+   "wait": 2
+  },
+  {
+   "use": [
+    41,
+    -59,
+    40,
+    "north"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "one_pipe",
+   "wait": 2
+  },
+  {
+   "use": [
+    42,
+    -59,
+    40,
+    "north"
+   ],
+   "wait": 10
+  },
+  {
+   "use": [
+    44,
+    -59,
+    40,
+    "north"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/execute if block 40 -59 40 criticalmass:reinforced_pipe",
+    "/execute if block 41 -59 40 criticalmass:reinforced_pipe",
+    "/execute if block 43 -59 40 criticalmass:reinforced_pipe",
+    "/execute if block 44 -59 40 criticalmass:reinforced_pipe",
+    "/execute if block 42 -59 40 criticalmass:reinforced_valve",
+    "/data get entity @p Inventory"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "reinforced",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/gamemode creative"
+   ],
+   "wait": 5
+  }
+ ]
+}

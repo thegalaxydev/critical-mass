@@ -12,6 +12,7 @@ import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.thermal.PipeCoolant;
+import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
@@ -151,18 +152,62 @@ public final class SteamTests {
                 .thenExecute(() -> {
                     int gone = 0;
                     for (BlockPos p : ring) {
-                        if (!h.getBlockState(p).is(AllBlocks.FLUID_PIPE.get())) {
+                        if (!h.getBlockState(p).is(CMBlocks.REINFORCED_PIPE.get())) {
                             gone++;
                         }
                     }
-                    h.assertTrue(gone == 1, "Exactly one pipe should burst from overpressure: " + gone);
+                    h.assertTrue(gone == 1, "Exactly one pipe, reinforced or not, should burst from overpressure: " + gone);
                     h.assertTrue(pump.flow() == 0, "The burst pipe should break the loop: " + pump.status());
                 })
                 .thenSucceed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 400)
-    public static void fluidValveTurnedByHandleStopsAndStartsTheLoop(GameTestHelper h) {
+    public static void reinforcedValveTurnedByHandleStopsAndStartsTheLoop(GameTestHelper h) {
+        h.setBlock(RING_PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
+        h.setBlock(RING_PUMP.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        h.setBlock(RING_VALVE, CMBlocks.REINFORCED_VALVE.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.UP).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, false));
+        BlockPos handlePos = RING_VALVE.north();
+        h.setBlock(handlePos, AllBlocks.COPPER_VALVE_HANDLE.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
+        SteamTurbineBlockEntity t = turbine(h, RING_TURBINE, true);
+        TestVessels.pipes(h, RING_PIPES);
+        t.coolant().set(water(1000), steamHeat(1000, 40000));
+        CirculationPumpBlockEntity pump = h.getBlockEntity(RING_PUMP);
+        ValveHandleBlockEntity handle = h.getBlockEntity(handlePos);
+        handle.angleInput.setValue(180);
+        boolean[] openWithSneak = new boolean[1];
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(ReinforcedValveBlock.getPipeAxis(h.getBlockState(RING_VALVE)) == Direction.Axis.X, "Valve should sit along the loop");
+                    h.assertTrue(pump.flow() == 0 && pump.status().endsWith("valve_closed"), "A closed valve must stop the loop: " + pump.status() + " flow " + pump.flow());
+                    h.assertTrue(handle.activate(false), "Handle should turn");
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    if (!valveOpen(h)) {
+                        openWithSneak[0] = true;
+                        h.assertTrue(handle.activate(true), "Handle should turn back");
+                    }
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(valveOpen(h), "Turning the handle one way should open the valve");
+                    h.assertTrue(pump.flow() > 0 && pump.status().endsWith("running"), "An open valve should let the loop circulate: " + pump.status());
+                    h.assertTrue(handle.activate(!openWithSneak[0]), "Handle should turn the other way");
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(!valveOpen(h), "Turning the handle the other way should close the valve");
+                    h.assertTrue(pump.flow() == 0 && pump.status().endsWith("valve_closed"), "Closing the valve should stop the loop again: " + pump.status());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void createFluidValveShutsAColdLoop(GameTestHelper h) {
         h.setBlock(RING_PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
         h.setBlock(RING_PUMP.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
@@ -172,7 +217,7 @@ public final class SteamTests {
         h.setBlock(handlePos, AllBlocks.COPPER_VALVE_HANDLE.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
         SteamTurbineBlockEntity t = turbine(h, RING_TURBINE, true);
         TestVessels.pipes(h, RING_PIPES);
-        t.coolant().set(water(1000), steamHeat(1000, 40000));
+        t.coolant().set(water(1000), 1000 * 30.0);
         CirculationPumpBlockEntity pump = h.getBlockEntity(RING_PUMP);
         ValveHandleBlockEntity handle = h.getBlockEntity(handlePos);
         handle.angleInput.setValue(180);
@@ -201,6 +246,7 @@ public final class SteamTests {
                 .thenExecute(() -> {
                     h.assertTrue(!valveOpen(h), "Turning the handle the other way should close the valve");
                     h.assertTrue(pump.flow() == 0 && pump.status().endsWith("valve_closed"), "Closing the valve should stop the loop again: " + pump.status());
+                    h.assertBlockPresent(AllBlocks.FLUID_VALVE.get(), RING_VALVE);
                 })
                 .thenSucceed();
     }

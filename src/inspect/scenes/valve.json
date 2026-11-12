@@ -15,19 +15,19 @@
   {
    "cmds": [
     "/fill 36 -59 36 52 -55 44 minecraft:air",
-    "/setblock 39 -59 40 create:fluid_pipe",
-    "/setblock 40 -59 40 create:fluid_valve[facing=up,axis_along_first=false]",
-    "/setblock 41 -59 40 create:fluid_pipe",
+    "/setblock 39 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -59 40 criticalmass:reinforced_valve[facing=up,axis_along_first=false]",
+    "/setblock 41 -59 40 criticalmass:reinforced_pipe",
     "/setblock 40 -59 39 create:copper_valve_handle[facing=north]",
     "/setblock 43 -59 40 create:fluid_pipe",
-    "/setblock 44 -59 40 create:fluid_valve[facing=up,axis_along_first=false]",
+    "/setblock 44 -59 40 criticalmass:reinforced_valve[facing=up,axis_along_first=false]",
     "/setblock 45 -59 40 create:fluid_pipe",
     "/setblock 44 -58 40 create:fluid_pipe",
-    "/setblock 48 -59 40 create:fluid_pipe",
-    "/setblock 48 -58 40 create:fluid_valve[facing=north,axis_along_first=true]",
-    "/setblock 48 -57 40 create:fluid_pipe",
+    "/setblock 48 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 48 -58 40 criticalmass:reinforced_valve[facing=north,axis_along_first=true]",
+    "/setblock 48 -57 40 criticalmass:reinforced_pipe",
     "/setblock 47 -58 40 create:copper_valve_handle[facing=west]",
-    "/item replace entity @p hotbar.0 with create:fluid_valve",
+    "/item replace entity @p hotbar.0 with criticalmass:reinforced_valve",
     "/item replace entity @p hotbar.1 with minecraft:air"
    ],
    "wait": 30
