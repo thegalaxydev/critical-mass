@@ -407,21 +407,19 @@ def siren(jar):
     return apply("alarm_siren", 32, spec_lit, img)
 
 
-def gauge(img, cx, cy, r, needle):
+def gauge(img, cx, cy, r):
     disc(img, cx, cy, r, lambda x, y, d: (BRASS[3] if x + y < cx + cy else BRASS[1]) if d > r - 1 else (232, 228, 214))
-    for k in range(1, int(r)):
-        put(img, int(cx + needle[0] * k), int(cy + needle[1] * k), RED[2])
     put(img, int(cx), int(cy), STEEL[0])
 
 
 def instrument_panel(jar):
     def front(w, h):
         img = casing(IRON, STEEL)(w, h)
-        gauge(img, 4.5, 5, 2.6, (0.7, -0.7))
-        gauge(img, 9.5, 5, 2.6, (-0.7, -0.7))
+        gauge(img, 4.5, 5, 2.6)
+        gauge(img, 9.5, 5, 2.6)
         for i, ramp in enumerate((GREEN, AMBER, RED)):
-            put(img, 3 + i * 3, 10, ramp[3])
-            put(img, 4 + i * 3, 10, ramp[1])
+            put(img, 3 + i * 3, 11, ramp[1])
+            put(img, 4 + i * 3, 11, ramp[0])
         return img
     spec = {"models": ["instrumentation_panel"], "faces": {
         ("panel", "north"): front,
@@ -429,7 +427,9 @@ def instrument_panel(jar):
         ("panel", "east"): plate(IRON, 3),
         ("panel", "up"): plate(IRON, 4),
     }}
-    return apply("instrumentation_panel", 32, spec)
+    img = apply("instrumentation_panel", 32, spec)
+    rect(img, 0, 20, 1, 21, (255, 255, 255))
+    return img
 
 
 def docking(jar):

@@ -82,6 +82,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Touching the vessel, it injects room-temperature coolant on a trip or loss of flow.
   - A redstone signal disarms it, and a comparator reads its fill level.
   - It won't inject when tilted past 30° on a moving body.
+- **Instrumentation Panel:** mount it on the vessel (or within 24 blocks of a controller) and it reads that reactor live. The left dial is the hottest fuel column (ambient to the 1,100 °C trip), the right dial is primary flow (0 to 256 mB/t), and the screen shows the core temperature. The green lamp means running, amber starting or cooling down, red tripped, damaged or breached. Goggles show the full readout, and a comparator reads the core temperature against the trip temperature (0 to 15).
 - **Breach:** a casing block at zero integrity breaches the vessel, which then leaks coolant.
   - Repair with the Welding Torch: hold use for 2 seconds; each weld restores 50%.
   - Welding is refused on a breached reactor until residual heat falls below 20 HU/t.
