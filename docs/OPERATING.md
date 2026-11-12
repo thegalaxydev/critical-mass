@@ -16,12 +16,14 @@ Use Reinforced Pipe wherever the water is at or above 100 °C or is steam. Creat
 
 ## A minimal working plant
 
-1. **Vessel.** A 5×5×5 casing shell. Inside, a 3×3 grid of channel columns, each 3 high: fuel channels, at least one control channel beside the fuel, and coolant channels beside the fuel. Put the Reactor Controller, an outlet port and an inlet port in the walls and the Service Port in the top. The controller outlines anything wrong in red and names it.
+1. **Vessel.** A 5×5×5 casing shell. Inside, a 3×3 grid of channel columns, each 3 high: fuel, control and coolant channels. Every fuel column needs a coolant channel directly beside it, because a fuel column with none is not cooled at all and will overheat however much coolant flows. Every fuel column also needs a control channel directly beside it, because a rod only acts on the fuel columns it touches. Diagonal neighbours do not count. A layout that works is fuel, control, fuel in the first row, coolant, fuel, coolant in the second, and fuel, control, fuel in the third. Put the Reactor Controller, an outlet port and an inlet port in the walls and the Service Port in the top. The controller outlines anything wrong in red and names it.
 2. **Fuel.** Put Fuel Assemblies in through the Service Port, one per fuel column.
 3. **Rods.** A Control Rod Drive on the top face above each control column, with a shaft to its back.
 4. **Primary loop.** Outlet port, pipe, Circulation Pump, Heat Exchanger (front and back), pipe, inlet port. Fill the vessel with primary coolant by bucket or through a port.
 5. **Steam loop.** Heat Exchanger bottom to top, pipe to the Steam Turbine bottom, turbine top to the Condenser, Feedwater Tank, pump, back to the exchanger bottom. Fill the Feedwater Tank with water. Put a Relief Valve on the hot side.
 6. **Cooling loop.** Condenser cooling side to a tower: Basin, two or more Packing blocks, Distributor on top, a Fan above that if you want more than natural draft. Basin outlet, pump, back to the condenser. Fill the basin with water.
+   - **Size it for the core.** Nearly all of the core's heat ends up in the tower. Five fuel columns at full power make 750 HU/t, which takes four Packing blocks under a fan at 128 RPM. A tower that is too small shows as steam that never condenses and a relief valve that starts venting after a few minutes.
+   - **Make-up water.** At that rate the tower evaporates about 370 mB a minute, enough to empty a full basin in about ten minutes. Pump water into a side of the basin with Create pipes. The basin sends loop water out of the first piped side it finds, checking north, east, south, then west, so put the make-up pipe on a later side than the loop outlet.
 7. **Power.** A Generator on the turbine shaft. Everything else on that shaft shares what the generator leaves.
 
 ## Wiring a control room
@@ -61,7 +63,7 @@ Panels do nothing until they are bound. Use the Plant Linker on a machine, then 
 - **More power:** withdraw rods, or draw more steam. Drawing steam cools the coolant, and cooler coolant raises reactor power by itself.
 - **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the annunciator's boiling window means you are losing coolant.
 - **Load changes:** change generator load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
-- **Water:** the tower evaporates water. Keep the basin topped up.
+- **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the basin topped up, or pipe make-up water into it.
 
 ## Shutdown
 
@@ -102,4 +104,6 @@ Panels do nothing until they are bound. Use the Plant Linker on a machine, then 
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound and running plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power. To operate it: the levers by the rod drives withdraw the rods, the lever on the controller's west side is its redstone signal, and the control wall's buttons SCRAM, reset and move bank A. Once you press a bank button or reset, the bank target takes over from the levers.
+It clears a 24×16 area south-east of you and builds a complete, bound and running plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power.
+
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t with the rods fully out. The tower has four Packing blocks under a fan at 128 RPM, and a creative tank pumps make-up water into the basin. At full power the plant settles within about four minutes: fuel near 30 °C, the tower rejecting about 615 HU/t, the generator at 64 FE/t, and no alarms. To operate it: the levers by the rod drives withdraw the rods, the lever on the controller's west side is its redstone signal, and the control wall's buttons SCRAM, reset and move bank A. Once you press a bank button or reset, the bank target takes over from the levers.

@@ -7,14 +7,16 @@ from reactor_layout import CONTROLLER, PRIMARY, REDSTONE
 
 STEAM = [(6, 1, 6), (6, 2, 6), (6, 5, 6), (6, 7, 6), (7, 7, 6), (9, 7, 6), (10, 7, 6), (10, 6, 6), (10, 5, 6), (10, 4, 6), (10, 3, 6),
          (10, 2, 6), (10, 1, 6), (9, 1, 6), (8, 1, 6)]
-COOLING = [(8, 6, 6), (8, 5, 6), (8, 4, 6), (8, 4, 7), (8, 4, 8), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
+COOLING = [(8, 6, 6), (8, 6, 7), (8, 6, 8), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
            (11, 7, 9), (11, 8, 9), (11, 9, 9), (11, 9, 8), (11, 9, 7), (11, 9, 6), (10, 9, 6), (9, 9, 6), (8, 9, 6), (8, 8, 6)]
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
 FEEDWATER = (9, 1, 6)
+MAKEUP = (5, 1, 9)
 PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING
 DRIVES = [((3, 6, 2), "south", (3, 6, 1), (2, 6, 2)), ((3, 6, 4), "north", (3, 6, 5), (2, 6, 4))]
-VIEWPORTS = [(5, 2, 3), (5, 3, 3), (5, 4, 3), (3, 2, 5), (3, 4, 5)]
+VIEWPORTS = [(5, 2, 4), (5, 3, 4), (5, 4, 4), (3, 2, 5), (3, 4, 5)]
+CORE = ["frf", "cfc", "frf"]
 NS = "criticalmass_demo"
 TAG = "cm_reactor_origin"
 AREA = ((-9, -2), (14, 13))
@@ -60,7 +62,7 @@ def bind(panel, target, extra=""):
 
 
 (x0, z0), (x1, z1) = AREA
-vessel = [c for c in strip(reactor_layout.vessel((0, 0, 0))) if not c.startswith("criticalmass fuel")]
+vessel = [c for c in strip(reactor_layout.vessel((0, 0, 0), CORE)) if not c.startswith("criticalmass fuel")]
 
 plant = [
     setblock((4, 3, 6), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
@@ -72,10 +74,15 @@ plant = [
     setblock((5, 6, 6), "criticalmass:generator[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
     setblock((8, 1, 9), "criticalmass:tower_basin"),
-    "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 3, 9)),
-    setblock((8, 4, 9), "criticalmass:tower_distributor"),
-    setblock((8, 5, 9), "criticalmass:tower_fan"),
-    setblock((8, 6, 9), "create:creative_motor[facing=down]"),
+    "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 5, 9)),
+    setblock((8, 6, 9), "criticalmass:tower_distributor"),
+    setblock((8, 7, 9), "criticalmass:tower_fan"),
+    setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:128}"),
+    setblock((7, 1, 9), "create:fluid_pipe[east=true,west=true]"),
+    setblock((6, 1, 9), "create:mechanical_pump[facing=east]"),
+    setblock(MAKEUP, "create:creative_fluid_tank"),
+    setblock((6, 2, 9), "create:cogwheel[axis=x]"),
+    setblock((5, 2, 9), "create:creative_motor[facing=east]"),
     setblock(FEEDWATER, "criticalmass:feedwater_tank"),
     setblock((5, 6, 5), "criticalmass:pressurizer"),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
@@ -142,7 +149,8 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
               merge((0, 2, 2), "Buffer", "criticalmass:primary_coolant", 4000, 0),
               merge((-5, 0, 0), "Buffer", "minecraft:water", 4000, 0),
               merge((-5, 0, 1), "Buffer", "minecraft:water", 4000, 0),
-              "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2)]
+              "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2),
+              "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*MAKEUP)]
 start_here += [merge((8, 1, 9), "Buffer", "minecraft:water", 2500, 0), merge(FEEDWATER, "Buffer", "minecraft:water", 1500, 1500 * 80.0)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
 start_here += wiring
