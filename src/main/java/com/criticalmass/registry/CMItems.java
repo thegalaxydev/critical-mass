@@ -30,6 +30,8 @@ public final class CMItems {
 
     public static final DeferredItem<Item> RAW_URANIUM = simple("raw_uranium", new Item.Properties());
     public static final DeferredItem<Item> URANIUM_CONCENTRATE = simple("uranium_concentrate", new Item.Properties());
+    public static final DeferredItem<Item> ENRICHED_URANIUM = simple("enriched_uranium", new Item.Properties());
+    public static final DeferredItem<Item> DEPLETED_URANIUM = simple("depleted_uranium", new Item.Properties());
     public static final DeferredItem<Item> CERAMIC_FUEL_PELLET = simple("ceramic_fuel_pellet", new Item.Properties());
     public static final DeferredItem<Item> FUEL_CLADDING = simple("fuel_cladding", new Item.Properties());
     public static final DeferredItem<Item> EMPTY_FUEL_ASSEMBLY = simple("empty_fuel_assembly", new Item.Properties().stacksTo(16));

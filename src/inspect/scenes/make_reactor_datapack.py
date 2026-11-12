@@ -125,6 +125,8 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
        setblock((-5, 0, 0), "criticalmass:spent_fuel_rack"),
        setblock((-5, 0, 1), "criticalmass:spent_fuel_rack"),
        setblock((-5, 0, 3), "criticalmass:shielded_cask"),
+       setblock((-5, 0, 5), "criticalmass:centrifuge"),
+       setblock((-5, 1, 5), "create:creative_motor[facing=down]{ScrollValue:128}"),
        setblock((-6, 0, 5), "criticalmass:open_waste_canister"),
        setblock((-4, -2, 7), "criticalmass:sealed_waste_canister"),
        setblock((-4, -1, 7), "criticalmass:shielded_hatch[half=top,open=false,facing=north]"),

@@ -1,0 +1,31 @@
+{
+  "type": "create:mechanical_crafting",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:plates/steel"
+    },
+    "A": {
+      "item": "create:shaft"
+    },
+    "L": {
+      "item": "criticalmass:reactor_alloy_sheet"
+    },
+    "M": {
+      "item": "create:precision_mechanism"
+    },
+    "C": {
+      "item": "create:brass_casing"
+    }
+  },
+  "pattern": [
+    "SAS",
+    "LML",
+    "SCS"
+  ],
+  "result": {
+    "id": "criticalmass:centrifuge"
+  },
+  "accept_mirrored": false,
+  "show_notification": false
+}

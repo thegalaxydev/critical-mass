@@ -1,0 +1,119 @@
+{
+ "name": "centrifuge",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 36 -59 36 52 -54 44 minecraft:air",
+    "/setblock 40 -59 40 minecraft:smooth_stone",
+    "/setblock 40 -58 40 criticalmass:centrifuge",
+    "/setblock 40 -57 40 criticalmass:centrifuge",
+    "/setblock 40 -56 40 create:creative_motor[facing=down]{ScrollValue:64}",
+    "/setblock 44 -59 40 criticalmass:centrifuge",
+    "/item replace entity @p hotbar.0 with criticalmass:uranium_concentrate 8",
+    "/item replace entity @p hotbar.1 with criticalmass:centrifuge",
+    "/item replace entity @p hotbar.2 with criticalmass:enriched_uranium",
+    "/item replace entity @p hotbar.3 with criticalmass:depleted_uranium",
+    "/item replace entity @p hotbar.4 with minecraft:air",
+    "/item replace entity @p armor.head with create:goggles"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/setblock 42 -58 36 minecraft:barrier",
+    "/tp @p 42.00 -57.00 36.50 facing 42.00 -59.62 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "overview",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 40 -58 37 minecraft:barrier",
+    "/tp @p 40.50 -57.00 37.60 facing 40.50 -59.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "slot": 0,
+   "wait": 2
+  },
+  {
+   "use": [
+    40,
+    -57,
+    40,
+    "north"
+   ],
+   "wait": 20,
+   "gui": true
+  },
+  {
+   "cmds": [
+    "/data get block 40 -57 40 Items",
+    "/data get block 40 -57 40 Status"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "too_slow",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 40 -56 40 minecraft:air",
+    "/setblock 40 -56 40 create:creative_motor[facing=down]{ScrollValue:256}"
+   ],
+   "wait": 230
+  },
+  {
+   "cmds": [
+    "/data get block 40 -57 40 Items",
+    "/data get block 40 -57 40 Status"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "enriched",
+   "wait": 2
+  },
+  {
+   "slot": 4,
+   "wait": 2
+  },
+  {
+   "use": [
+    40,
+    -57,
+    40,
+    "north"
+   ],
+   "wait": 10
+  },
+  {
+   "cmds": [
+    "/data get block 40 -57 40 Items",
+    "/data get block 40 -57 40 Status",
+    "/data get entity @p Inventory"
+   ],
+   "wait": 10
+  },
+  {
+   "shot": "collected",
+   "wait": 2
+  }
+ ]
+}

@@ -875,3 +875,9 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 
 - Used by: `textures/block/generator.png`, `reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `control_panel.png`, `control_panel_parts.png`, `plant_screen.png`, `tower_basin.png`, `tower_distributor.png`, `tower_fan.png`, `feedwater_tank.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
 - Source: painted by `art/tools/plant_blocks.py` and `art/tools/panel_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
+
+## centrifuge, enriched_uranium and depleted_uranium
+
+- Used by: `textures/block/centrifuge.png`, `textures/item/enriched_uranium.png`, `textures/item/depleted_uranium.png`
+- Source: drawn by `art/tools/plant_blocks.py`. The two item textures are recolours of `uranium_concentrate.png`.
+- Date: 2026-11-12

@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.fuel.CentrifugeBlockEntity;
 import com.criticalmass.content.CoolantPortBlockEntity;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
@@ -61,6 +62,8 @@ public final class CMBlockEntities {
                     CMBlocks.SCRAM_PANEL.get(), CMBlocks.ROD_PANEL.get(), CMBlocks.TURBINE_PANEL.get(), CMBlocks.ALARM_PANEL.get(), CMBlocks.LEVER_PANEL.get(), CMBlocks.DIAL_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
             () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
+    public static final Supplier<BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE = BLOCK_ENTITIES.register("centrifuge",
+            () -> BlockEntityType.Builder.of((pos, state) -> new CentrifugeBlockEntity(CMBlockEntities.CENTRIFUGE.get(), pos, state), CMBlocks.CENTRIFUGE.get()).build(null));
     public static final Supplier<BlockEntityType<TowerParts.Fan>> TOWER_FAN = BLOCK_ENTITIES.register("tower_fan",
             () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.Fan(CMBlockEntities.TOWER_FAN.get(), pos, state), CMBlocks.TOWER_FAN.get()).build(null));
     public static final Supplier<BlockEntityType<PressurizerBlockEntity>> PRESSURIZER = BLOCK_ENTITIES.register("pressurizer",

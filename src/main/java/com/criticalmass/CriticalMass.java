@@ -123,6 +123,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CIRCULATION_PUMP.get(), (be, side) -> side != null && side.getAxis() == be.getBlockState().getValue(CirculationPumpBlock.FACING).getAxis() ? EmptyFluidHandler.INSTANCE : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLANT_PORT.get(), (be, side) -> side == null || side == be.getBlockState().getValue(FacingBlock.FACING) ? new CoolantPortHandler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.CENTRIFUGE.get(), (be, side) -> be.automation());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());
     }

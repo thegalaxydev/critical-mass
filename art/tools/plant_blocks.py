@@ -245,6 +245,75 @@ def fan_models():
 
 
 
+def centrifuge_texture():
+    def frame(w, h):
+        img = plate(IRON, 3)(w, h)
+        rect(img, 0, 0, 15, 1, IRON[4])
+        rect(img, 0, 14, 15, 15, IRON[1])
+        for x in (2, 13):
+            put(img, x, 7, IRON[5])
+            put(img, x, 8, IRON[1])
+        rect(img, 5, 6, 10, 9, BRASS[2])
+        rect(img, 6, 7, 9, 8, BRASS[4])
+        return img
+
+    def cap(w, h):
+        img = plate(IRON, 3)(w, h)
+        bevel(img, 4, 4, 11, 11, STEEL, 3)
+        rect(img, 6, 6, 9, 9, IRON[1])
+        for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+            put(img, x, y, IRON[5])
+        return img
+
+    def drum(w, h):
+        img = plate(STEEL, 3)(w, h)
+        for x in range(0, 16, 4):
+            rect(img, x, 0, x, 15, STEEL[4])
+            rect(img, x + 3, 0, x + 3, 15, STEEL[1])
+        rect(img, 0, 3, 15, 4, BRASS[3])
+        rect(img, 0, 11, 15, 12, BRASS[2])
+        for x in (1, 6, 11):
+            put(img, x, 7, GREEN[4])
+            put(img, x + 1, 7, GREEN[2])
+        return img
+    return atlas({"a": frame, "b": cap, "c": cap, "d": drum})
+
+
+def centrifuge_models():
+    name = "centrifuge"
+    tex = {"0": M + "block/" + name, "particle": M + "block/" + name}
+
+    def box(lo, hi, quad, caps=None):
+        return {"from": lo, "to": hi, "faces": {d: {"uv": QUADS[caps if caps and d in ("up", "down") else quad], "texture": "#0"} for d in ("north", "south", "east", "west", "up", "down")}}
+    base = [box([0, 0, 0], [16, 3, 16], "a", caps="b"), box([0, 13, 0], [16, 16, 16], "a", caps="b")]
+    base += [box([x, 3, z], [x + 2, 13, z + 2], "a") for x in (0, 14) for z in (0, 14)]
+    rotor = [box([3, 3, 3], [13, 13, 13], "d", caps="b"), box([2.5, 5, 2.5], [13.5, 6, 13.5], "a"), box([2.5, 10, 2.5], [13.5, 11, 13.5], "a")]
+    return {name: {"parent": "minecraft:block/block", "textures": tex, "elements": base},
+            "centrifuge_rotor": {"textures": tex, "elements": rotor},
+            "centrifuge_item": {"parent": "minecraft:block/block", "textures": tex, "elements": base + rotor}}
+
+
+def uranium_items():
+    import colorsys
+    src = Image.open(os.path.join(ITEM_OUT, "uranium_concentrate.png")).convert("RGBA")
+
+    def tinted(hue, saturation, value):
+        img = src.copy()
+        for x in range(img.width):
+            for y in range(img.height):
+                r, g, b, a = img.getpixel((x, y))
+                if a == 0:
+                    continue
+                h, s, v = colorsys.rgb_to_hsv(r / 255.0, g / 255.0, b / 255.0)
+                h = hue if hue is not None else h
+                r2, g2, b2 = colorsys.hsv_to_rgb(h, min(1.0, s * saturation), min(1.0, v * value))
+                img.putpixel((x, y), (int(r2 * 255), int(g2 * 255), int(b2 * 255), a))
+        return img
+    for item, img in (("enriched_uranium", tinted(0.24, 0.95, 1.08)), ("depleted_uranium", tinted(None, 0.18, 0.72))):
+        img.save(os.path.join(ITEM_OUT, item + ".png"))
+        write(os.path.join(ASSETS, "models", "item", item + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/" + item}})
+
+
 def pressurizer_texture():
     def side(w, h):
         img = casing(IRON, STEEL)(w, h)
@@ -315,6 +384,7 @@ BLOCKS = {
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
     "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state, "item": "tower_fan_item"},
+    "centrifuge": {"lang": "Centrifuge", "texture": centrifuge_texture, "models": centrifuge_models, "state": simple_state, "item": "centrifuge_item"},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "reactor_viewport": {
         "lang": "Reactor Viewport",
@@ -333,6 +403,14 @@ LANG = {
     "criticalmass.circuit.tank_end": "Stopped: a Fluid Tank in the loop needs a second pipe to carry on from",
     "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
     "criticalmass.goggles.tower_fan": "Cooling Tower Fan",
+    "item.criticalmass.enriched_uranium": "Enriched Uranium",
+    "item.criticalmass.depleted_uranium": "Depleted Uranium",
+    "criticalmass.centrifuge.idle": "Waiting for Uranium Concentrate",
+    "criticalmass.centrifuge.slow": "Too slow: needs %s RPM",
+    "criticalmass.centrifuge.full": "Output full",
+    "criticalmass.centrifuge.running": "Enriching",
+    "criticalmass.centrifuge.contents": "Concentrate %s, enriched %s, depleted %s",
+    "criticalmass.centrifuge.progress": "Batch %s%% done",
     "criticalmass.goggles.pressurizer": "Pressurizer",
     "criticalmass.goggles.pressurizer_pressure": "Primary pressure: %s bar (set to %s)",
     "criticalmass.goggles.pressurizer_boiling": "Coolant boils at %s \u00b0C",
@@ -432,6 +510,7 @@ def main():
     channel_variants()
     rod_partials()
     linker_item()
+    uranium_items()
     panel_blocks.write_all(write, ASSETS, DATA, OUT)
     entries.update(panel_blocks.LANG)
     pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen"])

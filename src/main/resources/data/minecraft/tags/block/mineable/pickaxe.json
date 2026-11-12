@@ -39,6 +39,7 @@
     "criticalmass:turbine_panel",
     "criticalmass:alarm_panel",
     "criticalmass:lever_panel",
-    "criticalmass:dial_panel"
+    "criticalmass:dial_panel",
+    "criticalmass:centrifuge"
   ]
 }

@@ -1,5 +1,6 @@
 package com.criticalmass.gametest;
 
+import com.criticalmass.content.fuel.CentrifugeBlockEntity;
 import com.criticalmass.CriticalMass;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -41,7 +42,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class ProductionTests {
     private static final String EMPTY = "empty";
-    private static final List<String> CHAIN = List.of("milling/raw_uranium", "splashing/crushed_raw_uranium", "mixing/uranium_concentrate", "compacting/ceramic_fuel_pellet",
+    private static final List<String> CHAIN = List.of("milling/raw_uranium", "splashing/crushed_raw_uranium", "mixing/uranium_concentrate", "compacting/ceramic_fuel_pellet", "mixing/shielding_concrete_from_depleted_uranium", "mechanical_crafting/centrifuge",
             "mixing/reactor_alloy_ingot", "pressing/reactor_alloy_sheet", "pressing/fuel_cladding", "compacting/sealing_gasket", "mechanical_crafting/empty_fuel_assembly",
             "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller",
             "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister");
@@ -63,6 +64,44 @@ public final class ProductionTests {
         h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), new ItemStack(CMBlocks.OPEN_WASTE_CANISTER.get()), AllRecipeTypes.FILLING.getType(), FillingRecipe.class).isPresent(),
                 "Spouting into an open waste canister should start its sequenced assembly");
         h.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 500)
+    public static void centrifugeEnrichesOnlyAtSpeed(GameTestHelper h) {
+        BlockPos pos = new BlockPos(2, 2, 2);
+        h.setBlock(pos, CMBlocks.CENTRIFUGE.get());
+        h.setBlock(pos.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(pos.below());
+        motor.generatedSpeed.setValue(64);
+        CentrifugeBlockEntity centrifuge = h.getBlockEntity(pos);
+        IItemHandler handler = h.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, h.absolutePos(pos), Direction.NORTH);
+        h.assertTrue(handler != null, "A centrifuge should take items from funnels and hoppers");
+        ItemStack pellet = new ItemStack(CMItems.CERAMIC_FUEL_PELLET.get());
+        h.assertTrue(handler.insertItem(CentrifugeBlockEntity.INPUT, pellet, false).getCount() == 1, "Only Uranium Concentrate goes in");
+        h.assertTrue(handler.insertItem(CentrifugeBlockEntity.ENRICHED, new ItemStack(CMItems.URANIUM_CONCENTRATE.get()), false).getCount() == 1, "Nothing goes into the output slots");
+        h.assertTrue(handler.insertItem(CentrifugeBlockEntity.INPUT, new ItemStack(CMItems.URANIUM_CONCENTRATE.get(), 5), false).isEmpty(), "Concentrate should go in");
+        h.startSequence()
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    h.assertTrue(centrifuge.getSpeed() != 0 && centrifuge.status().endsWith("slow"), "Below its minimum speed a centrifuge should only say so: " + centrifuge.status());
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.ENRICHED).isEmpty() && centrifuge.held(CentrifugeBlockEntity.INPUT).getCount() == 5, "Nothing should be enriched below the minimum speed");
+                    motor.generatedSpeed.setValue(256);
+                })
+                .thenIdle(130)
+                .thenExecute(() -> {
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.ENRICHED).getCount() == 1 && centrifuge.held(CentrifugeBlockEntity.DEPLETED).getCount() == 1, "A batch at 256 RPM should take about five seconds: "
+                            + centrifuge.held(CentrifugeBlockEntity.ENRICHED) + " " + centrifuge.status());
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.INPUT).getCount() == 3, "A batch should use two concentrate");
+                })
+                .thenIdle(130)
+                .thenExecute(() -> {
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.ENRICHED).getCount() == 2 && centrifuge.held(CentrifugeBlockEntity.DEPLETED).getCount() == 2, "A second batch should follow");
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.INPUT).getCount() == 1 && centrifuge.status().endsWith("idle"), "One concentrate is not enough for a batch: " + centrifuge.status());
+                    h.assertTrue(handler.extractItem(CentrifugeBlockEntity.INPUT, 1, false).isEmpty(), "Automation should not pull the input back out");
+                    h.assertTrue(handler.extractItem(CentrifugeBlockEntity.ENRICHED, 64, false).getCount() == 2 && handler.extractItem(CentrifugeBlockEntity.DEPLETED, 64, false).getCount() == 2,
+                            "Automation should collect both products");
+                })
+                .thenSucceed();
     }
 
     @GameTest(template = EMPTY)

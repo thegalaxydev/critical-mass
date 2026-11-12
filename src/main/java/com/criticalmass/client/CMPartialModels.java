@@ -9,6 +9,7 @@ public final class CMPartialModels {
     public static final PartialModel CONTROL_ROD_DRIVE_PINION = block("control_rod_drive_pinion");
     public static final PartialModel CONTROL_ROD_SHAFT = block("control_rod_shaft");
     public static final PartialModel TOWER_FAN_ROTOR = block("tower_fan_rotor");
+    public static final PartialModel CENTRIFUGE_ROTOR = block("centrifuge_rotor");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
     public static final PartialModel PANEL_BUTTON = block("panel/button");
     public static final PartialModel PANEL_BUTTON_COLLAR = block("panel/button_collar");

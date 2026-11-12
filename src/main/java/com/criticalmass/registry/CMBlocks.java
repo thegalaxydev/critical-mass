@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.fuel.CentrifugeBlock;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlock;
 import com.criticalmass.content.thermal.TowerParts;
@@ -56,6 +57,7 @@ public final class CMBlocks {
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
     public static final DeferredBlock<TowerParts.FanBlock> TOWER_FAN = register("tower_fan", TowerParts.FanBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f));
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
