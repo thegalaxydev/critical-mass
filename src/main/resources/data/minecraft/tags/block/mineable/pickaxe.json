@@ -43,6 +43,8 @@
     "criticalmass:tower_distributor",
     "criticalmass:tower_fan",
     "criticalmass:feedwater_tank",
-    "criticalmass:pressurizer"
+    "criticalmass:pressurizer",
+    "criticalmass:corium",
+    "criticalmass:ruined_channel"
   ]
 }

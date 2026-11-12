@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.content.CoolantPortBlockEntity;
+import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.control.AnnunciatorBlockEntity;
@@ -82,6 +83,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new TowerParts.FeedwaterTank(CMBlockEntities.FEEDWATER_TANK.get(), pos, state), CMBlocks.FEEDWATER_TANK.get()).build(null));
     public static final Supplier<BlockEntityType<PressurizerBlockEntity>> PRESSURIZER = BLOCK_ENTITIES.register("pressurizer",
             () -> BlockEntityType.Builder.of((pos, state) -> new PressurizerBlockEntity(CMBlockEntities.PRESSURIZER.get(), pos, state), CMBlocks.PRESSURIZER.get()).build(null));
+    public static final Supplier<BlockEntityType<Corium.Entity_>> CORIUM = BLOCK_ENTITIES.register("corium",
+            () -> BlockEntityType.Builder.of((pos, state) -> new Corium.Entity_(CMBlockEntities.CORIUM.get(), pos, state), CMBlocks.CORIUM.get()).build(null));
     public static final Supplier<BlockEntityType<GeneratorBlockEntity>> GENERATOR = BLOCK_ENTITIES.register("generator",
             () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
     public static final Supplier<BlockEntityType<InstrumentationPanelBlockEntity>> INSTRUMENTATION_PANEL = BLOCK_ENTITIES.register("instrumentation_panel",

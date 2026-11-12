@@ -420,5 +420,9 @@
   "block.criticalmass.feedwater_tank": "Feedwater Tank",
   "block.criticalmass.pressurizer": "Pressurizer",
   "criticalmass.reactor.status.blocked_flow": "Start blocked: get coolant flowing through the vessel first",
-  "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant"
+  "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant",
+  "criticalmass.goggles.corium": "Corium",
+  "criticalmass.goggles.corium_decay": "Decay heat: %s HU/t",
+  "block.criticalmass.corium": "Corium",
+  "block.criticalmass.ruined_channel": "Ruined Fuel Channel"
 }

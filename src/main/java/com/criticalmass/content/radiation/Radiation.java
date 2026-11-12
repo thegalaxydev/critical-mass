@@ -4,6 +4,8 @@ import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
+import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
@@ -67,6 +69,12 @@ public final class Radiation {
                 case SPENT -> SPENT_DOSE + RESIDUAL_DOSE * residual;
                 case DAMAGED -> 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual);
             };
+        }
+        if (stack.is(CMBlocks.CORIUM.get().asItem())) {
+            return stack.getCount() * CMThermal.CORIUM_ITEM_DOSE;
+        }
+        if (stack.is(CMBlocks.RUINED_CHANNEL.get().asItem())) {
+            return stack.getCount() * CMThermal.RUINED_ITEM_DOSE;
         }
         if (stack.is(CMItems.SEALED_WASTE_CANISTER.get())) {
             return stack.getCount() * (CANISTER_DOSE + RESIDUAL_DOSE * residual);
@@ -169,6 +177,8 @@ public final class Radiation {
                 if (s > 0) {
                     out.add(new Source(c, s * CASK_TRANSMISSION, null, body(be), null));
                 }
+            } else if (be instanceof Corium.Entity_ lump) {
+                out.add(new Source(c, lump.strength(), null, body(be), null));
             } else if (be instanceof SealedWasteCanisterBlockEntity canister) {
                 out.add(new Source(c, canister.strength(), null, body(be), null));
             } else if (be instanceof ServicePortBlockEntity port) {

@@ -26,6 +26,11 @@ public final class ReactorCore {
     private final Map<Long, FuelState> assemblies = new LinkedHashMap<>();
     private int failures;
     private double lastOutput;
+    private double coriumHeat;
+    private double coriumDecay;
+    private int coriumMass;
+    private final Set<Long> coriumColumns = new HashSet<>();
+    private final List<Long> melts = new ArrayList<>();
     private double lastFission;
     private double lastExtracted;
     private boolean lastReacting;
@@ -168,6 +173,20 @@ public final class ReactorCore {
                 f.power = 0;
             }
         }
+        double quenched = 0;
+        if (coriumMass > 0) {
+            coriumHeat += coriumDecay;
+            output += coriumDecay;
+            coriumDecay *= DECAY_FACTOR;
+            if (coriumDecay < 1e-6) {
+                coriumDecay = 0;
+            }
+            if (vesselCoolant.amount() > 0) {
+                quenched = coriumHeat * CMThermal.CORIUM_QUENCH;
+                coriumHeat -= quenched;
+                vesselCoolant.addHeat(quenched);
+            }
+        }
         double lifetime = CMConfig.fuelLifetime();
         double wear = CMConfig.fuelWear();
         for (FuelColumn f : fuel.values()) {
@@ -210,6 +229,19 @@ public final class ReactorCore {
             long k = key(f.dx, f.dz);
             FuelState a = assemblies.get(k);
             double t = f.temperature();
+            if (a != null && t >= CMThermal.MELT_TEMPERATURE && CMConfig.meltdown()) {
+                assemblies.remove(k);
+                coriumHeat += f.heat;
+                coriumDecay += f.decay;
+                coriumMass += Math.max(1, f.height);
+                f.heat = 0;
+                f.decay = 0;
+                f.power = 0;
+                coriumColumns.add(k);
+                melts.add(k);
+                failures++;
+                continue;
+            }
             if (a == null || a.damaged() || t <= CMThermal.HOT_SPOT_TEMPERATURE) {
                 continue;
             }
@@ -219,7 +251,7 @@ public final class ReactorCore {
             }
             assemblies.put(k, a);
         }
-        double extracted = 0;
+        double extracted = quenched;
         if (flow > 0 && vesselCoolant.amount() > 0) {
             double factor = CMThermal.COOLANT_EXTRACTION * Math.min(1.0, flow / (double) CMThermal.COOLANT_REFERENCE_FLOW);
             for (FuelColumn f : fuel.values()) {
@@ -230,8 +262,8 @@ public final class ReactorCore {
                 f.heat -= q;
                 extracted += q;
             }
-            if (extracted > 0) {
-                vesselCoolant.addHeat(extracted);
+            if (extracted > quenched) {
+                vesselCoolant.addHeat(extracted - quenched);
             }
         }
         lastOutput = output;
@@ -239,6 +271,45 @@ public final class ReactorCore {
         lastExtracted = extracted;
         lastReacting = reacting;
         return output;
+    }
+
+    public double coriumHeat() {
+        return coriumHeat;
+    }
+
+    public double coriumDecay() {
+        return coriumDecay;
+    }
+
+    public int coriumMass() {
+        return coriumMass;
+    }
+
+    public Set<Long> coriumColumns() {
+        return coriumColumns;
+    }
+
+    public double coriumTemperature() {
+        return coriumMass == 0 ? CMThermal.AMBIENT : CMThermal.AMBIENT + coriumHeat / (CMThermal.FUEL_HEAT_CAPACITY * coriumMass);
+    }
+
+    public List<Long> takeMelts() {
+        List<Long> out = new ArrayList<>(melts);
+        melts.clear();
+        return out;
+    }
+
+    public double[] takeCorium() {
+        double[] out = {coriumHeat, coriumDecay, coriumMass};
+        coriumHeat = 0;
+        coriumDecay = 0;
+        coriumMass = 0;
+        coriumColumns.clear();
+        return out;
+    }
+
+    public void setCoriumHeat(double heat) {
+        coriumHeat = heat;
     }
 
     public static double feedback(double fuelTemperature, double coolantTemperature) {
@@ -347,7 +418,7 @@ public final class ReactorCore {
     }
 
     public double residualPower() {
-        double sum = 0;
+        double sum = coriumDecay;
         for (FuelColumn f : fuel.values()) {
             sum += f.decay;
         }
@@ -358,7 +429,7 @@ public final class ReactorCore {
     }
 
     public double storedHeat() {
-        double sum = 0;
+        double sum = coriumHeat;
         for (double[] p : pending.values()) {
             sum += p[0];
         }
@@ -369,7 +440,7 @@ public final class ReactorCore {
     }
 
     public double maxTemperature() {
-        double t = CMThermal.AMBIENT;
+        double t = coriumTemperature();
         for (FuelColumn f : fuel.values()) {
             t = Math.max(t, f.temperature());
         }
@@ -471,6 +542,14 @@ public final class ReactorCore {
             loaded.add(c);
         }
         tag.put("Assemblies", loaded);
+        if (coriumMass > 0) {
+            CompoundTag corium = new CompoundTag();
+            corium.putDouble("Heat", coriumHeat);
+            corium.putDouble("Decay", coriumDecay);
+            corium.putInt("Mass", coriumMass);
+            corium.putLongArray("Columns", coriumColumns.stream().mapToLong(Long::longValue).toArray());
+            tag.put("Corium", corium);
+        }
         return tag;
     }
 
@@ -480,6 +559,14 @@ public final class ReactorCore {
         control.clear();
         coolant.clear();
         failures = 0;
+        CompoundTag corium = tag.getCompound("Corium");
+        coriumHeat = corium.getDouble("Heat");
+        coriumDecay = corium.getDouble("Decay");
+        coriumMass = corium.getInt("Mass");
+        coriumColumns.clear();
+        for (long k : corium.getLongArray("Columns")) {
+            coriumColumns.add(k);
+        }
         for (Tag t : tag.getList("Fuel", Tag.TAG_COMPOUND)) {
             CompoundTag c = (CompoundTag) t;
             pending.put(key(c.getInt("X"), c.getInt("Z")), new double[]{c.getDouble("Heat"), c.getDouble("Decay")});

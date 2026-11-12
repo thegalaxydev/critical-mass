@@ -19,6 +19,9 @@ public final class CMConfig {
     public static final ModConfigSpec.DoubleValue SHIELD_SOLID;
     public static final ModConfigSpec.DoubleValue GEAR_CONTAMINATION_PROTECTION;
     public static final ModConfigSpec.DoubleValue GEAR_DOSE_PROTECTION;
+    public static final ModConfigSpec.BooleanValue MELTDOWN;
+    public static final ModConfigSpec.IntValue CORIUM_DEPTH;
+    public static final ModConfigSpec.DoubleValue CORIUM_CONTAMINATION;
     public static final ModConfigSpec.DoubleValue FE_PER_SU;
     public static final ModConfigSpec.DoubleValue GENERATOR_EFFICIENCY;
     public static final int DEFAULT_FUEL_LIFETIME = 120000;
@@ -31,6 +34,11 @@ public final class CMConfig {
                 .defineInRange("lifetimeTicks", DEFAULT_FUEL_LIFETIME, 1200, 100_000_000);
         FUEL_WEAR = b.comment("Condition lost over a full burn at normal temperature")
                 .defineInRange("normalWear", DEFAULT_FUEL_WEAR, 0.0, 0.95);
+        b.pop();
+        b.push("accidents");
+        MELTDOWN = b.comment("Whether fuel above 1800 C melts into corium and ruins its channel").define("meltdown", true);
+        CORIUM_DEPTH = b.comment("How many solid blocks hot corium can melt down through after leaving the vessel").defineInRange("coriumDepth", 3, 0, 64);
+        CORIUM_CONTAMINATION = b.comment("Multiplier on the contamination released when corium breaches the vessel").defineInRange("coriumContamination", 1.0, 0.0, 100.0);
         b.pop();
         b.push("power");
         FE_PER_SU = b.comment("Forge Energy per tick for each SU of shaft power a Generator absorbs, before efficiency").defineInRange("fePerSu", 0.25, 0.0, 1000.0);
@@ -65,6 +73,14 @@ public final class CMConfig {
 
     public static double fuelWear() {
         return SPEC.isLoaded() ? FUEL_WEAR.get() : DEFAULT_FUEL_WEAR;
+    }
+
+    public static boolean meltdown() {
+        return !SPEC.isLoaded() || MELTDOWN.get();
+    }
+
+    public static int coriumDepth() {
+        return SPEC.isLoaded() ? CORIUM_DEPTH.get() : 3;
     }
 
     public static boolean radiation() {

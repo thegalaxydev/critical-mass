@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PlantNodeBlock;
 import com.criticalmass.content.thermal.PressurizerBlock;
 import com.criticalmass.content.thermal.TowerParts;
@@ -69,6 +70,8 @@ public final class CMBlocks {
     public static final DeferredBlock<PlantNodeBlock<TowerParts.FeedwaterTank>> FEEDWATER_TANK = register("feedwater_tank",
             p -> new PlantNodeBlock<>(p, TowerParts.FeedwaterTank.class, () -> CMBlockEntities.FEEDWATER_TANK.get(), (s, d) -> d != Direction.DOWN), metal(3.0f));
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
+    public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f));
+    public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
     public static final DeferredBlock<GeneratorBlock> GENERATOR = register("generator", GeneratorBlock::new, metal(4.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));

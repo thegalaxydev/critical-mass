@@ -398,11 +398,55 @@ def pressurizer_texture():
     return atlas({"a": side, "b": top, "c": plate(IRON, 2)})
 
 
+def corium_textures():
+    import random
+    out = {}
+    for name, hot in (("corium", False), ("corium_hot", True)):
+        rnd = random.Random(7)
+        img = Image.new("RGBA", (16, 16))
+        for y in range(16):
+            for x in range(16):
+                v = rnd.random()
+                put(img, x, y, (34, 30, 30) if v < 0.5 else (48, 42, 40) if v < 0.85 else (24, 21, 22))
+        cracks = [(2, 3), (3, 3), (4, 4), (5, 5), (6, 5), (7, 6), (8, 7), (9, 7), (10, 8), (11, 9), (12, 9), (13, 10), (5, 11), (6, 12), (7, 12), (8, 13), (10, 3), (11, 2), (12, 2), (3, 9), (4, 10)]
+        for x, y in cracks:
+            put(img, x, y, (255, 150, 40) if hot else (86, 60, 44))
+        if hot:
+            for x, y in cracks[::3]:
+                put(img, x, y, (255, 226, 130))
+                if y + 1 < 16:
+                    put(img, x, y + 1, (190, 70, 20))
+        out[name] = img
+    return out
+
+
+def corium_models():
+    return {"corium": {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/corium"}},
+            "corium_hot": {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/corium_hot"}}}
+
+
+def ruined_texture():
+    import random
+    rnd = random.Random(11)
+    img = Image.open(os.path.join(OUT, "fuel_channel.png")).convert("RGBA")
+    for y in range(img.height):
+        for x in range(img.width):
+            r, g, b, a = img.getpixel((x, y))
+            k = 0.45 + 0.15 * rnd.random()
+            sag = (y % 16) > 9 and rnd.random() < 0.5
+            c = (int(r * k) + (26 if sag else 0), int(g * k) + (8 if sag else 0), int(b * k))
+            put(img, x, y, c)
+    return img
+
+
 def simple_state(name):
     return {"variants": {"": {"model": M + "block/" + name}}}
 
 
 BLOCKS = {
+    "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
+               "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
+    "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "tower_basin": {"lang": "Cooling Tower Basin", "texture": basin_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "tower_distributor": {"lang": "Cooling Tower Distributor", "texture": distributor_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state},
@@ -428,6 +472,8 @@ BLOCKS = {
 LANG = {
     "criticalmass.reactor.status.blocked_flow": "Start blocked: get coolant flowing through the vessel first",
     "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant",
+    "criticalmass.goggles.corium": "Corium",
+    "criticalmass.goggles.corium_decay": "Decay heat: %s HU/t",
     "criticalmass.basin.ok": "Collecting",
     "criticalmass.basin.low": "Water low: add makeup water",
     "criticalmass.basin.dry": "Dry",

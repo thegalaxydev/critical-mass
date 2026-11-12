@@ -28,6 +28,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.level.block.Block;
+import com.criticalmass.registry.CMBlocks;
+import com.criticalmass.registry.CMConfig;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -85,6 +88,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     private final double[] bankTargets = {Double.NaN, Double.NaN, Double.NaN, Double.NaN};
     private String startBlock = "";
+    private int coriumFloor = Integer.MIN_VALUE;
     private double primaryPressure = CMThermal.ATMOSPHERIC;
     private int pressureLink;
     private boolean flashing;
@@ -230,7 +234,66 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return lowestIntegrity() < CMThermal.DAMAGED_THRESHOLD;
     }
 
+    private void ruinColumn(long k, @Nullable VesselStructure shape) {
+        if (shape == null || level == null) {
+            return;
+        }
+        int x = worldPosition.getX() + ReactorCore.keyX(k);
+        int z = worldPosition.getZ() + ReactorCore.keyZ(k);
+        for (int y = shape.min.getY() + 1; y < shape.max.getY(); y++) {
+            BlockPos p = new BlockPos(x, y, z);
+            if (level.getBlockState(p).getBlock() instanceof ChannelBlocks.Fuel) {
+                level.setBlock(p, CMBlocks.RUINED_CHANNEL.get().defaultBlockState(), Block.UPDATE_ALL);
+            }
+        }
+        coriumFloor = shape.min.getY();
+        level.playSound(null, new BlockPos(x, shape.min.getY() + 1, z), net.minecraft.sounds.SoundEvents.LAVA_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
+        if (level instanceof ServerLevel server) {
+            server.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, x + 0.5, shape.max.getY() + 1.2, z + 0.5, 20, 0.5, 0.3, 0.5, 0.02);
+        }
+        setChanged();
+    }
+
+    private void attackFloor() {
+        if (core.coriumMass() == 0 || level == null || coriumFloor == Integer.MIN_VALUE) {
+            return;
+        }
+        double t = core.coriumTemperature();
+        if (t < CMThermal.CORIUM_ATTACK_TEMPERATURE) {
+            return;
+        }
+        double loss = CMThermal.CORIUM_ATTACK_PER_SECOND * t / CMThermal.MELT_TEMPERATURE;
+        for (long k : new ArrayList<>(core.coriumColumns())) {
+            BlockPos floor = new BlockPos(worldPosition.getX() + ReactorCore.keyX(k), coriumFloor, worldPosition.getZ() + ReactorCore.keyZ(k));
+            if (!(level.getBlockState(floor).getBlock() instanceof VesselCasingBlock)) {
+                continue;
+            }
+            double left = integrity(floor) - loss;
+            setIntegrity(floor, left);
+            if (left <= 0) {
+                releaseCorium(floor);
+                return;
+            }
+        }
+    }
+
+    private void releaseCorium(BlockPos floor) {
+        double[] c = core.takeCorium();
+        level.setBlock(floor, CMBlocks.CORIUM.get().defaultBlockState().setValue(Corium.CoriumBlock.HOT, true), Block.UPDATE_ALL);
+        if (level.getBlockEntity(floor) instanceof Corium.Entity_ lump) {
+            lump.fill(c[0], c[1], (int) c[2], 0);
+        }
+        if (level instanceof ServerLevel server) {
+            ContaminationData.get(server).add(floor, CMThermal.CORIUM_SPILL * c[2] * CMConfig.get(CMConfig.CORIUM_CONTAMINATION));
+            server.sendParticles(net.minecraft.core.particles.ParticleTypes.LAVA, floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5, 30, 0.4, 0.2, 0.4, 0.1);
+        }
+        level.playSound(null, floor, net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
+        coriumFloor = Integer.MIN_VALUE;
+        setChanged();
+    }
+
     private void damageCasing() {
+        attackFloor();
         if (structure == null || !structure.valid()) {
             return;
         }
@@ -525,6 +588,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (level == null || level.isClientSide) {
             return;
         }
+        if (core.coriumMass() > 0) {
+            Containers.dropItemStack(level, worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5, new ItemStack(CMBlocks.CORIUM.get(), core.coriumMass()));
+            core.takeCorium();
+        }
         for (long k : new ArrayList<>(core.assemblies().keySet())) {
             FuelState s = core.remove(k);
             if (s != null) {
@@ -706,6 +773,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (failures > 0) {
             coolant.contaminate();
         }
+        for (long k : core.takeMelts()) {
+            ruinColumn(k, shape);
+        }
         flashCoolant();
         if (breached && coolant.amount() > 0) {
             CoolantBuffer.Packet leak = coolant.take(CMThermal.BREACH_LEAK_RATE);
@@ -834,6 +904,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putDouble("PrimaryPressure", primaryPressure);
         tag.putBoolean("Flashing", flashing);
         tag.putString("StartBlock", startBlock);
+        if (coriumFloor != Integer.MIN_VALUE) {
+            tag.putInt("CoriumFloor", coriumFloor);
+        }
         tag.putDouble("Flashed", flashedVolume);
         for (int i = 0; i < bankTargets.length; i++) {
             if (!Double.isNaN(bankTargets[i])) {
@@ -912,6 +985,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         primaryPressure = tag.contains("PrimaryPressure") ? tag.getDouble("PrimaryPressure") : CMThermal.ATMOSPHERIC;
         flashing = tag.getBoolean("Flashing");
         startBlock = tag.getString("StartBlock");
+        coriumFloor = tag.contains("CoriumFloor") ? tag.getInt("CoriumFloor") : Integer.MIN_VALUE;
         flashedVolume = tag.getDouble("Flashed");
         for (int i = 0; i < bankTargets.length; i++) {
             bankTargets[i] = tag.contains("Bank" + i) ? tag.getDouble("Bank" + i) : Double.NaN;
