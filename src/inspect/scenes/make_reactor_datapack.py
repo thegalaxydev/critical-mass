@@ -17,6 +17,16 @@ VIEWPORTS = [(5, 2, 3), (5, 3, 3), (5, 4, 3), (3, 2, 5), (3, 4, 5)]
 NS = "criticalmass_demo"
 TAG = "cm_reactor_origin"
 AREA = ((-9, -2), (14, 13))
+TEMP = "cm_bind"
+CHANNELS = {"temperature": 0, "coolant": 1, "pressure": 2, "level": 3, "flow": 4, "power": 5, "rods_a": 6, "speed": 10, "output": 11}
+FUNCTIONS = {"scram": 0, "reset": 1, "a_in": 2, "a_out": 3, "all_in": 10, "turbine_trip": 11, "turbine_reset": 12, "breaker_open": 13, "breaker_close": 14, "ack": 15}
+PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
+GAUGES = [((-7, 2, 8), CONTROLLER, "temperature", 80), ((-6, 2, 8), CONTROLLER, "coolant", 0), ((-5, 2, 8), CONTROLLER, "rods_a", 0), ((-4, 2, 8), PUMP1, "flow", 0),
+          ((-3, 2, 8), TURBINE, "speed", 0), ((-2, 2, 8), GENERATOR, "output", 0)]
+BUTTONS = [((-7, 1, 8), CONTROLLER, "scram"), ((-6, 1, 8), CONTROLLER, "reset"), ((-5, 1, 8), CONTROLLER, "a_in"), ((-4, 1, 8), CONTROLLER, "a_out"),
+           ((-7, 3, 8), TURBINE, "turbine_trip"), ((-6, 3, 8), TURBINE, "turbine_reset"), ((-5, 3, 8), GENERATOR, "breaker_open"), ((-4, 3, 8), GENERATOR, "breaker_close")]
+ANNUNCIATOR = (-3, 1, 8)
+ACK = (-3, 3, 8)
 
 
 def rel(o):
@@ -39,6 +49,13 @@ def strip(cmds):
 
 def setblock(pos, block):
     return "setblock %s %s" % (w(*pos), block)
+
+
+def bind(panel, target, extra=""):
+    cmds = ["data merge block %s {Target:[I;0,0,0]%s}" % (w(*panel), extra),
+            "summon minecraft:marker %s {Tags:[\"%s\"]}" % (w(*target), TEMP)]
+    cmds += ["execute store result block %s Target[%d] int 1 run data get entity @e[type=minecraft:marker,tag=%s,limit=1] Pos[%d]" % (w(*panel), i, TEMP, i) for i in range(3)]
+    return cmds + ["kill @e[type=minecraft:marker,tag=%s]" % TEMP]
 
 
 (x0, z0), (x1, z1) = AREA
@@ -91,9 +108,21 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
        setblock((-8, 0, 1), "criticalmass:uranium_ore"),
        setblock((-8, 0, 2), "criticalmass:deepslate_uranium_ore")]
 
+desk = ["fill %s %s criticalmass:shielding_concrete" % (w(-8, 0, 9), w(-1, 3, 9))]
+desk += [setblock(pos, "criticalmass:plant_gauge[facing=north]") for pos, _, _, _ in GAUGES]
+desk += [setblock(pos, "criticalmass:control_button[facing=north]") for pos, _, _ in BUTTONS]
+desk += [setblock(ANNUNCIATOR, "criticalmass:annunciator[facing=north]"), setblock(ACK, "criticalmass:control_button[facing=north]"),
+         setblock((-2, 1, 8), "criticalmass:alarm_siren[facing=north]")]
+wiring = []
+for pos, target, channel, setpoint in GAUGES:
+    wiring += bind(pos, target, ",Channel:%d,ScrollValue:%d" % (CHANNELS[channel], setpoint))
+for pos, target, function in BUTTONS:
+    wiring += bind(pos, target, ",ScrollValue:%d" % FUNCTIONS[function])
+wiring += bind(ANNUNCIATOR, CONTROLLER) + bind(ACK, ANNUNCIATOR, ",ScrollValue:%d" % FUNCTIONS["ack"])
+
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
          "fill %s %s minecraft:smooth_stone" % (w(x0, -1, z0), w(x1, -1, z1))]
-place += vessel + [setblock(p, "criticalmass:reactor_viewport") for p in VIEWPORTS] + plant + safety + bay
+place += vessel + [setblock(p, "criticalmass:reactor_viewport") for p in VIEWPORTS] + plant + safety + bay + desk
 place += [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
 place += [setblock(p, "minecraft:air") for p in PIPES] + [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
 place += ["schedule function %s:reactor/start 40t replace" % NS]
@@ -109,6 +138,7 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2)]
 start_here += [merge((8, y, 9), "Buffer", "minecraft:water", 500, 0) for y in range(1, 5)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
+start_here += wiring
 start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),
                setblock((6, 3, 4), "minecraft:air"),
                setblock((8, 3, 4), "create:copper_valve_handle[facing=east]"),

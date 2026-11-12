@@ -36,6 +36,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
     private double generated;
     private double shaftWork;
     private boolean breakerOpen;
+    private boolean breakerLatched;
     private int updateCooldown;
     private int syncCooldown;
 
@@ -89,6 +90,12 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
         return shaftWork;
     }
 
+    public void setBreakerLatched(boolean open) {
+        breakerLatched = open;
+        updateCooldown = 0;
+        setChanged();
+    }
+
     public boolean breakerOpen() {
         return breakerOpen;
     }
@@ -99,8 +106,8 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
 
     private double wantedPower() {
         double signal = level.getBestNeighborSignal(worldPosition) / 15.0;
-        breakerOpen = signal >= 1;
-        double target = setting() * (1 - signal);
+        breakerOpen = signal >= 1 || breakerLatched;
+        double target = breakerLatched ? 0 : setting() * (1 - signal);
         double fill = stored / (double) capacity();
         double throttle = fill >= 0.9 ? 0 : fill <= 0.5 ? 1 : (0.9 - fill) / 0.4;
         double per = fePerSu();
@@ -125,7 +132,8 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
         float speed = Math.abs(getTheoreticalSpeed());
         if (updateCooldown-- <= 0) {
             updateCooldown = UPDATE_TICKS;
-            double want = speed > 0 ? Math.min(wantedPower(), headroom() * 0.98) : 0;
+            double wanted = wantedPower();
+            double want = speed > 0 ? Math.min(wanted, headroom() * 0.98) : 0;
             if (Math.abs(want - appliedPower) > Math.max(2.0, appliedPower * 0.02)) {
                 appliedPower = want;
                 if (hasNetwork()) {
@@ -192,6 +200,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
         tag.putDouble("Generated", generated);
         tag.putDouble("ShaftWork", shaftWork);
         tag.putBoolean("BreakerOpen", breakerOpen);
+        tag.putBoolean("BreakerLatched", breakerLatched);
     }
 
     @Override
@@ -204,6 +213,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity {
         generated = tag.getDouble("Generated");
         shaftWork = tag.getDouble("ShaftWork");
         breakerOpen = tag.getBoolean("BreakerOpen");
+        breakerLatched = tag.getBoolean("BreakerLatched");
     }
 
     @Override

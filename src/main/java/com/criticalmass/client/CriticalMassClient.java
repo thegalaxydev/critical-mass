@@ -40,6 +40,9 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), BenchRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.INSTRUMENTATION_PANEL.get(), InstrumentationPanelRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.GAUGE.get(), PanelRenderers.Gauge::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_BUTTON.get(), PanelRenderers.Button::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.ANNUNCIATOR.get(), PanelRenderers.Annunciator::new);
         event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), ctx -> new HalfShaftRenderer<GeneratorBlockEntity>(ctx, GeneratorBlock::inputSide));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
     }

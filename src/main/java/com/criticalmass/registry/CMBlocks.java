@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.control.PanelBlocks;
 import com.criticalmass.content.thermal.ChannelBlocks;
 import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.content.InstrumentationPanelBlock;
@@ -73,6 +74,9 @@ public final class CMBlocks {
     public static final DeferredBlock<ShieldedCaskBlock> SHIELDED_CASK = register("shielded_cask", ShieldedCaskBlock::new, metal(6.0f).noOcclusion());
     public static final DeferredBlock<WasteCanisterBlock> OPEN_WASTE_CANISTER = register("open_waste_canister", WasteCanisterBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<SealedWasteCanisterBlock> SEALED_WASTE_CANISTER = BLOCKS.register("sealed_waste_canister", () -> new SealedWasteCanisterBlock(metal(3.0f).noOcclusion()));
+    public static final DeferredBlock<PanelBlocks.Gauge> GAUGE = register("plant_gauge", PanelBlocks.Gauge::new, metal(2.0f).noOcclusion());
+    public static final DeferredBlock<PanelBlocks.Button> CONTROL_BUTTON = register("control_button", PanelBlocks.Button::new, metal(2.0f).noOcclusion());
+    public static final DeferredBlock<PanelBlocks.Annunciator> ANNUNCIATOR = register("annunciator", PanelBlocks.Annunciator::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<InstrumentationPanelBlock> INSTRUMENTATION_PANEL = register("instrumentation_panel", InstrumentationPanelBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", HorizontalBlock::new, metal(4.0f));
     public static final DeferredBlock<AlarmSirenBlock> ALARM_SIREN = register("alarm_siren", AlarmSirenBlock::new, metal(2.0f).noOcclusion());

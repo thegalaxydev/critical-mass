@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.control.PlantLinkerItem;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.WasteCanisterItem;
@@ -50,6 +51,7 @@ public final class CMItems {
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_LEGGINGS = armor("protective_leggings", ArmorItem.Type.LEGGINGS);
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<PlantLinkerItem> PLANT_LINKER = custom("plant_linker", () -> new PlantLinkerItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<WeldingTorchItem> WELDING_TORCH = custom("welding_torch", () -> new WeldingTorchItem(new Item.Properties().durability(128)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(CMBlocks.SEALED_WASTE_CANISTER.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_WASTE_CANISTER = ITEMS.register("incomplete_waste_canister", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));

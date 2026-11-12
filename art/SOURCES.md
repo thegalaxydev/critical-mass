@@ -880,3 +880,8 @@ Texture: steam turbine rotor, 16x16 game pixels.
 Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished iron blades alternating light and dark around a brass hub, magenta outside the circle (keep magenta), plus a thin iron rim strip.
 
 ```
+
+## Overhaul blocks (not generated)
+
+- Used by: `textures/block/generator.png`, `reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `plant_gauge.png`, `control_button.png`, `annunciator.png`, `textures/item/plant_linker.png`
+- Source: painted by `art/tools/plant_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.

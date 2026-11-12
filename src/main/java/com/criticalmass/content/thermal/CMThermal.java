@@ -82,6 +82,8 @@ public final class CMThermal {
     public static final int MAX_PIPE_LENGTH = 256;
     public static final int CHANNEL_VISUAL_TICKS = 5;
     public static final int ROD_BANKS = 4;
+    public static final double ROD_JOG = 0.05;
+    public static final double LOW_COOLANT_ALARM = 0.5;
     public static final int ROD_LINK_TICKS = 20;
     public static final double PIPE_BURST_TEMPERATURE = BOILING;
     public static final float PIPE_BURST_DAMAGE = 4.0f;

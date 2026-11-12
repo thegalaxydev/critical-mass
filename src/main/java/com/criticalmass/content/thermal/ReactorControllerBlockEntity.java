@@ -299,6 +299,36 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         setChanged();
     }
 
+    public void jogBank(int bank, double delta) {
+        double from = bankTargets[bank];
+        if (Double.isNaN(from)) {
+            double now = bankInsertion(bank);
+            from = Double.isNaN(now) ? 1.0 : now;
+        }
+        setBankTarget(bank, Math.round((from + delta) / CMThermal.ROD_JOG) * CMThermal.ROD_JOG);
+    }
+
+    public boolean requestReset() {
+        for (int i = 0; i < bankTargets.length; i++) {
+            bankTargets[i] = 1.0;
+        }
+        setChanged();
+        if (!tripped) {
+            return true;
+        }
+        if (signal != 0) {
+            return false;
+        }
+        boolean canRun = structure != null && structure.complete() && !isDamaged() && !isBreached();
+        if (!canRun) {
+            return false;
+        }
+        tripped = false;
+        tripReason = "";
+        syncPending = true;
+        return true;
+    }
+
     public double bankInsertion(int bank) {
         double sum = 0;
         int n = 0;

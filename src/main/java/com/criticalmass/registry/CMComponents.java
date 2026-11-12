@@ -1,5 +1,6 @@
 package com.criticalmass.registry;
 
+import net.minecraft.core.BlockPos;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelState;
 import com.mojang.serialization.Codec;
@@ -22,6 +23,9 @@ public final class CMComponents {
             b -> b.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.VAR_INT));
     public static final Supplier<DataComponentType<Double>> CONTAMINATION = COMPONENTS.registerComponentType("contamination",
             b -> b.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE));
+
+    public static final Supplier<DataComponentType<BlockPos>> LINK_TARGET = COMPONENTS.registerComponentType("link_target",
+            b -> b.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
 
     private CMComponents() {
     }

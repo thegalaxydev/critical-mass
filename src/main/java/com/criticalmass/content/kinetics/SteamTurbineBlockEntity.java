@@ -84,6 +84,12 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         return overspeedTrip;
     }
 
+    public void manualTrip() {
+        overspeedTrip = true;
+        admission = 0;
+        setChanged();
+    }
+
     public void resetTrip() {
         overspeedTrip = false;
         overspeed = 0;

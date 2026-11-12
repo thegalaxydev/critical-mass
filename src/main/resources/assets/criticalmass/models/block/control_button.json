@@ -1,0 +1,77 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/control_button",
+  "particle": "criticalmass:block/control_button"
+ },
+ "elements": [
+  {
+   "from": [
+    4,
+    4,
+    13
+   ],
+   "to": [
+    12,
+    12,
+    16
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      2.0,
+      2.0,
+      6.0,
+      6.0
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8,
+      0,
+      12.0,
+      4.0
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8,
+      0,
+      9.5,
+      4.0
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8,
+      0,
+      9.5,
+      4.0
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      0,
+      12.0,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      8,
+      0,
+      12.0,
+      1.5
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

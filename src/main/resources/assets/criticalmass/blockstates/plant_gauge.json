@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/plant_gauge"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/plant_gauge",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/plant_gauge",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/plant_gauge",
+   "y": 270
+  }
+ }
+}

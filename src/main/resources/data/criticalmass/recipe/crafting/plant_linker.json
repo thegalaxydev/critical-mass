@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "B": {
+      "tag": "c:plates/brass"
+    }
+  },
+  "pattern": [
+    " E",
+    "B "
+  ],
+  "result": {
+    "id": "criticalmass:plant_linker"
+  }
+}

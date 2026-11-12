@@ -1,6 +1,9 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.content.CoolantPortBlockEntity;
+import com.criticalmass.content.control.AnnunciatorBlockEntity;
+import com.criticalmass.content.control.ControlButtonBlockEntity;
+import com.criticalmass.content.control.GaugeBlockEntity;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.thermal.InstrumentationPanelBlockEntity;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
@@ -61,6 +64,12 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<GaugeBlockEntity>> GAUGE = BLOCK_ENTITIES.register("plant_gauge",
+            () -> BlockEntityType.Builder.of((pos, state) -> new GaugeBlockEntity(CMBlockEntities.GAUGE.get(), pos, state), CMBlocks.GAUGE.get()).build(null));
+    public static final Supplier<BlockEntityType<ControlButtonBlockEntity>> CONTROL_BUTTON = BLOCK_ENTITIES.register("control_button",
+            () -> BlockEntityType.Builder.of((pos, state) -> new ControlButtonBlockEntity(CMBlockEntities.CONTROL_BUTTON.get(), pos, state), CMBlocks.CONTROL_BUTTON.get()).build(null));
+    public static final Supplier<BlockEntityType<AnnunciatorBlockEntity>> ANNUNCIATOR = BLOCK_ENTITIES.register("annunciator",
+            () -> BlockEntityType.Builder.of((pos, state) -> new AnnunciatorBlockEntity(CMBlockEntities.ANNUNCIATOR.get(), pos, state), CMBlocks.ANNUNCIATOR.get()).build(null));
     public static final Supplier<BlockEntityType<GeneratorBlockEntity>> GENERATOR = BLOCK_ENTITIES.register("generator",
             () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
     public static final Supplier<BlockEntityType<InstrumentationPanelBlockEntity>> INSTRUMENTATION_PANEL = BLOCK_ENTITIES.register("instrumentation_panel",

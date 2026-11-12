@@ -15,9 +15,15 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 public class WallPanelBlock extends HorizontalDirectionalBlock {
     public static final MapCodec<WallPanelBlock> CODEC = simpleCodec(WallPanelBlock::new);
     private static final VoxelShape NORTH = Block.box(1, 1, 13, 15, 15, 16);
+    private final VoxelShape north;
 
     public WallPanelBlock(Properties properties) {
+        this(properties, NORTH);
+    }
+
+    public WallPanelBlock(Properties properties, VoxelShape north) {
         super(properties);
+        this.north = north;
         registerDefaultState(stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -40,6 +46,6 @@ public class WallPanelBlock extends HorizontalDirectionalBlock {
 
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return CMShapes.rotated(NORTH, state.getValue(FACING));
+        return CMShapes.rotated(north, state.getValue(FACING));
     }
 }

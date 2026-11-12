@@ -229,6 +229,14 @@ public final class ReactorCore {
         return output;
     }
 
+    public double ratedOutput() {
+        double total = 0;
+        for (FuelColumn f : fuel.values()) {
+            total += CMThermal.FUEL_BASE_OUTPUT * f.height * (1 + CMThermal.FUEL_ADJACENCY_FACTOR * f.fuelNeighbours);
+        }
+        return total;
+    }
+
     public int glow(FuelColumn f) {
         FuelState a = assemblies.get(key(f.dx, f.dz));
         if (a == null) {

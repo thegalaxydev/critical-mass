@@ -35,6 +35,9 @@
     "criticalmass:sealed_waste_canister",
     "criticalmass:open_waste_canister",
     "criticalmass:generator",
-    "criticalmass:reactor_viewport"
+    "criticalmass:reactor_viewport",
+    "criticalmass:plant_gauge",
+    "criticalmass:control_button",
+    "criticalmass:annunciator"
   ]
 }
