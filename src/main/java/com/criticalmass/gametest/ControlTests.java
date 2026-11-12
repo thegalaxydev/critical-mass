@@ -5,6 +5,7 @@ import com.criticalmass.content.control.AnnunciatorBlockEntity;
 import com.criticalmass.content.control.ControlButtonBlockEntity;
 import com.criticalmass.content.control.GaugeBlockEntity;
 import com.criticalmass.content.control.PlantChannel;
+import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
@@ -146,6 +147,82 @@ public final class ControlTests {
                 })
                 .thenIdle(20)
                 .thenExecute(() -> h.assertTrue(!alarms.active(AnnunciatorBlockEntity.Alarm.TRIP), "Trip alarm should clear after the reset"))
+                .thenSucceed();
+    }
+
+    private static double cooledColumn(ReactorControllerBlockEntity c) {
+        for (com.criticalmass.content.thermal.ReactorCore.FuelColumn f : c.core().columns()) {
+            if (f.dx() == 1 && f.dz() == 0) {
+                return f.temperature();
+            }
+        }
+        return Double.NaN;
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 2400)
+    public static void plantStartsRunsGeneratesAndShutsDown(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        TestVessels.plant(h);
+        h.setBlock(TestVessels.MOTOR, Blocks.AIR);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        com.criticalmass.content.thermal.HeatExchangerBlockEntity exchanger = h.getBlockEntity(TestVessels.EXCHANGER);
+        SteamTurbineBlockEntity turbine = h.getBlockEntity(TestVessels.PLANT_TURBINE);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * 230.0);
+        exchanger.secondary().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
+        turbine.coolant().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
+        BlockPos generatorPos = TestVessels.PLANT_TURBINE.west();
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
+        GeneratorBlockEntity generator = h.getBlockEntity(generatorPos);
+        generator.setSetting(64);
+        net.neoforged.neoforge.energy.IEnergyStorage out = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage.BLOCK, h.absolutePos(generatorPos), Direction.UP);
+        h.onEachTick(() -> out.extractEnergy(100000, false));
+        ControlRodDriveBlockEntity a = drive(h, new BlockPos(3, 6, 2));
+        ControlRodDriveBlockEntity b = drive(h, new BlockPos(3, 6, 4));
+        ControlButtonBlockEntity scram = button(h, new BlockPos(12, 1, 12), TestVessels.CONTROLLER, ControlButtonBlockEntity.Function.SCRAM);
+        c.setBankTarget(0, 0.0);
+        double[] seen = new double[4];
+        h.startSequence()
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isReacting() && c.status().endsWith("blocked_flow") && a.insertion() == 1, "A plant with no primary flow should refuse to start: " + c.status());
+                    h.setBlock(TestVessels.MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() < 1 && a.insertion() > 0, "Rods should be on their way out, not there yet: " + a.insertion());
+                    seen[0] = c.core().lastOutput();
+                })
+                .thenIdle(150)
+                .thenExecute(() -> {
+                    h.assertTrue(c.isReacting() && a.insertion() == 0 && b.insertion() == 0, "Reactor should be at power with rods out: " + c.status());
+                    h.assertTrue(c.core().lastOutput() > seen[0] && Math.abs(c.core().lastOutput() - c.core().ratedOutput()) < 1e-6, "Power should have climbed to rated: " + c.core().lastOutput());
+                    seen[1] = c.core().maxTemperature();
+                })
+                .thenIdle(900)
+                .thenExecute(() -> {
+                    h.assertTrue(c.core().maxTemperature() > seen[1] + 20, "Fuel should keep warming long after the rods stopped: " + seen[1] + " to " + c.core().maxTemperature());
+                    h.assertTrue(exchanger.exchanged() > 0 && turbine.heatExtracted() > 0, "Heat should cross the exchanger and reach the turbine");
+                    h.assertTrue(generator.generated() > 0 && generator.outputRate() > 1, "The generator should be making Forge Energy: " + generator.outputRate());
+                    double perSu = com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.FE_PER_SU) * com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.GENERATOR_EFFICIENCY);
+                    h.assertTrue(Math.abs(generator.generated() - generator.shaftWork() * perSu) <= 2, "Energy made should match shaft work");
+                    h.assertTrue(generator.shaftWork() <= turbine.heatExtracted() * CMThermal.SU_PER_HEAT + 1e-6, "Shaft work cannot exceed the steam energy the turbine took: " + generator.shaftWork() + " vs " + turbine.heatExtracted() * CMThermal.SU_PER_HEAT);
+                    scram.press();
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isReacting() && c.isTripped() && a.insertion() == 1 && b.insertion() == 1, "SCRAM should stop the reaction and insert the rods");
+                    h.assertTrue(c.core().lastFission() == 0 && c.core().residualPower() > 0, "Fission should stop while decay heat remains: " + c.core().residualPower());
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
+                    h.assertTrue(pump.flow() > 0, "Cooling should keep running after the trip: " + pump.status());
+                    seen[2] = cooledColumn(c);
+                    seen[3] = c.core().residualPower();
+                })
+                .thenIdle(600)
+                .thenExecute(() -> {
+                    h.assertTrue(cooledColumn(c) < seen[2], "With cooling kept up the cooled fuel should come down: " + seen[2] + " to " + cooledColumn(c));
+                    h.assertTrue(c.core().residualPower() < seen[3], "Decay heat should fade");
+                    h.assertTrue(c.core().coriumMass() == 0 && c.damagedBlocks() == 0, "A cooled shutdown should leave the core undamaged");
+                })
                 .thenSucceed();
     }
 
