@@ -8,7 +8,8 @@ from handmade_rest import casing, plate
 M = "criticalmass:"
 QUADS = {"a": [0, 0, 8, 8], "b": [8, 0, 16, 8], "c": [0, 8, 8, 16], "d": [8, 8, 16, 16]}
 ROTATIONS = {"north": 0, "east": 90, "south": 180, "west": 270}
-FACE_Z = 2
+FACE_Z = 13
+RIM = 0.6
 GLASS = (10, 20, 14, 255)
 SWATCHES = {"red": (0xD9, 0x38, 0x2B), "green": (0x3F, 0xA3, 0x4D), "cream": (0xE8, 0xE4, 0xD6), "amber": (0xE0, 0xA0, 0x30),
             "blue": (0x40, 0x80, 0xD0), "dark": (0x30, 0x34, 0x3A), "lamp": (0x58, 0x18, 0x12), "black": (0x15, 0x17, 0x1A), "light": (0x24, 0x5A, 0x20)}
@@ -115,10 +116,10 @@ def box(lo, hi, quad, top=None, rotation=None, cull=()):
 
 
 def panel_elements():
-    body = box([0, 0, FACE_Z], [16, 16, 16], "a", cull=("south", "east", "west", "up", "down"))
+    body = box([0, 0, FACE_Z], [16, 16, 16], "a", cull=("south",))
     body["faces"]["north"] = face("b")
-    frame = [box([0, 15, 0], [16, 16, FACE_Z], "c", cull=("up",)), box([0, 0, 0], [16, 1, FACE_Z], "c", cull=("down",)),
-             box([15, 1, 0], [16, 15, FACE_Z], "c", cull=("east",)), box([0, 1, 0], [1, 15, FACE_Z], "c", cull=("west",))]
+    frame = [box([0, 15, FACE_Z - RIM], [16, 16, FACE_Z], "c"), box([0, 0, FACE_Z - RIM], [16, 1, FACE_Z], "c"),
+             box([15, 1, FACE_Z - RIM], [16, 15, FACE_Z], "c"), box([0, 1, FACE_Z - RIM], [1, 15, FACE_Z], "c")]
     for side in frame[2:]:
         for f in side["faces"].values():
             f["uv"] = [0, 8, 8, 11]
@@ -257,4 +258,35 @@ LANG = dict({"block.criticalmass." + name: title for name, (title, _) in PANELS.
     "criticalmass.screen.powered": "Powered: %s FE stored",
     "criticalmass.screen.unpowered": "No power: feed Forge Energy into any screen of the wall",
     "criticalmass.screen.size": "Screen wall %s by %s: %s lines of %s characters",
+    "criticalmass.screen.unlinked": "Shows Display Link text. Link a Reactor Controller with a Plant Linker for the reactor display, which needs a wall %s wide and %s high",
+    "criticalmass.screen.linked": "Reactor display for the controller at %s %s %s",
+    "criticalmass.screen.too_small": "Linked, but the reactor display needs a wall %s wide and %s high",
+    "criticalmass.screen.link.too_small": "Linked, but this wall is %s by %s. The reactor display needs %s by %s",
+    "criticalmass.screen.link.refused": "A screen wall links to a Reactor Controller, a Steam Turbine or a Generator",
+    "criticalmass.screen.link.cleared": "Screen wall unlinked",
+    "criticalmass.screen.board.too_small": "REACTOR DISPLAY NEEDS %s WIDE BY %s HIGH",
+    "criticalmass.screen.board.size": "THIS WALL IS %s BY %s",
+    "criticalmass.screen.no_reactor": "NO REACTOR FOUND",
+    "criticalmass.screen.trend.power": "NEUTRON POWER %%",
+    "criticalmass.screen.trend.pressure": "PRESSURE bar",
+    "criticalmass.screen.trend.coolant": "COOLANT °C",
+    "criticalmass.screen.trend.xenon": "XENON %%",
+    "criticalmass.screen.trend.past": "-2 MIN",
+    "criticalmass.screen.trend.now": "NOW",
+    "criticalmass.screen.row.neutron": "NEUTRON POWER",
+    "criticalmass.screen.row.power": "HEAT OUTPUT",
+    "criticalmass.screen.row.period": "PERIOD",
+    "criticalmass.screen.row.reactivity": "REACTIVITY",
+    "criticalmass.screen.row.temperature": "FUEL",
+    "criticalmass.screen.row.coolant_temperature": "COOLANT",
+    "criticalmass.screen.row.pressure": "PRESSURE",
+    "criticalmass.screen.row.flow": "FLOW",
+    "criticalmass.screen.row.rods_a": "RODS IN",
+    "criticalmass.screen.row.xenon": "XENON",
+    "criticalmass.screen.row.boron": "BORON",
+    "criticalmass.screen.row.turbine": "TURBINE",
+    "criticalmass.screen.row.output": "OUTPUT",
+    "criticalmass.screen.events": "EVENTS",
+    "criticalmass.screen.events.none": "NOTHING TO REPORT",
+    "criticalmass.screen.event.cleared": "CLEARED: %s",
 })

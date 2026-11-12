@@ -161,7 +161,7 @@ shaped("breaker_panel", ["KL", "EP"], {"E": "create:electron_tube", "P": "#c:pla
 shaped("alarm_panel", ["LL", "EP"], {"E": "create:electron_tube", "P": "#c:plates/steel", "L": "minecraft:redstone_lamp"}, "alarm_panel")
 shaped("lever_panel", ["L", "E", "P"], {"E": "create:electron_tube", "P": "#c:plates/steel", "L": "minecraft:lever"}, "lever_panel")
 shaped("dial_panel", ["C", "E", "P"], {"E": "create:electron_tube", "P": "#c:plates/steel", "C": "minecraft:comparator"}, "dial_panel")
-shaped("plant_screen", ["GGG", "PEP"], {"G": "#c:glass_panes/colorless", "E": "create:electron_tube", "P": "#c:plates/steel"}, "plant_screen", 2)
+shaped("plant_screen", ["GGG", "PEP"], {"G": "#c:glass_panes/colorless", "E": "create:electron_tube", "P": "#c:plates/steel"}, "plant_screen", 4)
 shaped("plant_linker", [" E", "B "], {"E": "create:electron_tube", "B": "#c:plates/brass"}, "plant_linker")
 shaped("alarm_siren", ["S", "N", "L"], {"S": "#c:plates/brass", "N": "minecraft:note_block", "L": "minecraft:redstone_lamp"}, "alarm_siren")
 shaped("docking_service_connector", ["C", "P", "M"], {"C": "create:brass_casing", "P": "reinforced_pipe", "M": "create:precision_mechanism"}, "docking_service_connector")

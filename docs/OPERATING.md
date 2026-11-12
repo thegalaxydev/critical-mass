@@ -28,7 +28,11 @@ Use Reinforced Pipe wherever the water is at or above 100 °C or is steam. Creat
 
 ## Wiring a control room
 
-Readings go on a wall of Plant Screens. Put a Create Display Link on a machine, point it at any screen of the wall, and pick what to show. Screens placed beside and above each other join into one wall, three lines to a block, and show the text in green. They need Forge Energy, 1 FE/t per screen: feed any one screen, for example from a small Generator standing against the wall, and it shares with the rest. Create's Display Board, Nixie Tubes and signs take the same links.
+Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They need Forge Energy, 1 FE/t per screen: feed any one screen, for example from a small Generator standing against the wall, and it shares with the rest.
+
+Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine and the generator the same way to add speed and output. If the wall is too small it tells you so.
+
+A wall you have not linked shows Display Link text instead, three green lines to a block. Put a Create Display Link on a machine, point it at any screen of the wall, and pick what to show. Create's Display Board, Nixie Tubes and signs take the same links.
 
 | Display Link on | Shows |
 | --- | --- |
@@ -40,7 +44,7 @@ Readings go on a wall of Plant Screens. Put a Create Display Link on a machine, 
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
-Controls are separate panels that you place and link yourself. Each is a single block with its controls on the front face. Set them side by side or stack them into a board. Use the Plant Linker on a machine and then on the panel that controls it. Then look at a control and use it.
+Controls are separate panels that you place and link yourself. Each is a thin wall panel, as deep as a Plant Screen, with its controls on the front. Mount them side by side or above each other to make a board, flush with the screens if you like. Use the Plant Linker on a machine and then on the panel that controls it. Then look at a control and use it.
 
 | Panel | Link to | Controls |
 | --- | --- | --- |
@@ -132,7 +136,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a wall of Plant Screens fed by Display Links: the reactor summary and the neutronics summary from two Signal Interfaces, rod position, turbine speed and generator output. A small Generator on a creative motor beside the wall powers the screens. Under the screens runs a row of seven panels: SCRAM, rods, alarms, turbine and breaker, each linked to its machine, plus a spare lever and dial. An Alarm Siren sits under the Alarm Panel.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the basin. The control room is a nine by five wall of Plant Screens linked to the reactor, the turbine and the generator, so it shows the reactor display. A small Generator on a creative motor beside the wall powers the screens. Under the screens runs a row of seven panels: SCRAM, rods, alarms, turbine and breaker, each linked to its machine, plus a spare lever and dial. An Alarm Siren sits under the Alarm Panel.
 
 To skip the start-up, run:
 

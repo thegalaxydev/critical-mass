@@ -27,7 +27,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class PanelBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
-    public static final double FACE_Z = 2 / 16.0;
+    public static final double FACE_Z = 13 / 16.0;
     public static final double TITLE_V = 13.6;
     public static final int MAX_STRENGTH = 15;
     private static final int PRESS_TICKS = 6;

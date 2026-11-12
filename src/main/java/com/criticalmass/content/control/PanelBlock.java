@@ -19,9 +19,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class PanelBlock extends HorizontalDirectionalBlock implements EntityBlock, IWrenchable {
+    private static final VoxelShape NORTH = Block.box(0, 0, 13, 16, 16, 16);
+    private static final VoxelShape SOUTH = Block.box(0, 0, 0, 16, 16, 3);
+    private static final VoxelShape EAST = Block.box(0, 0, 0, 3, 16, 16);
+    private static final VoxelShape WEST = Block.box(13, 0, 0, 16, 16, 16);
     private final PanelBlockEntity.Type type;
 
     public PanelBlock(Properties properties, PanelBlockEntity.Type type) {
@@ -45,8 +51,19 @@ public class PanelBlock extends HorizontalDirectionalBlock implements EntityBloc
     }
 
     @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return switch (state.getValue(FACING)) {
+            case SOUTH -> SOUTH;
+            case EAST -> EAST;
+            case WEST -> WEST;
+            default -> NORTH;
+        };
+    }
+
+    @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+        Direction face = context.getClickedFace();
+        return defaultBlockState().setValue(FACING, face.getAxis().isHorizontal() ? face : context.getHorizontalDirection().getOpposite());
     }
 
     @Override

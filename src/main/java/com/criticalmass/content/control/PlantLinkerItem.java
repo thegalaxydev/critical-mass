@@ -33,6 +33,33 @@ public class PlantLinkerItem extends Item {
         if (player == null) {
             return InteractionResult.PASS;
         }
+        ScreenBlockEntity screen = ScreenBlockEntity.controllerOf(level, pos);
+        if (screen != null) {
+            if (level.isClientSide) {
+                return InteractionResult.SUCCESS;
+            }
+            BlockPos stored = stack.get(CMComponents.LINK_TARGET.get());
+            if (stored == null) {
+                if (!screen.linked()) {
+                    player.displayClientMessage(Component.translatable("criticalmass.linker.nothing_stored"), true);
+                    return InteractionResult.FAIL;
+                }
+                screen.unlink();
+                player.displayClientMessage(Component.translatable("criticalmass.screen.link.cleared"), true);
+                return InteractionResult.SUCCESS;
+            }
+            if (!screen.link(stored)) {
+                player.displayClientMessage(Component.translatable("criticalmass.screen.link.refused"), true);
+                return InteractionResult.FAIL;
+            }
+            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
+            if (screen.linked() && !screen.bigEnough()) {
+                player.displayClientMessage(Component.translatable("criticalmass.screen.link.too_small", screen.width(), screen.height(), ScreenBlockEntity.BOARD_WIDTH, ScreenBlockEntity.BOARD_HEIGHT), true);
+            } else {
+                player.displayClientMessage(Component.translatable("criticalmass.linker.bound", level.getBlockState(stored).getBlock().getName(), stored.getX(), stored.getY(), stored.getZ()), true);
+            }
+            return InteractionResult.SUCCESS;
+        }
         if (be instanceof PanelBlockEntity panel) {
             if (level.isClientSide) {
                 return InteractionResult.SUCCESS;

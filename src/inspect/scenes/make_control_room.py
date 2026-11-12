@@ -5,7 +5,7 @@ import make_reactor_datapack as m
 
 EYE = 1.62
 SNEAK_EYE = 1.27
-FACE_Z = 2 / 16.0
+FACE_Z = 13 / 16.0
 OX, OY, OZ = 300, -60, 300
 HOME = "/tp @p %d %d %d" % (OX, OY, OZ)
 PANEL = {name: pos for pos, name, _ in m.PANELS}
@@ -33,7 +33,9 @@ def ledger(wait):
     return {"cmds": ["/criticalmass ledger"], "wait": wait}
 
 
-wide = look((MID, 0, 7.0), (MID, 3.4, 12.0))
+wide = look((MID, 1, 5.5), (MID, 3.6, 12.0))
+screen = look((MID, 0, 7.4), (MID, 4.0, 12.0))
+left_screen = look((MID + 2.4, 0, 9.4), (MID + 2.9, 4.3, 12.0))
 desk = look((MID, 0, 8.7), (MID, 1.5, 12.0))
 left = look((MID + 2.0, 0, 10.2), (MID + 2.0, 1.5, 12.0))
 right = look((MID - 2.0, 0, 10.2), (MID - 2.0, 1.5, 12.0))
@@ -44,9 +46,11 @@ steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weathe
          {"cmds": ["/" + c for c in m.start_here], "wait": 200},
          {"cmds": [wide], "wait": 40, "closeScreen": True}, {"shot": "shutdown", "wait": 2},
          {"cmds": [HOME], "wait": 10},
-         {"cmds": ["/criticalmass ledger"] + ["/" + c for c in m.run_here], "wait": 400},
+         {"cmds": ["/criticalmass ledger"] + ["/" + c for c in m.run_here], "wait": 900},
          ledger(5),
          {"cmds": [wide], "wait": 40}, {"shot": "running", "wait": 2},
+         {"cmds": [screen], "wait": 40}, {"shot": "screen", "wait": 2},
+         {"cmds": [left_screen], "wait": 40}, {"shot": "screen_left", "wait": 2},
          {"cmds": [desk], "wait": 40}, {"shot": "desk", "wait": 2},
          {"cmds": [left], "wait": 30}, {"shot": "desk_left", "wait": 2},
          {"cmds": [right], "wait": 30}, {"shot": "desk_right", "wait": 2},
@@ -58,7 +62,7 @@ steps += click("scram_panel", 5.0, 7.8, 40)
 steps += [ledger(5), {"cmds": [desk], "wait": 40}, {"shot": "scram_a", "wait": 6}, {"shot": "scram_b", "wait": 2}, {"wait": 2}]
 steps += click("alarm_panel", 4.5, 3.4, 20)
 steps += [{"cmds": [desk], "wait": 40}, {"shot": "acknowledged", "wait": 2},
-          {"cmds": [wide], "wait": 40}, {"shot": "tripped", "wait": 2},
+          {"wait": 200}, {"cmds": [wide], "wait": 40, "gui": False}, {"shot": "tripped", "wait": 2},
           {"cmds": state, "wait": 5}, ledger(5)]
 steps += [{"cmds": ["/item replace entity @p hotbar.%d with criticalmass:%s" % (i, name) for i, name in enumerate(PANEL)] + ["/item replace entity @p hotbar.7 with criticalmass:plant_screen"], "wait": 20, "gui": True},
           {"shot": "items", "wait": 2}]
