@@ -321,12 +321,10 @@ def distributor_texture():
 def fan_texture():
     def side(w, h):
         img = plate(IRON, 3)(w, h)
-        for y in range(3, 13):
-            for x in range(3, 13):
-                if y % 2 == 1:
-                    img.putpixel((x, y), CLEAR)
-                else:
-                    put(img, x, y, IRON[2])
+        for x in (2, 13):
+            for y in (2, 13):
+                put(img, x, y, IRON[1])
+        rect(img, 0, 7, 15, 8, IRON[2])
         return img
 
     def top(w, h):
@@ -345,20 +343,40 @@ def fan_texture():
         rect(img, 0, 0, 15, 15, IRON[4])
         for x in range(0, 16, 4):
             rect(img, x, 0, x, 15, IRON[2])
+        rect(img, 0, 0, 15, 0, IRON[1])
+        rect(img, 0, 15, 15, 15, IRON[1])
         return img
     return atlas({"a": side, "b": top, "c": top, "d": blade})
+
+
+def fan_parts():
+    def box(lo, hi, quad, rotation=None, caps=None):
+        faces = {d: {"uv": QUADS[caps if caps and d in ("up", "down") else quad], "texture": "#0"} for d in ("north", "south", "east", "west", "up", "down")}
+        e = {"from": lo, "to": hi, "faces": faces}
+        if rotation:
+            e["rotation"] = {"origin": [8, 8, 8], "axis": rotation[0], "angle": rotation[1]}
+        return e
+    base = [box([0, 0, 0], [16, 2, 16], "a", caps="b"), box([5, 2, 5], [11, 5, 11], "a")]
+    rotor = [box([5, 5, 5], [11, 11, 11], "a"), box([6, 11, 6], [10, 16, 10], "a"),
+             box([11, 7.5, 3], [32, 8.5, 13], "d", ("x", 22.5)), box([-16, 7.5, 3], [5, 8.5, 13], "d", ("x", -22.5)),
+             box([3, 7.5, 11], [13, 8.5, 32], "d", ("z", 22.5)), box([3, 7.5, -16], [13, 8.5, 5], "d", ("z", -22.5))]
+    return base, rotor
 
 
 def fan_models():
     name = "tower_fan"
     tex = {"0": M + "block/" + name, "particle": M + "block/" + name}
-    blade = {"uv": QUADS["d"], "texture": "#0"}
-    faces = {d: blade for d in ("north", "south", "east", "west", "up", "down")}
-    return {name: cube(name, SIDES, "minecraft:cutout"),
-            "tower_fan_rotor": {"textures": tex, "elements": [
-                {"from": [1, 7, 6.5], "to": [15, 8, 9.5], "faces": faces},
-                {"from": [6.5, 7, 1], "to": [9.5, 8, 15], "faces": faces},
-                {"from": [6, 5, 6], "to": [10, 16, 10], "faces": faces}]}}
+    base, rotor = fan_parts()
+    small = {"rotation": [30, 225, 0], "translation": [0, 0, 0], "scale": [0.26, 0.26, 0.26]}
+    hand = {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.16, 0.16, 0.16]}
+    display = {"gui": small, "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.12, 0.12, 0.12]},
+               "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.25, 0.25, 0.25]},
+               "thirdperson_righthand": hand, "thirdperson_lefthand": hand,
+               "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": [0.18, 0.18, 0.18]},
+               "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 0, 0], "scale": [0.18, 0.18, 0.18]}}
+    return {name: {"parent": "minecraft:block/block", "textures": tex, "elements": base, "render_type": "minecraft:cutout"},
+            "tower_fan_rotor": {"textures": tex, "elements": rotor},
+            "tower_fan_item": {"parent": "minecraft:block/block", "textures": tex, "elements": base + rotor, "render_type": "minecraft:cutout", "display": display}}
 
 
 def feedwater_texture():
@@ -449,7 +467,7 @@ BLOCKS = {
     "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "tower_basin": {"lang": "Cooling Tower Basin", "texture": basin_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "tower_distributor": {"lang": "Cooling Tower Distributor", "texture": distributor_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
-    "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state},
+    "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state, "item": "tower_fan_item"},
     "feedwater_tank": {"lang": "Feedwater Tank", "texture": feedwater_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "control_button": {"lang": "Control Button", "texture": button_texture, "model": lambda n: panel_model(n, 4, 4, 12, 12), "state": horizontal},
@@ -495,7 +513,7 @@ LANG = {
     "criticalmass.pressurizer.no_power": "Pressure falling: heaters need Forge Energy",
     "criticalmass.alarm.pressure": "Vessel coolant boiling: pressure too low for its temperature",
     "item.criticalmass.plant_linker": "Plant Linker",
-    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a gauge, button or annunciator to bind it",
+    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a button or annunciator to bind it",
     "criticalmass.linker.tooltip_stored": "Remembers the block at %s %s %s (sneak-use in the air to clear)",
     "criticalmass.linker.stored": "Remembered %s at %s %s %s",
     "criticalmass.linker.bound": "Bound to %s at %s %s %s",
@@ -504,17 +522,8 @@ LANG = {
     "criticalmass.linker.cleared": "Linker cleared",
     "criticalmass.panel.unbound": "Not bound: use a Plant Linker",
     "criticalmass.panel.bound": "Bound to %s at %s %s %s",
-    "criticalmass.goggles.gauge": "Gauge",
     "criticalmass.goggles.button": "Control Button",
     "criticalmass.goggles.annunciator": "Annunciator",
-    "criticalmass.gauge.setpoint": "Alarm setpoint (% of scale)",
-    "criticalmass.gauge.reading": "%s: %s %s",
-    "criticalmass.gauge.no_reading": "%s: no reading from this target",
-    "criticalmass.gauge.scale": "Scale %s to %s %s",
-    "criticalmass.gauge.alarm_above": "Alarm at or above %s%% of scale",
-    "criticalmass.gauge.alarm_below": "Alarm at or below %s%% of scale",
-    "criticalmass.gauge.channel_set": "Gauge shows %s",
-    "criticalmass.gauge.hint": "Use to change what it shows; sneak-use to flip the alarm side",
     "criticalmass.channel.temperature": "Temperature",
     "criticalmass.channel.coolant_temperature": "Coolant temperature",
     "criticalmass.channel.pressure": "Pressure",

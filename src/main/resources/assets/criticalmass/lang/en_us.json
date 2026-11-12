@@ -289,7 +289,7 @@
   "criticalmass.rod.bank_set": "Rod bank %s",
   "block.criticalmass.reactor_viewport": "Reactor Viewport",
   "item.criticalmass.plant_linker": "Plant Linker",
-  "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a gauge, button or annunciator to bind it",
+  "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a button or annunciator to bind it",
   "criticalmass.linker.tooltip_stored": "Remembers the block at %s %s %s (sneak-use in the air to clear)",
   "criticalmass.linker.stored": "Remembered %s at %s %s %s",
   "criticalmass.linker.bound": "Bound to %s at %s %s %s",

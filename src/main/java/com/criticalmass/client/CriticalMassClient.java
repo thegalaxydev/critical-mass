@@ -13,6 +13,7 @@ import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
 import dev.engine_room.flywheel.lib.model.Models;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
@@ -42,7 +43,12 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_BUTTON.get(), PanelRenderers.Button::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ANNUNCIATOR.get(), PanelRenderers.Annunciator::new);
-        event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR));
+        event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR) {
+            @Override
+            public AABB getRenderBoundingBox(TowerParts.Fan be) {
+                return new AABB(be.getBlockPos()).inflate(1, 0, 1);
+            }
+        });
         event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), ctx -> new HalfShaftRenderer<GeneratorBlockEntity>(ctx, GeneratorBlock::inputSide));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
     }

@@ -134,7 +134,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Rupture:** any steam buffer above 12 bar ruptures and loses its contents (logged).
 - **Condenser:** steam side front/back, cooling water top/bottom. It condenses only while cooling water flows.
 - **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiator Panels, then back.
-- **Cooling tower:** build it bottom to top: a Cooling Tower Basin, up to 12 Cooling Tower Packing blocks as fill, a Cooling Tower Distributor, and optionally a Cooling Tower Fan on top.
+- **Cooling tower:** build it bottom to top: a Cooling Tower Basin, up to 12 Cooling Tower Packing blocks as fill, a Cooling Tower Distributor, and optionally a Cooling Tower Fan on top. The fan is one block, but its blades sweep the eight blocks around it like a water wheel, so keep those clear.
   - Pipe hot water into a side of the distributor. It falls through the fill into the basin, and the basin's side outlet returns it to the loop.
   - **Airflow** sets how hard each fill block works. Bare packing with open sky gets 25%. A built tower with open sky above the distributor gets 25% plus 5% per extra fill block, up to 75%. A fan adds 100% at 64 RPM and a little more above that, and needs no open sky. The fan takes its shaft from above and costs 2 SU per RPM.
   - Rejected heat evaporates water (1 mB per 2,000 HU), so the basin slowly empties. Top it up by bucket or with Create pipes into its sides; a comparator reads its level.
