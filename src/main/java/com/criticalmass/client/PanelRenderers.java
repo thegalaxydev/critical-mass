@@ -1,9 +1,7 @@
 package com.criticalmass.client;
 
-import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.AnnunciatorBlockEntity;
 import com.criticalmass.content.control.ControlButtonBlockEntity;
-import com.criticalmass.content.control.GaugeBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -15,10 +13,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.joml.Matrix4f;
@@ -26,8 +23,7 @@ import org.joml.Matrix4f;
 public final class PanelRenderers {
     private static final float PX = 1 / 16f;
     private static final float FRONT = 13 / 16f - 0.002f;
-    private static final float WHITE_U = 0.5f / 32f;
-    private static final float WHITE_V = 20.5f / 32f;
+    private static final ResourceLocation WHITE = ResourceLocation.withDefaultNamespace("textures/misc/white.png");
     private static final int BRIGHT = LightTexture.FULL_BRIGHT;
 
     private PanelRenderers() {
@@ -37,8 +33,6 @@ public final class PanelRenderers {
         final PoseStack ms;
         final MultiBufferSource buffer;
         final Matrix4f pose;
-        final float u;
-        final float v;
 
         Face(BlockEntity be, PoseStack ms, MultiBufferSource buffer) {
             this.ms = ms;
@@ -48,18 +42,15 @@ public final class PanelRenderers {
             ms.translate(0.5, 0.5, 0.5);
             ms.mulPose(Axis.YP.rotationDegrees(180 - facing.toYRot()));
             ms.translate(-0.5, -0.5, -0.5);
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(CriticalMass.asResource("block/instrumentation_panel"));
-            u = sprite.getU(WHITE_U);
-            v = sprite.getV(WHITE_V);
             pose = ms.last().pose();
         }
 
         VertexConsumer quads() {
-            return buffer.getBuffer(RenderType.entityCutoutNoCull(InventoryMenu.BLOCK_ATLAS));
+            return buffer.getBuffer(RenderType.entityCutoutNoCull(WHITE));
         }
 
         void vertex(VertexConsumer vc, float sx, float sy, float depth, int color, int light) {
-            vc.addVertex(pose, (16 - sx) * PX, sy * PX, FRONT - depth).setColor(color).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(ms.last(), 0, 0, -1);
+            vc.addVertex(pose, (16 - sx) * PX, sy * PX, FRONT - depth).setColor(color).setUv(0.5f, 0.5f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(ms.last(), 0, 0, -1);
         }
 
         void rect(float x0, float y0, float x1, float y1, float depth, int color, int light) {
@@ -113,29 +104,6 @@ public final class PanelRenderers {
     private static String number(double v) {
         double a = Math.abs(v);
         return a >= 100 ? String.valueOf(Math.round(v)) : a >= 10 ? String.format(java.util.Locale.ROOT, "%.1f", v) : String.format(java.util.Locale.ROOT, "%.2f", v);
-    }
-
-    public static class Gauge extends SafeBlockEntityRenderer<GaugeBlockEntity> {
-        public Gauge(BlockEntityRendererProvider.Context context) {
-        }
-
-        @Override
-        protected void renderSafe(GaugeBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-            be.shownFraction += (be.fraction() - be.shownFraction) * 0.1f;
-            Face f = new Face(be, ms, buffer);
-            if (be.setpoint() > 0) {
-                double a = Math.toRadians(-135 + 270 * be.setpoint() / 100.0);
-                float mx = 8 + (float) Math.sin(a) * 3.3f;
-                float my = 8.1f + (float) Math.cos(a) * 3.3f;
-                f.rect(mx - 0.3f, my - 0.3f, mx + 0.3f, my + 0.3f, 0, be.alarm() ? 0xFFFF4030 : 0xFFB02018, be.alarm() ? BRIGHT : light);
-            }
-            f.needle(8, 8.1f, be.valid() ? be.shownFraction : 0, 2.7f, 0.3f, 0xFFC0261C, light);
-            String top = be.label().isEmpty() ? I18n.get(be.channel().langKey() + ".short") : be.label();
-            f.text(top, 8, 13.0f, 1.5f, 11.5f, 0xE8E4D6, BRIGHT);
-            String value = be.valid() ? number(be.value()) + (be.unit().isEmpty() ? "" : " " + be.unit()) : "--";
-            f.text(value, 8, 3.0f, 1.7f, 11.5f, be.alarm() ? 0xFF5040 : 0x6CE35C, BRIGHT);
-            f.end();
-        }
     }
 
     public static class Button extends SafeBlockEntityRenderer<ControlButtonBlockEntity> {

@@ -14,6 +14,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.Nullable;
 import com.criticalmass.content.radiation.RadiationEvents;
+import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.content.thermal.VesselEvents;
@@ -61,6 +62,7 @@ public class CriticalMass {
         CMFluids.FLUIDS.register(modEventBus);
         CMComponents.COMPONENTS.register(modEventBus);
         CMAttachments.ATTACHMENTS.register(modEventBus);
+        PlantDisplaySources.SOURCES.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
@@ -77,6 +79,7 @@ public class CriticalMass {
 
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(CMStress::register);
+        event.enqueueWork(PlantDisplaySources::attach);
         event.enqueueWork(() -> BoilerHeater.REGISTRY.register(CMBlocks.BOILER_HEATING_PLATE.get(),
                 (level, pos, state) -> level.getBlockEntity(pos) instanceof BoilerPlateBlockEntity plate ? plate.heatForBoiler() : BoilerHeater.NO_HEAT));
         ModList mods = ModList.get();

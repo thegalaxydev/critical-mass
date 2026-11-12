@@ -28,23 +28,28 @@ Use Reinforced Pipe wherever the water is at or above 100 °C or is steam. Creat
 
 ## Wiring a control room
 
-Panels do nothing until they are bound. Use the Plant Linker on a machine, then on the panel.
+Readings go on Create's own displays. Put a Display Link on a machine, point it at a Display Board, and pick what to show.
+
+| Display Link on | Shows |
+| --- | --- |
+| Reactor Controller or a Reactor Signal Interface | Status summary: status, hottest fuel, coolant temperature, pressure, flow and heat output |
+| Reactor Controller or a Reactor Signal Interface | Active alarms |
+| Turbine | Speed |
+| Generator | Output |
+| Primary pump | Flow |
+
+The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
+
+Controls are panels, and they do nothing until they are bound. Use the Plant Linker on a machine, then on the panel.
 
 | Panel | Bind to | Setting |
 | --- | --- | --- |
-| Gauge | Reactor Controller | Core temperature, with a high alarm at 70% |
-| Gauge | Reactor Controller | Coolant temperature |
-| Gauge | Reactor Controller | Rod bank A insertion |
-| Gauge | Primary pump | Flow, with a low alarm |
-| Gauge | Turbine | Speed |
-| Gauge | Generator | Output |
-| Gauge | Pressurizer | Pressure |
 | Control Button | Reactor Controller | SCRAM, reset, bank A in, bank A out |
 | Control Button | Turbine | Trip, reset |
 | Control Button | Generator | Breaker open, breaker close |
 | Annunciator | Reactor Controller | With an Alarm Siren beside it |
 
-**Protective trips are yours to build.** A gauge in alarm gives a redstone signal, and a redstone pulse presses a button. Run redstone from the core temperature gauge to the SCRAM button and you have a high-temperature trip. Run it from the turbine speed gauge to the turbine trip button for a second overspeed guard. If you remove the wire, the trip is gone.
+**Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse presses a button. Compare that signal against one you set and feed the result to the SCRAM button, and you have an earlier high-temperature trip. The Annunciator gives a redstone signal on any new alarm, so wiring it to a button trips on any alarm. If you remove the wire, the trip is gone.
 
 **Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Reinforced Valve.
 
@@ -104,6 +109,6 @@ Panels do nothing until they are bound. Use the Plant Linker on a machine, then 
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound and running plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power.
+It clears a 24×16 area south-east of you and builds a complete, bound and running plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, turbine and generator, a control wall, and a shielded fuel bay. Creative motors stand in for outside power. The control wall is a Display Board fed by three Display Links: the reactor summary from a Signal Interface, the turbine speed and the generator output. The buttons and the annunciator sit below it.
 
 The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t with the rods fully out. The tower has four Packing blocks under a fan at 128 RPM, and a creative tank pumps make-up water into the basin. At full power the plant settles within about four minutes: fuel near 30 °C, the tower rejecting about 615 HU/t, the generator at 64 FE/t, and no alarms. To operate it: the levers by the rod drives withdraw the rods, the lever on the controller's west side is its redstone signal, and the control wall's buttons SCRAM, reset and move bank A. Once you press a bank button or reset, the bank target takes over from the levers.

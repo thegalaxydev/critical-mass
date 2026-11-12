@@ -14,8 +14,8 @@
     "/setblock 9 -60 0 create:shaft[axis=x]",
     "/setblock 12 -60 1 criticalmass:reactor_vessel_casing",
     "/setblock 12 -59 1 criticalmass:reactor_vessel_casing",
-    "/setblock 12 -60 0 criticalmass:instrumentation_panel[facing=north]",
-    "/setblock 12 -59 0 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 12 -60 0 minecraft:air",
+    "/setblock 12 -59 0 minecraft:air",
     "/setblock 15 -59 0 criticalmass:circulation_pump[facing=north,axis_along_first=false]",
     "/setblock 15 -60 0 create:creative_motor[facing=up]",
     "/setblock 18 -60 0 criticalmass:circulation_pump[facing=up,axis_along_first=true]",
@@ -72,7 +72,7 @@
   {"shot": "first_person_meter"},
   {"cmds": ["/item replace entity @p weapon.mainhand with criticalmass:fuel_assembly"], "wait": 20},
   {"shot": "first_person_fuel"},
-  {"cmds": ["/give @p criticalmass:reactor_vessel_casing", "/give @p criticalmass:circulation_pump", "/give @p criticalmass:steam_turbine", "/give @p criticalmass:instrumentation_panel"], "wait": 20},
+  {"cmds": ["/give @p criticalmass:reactor_vessel_casing", "/give @p criticalmass:circulation_pump", "/give @p criticalmass:steam_turbine", "/give @p minecraft:air"], "wait": 20},
   {"shot": "hotbar_gui"},
   {"wait": 10}
  ]

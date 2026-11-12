@@ -6,9 +6,7 @@ import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.control.AnnunciatorBlockEntity;
 import com.criticalmass.content.control.ControlButtonBlockEntity;
-import com.criticalmass.content.control.GaugeBlockEntity;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
-import com.criticalmass.content.thermal.InstrumentationPanelBlockEntity;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
@@ -67,8 +65,6 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
-    public static final Supplier<BlockEntityType<GaugeBlockEntity>> GAUGE = BLOCK_ENTITIES.register("plant_gauge",
-            () -> BlockEntityType.Builder.of((pos, state) -> new GaugeBlockEntity(CMBlockEntities.GAUGE.get(), pos, state), CMBlocks.GAUGE.get()).build(null));
     public static final Supplier<BlockEntityType<ControlButtonBlockEntity>> CONTROL_BUTTON = BLOCK_ENTITIES.register("control_button",
             () -> BlockEntityType.Builder.of((pos, state) -> new ControlButtonBlockEntity(CMBlockEntities.CONTROL_BUTTON.get(), pos, state), CMBlocks.CONTROL_BUTTON.get()).build(null));
     public static final Supplier<BlockEntityType<AnnunciatorBlockEntity>> ANNUNCIATOR = BLOCK_ENTITIES.register("annunciator",
@@ -87,8 +83,6 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new Corium.Entity_(CMBlockEntities.CORIUM.get(), pos, state), CMBlocks.CORIUM.get()).build(null));
     public static final Supplier<BlockEntityType<GeneratorBlockEntity>> GENERATOR = BLOCK_ENTITIES.register("generator",
             () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
-    public static final Supplier<BlockEntityType<InstrumentationPanelBlockEntity>> INSTRUMENTATION_PANEL = BLOCK_ENTITIES.register("instrumentation_panel",
-            () -> BlockEntityType.Builder.of((pos, state) -> new InstrumentationPanelBlockEntity(CMBlockEntities.INSTRUMENTATION_PANEL.get(), pos, state), CMBlocks.INSTRUMENTATION_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<CoolantPortBlockEntity>> COOLANT_PORT = BLOCK_ENTITIES.register("primary_coolant_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new CoolantPortBlockEntity(CMBlockEntities.COOLANT_PORT.get(), pos, state), CMBlocks.PRIMARY_COOLANT_PORT.get()).build(null));
     public static final Supplier<BlockEntityType<FluidPipeBlockEntity>> REINFORCED_PIPE = BLOCK_ENTITIES.register("reinforced_pipe",

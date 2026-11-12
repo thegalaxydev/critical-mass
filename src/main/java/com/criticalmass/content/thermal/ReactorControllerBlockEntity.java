@@ -78,6 +78,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private final List<BlockPos> problemPos = new ArrayList<>();
     private final List<String> problemReason = new ArrayList<>();
     private final List<BlockPos> warningPos = new ArrayList<>();
+    private int comparator;
     private final List<String> warningReason = new ArrayList<>();
     private final List<String> missing = new ArrayList<>();
     private int fuelColumns;
@@ -175,6 +176,15 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     public int columnHeight() {
         return Math.max(1, dims[2] - 2);
+    }
+
+    public int comparator() {
+        return comparator;
+    }
+
+    public static int comparatorFor(double temperature) {
+        double fraction = (Math.max(CMThermal.AMBIENT, temperature) - CMThermal.AMBIENT) / (CMThermal.TRIP_TEMPERATURE - CMThermal.AMBIENT);
+        return (int) Math.round(15 * Math.max(0, Math.min(1, fraction)));
     }
 
     public List<String> missing() {
@@ -688,6 +698,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
             return;
         }
+        int nowComparator = comparatorFor(core.maxTemperature());
+        if (nowComparator != comparator) {
+            comparator = nowComparator;
+            level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+        }
         if (structure != null && !structure.unloaded() && !level.hasChunksAt(structure.min, structure.max)) {
             frozen = true;
             return;
@@ -1134,6 +1149,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientFission)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.extracted", ChatFormatting.GRAY, ThermalTooltips.number(clientExtracted)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.core_temp", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.comparator", ChatFormatting.DARK_GRAY, comparatorFor(clientMaxTemp)));
             if (clientHotSpots > 0) {
                 tooltip.add(ThermalTooltips.line("criticalmass.goggles.hot_spots", ChatFormatting.RED, clientHotSpots));
             }

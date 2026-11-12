@@ -28,7 +28,7 @@
     "/setblock 103 -57 2 create:shaft[axis=x]",
     "/setblock 105 -57 2 create:shaft[axis=x]",
     "/setblock 102 -57 0 criticalmass:reactor_vessel_casing",
-    "/setblock 103 -57 0 criticalmass:instrumentation_panel[facing=north]",
+    "/setblock 103 -57 0 minecraft:air",
     "/setblock 103 -57 1 criticalmass:reactor_vessel_casing",
     "/setblock 100 -57 4 criticalmass:control_rod_drive[facing=north]",
     "/setblock 100 -57 5 create:creative_motor[facing=north]"

@@ -452,7 +452,6 @@ BLOCKS = {
     "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state},
     "feedwater_tank": {"lang": "Feedwater Tank", "texture": feedwater_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
-    "plant_gauge": {"lang": "Gauge", "texture": gauge_texture, "model": lambda n: panel_model(n, 1, 1, 15, 15), "state": horizontal},
     "control_button": {"lang": "Control Button", "texture": button_texture, "model": lambda n: panel_model(n, 4, 4, 12, 12), "state": horizontal},
     "annunciator": {"lang": "Annunciator", "texture": annunciator_texture, "model": lambda n: panel_model(n, 1, 1, 15, 15), "state": horizontal},
     "reactor_viewport": {

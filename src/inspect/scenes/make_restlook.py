@@ -11,7 +11,7 @@ def look(px, py, pz, tx, ty, tz):
 row1 = ["criticalmass:circulation_pump[facing=east,axis_along_first=true]", "criticalmass:steam_turbine[axis=x]",
         "criticalmass:control_rod_drive[facing=north]", "criticalmass:fuel_channel", "criticalmass:control_channel", "criticalmass:coolant_channel"]
 row2 = ["criticalmass:fuel_assembly_bench[facing=south]", "criticalmass:spent_fuel_rack", "criticalmass:shielded_cask",
-        "criticalmass:alarm_siren[facing=south]", "criticalmass:instrumentation_panel[facing=south]", "criticalmass:docking_service_connector[facing=south]"]
+        "criticalmass:alarm_siren[facing=south]", "minecraft:air", "criticalmass:docking_service_connector[facing=south]"]
 cmds = ["/setblock %d -59 40 %s" % (40 + 2 * i, b) for i, b in enumerate(row1)]
 cmds += ["/setblock %d -59 44 %s" % (40 + 2 * i, b) for i, b in enumerate(row2)]
 cmds += ["/setblock 46 -58 40 create:creative_motor[facing=down]", "/setblock 40 -59 39 create:creative_motor[facing=south]"]

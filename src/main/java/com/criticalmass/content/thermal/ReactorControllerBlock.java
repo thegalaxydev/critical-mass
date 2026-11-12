@@ -32,6 +32,16 @@ public class ReactorControllerBlock extends HorizontalBlock implements IBE<React
     }
 
     @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos) {
+        return level.getBlockEntity(pos) instanceof ReactorControllerBlockEntity c ? c.comparator() : 0;
+    }
+
+    @Override
     public Class<ReactorControllerBlockEntity> getBlockEntityClass() {
         return ReactorControllerBlockEntity.class;
     }

@@ -3,7 +3,11 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.AnnunciatorBlockEntity;
 import com.criticalmass.content.control.ControlButtonBlockEntity;
-import com.criticalmass.content.control.GaugeBlockEntity;
+import com.criticalmass.content.control.PlantDisplaySources;
+import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
+import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
@@ -65,39 +69,50 @@ public final class ControlTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 100)
-    public static void gaugeReadsItsBoundTargetAndAlarms(GameTestHelper h) {
+    public static void displayLinkShowsPlantReadings(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * (300 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
-        GaugeBlockEntity gauge = panel(h, CMBlocks.GAUGE.get(), new BlockPos(9, 1, 9));
-        GaugeBlockEntity loose = panel(h, CMBlocks.GAUGE.get(), new BlockPos(11, 1, 9));
-        h.setBlock(new BlockPos(9, 1, 11), Blocks.DIRT);
-        h.assertTrue(!gauge.bind(h.absolutePos(new BlockPos(9, 1, 11))), "A gauge should refuse a block that has nothing to read");
-        h.assertTrue(gauge.bind(h.absolutePos(TestVessels.CONTROLLER)), "A gauge should bind to a reactor controller");
-        gauge.setChannel(PlantChannel.COOLANT_TEMPERATURE);
-        gauge.setSetpoint(50, false);
+        BlockPos linkPos = TestVessels.CONTROLLER.west();
+        BlockPos signPos = new BlockPos(0, 2, 0);
+        h.setBlock(signPos.below(), Blocks.STONE);
+        h.setBlock(signPos, Blocks.OAK_SIGN);
+        h.setBlock(linkPos, AllBlocks.DISPLAY_LINK.getDefaultState().setValue(DisplayLinkBlock.FACING, Direction.WEST));
+        DisplayLinkBlockEntity link = h.getBlockEntity(linkPos);
+        SignBlockEntity sign = h.getBlockEntity(signPos);
+        link.target(h.absolutePos(signPos));
+        h.assertTrue(DisplaySource.getAll(h.getLevel(), h.absolutePos(TestVessels.CONTROLLER)).contains(PlantDisplaySources.STATUS.get()), "The controller should offer its status as a display source");
+        link.activeSource = PlantDisplaySources.CHANNELS.get(PlantChannel.COOLANT_TEMPERATURE).get();
+        link.updateGatheredData();
+        String reading = sign.getFrontText().getMessage(0, false).getString();
+        h.assertTrue(reading.equals("300 °C"), "The sign should show the coolant temperature: " + reading);
+        link.activeSource = PlantDisplaySources.STATUS.get();
+        link.updateGatheredData();
+        String first = sign.getFrontText().getMessage(0, false).getString();
+        String second = sign.getFrontText().getMessage(1, false).getString();
+        h.assertTrue(!first.isEmpty() && second.endsWith("°C"), "The summary should lead with the status and then the core temperature: " + first + " / " + second);
+        link.activeSource = PlantDisplaySources.CHANNELS.get(PlantChannel.SPEED).get();
+        link.updateGatheredData();
+        h.assertTrue(link.activeSource == null, "A reactor has no speed reading to offer");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void controllerComparatorFollowsTheHottestFuel(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        double halfway = (CMThermal.AMBIENT + CMThermal.TRIP_TEMPERATURE) / 2;
         h.startSequence()
-                .thenIdle(20)
-                .thenExecute(() -> {
-                    double expected = (300 - CMThermal.AMBIENT) / (PlantChannel.COOLANT_SCALE_MAX - CMThermal.AMBIENT);
-                    h.assertTrue(gauge.valid() && Math.abs(gauge.value() - 300) < 1, "Gauge should read the vessel coolant: " + gauge.value());
-                    h.assertTrue(gauge.comparator() == Math.round(15 * (float) expected), "Comparator should follow the scale: " + gauge.comparator());
-                    h.assertTrue(gauge.alarm() && h.getBlockState(new BlockPos(9, 1, 9)).getSignal(h.getLevel(), h.absolutePos(new BlockPos(9, 1, 9)), Direction.UP) == 15, "High alarm should give a redstone signal");
-                    h.assertTrue(!loose.valid() && loose.comparator() == 0 && !loose.alarm(), "An unbound gauge should read nothing");
-                    gauge.setSetpoint(50, true);
-                })
                 .thenIdle(10)
                 .thenExecute(() -> {
-                    h.assertTrue(!gauge.alarm(), "A low alarm should be quiet above its setpoint");
-                    gauge.setChannel(PlantChannel.LEVEL);
+                    h.assertTrue(c.comparator() == 0, "A cold core should give no comparator signal: " + c.comparator());
+                    c.core().setColumnHeat(2, 0, (halfway - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3);
                 })
-                .thenIdle(10)
+                .thenIdle(5)
                 .thenExecute(() -> {
-                    h.assertTrue(Math.abs(gauge.value() - 100.0 * c.coolant().amount() / c.coolant().capacity()) < 0.5, "Level channel should read percent full: " + gauge.value());
-                    gauge.setChannel(PlantChannel.SPEED);
+                    int signal = h.getBlockState(TestVessels.CONTROLLER).getAnalogOutputSignal(h.getLevel(), h.absolutePos(TestVessels.CONTROLLER));
+                    h.assertTrue(signal == 8 && c.comparator() == 8, "Fuel halfway to the trip temperature should read 8: " + signal + " at " + c.core().maxTemperature());
                 })
-                .thenIdle(10)
-                .thenExecute(() -> h.assertTrue(!gauge.valid(), "A reactor has no speed reading"))
                 .thenSucceed();
     }
 
@@ -255,19 +270,19 @@ public final class ControlTests {
     @GameTest(template = EMPTY, timeoutTicks = 40)
     public static void linkerBindsAPanelToAMachine(GameTestHelper h) {
         BlockPos tank = new BlockPos(2, 1, 2);
-        BlockPos gaugePos = new BlockPos(5, 1, 2);
+        BlockPos buttonPos = new BlockPos(5, 1, 2);
         h.setBlock(tank, CMBlocks.EMERGENCY_COOLANT_TANK.get());
-        GaugeBlockEntity gauge = panel(h, CMBlocks.GAUGE.get(), gaugePos);
+        ControlButtonBlockEntity bound = panel(h, CMBlocks.CONTROL_BUTTON.get(), buttonPos);
         Player player = h.makeMockPlayer(GameType.CREATIVE);
         ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
         player.setItemInHand(InteractionHand.MAIN_HAND, linker);
-        BlockPos gaugeAbs = h.absolutePos(gaugePos);
+        BlockPos buttonAbs = h.absolutePos(buttonPos);
         BlockPos tankAbs = h.absolutePos(tank);
-        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(gaugeAbs), Direction.NORTH, gaugeAbs, false)));
-        h.assertTrue(gauge.target() == null, "An empty linker should bind nothing");
+        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(buttonAbs), Direction.NORTH, buttonAbs, false)));
+        h.assertTrue(bound.target() == null, "An empty linker should bind nothing");
         linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(tankAbs), Direction.UP, tankAbs, false)));
-        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(gaugeAbs), Direction.NORTH, gaugeAbs, false)));
-        h.assertTrue(tankAbs.equals(gauge.target()), "Linker should bind the gauge to the remembered tank: " + gauge.target());
+        linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(buttonAbs), Direction.NORTH, buttonAbs, false)));
+        h.assertTrue(tankAbs.equals(bound.target()), "Linker should bind the button to the remembered tank: " + bound.target());
         h.succeed();
     }
 }

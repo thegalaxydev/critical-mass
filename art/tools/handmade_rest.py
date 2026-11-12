@@ -467,6 +467,5 @@ REST = {
     "spent_fuel_rack": spent_rack,
     "shielded_cask": cask,
     "alarm_siren": siren,
-    "instrumentation_panel": instrument_panel,
     "docking_service_connector": docking,
 }

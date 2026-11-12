@@ -36,7 +36,6 @@ if __name__ == "__main__":
         E += views("pump", ["criticalmass:block/circulation_pump", ("criticalmass:block/circulation_pump_rotor", Y_TO_X)])
         E += views("pump vertical-shaft", ["criticalmass:block/circulation_pump_vertical", "criticalmass:block/circulation_pump_rotor"], (225, 45))
         E += views("turbine", ["criticalmass:block/steam_turbine", ("criticalmass:block/steam_turbine_rotor", Y_TO_X)])
-        E += views("panel", ["criticalmass:block/instrumentation_panel"], (0, 45, 315))
     if which == "rest":
         names = ["reactor_controller", "fuel_channel", "control_channel", "coolant_channel", "reactor_service_port", "primary_coolant_port_inlet", "primary_coolant_port_outlet",
                  "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "emergency_coolant_tank", "relief_valve", "boiler_heating_plate",

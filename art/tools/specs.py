@@ -99,7 +99,6 @@ SLICE_MODELS = {
     "circulation_pump_rotor": pump_rotor,
     "steam_turbine": turbine,
     "steam_turbine_rotor": turbine_rotor,
-    "instrumentation_panel": instrument_panel,
 }
 
 
@@ -121,7 +120,6 @@ DESCRIPTIONS = {
     "steam_turbine": "Atlas for a steam turbine section. Regions: iron end plates with a brass ring around a transparent shaft hole (keep the hole magenta), riveted dark steel drum plates with a vertical seam, very dark inner drum walls, a slotted inspection band of thin brass bars with magenta gaps between them (keep gaps magenta), a copper steam inlet flange with a red collar and small bore, an iron exhaust flange with a pale grey collar, and thin edge strips.",
     "steam_turbine_rotor": "Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished iron blades alternating light and dark around a brass hub, magenta outside the circle (keep magenta), plus a thin iron rim strip.",
     "circulation_pump_rotor": "Atlas for the pump drive hub: a square brass drive flange plate with a darker outline, notch marks at the middle of each edge and an iron centre boss, plus a thin brass edge strip.",
-    "instrumentation_panel": "Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark steel panel with two round analogue needle gauges in brass bezels (cream dial faces, small tick marks, black needles resting at the low end), a black horizontal bar-graph strip, and a row of three small unlit indicator lamps (green, amber, red) in brass sockets. Also brass edge strips and an iron back plate.",
 }
 
 
@@ -129,7 +127,6 @@ BLOCK_DEFS = {
     "reactor_vessel_casing": {"state": ("raw", {"variants": {"crack=%d" % i: {"model": "criticalmass:block/reactor_vessel_casing" + ("" if i == 0 else "_crack_%d" % i)} for i in range(4)}}), "item": "block", "lang": "Reactor Vessel Casing"},
     "circulation_pump": {"state": ("dir_axis", "circulation_pump", "x", "circulation_pump_vertical", "y"), "item": ("merged", "circulation_pump", "circulation_pump_rotor"), "lang": "Circulation Pump"},
     "steam_turbine": {"state": ("h_axis", "steam_turbine"), "item": ("merged", "steam_turbine", "steam_turbine_rotor"), "lang": "Steam Turbine"},
-    "instrumentation_panel": {"state": ("horizontal", "instrumentation_panel"), "item": "block", "lang": "Instrumentation Panel"},
 }
 
 ITEM_DEFS = {

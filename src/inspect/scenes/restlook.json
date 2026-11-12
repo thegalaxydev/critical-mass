@@ -24,7 +24,7 @@
     "/setblock 42 -59 44 criticalmass:spent_fuel_rack",
     "/setblock 44 -59 44 criticalmass:shielded_cask",
     "/setblock 46 -59 44 criticalmass:alarm_siren[facing=south]",
-    "/setblock 48 -59 44 criticalmass:instrumentation_panel[facing=south]",
+    "/setblock 48 -59 44 minecraft:air",
     "/setblock 50 -59 44 criticalmass:docking_service_connector[facing=south]",
     "/setblock 46 -58 40 create:creative_motor[facing=down]",
     "/setblock 40 -59 39 create:creative_motor[facing=south]"

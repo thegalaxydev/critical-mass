@@ -21,15 +21,16 @@ NS = "criticalmass_demo"
 TAG = "cm_reactor_origin"
 AREA = ((-9, -2), (14, 13))
 TEMP = "cm_bind"
-CHANNELS = {"temperature": 0, "coolant": 1, "pressure": 2, "level": 3, "flow": 4, "power": 5, "rods_a": 6, "speed": 10, "output": 11}
 FUNCTIONS = {"scram": 0, "reset": 1, "a_in": 2, "a_out": 3, "all_in": 10, "turbine_trip": 11, "turbine_reset": 12, "breaker_open": 13, "breaker_close": 14, "ack": 15}
 PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
-GAUGES = [((-1, 2, 8), (5, 6, 5), "pressure", 0), ((-7, 2, 8), CONTROLLER, "temperature", 80), ((-6, 2, 8), CONTROLLER, "coolant", 0), ((-5, 2, 8), CONTROLLER, "rods_a", 0), ((-4, 2, 8), PUMP1, "flow", 0),
-          ((-3, 2, 8), TURBINE, "speed", 0), ((-2, 2, 8), GENERATOR, "output", 0)]
+BOARD = ((-7, 2), (-2, 5), 8)
+BOARD_COG = (-8, 2, 8)
+BOARD_MOTOR = (-8, 2, 9)
+LINKS = [((0, 4, 2), "west", "reactor_status", "", 0), ((6, 6, 7), "south", "speed", "TURBINE", 6), ((5, 6, 7), "south", "output", "OUTPUT", 7)]
 BUTTONS = [((-7, 1, 8), CONTROLLER, "scram"), ((-6, 1, 8), CONTROLLER, "reset"), ((-5, 1, 8), CONTROLLER, "a_in"), ((-4, 1, 8), CONTROLLER, "a_out"),
-           ((-7, 3, 8), TURBINE, "turbine_trip"), ((-6, 3, 8), TURBINE, "turbine_reset"), ((-5, 3, 8), GENERATOR, "breaker_open"), ((-4, 3, 8), GENERATOR, "breaker_close")]
+           ((-7, 0, 8), TURBINE, "turbine_trip"), ((-6, 0, 8), TURBINE, "turbine_reset"), ((-5, 0, 8), GENERATOR, "breaker_open"), ((-4, 0, 8), GENERATOR, "breaker_close")]
 ANNUNCIATOR = (-3, 1, 8)
-ACK = (-3, 3, 8)
+ACK = (-3, 0, 8)
 
 
 def rel(o):
@@ -101,8 +102,6 @@ plant = [
 
 safety = [
     setblock((1, 4, 2), "criticalmass:reactor_signal_interface[facing=west]"),
-    setblock((0, 4, 3), "criticalmass:instrumentation_panel[facing=west]"),
-    setblock((0, 4, 4), "criticalmass:instrumentation_panel[facing=west]"),
     setblock((0, 2, 2), "criticalmass:emergency_coolant_tank"),
     setblock((5, 4, 6), "criticalmass:alarm_siren[facing=west]"),
     setblock((4, 6, 3), "criticalmass:docking_service_connector[facing=up]"),
@@ -122,14 +121,18 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
        setblock((-8, 0, 1), "criticalmass:uranium_ore"),
        setblock((-8, 0, 2), "criticalmass:deepslate_uranium_ore")]
 
-desk = ["fill %s %s criticalmass:shielding_concrete" % (w(-8, 0, 9), w(-1, 3, 9))]
-desk += [setblock(pos, "criticalmass:plant_gauge[facing=north]") for pos, _, _, _ in GAUGES]
+(bx0, by0), (bx1, by1), bz = BOARD
+desk = ["fill %s %s criticalmass:shielding_concrete" % (w(-8, 0, 9), w(-1, by1, 9))]
+for by in range(by0, by1 + 1):
+    desk.append("fill %s %s create:display_board[facing=north,up=%s,down=%s]" % (w(bx0, by, bz), w(bx1, by, bz), str(by < by1).lower(), str(by > by0).lower()))
+desk += [setblock(BOARD_COG, "create:cogwheel[axis=z]"), setblock(BOARD_MOTOR, "create:creative_motor[facing=north]{ScrollValue:32}")]
+for pos, facing, source, label, line in LINKS:
+    offset = (bx0 - pos[0], by1 - pos[1], bz - pos[2])
+    desk.append(setblock(pos, "create:display_link[facing=%s]{TargetOffset:[I;%d,%d,%d],TargetLine:%d,Source:{Id:\"criticalmass:%s\",Label:\"%s\"}}" % ((facing,) + offset + (line, source, label))))
 desk += [setblock(pos, "criticalmass:control_button[facing=north]") for pos, _, _ in BUTTONS]
 desk += [setblock(ANNUNCIATOR, "criticalmass:annunciator[facing=north]"), setblock(ACK, "criticalmass:control_button[facing=north]"),
          setblock((-2, 1, 8), "criticalmass:alarm_siren[facing=north]")]
 wiring = []
-for pos, target, channel, setpoint in GAUGES:
-    wiring += bind(pos, target, ",Channel:%d,ScrollValue:%d" % (CHANNELS[channel], setpoint))
 for pos, target, function in BUTTONS:
     wiring += bind(pos, target, ",ScrollValue:%d" % FUNCTIONS[function])
 wiring += bind(ANNUNCIATOR, CONTROLLER) + bind(ACK, ANNUNCIATOR, ",ScrollValue:%d" % FUNCTIONS["ack"])

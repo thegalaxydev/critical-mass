@@ -40,8 +40,6 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.STEAM_TURBINE.get(), ctx -> new AxialRotorRenderer<SteamTurbineBlockEntity>(ctx, CMPartialModels.STEAM_TURBINE_ROTOR));
         event.registerBlockEntityRenderer(CMBlockEntities.FUEL_ASSEMBLY_BENCH.get(), BenchRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
-        event.registerBlockEntityRenderer(CMBlockEntities.INSTRUMENTATION_PANEL.get(), InstrumentationPanelRenderer::new);
-        event.registerBlockEntityRenderer(CMBlockEntities.GAUGE.get(), PanelRenderers.Gauge::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_BUTTON.get(), PanelRenderers.Button::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ANNUNCIATOR.get(), PanelRenderers.Annunciator::new);
         event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR));
