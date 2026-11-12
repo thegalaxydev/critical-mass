@@ -62,7 +62,7 @@ public class RadiatorBlockEntity extends SingleBufferNodeBlockEntity {
             setStatus("criticalmass.radiator.no_flow");
             return;
         }
-        double q = buffer.removeHeat(buffer.heat() * Math.min(1, CMThermal.RADIATOR_RATE * openFaces * bonus));
+        double q = buffer.removeHeat(Math.min(buffer.heat(), buffer.specificEnergy() * CMThermal.RADIATOR_CAPACITY * Math.min(1, CMThermal.RADIATOR_RATE * openFaces * bonus)));
         sinks.rejectedHeat += q;
         lastRejected = q;
         setStatus("criticalmass.radiator.ok");

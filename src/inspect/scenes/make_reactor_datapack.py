@@ -11,7 +11,8 @@ COOLING = [(8, 6, 6), (8, 5, 6), (8, 4, 6), (8, 4, 7), (8, 4, 8), (9, 1, 9), (11
            (11, 7, 9), (11, 8, 9), (11, 9, 9), (11, 9, 8), (11, 9, 7), (11, 9, 6), (10, 9, 6), (9, 9, 6), (8, 9, 6), (8, 8, 6)]
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
-PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + STEAM + COOLING
+FEEDWATER = (9, 1, 6)
+PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING
 DRIVES = [((3, 6, 2), "south", (3, 6, 1), (2, 6, 2)), ((3, 6, 4), "north", (3, 6, 5), (2, 6, 4))]
 VIEWPORTS = [(5, 2, 3), (5, 3, 3), (5, 4, 3), (3, 2, 5), (3, 4, 5)]
 NS = "criticalmass_demo"
@@ -21,7 +22,7 @@ TEMP = "cm_bind"
 CHANNELS = {"temperature": 0, "coolant": 1, "pressure": 2, "level": 3, "flow": 4, "power": 5, "rods_a": 6, "speed": 10, "output": 11}
 FUNCTIONS = {"scram": 0, "reset": 1, "a_in": 2, "a_out": 3, "all_in": 10, "turbine_trip": 11, "turbine_reset": 12, "breaker_open": 13, "breaker_close": 14, "ack": 15}
 PUMP1, TURBINE, GENERATOR = (4, 3, 6), (6, 6, 6), (5, 6, 6)
-GAUGES = [((-7, 2, 8), CONTROLLER, "temperature", 80), ((-6, 2, 8), CONTROLLER, "coolant", 0), ((-5, 2, 8), CONTROLLER, "rods_a", 0), ((-4, 2, 8), PUMP1, "flow", 0),
+GAUGES = [((-1, 2, 8), (5, 6, 5), "pressure", 0), ((-7, 2, 8), CONTROLLER, "temperature", 80), ((-6, 2, 8), CONTROLLER, "coolant", 0), ((-5, 2, 8), CONTROLLER, "rods_a", 0), ((-4, 2, 8), PUMP1, "flow", 0),
           ((-3, 2, 8), TURBINE, "speed", 0), ((-2, 2, 8), GENERATOR, "output", 0)]
 BUTTONS = [((-7, 1, 8), CONTROLLER, "scram"), ((-6, 1, 8), CONTROLLER, "reset"), ((-5, 1, 8), CONTROLLER, "a_in"), ((-4, 1, 8), CONTROLLER, "a_out"),
            ((-7, 3, 8), TURBINE, "turbine_trip"), ((-6, 3, 8), TURBINE, "turbine_reset"), ((-5, 3, 8), GENERATOR, "breaker_open"), ((-4, 3, 8), GENERATOR, "breaker_close")]
@@ -70,7 +71,13 @@ plant = [
     setblock((7, 6, 6), "create:stressometer[facing=south,axis_along_first=true]"),
     setblock((5, 6, 6), "criticalmass:generator[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
-    "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 1, 9), w(8, 4, 9)),
+    setblock((8, 1, 9), "criticalmass:tower_basin"),
+    "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 3, 9)),
+    setblock((8, 4, 9), "criticalmass:tower_distributor"),
+    setblock((8, 5, 9), "criticalmass:tower_fan"),
+    setblock((8, 6, 9), "create:creative_motor[facing=down]"),
+    setblock(FEEDWATER, "criticalmass:feedwater_tank"),
+    setblock((5, 6, 5), "criticalmass:pressurizer"),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
     setblock((11, 4, 9), "criticalmass:radiator_panel[facing=south]"),
     setblock(VALVE, "criticalmass:reinforced_valve[facing=up,axis_along_first=true]"),
@@ -136,7 +143,7 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
               merge((-5, 0, 0), "Buffer", "minecraft:water", 4000, 0),
               merge((-5, 0, 1), "Buffer", "minecraft:water", 4000, 0),
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2)]
-start_here += [merge((8, y, 9), "Buffer", "minecraft:water", 500, 0) for y in range(1, 5)]
+start_here += [merge((8, 1, 9), "Buffer", "minecraft:water", 2500, 0), merge(FEEDWATER, "Buffer", "minecraft:water", 1500, 1500 * 80.0)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
 start_here += wiring
 start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),

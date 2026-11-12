@@ -1,5 +1,6 @@
 package com.criticalmass.client;
 
+import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
 import com.simibubi.create.AllPartialModels;
@@ -43,6 +44,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.GAUGE.get(), PanelRenderers.Gauge::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_BUTTON.get(), PanelRenderers.Button::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ANNUNCIATOR.get(), PanelRenderers.Annunciator::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR));
         event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), ctx -> new HalfShaftRenderer<GeneratorBlockEntity>(ctx, GeneratorBlock::inputSide));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
     }
@@ -55,6 +57,10 @@ public class CriticalMassClient {
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
                 .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.UP, ControlRodDriveBlock.inputSide(be.getBlockState()), Models.partial(CMPartialModels.CONTROL_ROD_DRIVE_PINION)))
                 .skipVanillaRender(be -> false)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.TOWER_FAN.get())
+                .factory(SingleAxisRotatingVisual.of(CMPartialModels.TOWER_FAN_ROTOR))
+                .skipVanillaRender(be -> true)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
                 .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.SOUTH, GeneratorBlock.inputSide(be.getBlockState()), Models.partial(AllPartialModels.SHAFT_HALF)))

@@ -106,6 +106,10 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CIRCULATION_PUMP.get(), (be, side) -> side != null && side.getAxis() == be.getBlockState().getValue(CirculationPumpBlock.FACING).getAxis() ? EmptyFluidHandler.INSTANCE : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLANT_PORT.get(), (be, side) -> side == null || side == be.getBlockState().getValue(FacingBlock.FACING) ? new CoolantPortHandler(be.getLevel(), be.getBlockPos(), side) : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_BASIN.get(), (be, side) -> side == Direction.DOWN ? null : be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.TOWER_DISTRIBUTOR.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.FEEDWATER_TANK.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.PRESSURIZER.get(), (be, side) -> be.input());
         event.registerBlockEntity(Capabilities.EnergyStorage.BLOCK, CMBlockEntities.GENERATOR.get(), (be, side) -> side == GeneratorBlock.inputSide(be.getBlockState()) ? null : be.output());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());

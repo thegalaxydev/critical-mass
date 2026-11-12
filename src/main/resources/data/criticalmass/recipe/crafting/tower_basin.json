@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/steel"
+    },
+    "T": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "P P",
+    "PTP",
+    "PPP"
+  ],
+  "result": {
+    "id": "criticalmass:tower_basin"
+  }
+}

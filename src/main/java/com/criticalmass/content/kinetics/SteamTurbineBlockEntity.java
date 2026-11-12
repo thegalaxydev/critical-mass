@@ -184,7 +184,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         }
         double limit = connected && !overspeedTrip ? 1 - governor : 0;
         double steam = coolant.steamEnergy();
-        double wideOpen = steam * CMThermal.TURBINE_EXTRACTION;
+        double wideOpen = coolant.amount() == 0 ? 0 : Math.min(steam, steam / coolant.amount() * CMThermal.TURBINE_CAPACITY * CMThermal.TURBINE_EXTRACTION);
         if (loadCooldown-- <= 0) {
             loadCooldown = CMThermal.LOAD_SAMPLE_TICKS;
             shaftLoad = measureLoad();

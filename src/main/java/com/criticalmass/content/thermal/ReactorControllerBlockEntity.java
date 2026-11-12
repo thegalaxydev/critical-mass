@@ -84,6 +84,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int clientHotSpots;
 
     private final double[] bankTargets = {Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    private double primaryPressure = CMThermal.ATMOSPHERIC;
+    private int pressureLink;
+    private boolean flashing;
+    private double flashedVolume;
     private int visualClock;
 
     public ReactorControllerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -288,6 +292,56 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         return false;
+    }
+
+    public void notePressure(double bar) {
+        primaryPressure = bar;
+        pressureLink = CMThermal.PRESSURE_LINK_TICKS;
+    }
+
+    public double primaryPressure() {
+        return primaryPressure;
+    }
+
+    public double boilingPoint() {
+        return PressurizerBlockEntity.boilingPoint(primaryPressure);
+    }
+
+    public boolean flashing() {
+        return flashing;
+    }
+
+    public double flashedVolume() {
+        return flashedVolume;
+    }
+
+    private void flashCoolant() {
+        if (pressureLink > 0) {
+            pressureLink--;
+        } else {
+            primaryPressure = CMThermal.ATMOSPHERIC;
+        }
+        boolean now = false;
+        if (coolant.amount() > 0) {
+            double limit = boilingPoint();
+            double over = coolant.temperature() - limit;
+            if (over > 0) {
+                double excess = over * coolant.amount() * CMThermal.HEAT_CAPACITY;
+                int mb = (int) Math.min(coolant.amount(), Math.max(1, Math.ceil(excess * CMThermal.FLASH_SHARE / CMThermal.LATENT_HEAT)));
+                CoolantBuffer.Packet steam = coolant.take(mb);
+                sinks.vent(steam);
+                sinks.ventedHeat += coolant.removeHeat(Math.min(excess * CMThermal.FLASH_SHARE, mb * CMThermal.LATENT_HEAT));
+                flashedVolume += mb;
+                now = true;
+                if (level instanceof ServerLevel server && level.getGameTime() % 10 == 0) {
+                    server.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5, 6, 0.4, 0.2, 0.4, 0.05);
+                }
+            }
+        }
+        if (now != flashing) {
+            flashing = now;
+            syncPending = true;
+        }
     }
 
     public double bankTarget(int bank) {
@@ -636,6 +690,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (failures > 0) {
             coolant.contaminate();
         }
+        flashCoolant();
         if (breached && coolant.amount() > 0) {
             CoolantBuffer.Packet leak = coolant.take(CMThermal.BREACH_LEAK_RATE);
             sinks.vent(leak);
@@ -757,6 +812,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putBoolean("Tripped", tripped);
         tag.putBoolean("Reacting", reacting);
         tag.putString("TripReason", tripReason);
+        tag.putDouble("PrimaryPressure", primaryPressure);
+        tag.putBoolean("Flashing", flashing);
+        tag.putDouble("Flashed", flashedVolume);
         for (int i = 0; i < bankTargets.length; i++) {
             if (!Double.isNaN(bankTargets[i])) {
                 tag.putDouble("Bank" + i, bankTargets[i]);
@@ -831,6 +889,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tripped = tag.getBoolean("Tripped");
         reacting = tag.getBoolean("Reacting");
         tripReason = tag.getString("TripReason");
+        primaryPressure = tag.contains("PrimaryPressure") ? tag.getDouble("PrimaryPressure") : CMThermal.ATMOSPHERIC;
+        flashing = tag.getBoolean("Flashing");
+        flashedVolume = tag.getDouble("Flashed");
         for (int i = 0; i < bankTargets.length; i++) {
             bankTargets[i] = tag.contains("Bank" + i) ? tag.getDouble("Bank" + i) : Double.NaN;
         }

@@ -1,5 +1,9 @@
 package com.criticalmass.registry;
 
+import com.criticalmass.content.thermal.PlantNodeBlock;
+import com.criticalmass.content.thermal.PressurizerBlock;
+import com.criticalmass.content.thermal.TowerParts;
+import net.minecraft.core.Direction;
 import com.criticalmass.content.control.PanelBlocks;
 import com.criticalmass.content.thermal.ChannelBlocks;
 import com.criticalmass.content.kinetics.GeneratorBlock;
@@ -57,6 +61,14 @@ public final class CMBlocks {
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
+    public static final DeferredBlock<PlantNodeBlock<TowerParts.Basin>> TOWER_BASIN = register("tower_basin",
+            p -> new PlantNodeBlock<>(p, TowerParts.Basin.class, () -> CMBlockEntities.TOWER_BASIN.get(), (s, d) -> d.getAxis().isHorizontal()), metal(3.0f));
+    public static final DeferredBlock<PlantNodeBlock<TowerParts.Distributor>> TOWER_DISTRIBUTOR = register("tower_distributor",
+            p -> new PlantNodeBlock<>(p, TowerParts.Distributor.class, () -> CMBlockEntities.TOWER_DISTRIBUTOR.get(), (s, d) -> d.getAxis().isHorizontal()), metal(3.0f).noOcclusion());
+    public static final DeferredBlock<TowerParts.FanBlock> TOWER_FAN = register("tower_fan", TowerParts.FanBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<PlantNodeBlock<TowerParts.FeedwaterTank>> FEEDWATER_TANK = register("feedwater_tank",
+            p -> new PlantNodeBlock<>(p, TowerParts.FeedwaterTank.class, () -> CMBlockEntities.FEEDWATER_TANK.get(), (s, d) -> d != Direction.DOWN), metal(3.0f));
+    public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
     public static final DeferredBlock<GeneratorBlock> GENERATOR = register("generator", GeneratorBlock::new, metal(4.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));

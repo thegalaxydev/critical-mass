@@ -120,7 +120,9 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
             double cp = primary.amount() * CMThermal.HEAT_CAPACITY;
             double cs = secondary.amount() * CMThermal.HEAT_CAPACITY;
             double gap = primary.temperature() - secondary.temperature();
-            q = CMThermal.EXCHANGER_RATE * gap * cp * cs / (cp + cs);
+            double surface = CMThermal.EXCHANGER_RATE * CMThermal.EXCHANGER_CAPACITY * CMThermal.HEAT_CAPACITY / 2;
+            double reach = CMThermal.EXCHANGER_REACH * cp * cs / (cp + cs);
+            q = gap * Math.min(surface, reach);
             if (q > 0) {
                 q = primary.removeHeat(q);
                 secondary.addHeat(q);

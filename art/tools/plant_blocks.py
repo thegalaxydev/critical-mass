@@ -263,7 +263,151 @@ def linker_item():
         f.write("\n")
 
 
+SIDES = {"north": "a", "south": "a", "east": "a", "west": "a", "up": "b", "down": "c"}
+CLEAR = (0, 0, 0, 0)
+
+
+def basin_texture():
+    def side(w, h):
+        img = casing(IRON, STEEL)(w, h)
+        rect(img, 3, 9, 12, 12, BLUE[1])
+        rect(img, 3, 9, 12, 9, BLUE[3])
+        return img
+
+    def top(w, h):
+        img = plate(IRON, 3)(w, h)
+        rect(img, 2, 2, 13, 13, BLUE[1])
+        for k in range(2, 14, 3):
+            rect(img, k, 2, k, 13, BLUE[0])
+            rect(img, 2, k, 13, k, BLUE[0])
+        for x, y in ((4, 5), (9, 4), (6, 10), (11, 9)):
+            put(img, x, y, BLUE[3])
+        return img
+    return atlas({"a": side, "b": top, "c": plate(IRON, 2)})
+
+
+def distributor_texture():
+    def side(w, h):
+        img = casing(IRON, STEEL)(w, h)
+        rect(img, 2, 6, 13, 8, COPPER[3])
+        rect(img, 2, 6, 13, 6, COPPER[5])
+        rect(img, 2, 8, 13, 8, COPPER[1])
+        for x in (4, 7, 10):
+            put(img, x, 10, COPPER[2])
+            put(img, x, 11, BLUE[3])
+            put(img, x, 12, BLUE[2])
+        return img
+
+    def top(w, h):
+        img = plate(IRON, 3)(w, h)
+        rect(img, 2, 2, 13, 13, STEEL[1])
+        rect(img, 7, 2, 8, 13, COPPER[3])
+        rect(img, 2, 7, 13, 8, COPPER[3])
+        for x, y in ((4, 4), (11, 4), (4, 11), (11, 11)):
+            put(img, x, y, COPPER[4])
+        return img
+
+    def bottom(w, h):
+        img = plate(IRON, 2)(w, h)
+        rect(img, 2, 2, 13, 13, STEEL[0])
+        for x in (4, 7, 10):
+            for y in (4, 7, 10):
+                put(img, x, y, COPPER[4])
+                put(img, x + 1, y + 1, COPPER[1])
+        return img
+    return atlas({"a": side, "b": top, "c": bottom})
+
+
+def fan_texture():
+    def side(w, h):
+        img = plate(IRON, 3)(w, h)
+        for y in range(3, 13):
+            for x in range(3, 13):
+                if y % 2 == 1:
+                    img.putpixel((x, y), CLEAR)
+                else:
+                    put(img, x, y, IRON[2])
+        return img
+
+    def top(w, h):
+        img = plate(IRON, 3)(w, h)
+        for y in range(2, 14):
+            for x in range(2, 14):
+                if (x in (7, 8)) or (y in (7, 8)):
+                    put(img, x, y, IRON[2])
+                else:
+                    img.putpixel((x, y), CLEAR)
+        bevel(img, 5, 5, 10, 10, IRON, 3)
+        return img
+
+    def blade(w, h):
+        img = plate(IRON, 4)(w, h)
+        rect(img, 0, 0, 15, 15, IRON[4])
+        for x in range(0, 16, 4):
+            rect(img, x, 0, x, 15, IRON[2])
+        return img
+    return atlas({"a": side, "b": top, "c": top, "d": blade})
+
+
+def fan_models():
+    name = "tower_fan"
+    tex = {"0": M + "block/" + name, "particle": M + "block/" + name}
+    blade = {"uv": QUADS["d"], "texture": "#0"}
+    faces = {d: blade for d in ("north", "south", "east", "west", "up", "down")}
+    return {name: cube(name, SIDES, "minecraft:cutout"),
+            "tower_fan_rotor": {"textures": tex, "elements": [
+                {"from": [1, 7, 6.5], "to": [15, 8, 9.5], "faces": faces},
+                {"from": [6.5, 7, 1], "to": [9.5, 8, 15], "faces": faces},
+                {"from": [6, 5, 6], "to": [10, 16, 10], "faces": faces}]}}
+
+
+def feedwater_texture():
+    def side(w, h):
+        img = casing(COPPER, STEEL)(w, h)
+        rect(img, 7, 3, 8, 12, BLUE[1])
+        rect(img, 7, 7, 8, 12, BLUE[3])
+        for y in (3, 12):
+            put(img, 6, y, BRASS[3])
+            put(img, 9, y, BRASS[3])
+        return img
+
+    def top(w, h):
+        img = plate(COPPER, 3)(w, h)
+        opening(img, 4, 4, 8, BLUE, COPPER)
+        return img
+    return atlas({"a": side, "b": top, "c": plate(COPPER, 2)})
+
+
+def pressurizer_texture():
+    def side(w, h):
+        img = casing(IRON, STEEL)(w, h)
+        rect(img, 2, 4, 13, 4, BRASS[3])
+        rect(img, 2, 11, 13, 11, BRASS[2])
+        for k, (x, y) in enumerate(((4, 8), (5, 7), (6, 8), (7, 9), (8, 8), (9, 7), (10, 8), (11, 9))):
+            put(img, x, y, AMBER[3] if k % 2 else AMBER[2])
+        put(img, 12, 6, RED[3])
+        put(img, 3, 6, GREEN[3])
+        return img
+
+    def top(w, h):
+        img = plate(IRON, 3)(w, h)
+        opening(img, 5, 5, 6, BRASS, IRON)
+        for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
+            put(img, x, y, IRON[5])
+        return img
+    return atlas({"a": side, "b": top, "c": plate(IRON, 2)})
+
+
+def simple_state(name):
+    return {"variants": {"": {"model": M + "block/" + name}}}
+
+
 BLOCKS = {
+    "tower_basin": {"lang": "Cooling Tower Basin", "texture": basin_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
+    "tower_distributor": {"lang": "Cooling Tower Distributor", "texture": distributor_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
+    "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state},
+    "feedwater_tank": {"lang": "Feedwater Tank", "texture": feedwater_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
+    "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "plant_gauge": {"lang": "Gauge", "texture": gauge_texture, "model": lambda n: panel_model(n, 1, 1, 15, 15), "state": horizontal},
     "control_button": {"lang": "Control Button", "texture": button_texture, "model": lambda n: panel_model(n, 4, 4, 12, 12), "state": horizontal},
     "annunciator": {"lang": "Annunciator", "texture": annunciator_texture, "model": lambda n: panel_model(n, 1, 1, 15, 15), "state": horizontal},
@@ -282,6 +426,27 @@ BLOCKS = {
 }
 
 LANG = {
+    "criticalmass.basin.ok": "Collecting",
+    "criticalmass.basin.low": "Water low: add makeup water",
+    "criticalmass.basin.dry": "Dry",
+    "criticalmass.feedwater.ok": "Level normal",
+    "criticalmass.feedwater.low": "Level low: add makeup water",
+    "criticalmass.feedwater.empty": "Empty",
+    "criticalmass.tower.no_fill": "No fill below: stack Cooling Tower Packing under the distributor",
+    "criticalmass.tower.no_basin": "No basin under the fill",
+    "criticalmass.goggles.tower_fill": "Fill: %s of up to %s blocks",
+    "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
+    "criticalmass.goggles.tower_fan": "Cooling Tower Fan",
+    "criticalmass.goggles.pressurizer": "Pressurizer",
+    "criticalmass.goggles.pressurizer_pressure": "Primary pressure: %s bar (set to %s)",
+    "criticalmass.goggles.pressurizer_boiling": "Coolant boils at %s \u00b0C",
+    "criticalmass.pressurizer.setpoint": "Pressure setpoint",
+    "criticalmass.pressurizer.no_vessel": "Not touching a reactor vessel",
+    "criticalmass.pressurizer.off": "Heaters off: redstone signal",
+    "criticalmass.pressurizer.heating": "Heaters on: raising pressure",
+    "criticalmass.pressurizer.holding": "Holding pressure",
+    "criticalmass.pressurizer.no_power": "Pressure falling: heaters need Forge Energy",
+    "criticalmass.alarm.pressure": "Vessel coolant boiling: pressure too low for its temperature",
     "item.criticalmass.plant_linker": "Plant Linker",
     "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a gauge, button or annunciator to bind it",
     "criticalmass.linker.tooltip_stored": "Remembers the block at %s %s %s (sneak-use in the air to clear)",
@@ -381,13 +546,12 @@ LANG = {
     "criticalmass.alarm.core_hot": "Fuel overheating",
     "criticalmass.alarm.low_coolant": "Vessel coolant below half",
     "criticalmass.alarm.casing": "Casing damaged or breached",
-    "criticalmass.alarm.pressure": "Vessel pressure high",
     "criticalmass.alarm.trip.short": "TRIP",
     "criticalmass.alarm.low_flow.short": "FLOW",
     "criticalmass.alarm.core_hot.short": "HOT",
     "criticalmass.alarm.low_coolant.short": "LEVEL",
     "criticalmass.alarm.casing.short": "SHELL",
-    "criticalmass.alarm.pressure.short": "PRESS",
+    "criticalmass.alarm.pressure.short": "BOIL",
     "criticalmass.goggles.rod_bank": "Rod bank %s (use with an empty hand to change)",
     "criticalmass.rod.bank_set": "Rod bank %s",
     "criticalmass.generator.load": "Electrical load",

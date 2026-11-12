@@ -24,6 +24,16 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
         return level != null && level.getBlockState(p).getBlock() instanceof CoolingTowerBlock;
     }
 
+    private int stackHeight(BlockPos top) {
+        int n = 0;
+        BlockPos p = top;
+        while (packing(p) && n < CMThermal.TOWER_MAX_PACKING) {
+            n++;
+            p = p.below();
+        }
+        return n;
+    }
+
     public double lastRejected() {
         return lastRejected;
     }
@@ -33,6 +43,12 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     public Direction passThroughExit(Direction enteredFrom) {
         boolean below = packing(worldPosition.below());
         boolean above = packing(worldPosition.above());
+        if (enteredFrom == Direction.UP && !below && level.getBlockEntity(worldPosition.below()) instanceof TowerParts.Basin) {
+            return Direction.DOWN;
+        }
+        if (enteredFrom == Direction.DOWN && !above && level.getBlockEntity(worldPosition.above()) instanceof TowerParts.Distributor) {
+            return Direction.UP;
+        }
         if (enteredFrom.getAxis().isHorizontal()) {
             if (below) {
                 return Direction.DOWN;
@@ -70,17 +86,17 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             setStatus("criticalmass.tower.above_cap");
             return;
         }
-        boolean open;
+        double airflow;
         if (BodyMotion.onBody(this)) {
             if (BodyMotion.tiltDegrees(this) > CMThermal.TOWER_MAX_TILT) {
                 setStatus("criticalmass.tower.tilted");
                 return;
             }
-            open = level.getBlockState(top.above()).isAir();
+            airflow = level.getBlockState(top.above()).isAir() ? CMThermal.TOWER_NATURAL_DRAFT : TowerParts.airflow(level, top, stackHeight(top));
         } else {
-            open = level.canSeeSky(top.above());
+            airflow = TowerParts.airflow(level, top, stackHeight(top));
         }
-        if (!open) {
+        if (airflow <= 0) {
             setStatus("criticalmass.tower.covered");
             return;
         }
@@ -88,7 +104,7 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             setStatus("criticalmass.tower.no_flow");
             return;
         }
-        double q = buffer.removeHeat(buffer.heat() * CMThermal.TOWER_RATE);
+        double q = buffer.removeHeat(Math.min(buffer.heat(), buffer.specificEnergy() * CMThermal.TOWER_CAPACITY * CMThermal.TOWER_RATE * airflow));
         sinks.rejectedHeat += q;
         lastRejected = q;
         evaporationDebt += q / CMThermal.EVAPORATION_HEAT_PER_MB;

@@ -89,7 +89,7 @@ public class AnnunciatorBlockEntity extends BoundPanelBlockEntity {
         if (c.isDamaged() || c.isBreached()) {
             mask |= 1 << Alarm.CASING.ordinal();
         }
-        if (c.coolant().pressure() >= CMThermal.RELIEF_PRESSURE) {
+        if (c.flashing()) {
             mask |= 1 << Alarm.PRESSURE.ordinal();
         }
         return mask;

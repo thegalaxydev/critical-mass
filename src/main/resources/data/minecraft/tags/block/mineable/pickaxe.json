@@ -38,6 +38,11 @@
     "criticalmass:reactor_viewport",
     "criticalmass:plant_gauge",
     "criticalmass:control_button",
-    "criticalmass:annunciator"
+    "criticalmass:annunciator",
+    "criticalmass:tower_basin",
+    "criticalmass:tower_distributor",
+    "criticalmass:tower_fan",
+    "criticalmass:feedwater_tank",
+    "criticalmass:pressurizer"
   ]
 }
