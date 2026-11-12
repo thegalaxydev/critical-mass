@@ -5,7 +5,6 @@ import com.criticalmass.content.PipeConnectable;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.GeneratorBlock;
 import com.criticalmass.content.thermal.CoolantPortHandler;
-import com.criticalmass.content.thermal.PipeBurst;
 import com.criticalmass.content.thermal.ThermalNode;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -29,6 +28,7 @@ import com.criticalmass.registry.CMFluids;
 import com.criticalmass.registry.CMItems;
 import com.criticalmass.registry.CMStress;
 import com.mojang.logging.LogUtils;
+import java.util.List;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -47,15 +47,22 @@ import org.slf4j.Logger;
 public class CriticalMass {
     public static final String MODID = "criticalmass";
     public static final Logger LOGGER = LogUtils.getLogger();
+    private static final ResourceLocation CREATE_PIPE = ResourceLocation.fromNamespaceAndPath("create", "fluid_pipe");
+    private static final ResourceLocation CREATE_VALVE = ResourceLocation.fromNamespaceAndPath("create", "fluid_valve");
 
     public CriticalMass(IEventBus modEventBus, ModContainer modContainer) {
         CMBlocks.BLOCKS.register(modEventBus);
         CMItems.ITEMS.register(modEventBus);
         CMBlockEntities.BLOCK_ENTITIES.register(modEventBus);
-        CMBlocks.BLOCKS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
-        CMItems.ITEMS.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
+        for (String valve : List.of("steam_bypass_valve", "reinforced_valve")) {
+            CMBlocks.BLOCKS.addAlias(asResource(valve), CREATE_VALVE);
+            CMItems.ITEMS.addAlias(asResource(valve), CREATE_VALVE);
+            CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource(valve), CREATE_VALVE);
+        }
+        CMBlocks.BLOCKS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
+        CMItems.ITEMS.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("reinforced_pipe"), CREATE_PIPE);
         CMItems.ITEMS.addAlias(asResource("shielding_plate"), asResource("steel_plate"));
-        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("steam_bypass_valve"), asResource("reinforced_valve"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
         CMFluids.TYPES.register(modEventBus);
@@ -69,7 +76,6 @@ public class CriticalMass {
         modEventBus.addListener(CriticalMass::registerCapabilities);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
-        NeoForge.EVENT_BUS.addListener(PipeBurst::onLevelTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }
@@ -102,7 +108,6 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), CriticalMass::coolantFace);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> side == null || side.getAxis() == Direction.Axis.Y ? be.coolant().handler(be.getLevel(), be.getBlockPos(), side) : null);

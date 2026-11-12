@@ -9,7 +9,7 @@
       "item": "create:fluid_tank"
     },
     "P": {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     }
   },
   "pattern": [

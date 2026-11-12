@@ -58,7 +58,6 @@ KINETIC = {
 
 STATE_NOTES = {
     "primary_coolant_port": "mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar",
-    "reinforced_pipe": "six connection booleans from real neighbours (pipes, coolant port fronts, pump fluid axis, turbine top/bottom, relief valve back, PipeConnectable blocks); multipart core + arms. Does not transport fluid yet.",
     "alarm_siren": "powered=true when the block receives redstone; powered model uses a lit, unshaded lamp",
     "docking_service_connector": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
     "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
@@ -76,7 +75,6 @@ REFS = {
     "relief_valve": ["aeronautics:block/steam_vent", "create:block/fluid_valve"],
     "emergency_coolant_tank": ["create:block/fluid_tank", "create:block/fluid_tank_window"],
     "heat_exchanger": ["create:block/fluid_tank_top", "create:block/pipes"],
-    "reinforced_pipe": ["create:block/pipes"],
     "primary_coolant_port": ["create:block/pipes"],
 }
 
@@ -85,7 +83,6 @@ ISSUES = {
     "steam_turbine": ["Single block; the spec describes a 3 to 7 block multiblock."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
     "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],
-    "reinforced_pipe": ["Carries coolant for a pump loop (prototype): pipes hold no fluid of their own and a loop must be a single path without branches."],
     "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],
     "crushed_uranium": ["Create already ships create:crushed_raw_uranium (enabled by uranium tags); this addon item may be redundant. Needs a design decision."],
     "survey_meter": ["Item has no behaviour yet (measurement is task tsk-073)."],
@@ -153,7 +150,7 @@ def build(qa=None, render_icons=True):
     for name, m in models.items():
         atlases_of.setdefault(name, set()).add(m.atlas)
     for name, d in specs.BLOCK_DEFS.items():
-        model_names = [n for n in models if n == name or n.startswith(name + "_") or (name == "reinforced_pipe" and n.startswith("reinforced_pipe"))]
+        model_names = [n for n in models if n == name or n.startswith(name + "_")]
         if name == "shielded_hatch":
             model_names = ["shielded_hatch"]
         atlases = sorted({models[n].atlas for n in model_names})
@@ -170,8 +167,6 @@ def build(qa=None, render_icons=True):
         icon_path = os.path.join(icons_dir, "block_" + name + ".png")
         if render_icons:
             refs = ["criticalmass:block/" + n for n in model_names if not n.endswith(("_rotor", "_pinion", "_powered", "_connected", "_outlet", "_arm", "_vertical"))]
-            if name == "reinforced_pipe":
-                refs = ["criticalmass:block/reinforced_pipe_item"]
             if name == "shielded_hatch":
                 refs = ["criticalmass:block/shielded_hatch"]
             extra = []

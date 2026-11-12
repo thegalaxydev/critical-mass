@@ -201,16 +201,17 @@ public final class CoolantCircuit {
             n.setCircuitPressure(peak, worst);
         }
         Flow result = closed ? transferClosed(nodes, chain, requested) : transferOpen(level, nodes, chain, requested);
-        List<BlockPos> burst = new ArrayList<>();
+        PipeCoolant weakest = null;
         for (ThermalNode n : nodes) {
-            if (n instanceof PipeCoolant p && p.shouldBurst()) {
-                burst.add(p.pos());
+            if (n instanceof PipeCoolant p && p.overPressure() && (weakest == null || p.coolant().pressure() > weakest.coolant().pressure())) {
+                weakest = p;
             }
         }
-        for (BlockPos p : burst) {
-            PipeBurst.burst(level, p);
+        if (weakest == null) {
+            return result;
         }
-        return burst.isEmpty() ? result : new Flow(result.moved(), "criticalmass.circuit.pipe_burst");
+        PipeBurst.burst(level, weakest.pos());
+        return new Flow(result.moved(), "criticalmass.circuit.pipe_burst");
     }
 
     private Flow transferClosed(List<ThermalNode> nodes, List<CoolantBuffer> chain, int requested) {

@@ -5,12 +5,12 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
-import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
@@ -138,11 +138,16 @@ final class TestVessels {
 
     static void pipes(GameTestHelper h, List<BlockPos> pipes) {
         for (BlockPos p : pipes) {
-            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+            h.setBlock(p, AllBlocks.FLUID_PIPE.getDefaultState());
         }
         for (BlockPos p : pipes) {
-            h.setBlock(p, ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(p), CMBlocks.REINFORCED_PIPE.get().defaultBlockState()));
+            connect(h, p);
         }
+    }
+
+    static void connect(GameTestHelper h, BlockPos p) {
+        FluidPipeBlock block = AllBlocks.FLUID_PIPE.get();
+        h.setBlock(p, block.updateBlockState(h.getBlockState(p), Direction.NORTH, null, h.getLevel(), h.absolutePos(p)));
     }
 
     static int pipeVolume(GameTestHelper h, List<BlockPos> pipes) {
@@ -181,12 +186,7 @@ final class TestVessels {
         h.setBlock(PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
         h.setBlock(TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
-        for (BlockPos p : PIPES) {
-            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
-        }
-        for (BlockPos p : PIPES) {
-            h.setBlock(p, ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(p), CMBlocks.REINFORCED_PIPE.get().defaultBlockState()));
-        }
+        pipes(h, PIPES);
         if (motor) {
             h.setBlock(MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
         }

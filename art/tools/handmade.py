@@ -5,7 +5,6 @@ import zipfile
 
 from PIL import Image
 
-from pipe_models import create_jar
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MOD = os.path.dirname(os.path.dirname(HERE))
@@ -31,6 +30,15 @@ BLUE = [(15, 47, 74), (22, 70, 110), (31, 100, 150), (58, 140, 192), (108, 184, 
 GREEN = [(23, 58, 26), (36, 96, 42), (63, 148, 67), (108, 199, 106), (168, 234, 160)]
 AMBER = [(90, 48, 8), (148, 82, 14), (216, 138, 28), (255, 190, 74), (255, 227, 154)]
 SCREEN = [(10, 22, 16), (14, 34, 22), (20, 48, 30)]
+
+
+def create_jar():
+    base = os.path.join(os.path.expanduser("~"), ".gradle", "caches", "modules-2", "files-2.1", "com.simibubi.create")
+    for root, _, files in os.walk(base):
+        for f in files:
+            if f.startswith("create-1.21.1-") and f.endswith("-slim.jar"):
+                return os.path.join(root, f)
+    raise SystemExit("Create jar not found in the Gradle cache")
 
 
 class Jar:

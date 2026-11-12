@@ -6,7 +6,7 @@
       "item": "create:mechanical_pump"
     },
     {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     },
     {
       "item": "create:brass_casing"

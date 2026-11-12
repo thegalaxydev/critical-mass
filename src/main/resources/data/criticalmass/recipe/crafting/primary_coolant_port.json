@@ -6,7 +6,7 @@
       "item": "criticalmass:reactor_vessel_casing"
     },
     {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     },
     {
       "tag": "c:plates/copper"

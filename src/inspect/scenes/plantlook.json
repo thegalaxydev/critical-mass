@@ -20,7 +20,7 @@
     "/setblock 46 -59 40 criticalmass:radiator_panel[facing=south]",
     "/setblock 48 -59 40 criticalmass:boiler_heating_plate",
     "/setblock 50 -59 40 criticalmass:relief_valve[facing=south]",
-    "/setblock 52 -59 40 criticalmass:reinforced_valve[facing=up,axis_along_first=false]",
+    "/setblock 52 -59 40 create:fluid_valve[facing=up,axis_along_first=false]",
     "/fill 54 -59 40 54 -57 40 criticalmass:cooling_tower_packing"
    ],
    "wait": 20

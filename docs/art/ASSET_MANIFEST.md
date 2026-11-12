@@ -19,7 +19,6 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 | `criticalmass:coolant_channel` | `block/coolant_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:reactor_service_port` | `block/reactor_service_port.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:primary_coolant_port` | `block/primary_coolant_port.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:reinforced_pipe` | `block/reinforced_pipe.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes | Carries coolant for a pump loop (prototype): pipes hold no fluid of their own and a loop must be a single path without branches. |
 | `criticalmass:heat_exchanger` | `block/heat_exchanger.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:condenser` | `block/condenser.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:cooling_tower_packing` | `block/cooling_tower_packing.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
@@ -134,7 +133,6 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - `coolant_channel`: inventory = item model coolant_channel (parent: block model); placed = blockstate coolant_channel (raw); rotated pillar (axis)
 - `reactor_service_port`: inventory = item model reactor_service_port (parent: block model); placed = blockstate reactor_service_port (facing)
 - `primary_coolant_port`: inventory = item model primary_coolant_port (parent: block model); placed = blockstate primary_coolant_port (raw); mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar
-- `reinforced_pipe`: inventory = item model reinforced_pipe (parent: block model); placed = blockstate reinforced_pipe (raw); six connection booleans from real neighbours (pipes, coolant port fronts, pump fluid axis, turbine top/bottom, relief valve back, PipeConnectable blocks); multipart core + arms. Does not transport fluid yet.
 - `heat_exchanger`: inventory = item model heat_exchanger (parent: block model); placed = blockstate heat_exchanger (horizontal)
 - `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (horizontal)
 - `cooling_tower_packing`: inventory = item model cooling_tower_packing (parent: block model); placed = blockstate cooling_tower_packing (simple)

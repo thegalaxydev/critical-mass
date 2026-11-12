@@ -51,7 +51,7 @@ def diff(a, b, scale=0.5):
 def block_refs(name):
     rot = {"circulation_pump": [("criticalmass:block/circulation_pump_rotor", Y_TO_X)], "steam_turbine": [("criticalmass:block/steam_turbine_rotor", Y_TO_X)],
            "control_rod_drive": [("criticalmass:block/control_rod_drive_pinion", Y_TO_Z)]}
-    base = {"reinforced_pipe": "reinforced_pipe_item", "primary_coolant_port": "primary_coolant_port_inlet"}.get(name, name)
+    base = {"primary_coolant_port": "primary_coolant_port_inlet"}.get(name, name)
     return ["criticalmass:block/" + base] + rot.get(name, [])
 
 

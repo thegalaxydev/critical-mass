@@ -6,7 +6,7 @@
       "tag": "c:plates/copper"
     },
     "P": {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     },
     "T": {
       "item": "create:fluid_tank"

@@ -1,11 +1,11 @@
 package com.criticalmass.content.thermal;
 
-import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.registry.CMAttachments;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.fluids.pipes.GlassFluidPipeBlock;
+import com.simibubi.create.content.fluids.pipes.valve.FluidValveBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,11 +36,7 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
 
     public static boolean isPipe(BlockState state) {
         Block b = state.getBlock();
-        return b instanceof FluidPipeBlock || b instanceof EncasedPipeBlock || b instanceof GlassFluidPipeBlock;
-    }
-
-    public static boolean isReinforced(BlockState state) {
-        return state.getBlock() instanceof ReinforcedPipeBlock;
+        return b instanceof FluidPipeBlock || b instanceof EncasedPipeBlock || b instanceof GlassFluidPipeBlock || b instanceof FluidValveBlock;
     }
 
     public static boolean open(BlockGetter level, BlockPos pos, BlockState state, Direction face) {
@@ -61,16 +57,17 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
         return pipe == null ? BlockPos.ZERO : pipe.getBlockPos();
     }
 
-    public boolean reinforced() {
-        return pipe != null && isReinforced(pipe.getBlockState());
+    public boolean overPressure() {
+        return buffer.steamMedium() && buffer.pressure() >= CMThermal.RUPTURE_PRESSURE;
     }
 
-    public static boolean tooHot(CoolantBuffer b) {
-        return b.amount() > 0 && (b.quality() > 0 || b.temperature() >= CMThermal.PIPE_BURST_TEMPERATURE);
-    }
-
-    public boolean shouldBurst() {
-        return !reinforced() && tooHot(buffer);
+    @Override
+    public boolean blocksFlow() {
+        if (pipe == null) {
+            return false;
+        }
+        BlockState state = pipe.getBlockState();
+        return state.getBlock() instanceof FluidValveBlock && !state.getValue(FluidValveBlock.ENABLED);
     }
 
     @Override

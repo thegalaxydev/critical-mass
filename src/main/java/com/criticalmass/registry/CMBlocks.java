@@ -16,7 +16,6 @@ import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.DockingConnectorBlock;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.PipeConnectableBlocks;
-import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.ReliefValveBlock;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlock;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlock;
@@ -34,7 +33,6 @@ import com.criticalmass.content.thermal.EmergencyTankBlock;
 import com.criticalmass.content.thermal.HeatExchangerBlock;
 import com.criticalmass.content.thermal.RadiatorBlock;
 import com.criticalmass.content.thermal.ReactorControllerBlock;
-import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.thermal.VesselCasingBlock;
 import java.util.function.Function;
 import net.minecraft.world.level.block.Block;
@@ -60,7 +58,6 @@ public final class CMBlocks {
     public static final DeferredBlock<RotatedPillarBlock> COOLANT_CHANNEL = register("coolant_channel", RotatedPillarBlock::new, metal(4.0f));
     public static final DeferredBlock<ServicePortBlock> REACTOR_SERVICE_PORT = register("reactor_service_port", ServicePortBlock::new, metal(5.0f));
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
-    public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
     public static final DeferredBlock<PlantNodeBlock<TowerParts.Basin>> TOWER_BASIN = register("tower_basin",
@@ -80,7 +77,6 @@ public final class CMBlocks {
     public static final DeferredBlock<RadiatorBlock> RADIATOR_PANEL = register("radiator_panel", RadiatorBlock::new, metal(2.5f).noOcclusion());
     public static final DeferredBlock<EmergencyTankBlock> EMERGENCY_COOLANT_TANK = register("emergency_coolant_tank", EmergencyTankBlock::new, metal(4.0f));
     public static final DeferredBlock<ReliefValveBlock> RELIEF_VALVE = register("relief_valve", ReliefValveBlock::new, metal(3.0f).noOcclusion());
-    public static final DeferredBlock<ReinforcedValveBlock> REINFORCED_VALVE = register("reinforced_valve", ReinforcedValveBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<BoilerPlateBlock> BOILER_HEATING_PLATE = register("boiler_heating_plate", BoilerPlateBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<Block> SHIELDING_CONCRETE = register("shielding_concrete", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(6.0f, 12.0f).sound(SoundType.STONE).requiresCorrectToolForDrops());
     public static final DeferredBlock<TransparentBlock> SHIELDED_GLASS = register("shielded_glass", TransparentBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.NONE).strength(2.5f, 8.0f).sound(SoundType.GLASS).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));

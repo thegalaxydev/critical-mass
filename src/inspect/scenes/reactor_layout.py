@@ -34,8 +34,8 @@ def loop(o):
     w = at(o)
     cmds = ["/setblock %s criticalmass:circulation_pump[facing=east,axis_along_first=true]" % w(4, 3, 6),
             "/setblock %s criticalmass:steam_turbine[axis=x]" % w(6, 5, 6)]
-    cmds += ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in PIPES]
-    fix = ["/setblock %s minecraft:air" % w(*p) for p in PIPES] + ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in PIPES]
+    cmds += ["/setblock %s create:fluid_pipe" % w(*p) for p in PIPES]
+    fix = ["/setblock %s minecraft:air" % w(*p) for p in PIPES] + ["/setblock %s create:fluid_pipe" % w(*p) for p in PIPES]
     return cmds, fix
 
 
@@ -64,8 +64,8 @@ def plant(o):
             "/setblock %s criticalmass:circulation_pump[facing=west,axis_along_first=true]" % w(7, 1, 6),
             "/setblock %s criticalmass:steam_turbine[axis=x]" % w(*PLANT_TURBINE),
             "/setblock %s create:shaft[axis=x]" % w(7, 6, 6), "/setblock %s create:stressometer[facing=south,axis_along_first=true]" % w(8, 6, 6)]
-    cmds += ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in pipes]
-    fix = ["/setblock %s minecraft:air" % w(*p) for p in pipes] + ["/setblock %s criticalmass:reinforced_pipe" % w(*p) for p in pipes]
+    cmds += ["/setblock %s create:fluid_pipe" % w(*p) for p in pipes]
+    fix = ["/setblock %s minecraft:air" % w(*p) for p in pipes] + ["/setblock %s create:fluid_pipe" % w(*p) for p in pipes]
     fill = ["/data merge block %s {Secondary:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}" % w(*EXCHANGER),
             "/data merge block %s {Coolant:{Fluid:{id:\"minecraft:water\",amount:1000},Heat:0.0d}}" % w(*PLANT_TURBINE),
             "/setblock %s create:creative_motor[facing=up]" % w(7, 0, 6)]

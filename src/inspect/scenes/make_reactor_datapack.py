@@ -88,7 +88,7 @@ plant = [
     setblock((5, 6, 5), "criticalmass:pressurizer"),
     setblock((10, 1, 9), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"),
     setblock((11, 4, 9), "criticalmass:radiator_panel[facing=south]"),
-    setblock(VALVE, "criticalmass:reinforced_valve[facing=up,axis_along_first=true]"),
+    setblock(VALVE, "create:fluid_valve[facing=up,axis_along_first=true]"),
     setblock((6, 3, 4), "create:creative_motor[facing=east]"),
     setblock(PLATE, "criticalmass:boiler_heating_plate[facing=south]"),
     setblock((7, 4, 2), "create:fluid_tank"),
@@ -135,8 +135,8 @@ wiring += bind((bx1, by1, bz), CONTROLLER, key="Reactor") + bind((bx1, by1, bz),
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
          "fill %s %s minecraft:smooth_stone" % (w(x0, -1, z0), w(x1, -1, z1))]
 place += vessel + [setblock(p, "criticalmass:reactor_viewport") for p in VIEWPORTS] + plant + safety + bay + desk
-place += [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
-place += [setblock(p, "minecraft:air") for p in PIPES] + [setblock(p, "criticalmass:reinforced_pipe") for p in PIPES]
+place += [setblock(p, "create:fluid_pipe") for p in PIPES]
+place += [setblock(p, "minecraft:air") for p in PIPES] + [setblock(p, "create:fluid_pipe") for p in PIPES]
 place += ["schedule function %s:reactor/start 100t replace" % NS]
 
 start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000, 6000 * 80.0),

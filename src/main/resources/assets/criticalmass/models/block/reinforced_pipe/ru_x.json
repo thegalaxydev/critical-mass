@@ -1,7 +1,0 @@
-{
- "parent": "create:block/fluid_pipe/ru_x",
- "textures": {
-  "0": "criticalmass:block/reinforced_pipe_connected",
-  "particle": "criticalmass:block/reinforced_pipe"
- }
-}

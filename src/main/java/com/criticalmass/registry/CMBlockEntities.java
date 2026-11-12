@@ -7,7 +7,6 @@ import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.control.PanelBlockEntity;
 import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.content.kinetics.GeneratorBlockEntity;
-import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyBenchBlockEntity;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
@@ -24,7 +23,6 @@ import com.criticalmass.content.thermal.RadiatorBlockEntity;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.content.thermal.HeatExchangerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
-import com.criticalmass.content.thermal.ReinforcedValveBlockEntity;
 import java.util.function.Supplier;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -55,8 +53,6 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new RadiatorBlockEntity(CMBlockEntities.RADIATOR.get(), pos, state), CMBlocks.RADIATOR_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<BoilerPlateBlockEntity>> BOILER_PLATE = BLOCK_ENTITIES.register("boiler_heating_plate",
             () -> BlockEntityType.Builder.of((pos, state) -> new BoilerPlateBlockEntity(CMBlockEntities.BOILER_PLATE.get(), pos, state), CMBlocks.BOILER_HEATING_PLATE.get()).build(null));
-    public static final Supplier<BlockEntityType<ReinforcedValveBlockEntity>> REINFORCED_VALVE = BLOCK_ENTITIES.register("reinforced_valve",
-            () -> BlockEntityType.Builder.of((pos, state) -> new ReinforcedValveBlockEntity(CMBlockEntities.REINFORCED_VALVE.get(), pos, state), CMBlocks.REINFORCED_VALVE.get()).build(null));
     public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReliefValveBlockEntity(CMBlockEntities.RELIEF_VALVE.get(), pos, state), CMBlocks.RELIEF_VALVE.get()).build(null));
 
@@ -86,8 +82,6 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
     public static final Supplier<BlockEntityType<CoolantPortBlockEntity>> COOLANT_PORT = BLOCK_ENTITIES.register("primary_coolant_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new CoolantPortBlockEntity(CMBlockEntities.COOLANT_PORT.get(), pos, state), CMBlocks.PRIMARY_COOLANT_PORT.get()).build(null));
-    public static final Supplier<BlockEntityType<FluidPipeBlockEntity>> REINFORCED_PIPE = BLOCK_ENTITIES.register("reinforced_pipe",
-            () -> BlockEntityType.Builder.of((pos, state) -> new FluidPipeBlockEntity(CMBlockEntities.REINFORCED_PIPE.get(), pos, state), CMBlocks.REINFORCED_PIPE.get()).build(null));
     public static final Supplier<BlockEntityType<SpentFuelRackBlockEntity>> SPENT_FUEL_RACK = BLOCK_ENTITIES.register("spent_fuel_rack",
             () -> BlockEntityType.Builder.of((pos, state) -> new SpentFuelRackBlockEntity(CMBlockEntities.SPENT_FUEL_RACK.get(), pos, state), CMBlocks.SPENT_FUEL_RACK.get()).build(null));
     public static final Supplier<BlockEntityType<ShieldedCaskBlockEntity>> SHIELDED_CASK = BLOCK_ENTITIES.register("shielded_cask",

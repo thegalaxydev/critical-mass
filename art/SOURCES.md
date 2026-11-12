@@ -43,16 +43,6 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## reinforced_valve, reinforced_valve_open and reinforced_valve_closed (not generated)
-
-- Used by: `textures/block/reinforced_valve.png`, `textures/block/reinforced_valve_open.png`, `textures/block/reinforced_valve_closed.png`
-- Source: hand-made by the author in `art/originals/`, laid out like Create's `fluid_valve.png`, `valve_open.png` and `valve_closed.png`. The installed textures have their greys recoloured to the reactor alloy's shades by `art/tools/valve_paint.py`; the brass ring and the dial keep the original colours. The models parent Create's fluid valve models.
-- Date: 2026-11-10
-## reinforced_pipe and reinforced_pipe_connected (not generated)
-
-- Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
-- Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to the reactor alloy's blue-grey shades by `art/tools/pipe_paint.py`, flange rims included. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
-- Date: 2026-10-19
 ## alarm_siren
 
 - Used by: `textures/block/alarm_siren.png`

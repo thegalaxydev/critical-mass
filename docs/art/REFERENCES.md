@@ -13,7 +13,7 @@ Where our models need Create's real parts, they reference them at runtime by res
 | `create:block/axis`, `axis_top` | Shaft is a 4-px square bar on a 16-px block; rotation is read through its texture, not geometry | Our rotors reference these textures directly so shafts match Create exactly |
 | `create:block/gearbox`, `gearbox_top` | Circular socket framed by a casing ring marks a real shaft face | Brass socket rings on the pump housing and turbine end plates are only drawn where `hasShaftTowards` returns true |
 | `create:block/pump` (32x32 atlas) | Multi-part machines pack all faces into one 32x32 sheet at 16 texels/block | All multi-element models use packed atlases (32 or 64 px) at the same 16 texels/block density |
-| `create:block/pipes`, `fluid_valve` | Copper ramp, flange faces with dark bores, banded pipe sides | Reinforced Pipe, coolant ports, pump flanges, exchanger/condenser ports |
+| `create:block/pipes`, `fluid_valve` | Copper ramp, flange faces with dark bores, banded pipe sides | Coolant ports, pump flanges, exchanger/condenser ports |
 | `create:block/fluid_tank`, `fluid_tank_top`, `fluid_tank_window` | Window strips show contents; riveted ends | Emergency Coolant Tank sight glass; Heat Exchanger end caps |
 | `create:block/engine`, steam engine parts | Copper piston housing language; exhaust and inlet read as flanged openings | Steam Turbine steam inlet (top, red collar) vs exhaust (bottom, pale collar) |
 | `create:block/gauge`, `boiler_gauge` | Cream dial, dark needle, brass bezel | Instrumentation Panel dial and bar meters |

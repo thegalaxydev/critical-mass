@@ -1,7 +1,0 @@
-{
- "parent": "create:block/fluid_valve/pointer",
- "textures": {
-  "2": "criticalmass:block/reinforced_valve",
-  "particle": "criticalmass:block/reinforced_valve"
- }
-}

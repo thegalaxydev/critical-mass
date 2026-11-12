@@ -43,7 +43,6 @@ if __name__ == "__main__":
                  "docking_service_connector", "docking_service_connector_connected"]
         for n in names:
             E.append((n, iso.render(["criticalmass:block/" + n], 200, 45)))
-        E.append(("reinforced_pipe (item)", iso.render(["criticalmass:block/reinforced_pipe_item"], 200, 45)))
         E.append(("control_rod_drive", iso.render(["criticalmass:block/control_rod_drive", ("criticalmass:block/control_rod_drive_pinion", lambda c: (c[0], 16 - c[2], c[1]))], 200, 45)))
         E.append(("control_rod_drive back", iso.render(["criticalmass:block/control_rod_drive", ("criticalmass:block/control_rod_drive_pinion", lambda c: (c[0], 16 - c[2], c[1]))], 200, 225)))
     sheet(E, out, cols=6 if which == "rest" else 4)

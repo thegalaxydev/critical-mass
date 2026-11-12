@@ -3,7 +3,6 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.HorizontalBlock;
-import com.criticalmass.content.ReinforcedPipeBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
@@ -14,6 +13,7 @@ import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ReliefValveBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -52,8 +52,8 @@ public final class SteamPlantTests {
         for (Direction d : Direction.values()) {
             BlockPos n = pos.relative(d);
             BlockState s = h.getBlockState(n);
-            if (s.getBlock() instanceof ReinforcedPipeBlock) {
-                h.setBlock(n, ReinforcedPipeBlock.withConnections(h.getLevel(), h.absolutePos(n), CMBlocks.REINFORCED_PIPE.get().defaultBlockState()));
+            if (s.getBlock() instanceof FluidPipeBlock) {
+                TestVessels.connect(h, n);
             }
         }
     }

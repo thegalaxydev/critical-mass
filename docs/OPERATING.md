@@ -12,7 +12,7 @@ This is the working manual: what each circuit does, the smallest plant that runs
 
 The circuits never mix. Each one is a single pipe path with its own Circulation Pump. A closed valve, a missing pipe or a stopped pump stops that circuit only, and the plant feels it downstream: no primary flow trips the reactor, no steam flow starves the turbine, no cooling flow leaves the condenser hot and the steam loop pressure climbing to the relief valve.
 
-Use Reinforced Pipe wherever the water is at or above 100 °C or is steam. Create's own pipes burst there.
+Every circuit is plumbed with Create's own fluid pipes and Fluid Valves, hot or cold. A pipe only bursts when the steam in it passes 12 bar, so put a Relief Valve in any loop that carries steam.
 
 ## A minimal working plant
 
@@ -60,7 +60,7 @@ Name a panel in an anvil and the name shows on its face, which is how you tell o
 
 **Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into the SCRAM Panel presses SCRAM. Compare that signal against one you set and feed the result into the SCRAM Panel, and you have an earlier high-temperature trip. The Alarm Panel gives a redstone signal on any new alarm. Panels ignore each other's signals, so run it through dust or a repeater on its way to the SCRAM Panel to trip on any alarm. If you remove the wire, the trip is gone.
 
-**Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Reinforced Valve.
+**Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Fluid Valve.
 
 ## Start-up
 
@@ -113,7 +113,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Turbine overspeed trip | Load lost too fast | Close the governor with a full redstone signal or the reset button, then reload in steps |
 | Relief valve venting | Steam not being used or condensed | Check the condenser, the cooling loop and the tower fan |
 | Tower distributor says covered | No fan and no open sky | Add a fan or open the top |
-| A pipe burst | Hot water or steam in a Create pipe | Replace that run with Reinforced Pipe |
+| A pipe burst | Steam pressure passed 12 bar | Replace the pipe, fit a Relief Valve in that loop, and find out why the steam was not being used or condensed |
 | Ruined Fuel Channel | Fuel melted | Keep the vessel flooded so the corium cools inside. Then replace the ruined channels and any failed casing |
 | Corium outside the vessel | The floor failed | Stay off it. Flood it with water, wait for it to go dark, mine it and store it shielded. Decontaminate the area |
 

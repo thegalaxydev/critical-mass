@@ -65,18 +65,6 @@ def coolant_ports():
     return a, b
 
 
-def pipe_parts():
-    core = Model("reinforced_pipe_core", atlas_name="reinforced_pipe")
-    arm = Model("reinforced_pipe_arm", share=core)
-    end = C("core", ("copper", 3), None, [("rect", 0, 0, 9, 0, "copper", 5), ("rect", 0, 9, 9, 9, "copper", 1), ("rect", 1, 3, 8, 3, "iron", 3), ("rect", 1, 6, 8, 6, "iron", 3)])
-    core.box([3, 3, 3], [13, 13, 13], {d: end for d in ALL6}, name="core")
-    side_h = C("arm_h", ("copper", 3), None, [("rect", 0, 0, 9, 0, "copper", 5), ("rect", 0, 2, 9, 2, "iron", 4)], outline=False)
-    side_v = C("arm_v", ("copper", 3), None, [("rect", 0, 0, 0, 9, "copper", 5), ("rect", 2, 0, 2, 9, "iron", 4)], outline=False)
-    arm.box([3, 3, 0], [13, 13, 3], {"north": C("arm_end", ("copper", 3), ("copper", 1), [("hole", 3, 3, 6, 6), ("bolts", [(1, 1), (8, 1), (1, 8), (8, 8)])]),
-                                    "east": side_h, "west": side_h, "up": side_v, "down": side_v}, name="arm")
-    return core, arm
-
-
 def heat_exchanger():
     m = Model("heat_exchanger")
     shell = C("shell", ("steel", 3), ("iron", 2), [("rect", 0, 3, 15, 4, "copper", 3), ("rect", 0, 11, 15, 12, "copper", 3), ("bolts", [(2, 3), (13, 3), (2, 11), (13, 11)])])

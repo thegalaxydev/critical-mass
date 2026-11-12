@@ -6,7 +6,7 @@
       "item": "criticalmass:fuel_cladding"
     },
     "P": {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     }
   },
   "pattern": [

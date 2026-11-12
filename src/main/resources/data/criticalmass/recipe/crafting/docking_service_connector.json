@@ -6,7 +6,7 @@
       "item": "create:brass_casing"
     },
     "P": {
-      "item": "criticalmass:reinforced_pipe"
+      "item": "create:fluid_pipe"
     },
     "M": {
       "item": "create:precision_mechanism"

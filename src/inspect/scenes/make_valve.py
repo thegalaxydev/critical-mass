@@ -8,23 +8,23 @@ def look(px, py, pz, tx, ty, tz):
     return "/tp @p %.2f %.2f %.2f facing %.2f %.2f %.2f" % (px, py, pz, tx, ty - EYE, tz)
 
 
-V = "criticalmass:reinforced_valve[facing=up,axis_along_first=false]"
-VERTICAL = "criticalmass:reinforced_valve[facing=north,axis_along_first=true]"
+V = "create:fluid_valve[facing=up,axis_along_first=false]"
+VERTICAL = "create:fluid_valve[facing=north,axis_along_first=true]"
 build = [
     "/fill 36 -59 36 52 -55 44 minecraft:air",
-    "/setblock 39 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 39 -59 40 create:fluid_pipe",
     "/setblock 40 -59 40 " + V,
-    "/setblock 41 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 41 -59 40 create:fluid_pipe",
     "/setblock 40 -59 39 create:copper_valve_handle[facing=north]",
     "/setblock 43 -59 40 create:fluid_pipe",
     "/setblock 44 -59 40 " + V,
     "/setblock 45 -59 40 create:fluid_pipe",
     "/setblock 44 -58 40 create:fluid_pipe",
-    "/setblock 48 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 48 -59 40 create:fluid_pipe",
     "/setblock 48 -58 40 " + VERTICAL,
-    "/setblock 48 -57 40 criticalmass:reinforced_pipe",
+    "/setblock 48 -57 40 create:fluid_pipe",
     "/setblock 47 -58 40 create:copper_valve_handle[facing=west]",
-    "/item replace entity @p hotbar.0 with criticalmass:reinforced_valve",
+    "/item replace entity @p hotbar.0 with create:fluid_valve",
     "/item replace entity @p hotbar.1 with minecraft:air",
 ]
 overview = look(44.5, -56.0, 35.5, 44.5, -58.5, 40.5)

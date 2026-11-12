@@ -1,7 +1,0 @@
-{
- "parent": "create:block/fluid_pipe/rim/east",
- "textures": {
-  "0": "criticalmass:block/reinforced_pipe",
-  "particle": "criticalmass:block/reinforced_pipe"
- }
-}

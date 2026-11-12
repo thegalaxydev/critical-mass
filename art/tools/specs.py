@@ -168,11 +168,6 @@ def _facing_prop(model_by_value, prop):
     return {"variants": out}
 
 
-def _pipe_multipart():
-    import pipe_models
-    return pipe_models.multipart()
-
-
 def _trapdoor(name):
     out = {}
     ys = {"north": 0, "east": 90, "south": 180, "west": 270}
@@ -199,7 +194,6 @@ BLOCK_DEFS.update({
     "coolant_channel": {"state": ("raw", _pillar("coolant_channel")), "item": "block", "lang": "Coolant Channel"},
     "reactor_service_port": {"state": ("facing", "reactor_service_port"), "item": "block", "lang": "Reactor Service Port"},
     "primary_coolant_port": {"state": ("raw", _facing_prop({"inlet": "primary_coolant_port_inlet", "outlet": "primary_coolant_port_outlet"}, "mode")), "item": "primary_coolant_port_outlet", "lang": "Primary Coolant Port"},
-    "reinforced_pipe": {"state": ("raw", _pipe_multipart()), "item": "reinforced_pipe/item", "lang": "Reinforced Pipe"},
     "heat_exchanger": {"state": ("horizontal", "heat_exchanger"), "item": "block", "lang": "Heat Exchanger"},
     "condenser": {"state": ("horizontal", "condenser"), "item": "block", "lang": "Condenser"},
     "cooling_tower_packing": {"state": ("simple",), "item": "block", "lang": "Cooling Tower Packing"},
@@ -293,7 +287,6 @@ DESCRIPTIONS.update({
     "coolant_channel": "Reactor coolant channel column. Side: dark steel frame with a recessed window showing vertical copper coolant pipes. Top/bottom: steel plate with four copper-rimmed coolant bores (black holes).",
     "reactor_service_port": "Front face of the reactor fuel service port in riveted iron casing: a large round brass-ringed hatch with a second inner brass ring, a vertical brass locking bar across it and four bolts.",
     "primary_coolant_port": "Atlas with two front faces of the primary coolant port in iron casing: a copper flange with a black bore, one with a blue (inlet) collar ring and one with a red (outlet) collar ring, corner bolts.",
-    "reinforced_pipe": "Atlas for a thick reinforced copper pipe: pipe core faces with iron bands, long pipe side strips with highlight and an iron band, and a flanged pipe end with a black bore and four bolts.",
     "heat_exchanger": "Atlas for a shell-and-tube heat exchanger block: dark steel shell sides with copper bands and bolts, end caps with a round iron manhole ring, a primary face with two copper flanges (red and blue collars, black bores), and a secondary face with a blue feedwater flange and a pale steam flange.",
     "condenser": "Atlas for a steam condenser block: sides with horizontal copper cooling-coil fins, front face with a large iron exhaust-steam intake opening above a small blue feedwater outlet, back face with blue and red cooling-water flanges, top with an iron grille grid.",
     "cooling_tower_packing": "Atlas for cooling tower fill packing: horizontal dark wooden slats with transparent gaps between them (keep gaps magenta) and thin iron edge posts; top view with vertical slats and transparent gaps.",
