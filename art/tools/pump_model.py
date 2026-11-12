@@ -130,13 +130,14 @@ def main():
         if isinstance(node, dict):
             name = node.get("name") or next(g["name"] for g in project.get("groups", []) if g["uuid"] == node["uuid"])
             groups[name] = [cubes[c] for c in node["children"] if isinstance(c, str)]
-    assert set(groups) == {"pipe", "flywheel"}, list(groups)
+    assert "flywheel" in groups and len(groups) > 1, list(groups)
+    body_cubes = [c for name, members in groups.items() if name != "flywheel" for c in members]
     source = project["textures"][0]["source"]
     png = os.path.join(ASSETS, "textures", "block", NAME + ".png")
     with open(png, "wb") as f:
         f.write(base64.b64decode(source.split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
-    body = [body_element(c, scale) for c in groups["pipe"]]
+    body = [body_element(c, scale) for c in body_cubes]
     wheel = [wheel_element(c, scale, False) for c in groups["flywheel"]]
     mounted = [wheel_element(c, scale, True) for c in groups["flywheel"]]
     models = os.path.join(ASSETS, "models", "block")
