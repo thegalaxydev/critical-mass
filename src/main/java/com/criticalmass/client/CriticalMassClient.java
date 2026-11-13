@@ -1,7 +1,6 @@
 package com.criticalmass.client;
 
 import com.criticalmass.content.fuel.CentrifugeBlockEntity;
-import com.criticalmass.content.thermal.TowerParts;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.CreateClient;
 import com.criticalmass.registry.CMBlocks;
@@ -45,13 +44,8 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_PANEL.get(), PanelRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.PLANT_SCREEN.get(), ScreenRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CENTRIFUGE.get(), ctx -> new AxialRotorRenderer<CentrifugeBlockEntity>(ctx, CMPartialModels.CENTRIFUGE_ROTOR));
-        event.registerBlockEntityRenderer(CMBlockEntities.TOWER_FAN.get(), ctx -> new AxialRotorRenderer<TowerParts.Fan>(ctx, CMPartialModels.TOWER_FAN_ROTOR) {
-            @Override
-            public AABB getRenderBoundingBox(TowerParts.Fan be) {
-                return new AABB(be.getBlockPos()).inflate(1, 0, 1);
-            }
-        });
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.COOLING_TOWER.get(), PackingRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -61,10 +55,6 @@ public class CriticalMassClient {
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CENTRIFUGE.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.CENTRIFUGE_ROTOR))
-                .skipVanillaRender(be -> true)
-                .apply();
-        SimpleBlockEntityVisualizer.builder(CMBlockEntities.TOWER_FAN.get())
-                .factory(SingleAxisRotatingVisual.of(CMPartialModels.TOWER_FAN_ROTOR))
                 .skipVanillaRender(be -> true)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.REINFORCED_VALVE.get())

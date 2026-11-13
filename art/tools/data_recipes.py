@@ -145,7 +145,6 @@ shaped("shielded_glass", [" G ", "GPG", " G "], {"G": "#c:glass_blocks/colorless
 shapeless("reactor_viewport", ["reactor_vessel_casing", "shielded_glass"], "reactor_viewport")
 shaped("control_rod_drive", ["G", "P", "A"], {"G": "create:gearbox", "P": "create:precision_mechanism", "A": "create:andesite_casing"}, "control_rod_drive")
 shaped("condenser", ["CTC", "CFC"], {"C": "#c:plates/copper", "T": "create:fluid_tank", "F": "create:encased_fan"}, "condenser")
-shaped("tower_fan", ["S", "F", "A"], {"S": "create:shaft", "F": "create:propeller", "A": "create:andesite_casing"}, "tower_fan")
 shaped("pressurizer", ["SES", "STS", "SBS"], {"S": "#c:plates/steel", "E": "create:electron_tube", "T": "create:fluid_tank", "B": "minecraft:blaze_rod"}, "pressurizer")
 shaped("cooling_tower_packing", ["PAP", "APA", "PAP"], {"P": "#minecraft:planks", "A": "create:andesite_alloy"}, "cooling_tower_packing", 8)
 shaped("radiator_panel", ["CBC", "CBC", "CBC"], {"C": "#c:plates/copper", "B": "minecraft:iron_bars"}, "radiator_panel", 2)

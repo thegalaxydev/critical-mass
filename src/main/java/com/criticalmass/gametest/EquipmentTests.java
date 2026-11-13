@@ -3,6 +3,7 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.CoolingTowerBlock;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
@@ -22,6 +23,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
@@ -36,6 +39,10 @@ public final class EquipmentTests {
     private static final double HOT = CMThermal.TOWER_CAPACITY * 60.0;
 
     private EquipmentTests() {
+    }
+
+    private static CoolingTowerBlock.Shape shape(CoolingTowerBlockEntity t) {
+        return t.getBlockState().getValue(CoolingTowerBlock.SHAPE);
     }
 
     private static List<CoolingTowerBlockEntity> fill(GameTestHelper h, BlockPos bottom, int count) {
@@ -53,13 +60,12 @@ public final class EquipmentTests {
         BlockPos naturalBase = new BlockPos(4, 1, 1);
         h.setBlock(naturalBase, AllBlocks.FLUID_TANK.getDefaultState());
         List<CoolingTowerBlockEntity> natural = fill(h, naturalBase.above(), 3);
-        BlockPos fanBase = new BlockPos(7, 1, 1);
-        h.setBlock(fanBase, AllBlocks.FLUID_TANK.getDefaultState());
+        BlockPos fanBase = new BlockPos(6, 1, 1);
+        h.setBlock(fanBase, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
         List<CoolingTowerBlockEntity> forced = fill(h, fanBase.above(), 3);
         TestVessels.pipes(h, List.of(naturalBase.above(4)));
-        h.setBlock(fanBase.above(4), CMBlocks.TOWER_FAN.get());
-        h.setBlock(fanBase.above(5), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
-        CreativeMotorBlockEntity motor = h.getBlockEntity(fanBase.above(5));
+        h.setBlock(fanBase.above(4), AllBlocks.ENCASED_FAN.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(fanBase);
         motor.generatedSpeed.setValue(64);
         List<CoolingTowerBlockEntity> all = new ArrayList<>(bare);
         all.addAll(natural);
@@ -77,19 +83,67 @@ public final class EquipmentTests {
                     double tall = CMThermal.TOWER_NATURAL_DRAFT + 2 * CMThermal.TOWER_NATURAL_PER_BLOCK;
                     h.assertTrue(Math.abs(bare.get(0).lastRejected() - base * tall) < 1e-6, "A tower open to the sky should draw more the taller it is: " + bare.get(0).lastRejected());
                     h.assertTrue(Math.abs(natural.get(1).lastRejected() - base * tall) < 1e-6, "A pipe on top of the fill should not block its draft: " + natural.get(1).lastRejected());
-                    h.assertTrue(Math.abs(forced.get(2).lastRejected() - base * (CMThermal.TOWER_NATURAL_DRAFT + 1.0)) < 1e-6, "A fan standing on the fill at 64 RPM should add full airflow: " + forced.get(2).lastRejected());
+                    h.assertTrue(Math.abs(forced.get(2).lastRejected() - base * (CMThermal.TOWER_NATURAL_DRAFT + 1.0)) < 1e-6, "An Encased Fan on the fill, driven up through its shaft at 64 RPM, should add full airflow: " + forced.get(2).lastRejected());
                     CoolingTowerBlockEntity top = forced.get(2);
                     h.assertTrue(top.towerFill() == 3 && Math.abs(top.towerAirflow() - 1.25) < 1e-6 && top.status().endsWith("tower.ok"), "The top of the fill should report its tower: " + top.towerFill() + " " + top.towerAirflow() + " " + top.status());
                     h.assertTrue(Math.abs(top.towerRejecting() - 3 * base * 1.25) < base * 0.2, "The top of the fill should total the heat rejection: " + top.towerRejecting());
                     h.assertTrue(forced.get(0).towerFill() == 0, "Only the top block should carry the tower totals");
+                    h.assertTrue(Math.abs(forced.get(1).getSpeed()) == 64, "The fill should pass rotation up its shaft: " + forced.get(1).getSpeed());
+                    h.assertTrue(shape(bare.get(0)) == CoolingTowerBlock.Shape.BOTTOM && shape(bare.get(1)) == CoolingTowerBlock.Shape.MIDDLE && shape(bare.get(2)) == CoolingTowerBlock.Shape.TOP,
+                            "Stacked fill should join up: " + shape(bare.get(0)) + " " + shape(bare.get(1)) + " " + shape(bare.get(2)));
+                    h.setBlock(new BlockPos(1, 2, 1), Blocks.AIR);
                     h.setBlock(naturalBase.above(5), Blocks.STONE);
-                    h.setBlock(fanBase.above(5), Blocks.AIR);
+                    h.setBlock(fanBase, Blocks.AIR);
                 })
                 .thenIdle(20)
                 .thenExecute(() -> {
                     h.assertTrue(natural.get(0).lastRejected() == 0 && natural.get(0).status().endsWith("covered"), "A covered natural-draft tower should stop: " + natural.get(0).status());
                     double still = HOT * CMThermal.TOWER_RATE * CMThermal.TOWER_NATURAL_DRAFT;
                     h.assertTrue(Math.abs(forced.get(0).lastRejected() - still) < 1e-6, "A stopped fan should leave natural draft only: " + forced.get(0).lastRejected());
+                    h.assertTrue(shape(bare.get(0)) == CoolingTowerBlock.Shape.SINGLE && shape(bare.get(2)) == CoolingTowerBlock.Shape.SINGLE, "Fill blocks left alone should close up again: " + shape(bare.get(0)) + " " + shape(bare.get(2)));
+                })
+                .thenSucceed();
+    }
+
+    private static BlockPos fannedTower(GameTestHelper h, BlockPos motorPos, int rpm, List<CoolingTowerBlockEntity> into) {
+        h.setBlock(motorPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        into.addAll(fill(h, motorPos.above(), 2));
+        h.setBlock(motorPos.above(3), AllBlocks.ENCASED_FAN.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(motorPos);
+        motor.generatedSpeed.setValue(rpm);
+        return motorPos.above(4);
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void towerFanMustBlowOutAndItsExhaustScalds(GameTestHelper h) {
+        List<CoolingTowerBlockEntity> out = new ArrayList<>();
+        List<CoolingTowerBlockEntity> in = new ArrayList<>();
+        List<CoolingTowerBlockEntity> cold = new ArrayList<>();
+        Pig above = h.spawnWithNoFreeWill(EntityType.PIG, fannedTower(h, new BlockPos(1, 1, 1), 64, out));
+        Pig wrongWay = h.spawnWithNoFreeWill(EntityType.PIG, fannedTower(h, new BlockPos(4, 1, 4), -64, in));
+        Pig cool = h.spawnWithNoFreeWill(EntityType.PIG, fannedTower(h, new BlockPos(6, 1, 1), 64, cold));
+        h.onEachTick(() -> {
+            for (CoolingTowerBlockEntity t : out) {
+                t.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TOWER_CAPACITY), HOT);
+                t.onCoolantPassed(Direction.UP, 10);
+            }
+            for (CoolingTowerBlockEntity t : in) {
+                t.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TOWER_CAPACITY), HOT);
+                t.onCoolantPassed(Direction.UP, 10);
+            }
+            for (CoolingTowerBlockEntity t : cold) {
+                t.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TOWER_CAPACITY), CMThermal.TOWER_CAPACITY * 20.0);
+                t.onCoolantPassed(Direction.UP, 10);
+            }
+        });
+        h.startSequence()
+                .thenIdle(80)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(out.get(1).towerAirflow() - 1.25) < 1e-6, "A fan blowing up out of the tower should add its airflow: " + out.get(1).towerAirflow());
+                    h.assertTrue(Math.abs(in.get(1).towerAirflow() - CMThermal.TOWER_NATURAL_DRAFT) < 1e-6, "A fan blowing down into the tower should add nothing: " + in.get(1).towerAirflow());
+                    h.assertTrue(above.getHealth() < above.getMaxHealth(), "Hot exhaust should hurt what stands in it: " + above.getHealth());
+                    h.assertTrue(wrongWay.getHealth() == wrongWay.getMaxHealth(), "A fan blowing inward has no exhaust to hurt anything: " + wrongWay.getHealth());
+                    h.assertTrue(cool.getHealth() == cool.getMaxHealth(), "Exhaust over cool water should be harmless: " + cool.getHealth() + " at " + cold.get(1).coolant().temperature());
                 })
                 .thenSucceed();
     }
@@ -99,10 +153,10 @@ public final class EquipmentTests {
         BlockPos outletPos = new BlockPos(4, 1, 4);
         List<CoolingTowerBlockEntity> packing = fill(h, outletPos.above(), 2);
         BlockPos fanPos = outletPos.above(3);
-        h.setBlock(fanPos, CMBlocks.TOWER_FAN.get());
+        h.setBlock(fanPos, AllBlocks.ENCASED_FAN.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
         h.setBlock(fanPos.above(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
         CreativeMotorBlockEntity fanMotor = h.getBlockEntity(fanPos.above());
-        fanMotor.generatedSpeed.setValue(128);
+        fanMotor.generatedSpeed.setValue(-128);
         BlockPos pumpPos = new BlockPos(6, 3, 4);
         h.setBlock(pumpPos, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
@@ -186,10 +240,10 @@ public final class EquipmentTests {
         h.setBlock(tankPos, AllBlocks.FLUID_TANK.getDefaultState());
         List<CoolingTowerBlockEntity> packing = fill(h, tankPos.above(), 2);
         BlockPos inletPos = tankPos.above(3);
-        h.setBlock(inletPos.above(), CMBlocks.TOWER_FAN.get());
+        h.setBlock(inletPos.above(), AllBlocks.ENCASED_FAN.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
         h.setBlock(inletPos.above(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
         CreativeMotorBlockEntity fanMotor = h.getBlockEntity(inletPos.above(2));
-        fanMotor.generatedSpeed.setValue(128);
+        fanMotor.generatedSpeed.setValue(-128);
         BlockPos pumpPos = new BlockPos(5, 4, 4);
         h.setBlock(pumpPos, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));

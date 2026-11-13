@@ -1,7 +1,16 @@
 {
  "variants": {
-  "": {
+  "shape=single": {
    "model": "criticalmass:block/cooling_tower_packing"
+  },
+  "shape=bottom": {
+   "model": "criticalmass:block/cooling_tower_packing_bottom"
+  },
+  "shape=middle": {
+   "model": "criticalmass:block/cooling_tower_packing_middle"
+  },
+  "shape=top": {
+   "model": "criticalmass:block/cooling_tower_packing_top"
   }
  }
 }

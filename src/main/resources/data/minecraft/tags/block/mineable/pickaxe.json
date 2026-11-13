@@ -29,7 +29,6 @@
     "criticalmass:sealed_waste_canister",
     "criticalmass:open_waste_canister",
     "criticalmass:reactor_viewport",
-    "criticalmass:tower_fan",
     "criticalmass:pressurizer",
     "criticalmass:corium",
     "criticalmass:ruined_channel",
@@ -42,6 +41,7 @@
     "criticalmass:dial_panel",
     "criticalmass:centrifuge",
     "criticalmass:reinforced_pipe",
-    "criticalmass:reinforced_valve"
+    "criticalmass:reinforced_valve",
+    "criticalmass:cooling_tower_packing"
   ]
 }

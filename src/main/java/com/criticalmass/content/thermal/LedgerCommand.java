@@ -157,12 +157,12 @@ public final class LedgerCommand {
                 source.sendSuccess(() -> Component.literal("rod drive " + where(d) + " insertion=" + fmt(d.insertion()) + " target=" + fmt(d.target()) + " failSafe=" + d.failSafe() + " speed=" + d.getSpeed()), false);
                 continue;
             }
-            if (be instanceof SingleBufferNodeBlockEntity n) {
+            if (be instanceof BufferNode n) {
                 others++;
                 coolant += n.coolant().amount();
                 stored += n.coolant().heat() + n.extraStoredHeat();
                 added += n.heatSourced();
-                source.sendSuccess(() -> Component.literal(n.getBlockState().getBlock().getName().getString() + " " + where(n) + " " + n.coolant().amount() + "mB "
+                source.sendSuccess(() -> Component.literal(be.getBlockState().getBlock().getName().getString() + " " + where(be) + " " + n.coolant().amount() + "mB "
                         + fmt(n.coolant().temperature()) + "C p=" + fmt(n.coolant().pressure()) + " status=" + n.status() + " sunk=" + fmt(n.sinks().totalHeat())), false);
                 continue;
             }

@@ -183,68 +183,6 @@ CLEAR = (0, 0, 0, 0)
 
 
 
-def fan_texture():
-    def side(w, h):
-        img = plate(IRON, 3)(w, h)
-        for x in (2, 13):
-            for y in (2, 13):
-                put(img, x, y, IRON[1])
-        rect(img, 0, 7, 15, 8, IRON[2])
-        return img
-
-    def top(w, h):
-        img = plate(IRON, 3)(w, h)
-        for y in range(2, 14):
-            for x in range(2, 14):
-                if (x in (7, 8)) or (y in (7, 8)):
-                    put(img, x, y, IRON[2])
-                else:
-                    img.putpixel((x, y), CLEAR)
-        bevel(img, 5, 5, 10, 10, IRON, 3)
-        return img
-
-    def blade(w, h):
-        img = plate(IRON, 4)(w, h)
-        rect(img, 0, 0, 15, 15, IRON[4])
-        for x in range(0, 16, 4):
-            rect(img, x, 0, x, 15, IRON[2])
-        rect(img, 0, 0, 15, 0, IRON[1])
-        rect(img, 0, 15, 15, 15, IRON[1])
-        return img
-    return atlas({"a": side, "b": top, "c": top, "d": blade})
-
-
-def fan_parts():
-    def box(lo, hi, quad, rotation=None, caps=None):
-        faces = {d: {"uv": QUADS[caps if caps and d in ("up", "down") else quad], "texture": "#0"} for d in ("north", "south", "east", "west", "up", "down")}
-        e = {"from": lo, "to": hi, "faces": faces}
-        if rotation:
-            e["rotation"] = {"origin": [8, 8, 8], "axis": rotation[0], "angle": rotation[1]}
-        return e
-    base = [box([0, 0, 0], [16, 2, 16], "a", caps="b"), box([5, 2, 5], [11, 5, 11], "a")]
-    rotor = [box([5, 5, 5], [11, 11, 11], "a"), box([6, 11, 6], [10, 16, 10], "a"),
-             box([11, 7.5, 3], [32, 8.5, 13], "d", ("x", 22.5)), box([-16, 7.5, 3], [5, 8.5, 13], "d", ("x", -22.5)),
-             box([3, 7.5, 11], [13, 8.5, 32], "d", ("z", 22.5)), box([3, 7.5, -16], [13, 8.5, 5], "d", ("z", -22.5))]
-    return base, rotor
-
-
-def fan_models():
-    name = "tower_fan"
-    tex = {"0": M + "block/" + name, "particle": M + "block/" + name}
-    base, rotor = fan_parts()
-    small = {"rotation": [30, 225, 0], "translation": [0, 0, 0], "scale": [0.26, 0.26, 0.26]}
-    hand = {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.16, 0.16, 0.16]}
-    display = {"gui": small, "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.12, 0.12, 0.12]},
-               "fixed": {"rotation": [0, 0, 0], "translation": [0, 0, 0], "scale": [0.25, 0.25, 0.25]},
-               "thirdperson_righthand": hand, "thirdperson_lefthand": hand,
-               "firstperson_righthand": {"rotation": [0, 45, 0], "translation": [0, 0, 0], "scale": [0.18, 0.18, 0.18]},
-               "firstperson_lefthand": {"rotation": [0, 225, 0], "translation": [0, 0, 0], "scale": [0.18, 0.18, 0.18]}}
-    return {name: {"parent": "minecraft:block/block", "textures": tex, "elements": base, "render_type": "minecraft:cutout"},
-            "tower_fan_rotor": {"textures": tex, "elements": rotor},
-            "tower_fan_item": {"parent": "minecraft:block/block", "textures": tex, "elements": base + rotor, "render_type": "minecraft:cutout", "display": display}}
-
-
-
 def centrifuge_texture():
     def frame(w, h):
         img = plate(IRON, 3)(w, h)
@@ -383,7 +321,6 @@ BLOCKS = {
     "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
     "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
-    "tower_fan": {"lang": "Cooling Tower Fan", "texture": fan_texture, "models": fan_models, "state": simple_state, "item": "tower_fan_item"},
     "centrifuge": {"lang": "Centrifuge", "texture": centrifuge_texture, "models": centrifuge_models, "state": simple_state, "item": "centrifuge_item"},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "reactor_viewport": {
@@ -402,7 +339,6 @@ LANG = {
     "criticalmass.goggles.tower_rejecting": "Whole tower: %s HU/t",
     "criticalmass.circuit.tank_end": "Stopped: a Fluid Tank in the loop needs a second pipe to carry on from",
     "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
-    "criticalmass.goggles.tower_fan": "Cooling Tower Fan",
     "block.criticalmass.reinforced_pipe": "Reinforced Pipe",
     "block.criticalmass.radiator_panel": "Radiator",
     "criticalmass.radiator.covered": "All four sides covered",
@@ -520,7 +456,7 @@ def main():
     uranium_items()
     panel_blocks.write_all(write, ASSETS, DATA, OUT)
     entries.update(panel_blocks.LANG)
-    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen", "reinforced_pipe", "reinforced_valve"])
+    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen", "reinforced_pipe", "reinforced_valve", "cooling_tower_packing"])
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))
 

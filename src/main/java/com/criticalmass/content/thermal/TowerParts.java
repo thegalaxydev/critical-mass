@@ -1,21 +1,20 @@
 package com.criticalmass.content.thermal;
 
-import com.criticalmass.registry.CMBlockEntities;
-import com.simibubi.create.content.kinetics.base.KineticBlock;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.foundation.block.IBE;
-import java.util.List;
-import net.minecraft.ChatFormatting;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.fan.EncasedFanBlock;
+import com.simibubi.create.content.kinetics.fan.EncasedFanBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import org.jetbrains.annotations.Nullable;
 
 public final class TowerParts {
     private TowerParts() {
+    }
+
+    public record Draft(double airflow, @Nullable AABB exhaust, boolean fan) {
     }
 
     public static double fanBoost(float rpm) {
@@ -23,57 +22,30 @@ public final class TowerParts {
         return Math.min(speed, CMThermal.TOWER_FAN_RPM) / CMThermal.TOWER_FAN_RPM + Math.max(0, speed - CMThermal.TOWER_FAN_RPM) / (4.0 * CMThermal.TOWER_FAN_RPM);
     }
 
-    public static double airflow(Level level, BlockPos topPacking, int packingCount) {
+    public static Draft draft(Level level, BlockPos topPacking, int packingCount) {
         BlockPos above = topPacking.above();
         boolean inlet = PipeCoolant.isPipe(level.getBlockState(above));
         BlockPos open = inlet ? above.above() : above;
-        if (level.getBlockEntity(open) instanceof Fan fan) {
-            return fan.isOverStressed() ? 0 : CMThermal.TOWER_NATURAL_DRAFT + fanBoost(fan.getSpeed());
+        BlockState there = level.getBlockState(open);
+        if (AllBlocks.ENCASED_FAN.has(there) && there.getValue(EncasedFanBlock.FACING).getAxis() == Direction.Axis.Y && level.getBlockEntity(open) instanceof EncasedFanBlockEntity fan) {
+            if (fan.isOverStressed()) {
+                return new Draft(0, null, true);
+            }
+            if (fan.getAirFlowDirection() != Direction.UP) {
+                return new Draft(CMThermal.TOWER_NATURAL_DRAFT, null, true);
+            }
+            boolean stream = there.getValue(EncasedFanBlock.FACING) == Direction.UP && fan.airCurrent.maxDistance > 0;
+            AABB exhaust = stream ? fan.airCurrent.bounds : new AABB(open.above()).expandTowards(0, 1, 0);
+            return new Draft(CMThermal.TOWER_NATURAL_DRAFT + fanBoost(fan.getSpeed()), exhaust, true);
         }
         if (!level.canSeeSky(open)) {
-            return 0;
+            return new Draft(0, null, false);
         }
-        return Math.min(CMThermal.TOWER_NATURAL_MAX, CMThermal.TOWER_NATURAL_DRAFT + CMThermal.TOWER_NATURAL_PER_BLOCK * (packingCount - 1));
+        double natural = Math.min(CMThermal.TOWER_NATURAL_MAX, CMThermal.TOWER_NATURAL_DRAFT + CMThermal.TOWER_NATURAL_PER_BLOCK * (packingCount - 1));
+        return new Draft(natural, new AABB(open).expandTowards(0, 1, 0), false);
     }
 
-    public static class Fan extends KineticBlockEntity {
-        public Fan(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-            super(type, pos, state);
-        }
-
-        @Override
-        public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-            super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-            tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.tower_fan")));
-            double flow = isOverStressed() ? 0 : CMThermal.TOWER_NATURAL_DRAFT + fanBoost(getSpeed());
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_airflow", getSpeed() != 0 ? ChatFormatting.AQUA : ChatFormatting.GOLD, Math.round(flow * 100)));
-            return true;
-        }
-    }
-
-    public static class FanBlock extends KineticBlock implements IBE<Fan> {
-        public FanBlock(Properties properties) {
-            super(properties);
-        }
-
-        @Override
-        public Direction.Axis getRotationAxis(BlockState state) {
-            return Direction.Axis.Y;
-        }
-
-        @Override
-        public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-            return face == Direction.UP;
-        }
-
-        @Override
-        public Class<Fan> getBlockEntityClass() {
-            return Fan.class;
-        }
-
-        @Override
-        public BlockEntityType<? extends Fan> getBlockEntityType() {
-            return CMBlockEntities.TOWER_FAN.get();
-        }
+    public static double airflow(Level level, BlockPos topPacking, int packingCount) {
+        return draft(level, topPacking, packingCount).airflow();
     }
 }

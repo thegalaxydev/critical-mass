@@ -14,7 +14,7 @@ All art is a candidate for replacement by hand-made art later.
 - `shielded_glass`: Create's tiled glass with an iron frame and tinted panes.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - `shielding_concrete`: hand-drawn poured slabs.
-- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
+- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
 ## Block texture passover (2026-10-19)
 
@@ -211,7 +211,7 @@ Reactor coolant channel column. Side: dark steel frame with a recessed window sh
 
 ## cooling_tower_packing
 
-- Used by: `textures/block/cooling_tower_packing.png`
+- Used by: nothing since 2026-11-12. The block now uses the hand-painted `art/originals/cooling_tower.png` and the models in `art/blockbench/cooling_tower_packing*.bbmodel`, exported by `art/tools/tower_model.py`.
 - Raw output: `art/generated/cooling_tower_packing-v1.jpg`
 - Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
@@ -831,7 +831,7 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 
 ## Overhaul blocks (not generated)
 
-- Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `control_panel.png`, `control_panel_parts.png`, `plant_screen.png`, `tower_fan.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
+- Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `control_panel.png`, `control_panel_parts.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
 - Source: painted by `art/tools/plant_blocks.py` and `art/tools/panel_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
 
 ## centrifuge, enriched_uranium and depleted_uranium

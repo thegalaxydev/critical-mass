@@ -47,13 +47,12 @@
     "/setblock ~5 ~6 ~6 create:mechanical_press[facing=west]",
     "/setblock ~8 ~7 ~6 criticalmass:condenser[facing=east]",
     "/fill ~8 ~2 ~9 ~8 ~5 ~9 criticalmass:cooling_tower_packing",
-    "/setblock ~8 ~6 ~9 criticalmass:tower_fan",
-    "/setblock ~8 ~7 ~9 create:creative_motor[facing=down]{ScrollValue:24}",
-    "/setblock ~5 ~2 ~9 create:creative_fluid_tank",
-    "/setblock ~6 ~2 ~9 create:mechanical_pump[facing=east]",
-    "/setblock ~7 ~2 ~9 create:fluid_pipe",
-    "/setblock ~6 ~3 ~9 create:cogwheel[axis=x]",
-    "/setblock ~5 ~3 ~9 create:creative_motor[facing=east]",
+    "/setblock ~8 ~6 ~9 create:encased_fan[facing=up]",
+    "/setblock ~5 ~3 ~9 create:creative_fluid_tank",
+    "/setblock ~6 ~3 ~9 create:mechanical_pump[facing=east]",
+    "/setblock ~7 ~3 ~9 create:fluid_pipe",
+    "/setblock ~6 ~4 ~9 create:cogwheel[axis=x]",
+    "/setblock ~5 ~4 ~9 create:creative_motor[facing=east]",
     "/setblock ~9 ~1 ~6 create:fluid_tank",
     "/setblock ~6 ~5 ~5 criticalmass:pressurizer",
     "/setblock ~6 ~4 ~5 create:blaze_burner[blaze=kindled]{isCreative:1b}",
@@ -132,7 +131,7 @@
     "/setblock ~8 ~6 ~7 criticalmass:reinforced_pipe",
     "/setblock ~8 ~5 ~7 criticalmass:reinforced_pipe",
     "/setblock ~8 ~5 ~8 criticalmass:reinforced_pipe",
-    "/setblock ~8 ~1 ~9 criticalmass:reinforced_pipe",
+    "/setblock ~9 ~2 ~9 criticalmass:reinforced_pipe",
     "/setblock ~9 ~1 ~9 criticalmass:reinforced_pipe",
     "/setblock ~11 ~1 ~9 criticalmass:reinforced_pipe",
     "/setblock ~11 ~2 ~9 criticalmass:reinforced_pipe",
@@ -178,7 +177,7 @@
     "/setblock ~8 ~6 ~7 minecraft:air",
     "/setblock ~8 ~5 ~7 minecraft:air",
     "/setblock ~8 ~5 ~8 minecraft:air",
-    "/setblock ~8 ~1 ~9 minecraft:air",
+    "/setblock ~9 ~2 ~9 minecraft:air",
     "/setblock ~9 ~1 ~9 minecraft:air",
     "/setblock ~11 ~1 ~9 minecraft:air",
     "/setblock ~11 ~2 ~9 minecraft:air",
@@ -224,7 +223,7 @@
     "/setblock ~8 ~6 ~7 criticalmass:reinforced_pipe",
     "/setblock ~8 ~5 ~7 criticalmass:reinforced_pipe",
     "/setblock ~8 ~5 ~8 criticalmass:reinforced_pipe",
-    "/setblock ~8 ~1 ~9 criticalmass:reinforced_pipe",
+    "/setblock ~9 ~2 ~9 criticalmass:reinforced_pipe",
     "/setblock ~9 ~1 ~9 criticalmass:reinforced_pipe",
     "/setblock ~11 ~1 ~9 criticalmass:reinforced_pipe",
     "/setblock ~11 ~2 ~9 criticalmass:reinforced_pipe",
@@ -256,7 +255,7 @@
     "/data merge block ~-5 ~0 ~0 {Buffer:{Fluid:{id:\"minecraft:water\",amount:4000},Heat:0.0d}}",
     "/data merge block ~-5 ~0 ~1 {Buffer:{Fluid:{id:\"minecraft:water\",amount:4000},Heat:0.0d}}",
     "/data merge block ~10 ~4 ~2 {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}",
-    "/data merge block ~5 ~2 ~9 {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}",
+    "/data merge block ~5 ~3 ~9 {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}",
     "/data merge block ~8 ~2 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
     "/data merge block ~8 ~3 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
     "/data merge block ~8 ~4 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
@@ -305,6 +304,7 @@
     "/setblock ~4 ~2 ~6 create:creative_motor[facing=up]",
     "/setblock ~7 ~0 ~6 create:creative_motor[facing=up]",
     "/setblock ~10 ~0 ~9 create:creative_motor[facing=up]",
+    "/setblock ~8 ~1 ~9 create:creative_motor[facing=up]{ScrollValue:24}",
     "/setblock ~3 ~6 ~2 criticalmass:control_rod_drive[facing=south]",
     "/setblock ~3 ~6 ~1 create:creative_motor[facing=south]",
     "/setblock ~3 ~6 ~4 criticalmass:control_rod_drive[facing=north]",
@@ -315,6 +315,8 @@
   },
   {
    "cmds": [
+    "/data get block 308 -54 309 Speed",
+    "/data get block 308 -58 309 Speed",
     "/criticalmass ledger"
    ],
    "wait": 5
@@ -328,14 +330,16 @@
   },
   {
    "cmds": [
+    "/data get block 308 -54 309 Speed",
+    "/data get block 308 -58 309 Speed",
     "/criticalmass ledger"
    ],
    "wait": 5
   },
   {
    "cmds": [
-    "/setblock 306 -59 311 minecraft:barrier",
-    "/tp @p 306.50 -58.00 311.50 facing 307.00 -59.02 309.50"
+    "/setblock 306 -58 311 minecraft:barrier",
+    "/tp @p 306.50 -57.00 311.50 facing 307.20 -58.02 309.50"
    ],
    "wait": 40
   },
@@ -367,12 +371,25 @@
   },
   {
    "cmds": [
+    "/setblock 310 -59 312 minecraft:barrier",
+    "/tp @p 310.50 -58.00 312.50 facing 308.50 -57.82 309.50"
+   ],
+   "wait": 40
+  },
+  {
+   "shot": "column",
+   "wait": 2
+  },
+  {
+   "cmds": [
     "/tp @p 300 -60 300"
    ],
    "wait": 600
   },
   {
    "cmds": [
+    "/data get block 308 -54 309 Speed",
+    "/data get block 308 -58 309 Speed",
     "/criticalmass ledger"
    ],
    "wait": 5

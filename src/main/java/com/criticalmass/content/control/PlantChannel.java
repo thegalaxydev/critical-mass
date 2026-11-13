@@ -6,7 +6,6 @@ import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
-import com.criticalmass.content.thermal.TowerParts;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ThermalNode;
 import net.minecraft.core.BlockPos;
@@ -54,7 +53,7 @@ public enum PlantChannel {
     }
 
     public static boolean isTarget(@Nullable BlockEntity be) {
-        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof TowerParts.Fan || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity;
+        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity;
     }
 
     private Reading of(double value, double min, double max) {
@@ -101,9 +100,6 @@ public enum PlantChannel {
                 case TEMPERATURE, COOLANT_TEMPERATURE -> of(PressurizerBlockEntity.boilingPoint(z.pressure()), CMThermal.AMBIENT, PressurizerBlockEntity.boilingPoint(CMThermal.PRESSURIZER_MAX));
                 default -> null;
             };
-        }
-        if (be instanceof TowerParts.Fan fan) {
-            return this == SPEED ? of(Math.abs(fan.getSpeed()), 0, CMThermal.TURBINE_MAX_RPM) : this == FLOW ? of(100 * (CMThermal.TOWER_NATURAL_DRAFT + TowerParts.fanBoost(fan.getSpeed())), 0, 200) : null;
         }
         if (be instanceof SteamTurbineBlockEntity t) {
             return switch (this) {

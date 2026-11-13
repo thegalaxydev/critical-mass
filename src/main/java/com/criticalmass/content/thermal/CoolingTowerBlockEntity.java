@@ -1,6 +1,8 @@
 package com.criticalmass.content.thermal;
 
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import java.util.List;
+import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -9,11 +11,22 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
-public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
+public class CoolingTowerBlockEntity extends KineticBlockEntity implements BufferNode {
+    private static final int SCAN_LIMIT = 64;
+    private final CoolantBuffer buffer;
+    private final ThermalSinks sinks = new ThermalSinks();
+    private final LerpedFloat columnLevel = LerpedFloat.linear().chase(0, 0.2, LerpedFloat.Chaser.EXP);
+    private int flowTicks;
+    private String status = "";
+    private boolean syncPending;
+    private int syncCooldown;
     private double evaporationDebt;
     private double lastRejected;
     private int stackIndex;
@@ -21,9 +34,57 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     private double towerAirflow;
     private double towerRejecting;
     private int clock;
+    private int columnHeight;
+    private FluidStack columnFluid = FluidStack.EMPTY;
 
     public CoolingTowerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state, CMThermal.TOWER_CAPACITY);
+        super(type, pos, state);
+        this.buffer = new CoolantBuffer(CMThermal.TOWER_CAPACITY, this::changed);
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        LoadedThermalBlocks.add(this);
+    }
+
+    @Override
+    public void invalidate() {
+        LoadedThermalBlocks.remove(this);
+        super.invalidate();
+    }
+
+    @Override
+    public CoolantBuffer coolant() {
+        return buffer;
+    }
+
+    @Override
+    public ThermalSinks sinks() {
+        return sinks;
+    }
+
+    @Override
+    public String status() {
+        return status;
+    }
+
+    @Override
+    public void onCoolantPassed(Direction enteredFrom, int amount) {
+        if (amount > 0) {
+            flowTicks = 2;
+        }
+    }
+
+    private void setStatus(String key) {
+        if (!key.equals(status)) {
+            status = key;
+            syncPending = true;
+        }
+    }
+
+    private void changed() {
+        syncPending = true;
     }
 
     private boolean packing(BlockPos p) {
@@ -56,6 +117,18 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
         return towerRejecting;
     }
 
+    public int columnHeight() {
+        return columnHeight;
+    }
+
+    public float columnLevel(float partialTicks) {
+        return columnLevel.getValue(partialTicks);
+    }
+
+    public FluidStack columnFluid() {
+        return columnFluid;
+    }
+
     @Override
     @Nullable
     public Direction passThroughExit(Direction enteredFrom) {
@@ -83,9 +156,53 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     }
 
     @Override
-    protected void serverTick() {
-        reject();
-        summarize();
+    public void tick() {
+        super.tick();
+        if (level == null) {
+            return;
+        }
+        if (level.isClientSide) {
+            watchColumn();
+            return;
+        }
+        if (!ThermalSafety.ruptureIfNeeded(level, worldPosition, buffer, sinks)) {
+            reject();
+            summarize();
+        }
+        if (flowTicks > 0) {
+            flowTicks--;
+        }
+        if (syncCooldown > 0) {
+            syncCooldown--;
+        } else if (syncPending) {
+            syncPending = false;
+            syncCooldown = 20;
+            setChanged();
+            sendData();
+        }
+    }
+
+    private void watchColumn() {
+        if (packing(worldPosition.below())) {
+            columnHeight = 0;
+            return;
+        }
+        int count = 0;
+        long total = 0;
+        FluidStack shown = FluidStack.EMPTY;
+        BlockPos p = worldPosition;
+        while (count < SCAN_LIMIT && level.getBlockEntity(p) instanceof CoolingTowerBlockEntity t) {
+            total += t.buffer.amount();
+            if (shown.isEmpty() && t.buffer.amount() > 0) {
+                shown = t.buffer.fluid();
+            }
+            count++;
+            p = p.above();
+        }
+        columnHeight = count;
+        columnFluid = shown;
+        columnLevel.updateChaseTarget(count == 0 ? 0 : total / (float) (count * CMThermal.TOWER_CAPACITY));
+        columnLevel.tickChaser();
     }
 
     private void summarize() {
@@ -93,6 +210,10 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             return;
         }
         clock = CMThermal.TOWER_SCAN_TICKS;
+        CoolingTowerBlock.Shape shape = CoolingTowerBlock.shapeAt(level, worldPosition);
+        if (getBlockState().getValue(CoolingTowerBlock.SHAPE) != shape) {
+            level.setBlock(worldPosition, getBlockState().setValue(CoolingTowerBlock.SHAPE, shape), Block.UPDATE_CLIENTS);
+        }
         if (packing(worldPosition.above())) {
             if (towerFill != 0) {
                 towerFill = 0;
@@ -111,16 +232,31 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             }
             p = p.below();
         }
-        double flow = TowerParts.airflow(level, worldPosition, count);
+        TowerParts.Draft draft = TowerParts.draft(level, worldPosition, count);
+        double flow = draft.airflow();
         if (count != towerFill || Math.abs(flow - towerAirflow) > 1e-6 || Math.abs(sum - towerRejecting) > Math.max(1, towerRejecting * 0.05)) {
             towerFill = count;
             towerAirflow = flow;
             towerRejecting = sum;
             changed();
         }
-        if (sum > CMThermal.TOWER_PLUME_HEAT && level instanceof ServerLevel server) {
+        scald(draft, sum);
+        if (sum > CMThermal.TOWER_PLUME_HEAT && !draft.fan() && level instanceof ServerLevel server) {
             int puffs = (int) Math.min(12, 1 + sum / CMThermal.TOWER_PLUME_HEAT);
             server.sendParticles(ParticleTypes.CLOUD, worldPosition.getX() + 0.5, worldPosition.getY() + 2.2, worldPosition.getZ() + 0.5, puffs, 0.3, 0.1, 0.3, 0.02 + 0.03 * flow);
+        }
+    }
+
+    private void scald(TowerParts.Draft draft, double rejecting) {
+        if (draft.exhaust() == null || rejecting <= 0) {
+            return;
+        }
+        float damage = (float) Math.min(CMThermal.TOWER_SCALD_MAX, (buffer.temperature() - CMThermal.TOWER_SCALD_TEMPERATURE) * CMThermal.TOWER_SCALD_PER_DEGREE);
+        if (damage <= 0) {
+            return;
+        }
+        for (LivingEntity e : level.getEntitiesOfClass(LivingEntity.class, draft.exhaust())) {
+            e.hurt(level.damageSources().hotFloor(), damage);
         }
     }
 
@@ -128,7 +264,7 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
         lastRejected = 0;
         int below = 0;
         BlockPos p = worldPosition.below();
-        while (packing(p) && below < 64) {
+        while (packing(p) && below < SCAN_LIMIT) {
             below++;
             p = p.below();
         }
@@ -159,7 +295,7 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             setStatus("criticalmass.tower.covered");
             return;
         }
-        if (!flowing()) {
+        if (flowTicks <= 0) {
             setStatus("criticalmass.tower.no_flow");
             return;
         }
@@ -178,6 +314,9 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
+        tag.put("Buffer", buffer.save(registries));
+        tag.put("Sinks", sinks.save());
+        tag.putString("Status", status);
         tag.putDouble("EvaporationDebt", evaporationDebt);
         tag.putDouble("LastRejected", lastRejected);
         tag.putInt("StackIndex", stackIndex);
@@ -189,6 +328,9 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
+        buffer.load(tag.getCompound("Buffer"), registries);
+        sinks.load(tag.getCompound("Sinks"));
+        status = tag.getString("Status");
         evaporationDebt = tag.getDouble("EvaporationDebt");
         lastRejected = tag.getDouble("LastRejected");
         stackIndex = tag.getInt("StackIndex");
@@ -198,7 +340,12 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     }
 
     @Override
-    protected void details(List<Component> tooltip) {
+    public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
+        if (!status.isEmpty()) {
+            tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        }
+        ThermalTooltips.coolant(tooltip, buffer);
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.rejecting", lastRejected > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastRejected)));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_stack", ChatFormatting.GRAY, stackIndex + 1, CMThermal.TOWER_MAX_PACKING));
         tooltip.add(ThermalTooltips.line("criticalmass.goggles.evaporated", ChatFormatting.GRAY, sinks.evaporatedVolume));
@@ -206,5 +353,6 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_airflow", towerAirflow > 0 ? ChatFormatting.AQUA : ChatFormatting.RED, Math.round(towerAirflow * 100)));
             tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_rejecting", towerRejecting > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(towerRejecting)));
         }
+        return true;
     }
 }

@@ -48,6 +48,7 @@ public class CriticalMass {
     public static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceLocation CREATE_PIPE = ResourceLocation.fromNamespaceAndPath("create", "fluid_pipe");
     private static final ResourceLocation CREATE_TANK = ResourceLocation.fromNamespaceAndPath("create", "fluid_tank");
+    private static final ResourceLocation CREATE_FAN = ResourceLocation.fromNamespaceAndPath("create", "encased_fan");
 
     public CriticalMass(IEventBus modEventBus, ModContainer modContainer) {
         CMBlocks.BLOCKS.register(modEventBus);
@@ -61,6 +62,9 @@ public class CriticalMass {
             CMItems.ITEMS.addAlias(asResource(tank), CREATE_TANK);
             CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource(tank), CREATE_TANK);
         }
+        CMBlocks.BLOCKS.addAlias(asResource("tower_fan"), CREATE_FAN);
+        CMItems.ITEMS.addAlias(asResource("tower_fan"), CREATE_FAN);
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("tower_fan"), CREATE_FAN);
         CMBlocks.BLOCKS.addAlias(asResource("tower_distributor"), CREATE_PIPE);
         CMItems.ITEMS.addAlias(asResource("tower_distributor"), CREATE_PIPE);
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("tower_distributor"), CREATE_PIPE);

@@ -12,7 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
-public abstract class SingleBufferNodeBlockEntity extends SmartBlockEntity implements ThermalNode, IHaveGoggleInformation {
+public abstract class SingleBufferNodeBlockEntity extends SmartBlockEntity implements BufferNode, IHaveGoggleInformation {
     protected final CoolantBuffer buffer;
     protected final ThermalSinks sinks = new ThermalSinks();
     protected int flowTicks;
@@ -51,14 +51,17 @@ public abstract class SingleBufferNodeBlockEntity extends SmartBlockEntity imple
         return sinks;
     }
 
+    @Override
     public double heatSourced() {
         return 0;
     }
 
+    @Override
     public double extraStoredHeat() {
         return 0;
     }
 
+    @Override
     public String status() {
         return status;
     }

@@ -1,0 +1,115 @@
+{
+ "name": "packing",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -59 34 54 -50 50 minecraft:air",
+    "/setblock 38 -59 40 criticalmass:cooling_tower_packing",
+    "/data merge block 38 -59 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:250},Heat:0.0d}}",
+    "/fill 41 -59 40 41 -58 40 criticalmass:cooling_tower_packing",
+    "/data merge block 41 -59 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 41 -58 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:100},Heat:0.0d}}",
+    "/fill 44 -59 40 44 -57 40 criticalmass:cooling_tower_packing",
+    "/data merge block 44 -59 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 44 -58 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:400},Heat:0.0d}}",
+    "/setblock 44 -60 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 47 -59 40 create:creative_motor[facing=up]{ScrollValue:64}",
+    "/fill 47 -58 40 47 -55 40 criticalmass:cooling_tower_packing",
+    "/data merge block 47 -58 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 47 -57 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 47 -56 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
+    "/data merge block 47 -55 40 {Buffer:{Fluid:{id:\"minecraft:water\",amount:350},Heat:0.0d}}",
+    "/setblock 47 -54 40 create:encased_fan[facing=up]",
+    "/item replace entity @p hotbar.0 with criticalmass:cooling_tower_packing",
+    "/item replace entity @p hotbar.1 with minecraft:air"
+   ],
+   "wait": 60
+  },
+  {
+   "cmds": [
+    "/setblock 43 -59 33 minecraft:barrier",
+    "/tp @p 43.00 -57.60 33.50 facing 43.00 -58.62 40.50"
+   ],
+   "wait": 40,
+   "slot": 1
+  },
+  {
+   "shot": "wide",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 39 -59 38 minecraft:barrier",
+    "/tp @p 39.90 -57.90 38.20 facing 38.50 -60.02 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "single",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 45 -58 37 minecraft:barrier",
+    "/tp @p 45.80 -56.90 37.80 facing 44.50 -59.02 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "stack",
+   "wait": 3
+  },
+  {
+   "shot": "stack_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 49 -55 38 minecraft:barrier",
+    "/tp @p 49.60 -53.90 38.20 facing 47.50 -56.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "fan_a",
+   "wait": 4
+  },
+  {
+   "shot": "fan_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/data get block 47 -54 40 Speed",
+    "/data get block 47 -56 40 Speed",
+    "/data get block 44 -57 40 Speed",
+    "/data get block 44 -58 40",
+    "/criticalmass ledger"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 43.00 -57.60 33.50 facing 43.00 -58.62 40.50"
+   ],
+   "slot": 0,
+   "gui": true,
+   "wait": 20
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  }
+ ]
+}

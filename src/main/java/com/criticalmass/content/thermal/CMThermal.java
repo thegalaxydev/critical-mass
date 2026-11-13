@@ -126,6 +126,9 @@ public final class CMThermal {
     public static final float TOWER_FAN_RPM = 64.0f;
     public static final int TOWER_SCAN_TICKS = 10;
     public static final double TOWER_PLUME_HEAT = 20.0;
+    public static final double TOWER_SCALD_TEMPERATURE = 50.0;
+    public static final double TOWER_SCALD_PER_DEGREE = 0.04;
+    public static final double TOWER_SCALD_MAX = 4.0;
     public static final double LOW_LEVEL_SHARE = 0.25;
     public static final double UNPRESSURIZED_BOILING = 350.0;
     public static final double BOILING_PER_BAR = 2.0;
