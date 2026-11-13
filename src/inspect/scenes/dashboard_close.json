@@ -1,0 +1,120 @@
+{
+ "name": "dashclose",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/weather clear",
+    "/gamemode creative",
+    "/tp @p 42 -60 36"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -59 34 54 -50 50 minecraft:air",
+    "/setblock 40 -59 40 criticalmass:dashboard[facing=north]",
+    "/setblock 44 -58 40 criticalmass:dashboard[facing=north]",
+    "/setblock 47 -59 40 criticalmass:dashboard[facing=north,join_cw=true]",
+    "/setblock 48 -59 40 criticalmass:dashboard[facing=north,join_ccw=true]",
+    "/setblock 40 -59 38 minecraft:barrier",
+    "/setblock 40 -58 38 minecraft:barrier",
+    "/item replace entity @p hotbar.0 with minecraft:air"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/tp @p 41.60 -60.00 38.90 facing 40.50 -60.12 40.40"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "front_east",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 39.40 -60.00 38.90 facing 40.50 -60.12 40.40"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "front_west",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 42.00 -60.00 40.50 facing 40.50 -60.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "side_east",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 39.00 -60.00 40.50 facing 40.50 -60.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "side_west",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 41.60 -60.00 42.00 facing 40.50 -60.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "back_east",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 40.50 -57.00 38.90 facing 40.50 -59.92 40.40"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "above",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 45.40 -60.00 38.90 facing 44.50 -59.12 40.40"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "under",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 46.00 -60.00 40.20 facing 44.60 -59.12 40.50"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "under_side",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 48.00 -60.00 38.60 facing 48.00 -60.12 40.40"
+   ],
+   "wait": 20
+  },
+  {
+   "shot": "pair",
+   "wait": 2
+  }
+ ]
+}

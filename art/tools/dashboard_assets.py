@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+import math
 import os
 import sys
 import uuid
@@ -48,30 +49,31 @@ def swatch(name, frm, to, colours):
 
 
 BOARD_TOP, BOARD_EDGE, FRONT, BASE_FRONT, BASE_SIDE, BOARD_UNDER, BASE_BOTTOM = (0, 0, 16, 10), (0, 10, 16, 3), (0, 13, 16, 6), (0, 19, 16, 2), (0, 21, 12, 2), (0, 23, 16, 10), (0, 33, 16, 12)
-BASE_TOP, CHEEK, RIM, CHEEK_FRONT, CHEEK_BACK, BACK_OUT, BACK_IN, BACK_TOP = (16, 0, 16, 12), (16, 16, 12, 14), (29, 16, 1, 13), (30, 16, 1, 9), (31, 16, 1, 14), (32, 0, 16, 14), (48, 0, 16, 14), (32, 14, 16, 1)
-RIM_SIDE = (16, 31, 13, 2)
-SLOPE_FROM = 11.0
-SLOPE = 5.0 / 12.0
+BASE_TOP, SIDE, SIDE_TRIM, SIDE_FILL, BACK_OUT, BACK_IN = (16, 0, 16, 12), (16, 16, 12, 14), (16, 31, 11, 2), (28, 31, 1, 1), (32, 0, 16, 14), (48, 0, 16, 14)
+THIN = 0.025
+PROUD = 0.05
+SLOPE_PIVOT = [8, 16, 14]
+SLOPE_RUN = 10.0
+SLOPE_LENGTH = SLOPE_RUN / math.cos(math.radians(22.5))
+SLOPE_START = 16.0 - SLOPE_RUN * math.tan(math.radians(22.5))
 
 
-def cheek(x0, outer):
+def side(x0, outer):
     inner = "east" if outer == "west" else "west"
     flipped = {"west": "west", "east": "east!"}
-    return [el("panel", [x0, 2, 4], [x0 + 1, 16, 16], {flipped[outer]: CHEEK, flipped[inner]: CHEEK, "south": CHEEK_BACK}),
-            el("front", [x0, 2, 4], [x0 + 1, 11, 5], {"north": CHEEK_FRONT}),
-            el("rim", [x0, 15, 3.01], [x0 + 1, 16, 16], {"up": RIM, "north": (29, 16, 1, 1)}, [8, 16, 16]),
-            el("trim_west", [x0 - 0.02, 14, 3.01], [x0, 16, 16], {"west": RIM_SIDE}, [8, 16, 16]),
-            el("trim_east", [x0 + 1, 14, 3.01], [x0 + 1.02, 16, 16], {"east!": RIM_SIDE}, [8, 16, 16])]
+    return [el("panel", [x0, 2, 4], [x0 + THIN, 16, 16], {flipped[outer]: SIDE, flipped[inner]: SIDE}),
+            el("corner", [x0, 11, 4], [x0 + THIN, round(SLOPE_START, 3), 5], {flipped[outer]: SIDE_FILL, flipped[inner]: SIDE_FILL}),
+            el("slope", [x0 - PROUD, 14, round(14 - SLOPE_LENGTH, 3)], [x0 + THIN + PROUD, 16, 14], {flipped[outer]: SIDE_TRIM, flipped[inner]: SIDE_TRIM}, SLOPE_PIVOT)]
 
 
 def desk():
     return {
         "body": [el("base", [0, 0, 4], [16, 2, 16], {"up": BASE_TOP, "down": BASE_BOTTOM, "north": BASE_FRONT, "south": BASE_FRONT, "east": BASE_SIDE, "west": BASE_SIDE}),
                  el("front", [0, 2, 8], [16, 8, 16], {"north": FRONT}),
-                 el("back", [0, 2, 15], [16, 16, 16], {"south": BACK_OUT, "north": BACK_IN, "up": BACK_TOP}),
-                 el("board", [0, 11, 6], [16, 14, 16], {"up": BOARD_TOP, "north": BOARD_EDGE, "down": BOARD_UNDER}, PIVOT)],
-        "cheek_west": cheek(0, "west"),
-        "cheek_east": cheek(15, "east"),
+                 el("back", [0, 2, 16 - THIN], [16, 16, 16], {"south": BACK_OUT, "north": BACK_IN}),
+                 el("board", [0, 11, 6], [16, 14, 16], {"up": BOARD_TOP, "north": BOARD_EDGE}, PIVOT)],
+        "cheek_west": side(0, "west"),
+        "cheek_east": side(16 - THIN, "east"),
     }
 
 
@@ -141,25 +143,27 @@ def desk_texture():
     put(BASE_TOP, nine(wood, 16, 12, 1))
     put(BACK_OUT, nine(iron, 16, 14, 2))
     put(BACK_IN, nine(rail, 16, 14, 2))
-    put(BACK_TOP, nine(rail, 16, 1, 0).crop((0, 0, 16, 1)))
-    side = nine(iron, 12, 14, 1)
+    panel = nine(iron, 12, 14, 1)
     edge = [rail.getpixel((x, 0)) for x in range(16)]
+    tan = math.tan(math.radians(22.5))
     for c in range(12):
-        top = 16.0 - (SLOPE_FROM + (c + 0.5) * SLOPE) + 1.0
+        z = 4 + c + 0.5
+        line = 16.0 - max(0.0, 14.0 - z) * tan
+        limit = 11.0 if c == 0 else 16.0 if c >= 10 else line - 1.0
         for r in range(14):
-            if r + 0.5 < top:
-                side.putpixel((c, r), (0, 0, 0, 0))
+            if 15.5 - r > limit:
+                panel.putpixel((c, r), (0, 0, 0, 0))
     for r in range(14):
-        if side.getpixel((0, r))[3]:
-            side.putpixel((0, r), edge[4])
-        side.putpixel((11, r), edge[6])
+        if panel.getpixel((0, r))[3]:
+            panel.putpixel((0, r), edge[4])
+        panel.putpixel((11, r), edge[6])
     for c in range(12):
-        side.putpixel((c, 13), edge[2 + c])
-    put(CHEEK, side)
-    put(RIM, rail.crop((0, 2, 1, 15)))
-    put(RIM_SIDE, rail.crop((1, 0, 14, 2)))
-    put(CHEEK_FRONT, rail.crop((0, 3, 1, 12)))
-    put(CHEEK_BACK, rail.crop((0, 1, 1, 15)))
+        panel.putpixel((c, 13), edge[2 + c])
+    for c in (10, 11):
+        panel.putpixel((c, 0), edge[2 + c])
+    put(SIDE, panel)
+    put(SIDE_TRIM, rail.crop((2, 0, 13, 2)))
+    put(SIDE_FILL, rail.crop((4, 0, 5, 1)))
     return img
 
 
