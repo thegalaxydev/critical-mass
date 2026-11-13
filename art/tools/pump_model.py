@@ -1,6 +1,5 @@
 import base64
 import json
-import math
 import os
 import sys
 
@@ -15,13 +14,17 @@ NAME = "circulation_pump"
 TEXTURE = "criticalmass:block/" + NAME
 CENTRE = (8.0, 8.0, 8.0)
 DIRECTIONS = ("north", "south", "east", "west", "up", "down")
-BODY_TURN = ("y", -1)
-WHEEL_TURN = ("x", 1)
-ROTATIONS = {"north": {}, "south": {"y": 180}, "east": {"y": 90}, "west": {"y": 270}, "up": {"x": 270}, "down": {"x": 90}}
+OUTLET_NORTH = ("y", -1, CENTRE)
+OUTLET_UP = ("z", -1, CENTRE)
+SIDEWAYS = ("z", 1, CENTRE)
+VARIANTS = {
+    "north": ({}, "false"), "south": ({"y": 180}, "false"), "east": ({"y": 90}, "true"), "west": ({"y": 270}, "true"),
+    "up": ({"x": 270}, "false"), "down": ({"x": 90}, "false"),
+}
 
 
-def turn(point, axis, quarters):
-    x, y, z = (point[i] - CENTRE[i] for i in range(3))
+def spin(v, axis, quarters):
+    x, y, z = v
     for _ in range(quarters % 4):
         if axis == "y":
             x, z = z, -x
@@ -29,22 +32,35 @@ def turn(point, axis, quarters):
             y, z = -z, y
         else:
             x, y = -y, x
-    return (round(x + CENTRE[0], 5), round(y + CENTRE[1], 5), round(z + CENTRE[2], 5))
+    return x, y, z
+
+
+def move(point, steps):
+    p = tuple(point)
+    for axis, quarters, centre in steps:
+        v = spin(tuple(p[i] - centre[i] for i in range(3)), axis, quarters)
+        p = tuple(round(v[i] + centre[i], 5) for i in range(3))
+    return p
+
+
+def direct(vector, steps):
+    v = tuple(vector)
+    for axis, quarters, _ in steps:
+        v = spin(v, axis, quarters)
+    return v
 
 
 def close(a, b):
     return all(abs(a[i] - b[i]) < 1e-4 for i in range(3))
 
 
-def bake(frm, to, faces, axis, quarters):
-    if quarters % 4 == 0:
-        return list(frm), list(to), {d: dict(f) for d, f in faces.items()}
-    corners = [turn(c, axis, quarters) for c in ((x, y, z) for x in (frm[0], to[0]) for y in (frm[1], to[1]) for z in (frm[2], to[2]))]
+def bake(frm, to, faces, steps):
+    corners = [move((x, y, z), steps) for x in (frm[0], to[0]) for y in (frm[1], to[1]) for z in (frm[2], to[2])]
     lo = [min(c[i] for c in corners) for i in range(3)]
     hi = [max(c[i] for c in corners) for i in range(3)]
     out = {}
     for old, f in faces.items():
-        moved = [turn(c, axis, quarters) for c in iso.face_corners(frm, to, old)]
+        moved = [move(c, steps) for c in iso.face_corners(frm, to, old)]
         r = (f.get("rotation", 0) // 90) % 4
         for new in DIRECTIONS:
             target = iso.face_corners(lo, hi, new)
@@ -96,22 +112,28 @@ def element(name, frm, to, faces, rotation=None):
     return e
 
 
-def body_element(cube, scale):
+def body_element(cube, scale, extra):
     rot = cube.get("rotation") or [0, 0, 0]
     assert abs(rot[0]) < 1e-6 and abs(rot[2]) < 1e-6, (cube["name"], rot)
-    frm, to, faces = bake(cube["from"], cube["to"], faces_of(cube, scale), "y", quarter_turns(rot[1]) + BODY_TURN[1])
+    steps = [("y", quarter_turns(rot[1]), tuple(cube.get("origin") or CENTRE))] + extra
+    frm, to, faces = bake(cube["from"], cube["to"], faces_of(cube, scale), steps)
     return element(cube["name"], frm, to, faces)
 
 
-def wheel_element(cube, scale, around_pipe):
+def wheel_element(cube, scale, extra):
     rot = cube.get("rotation") or [0, 0, 0]
     own = rot[1]
+    origin = tuple(cube.get("origin") or CENTRE)
     assert abs(rot[0]) < 1e-6 and abs(own) in (0, 22.5, 45), (cube["name"], rot)
-    faces = faces_of(cube, scale)
-    if not around_pipe:
-        return element(cube["name"], cube["from"], cube["to"], faces, {"angle": own, "axis": "y", "origin": list(CENTRE)} if own else None)
-    frm, to, faces = bake(cube["from"], cube["to"], faces, WHEEL_TURN[0], WHEEL_TURN[1])
-    return element(cube["name"], frm, to, faces, {"angle": own, "axis": "z", "origin": list(CENTRE)} if own else None)
+    steps = [("z", quarter_turns(rot[2]), origin)] + extra
+    frm, to, faces = bake(cube["from"], cube["to"], faces_of(cube, scale), steps)
+    rotation = None
+    if own:
+        axis = direct((0, 1, 0), steps)
+        name = "xyz"[next(i for i in range(3) if abs(axis[i]) > 0.5)]
+        sign = 1 if sum(axis) > 0 else -1
+        rotation = {"angle": own * sign, "axis": name, "origin": [tidy(v) for v in move(origin, steps)]}
+    return element(cube["name"], frm, to, faces, rotation)
 
 
 def write(path, obj):
@@ -137,19 +159,21 @@ def main():
     with open(png, "wb") as f:
         f.write(base64.b64decode(source.split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
-    body = [body_element(c, scale) for c in body_cubes]
-    wheel = [wheel_element(c, scale, False) for c in groups["flywheel"]]
-    mounted = [wheel_element(c, scale, True) for c in groups["flywheel"]]
+    body = [body_element(c, scale, [OUTLET_NORTH]) for c in body_cubes]
+    sideways = [body_element(c, scale, [OUTLET_NORTH, SIDEWAYS]) for c in body_cubes]
+    wheel = [wheel_element(c, scale, [OUTLET_UP]) for c in groups["flywheel"]]
+    mounted = [wheel_element(c, scale, [OUTLET_NORTH]) for c in groups["flywheel"]]
     models = os.path.join(ASSETS, "models", "block")
     write(os.path.join(models, NAME + ".json"), {"parent": "minecraft:block/block", "textures": textures, "elements": body})
+    write(os.path.join(models, NAME + "_sideways.json"), {"parent": "minecraft:block/block", "textures": textures, "elements": sideways})
     write(os.path.join(models, NAME + "_rotor.json"), {"textures": textures, "elements": wheel})
     whole = {"parent": "minecraft:block/block", "textures": textures, "elements": body + mounted}
     write(os.path.join(models, NAME + "_item.json"), whole)
     write(os.path.join(ASSETS, "models", "item", NAME + ".json"), {"parent": "criticalmass:block/" + NAME + "_item"})
     variants = {}
-    for facing, rotation in ROTATIONS.items():
+    for facing, (rotation, upright) in VARIANTS.items():
         for along in ("true", "false"):
-            variant = {"model": "criticalmass:block/" + NAME}
+            variant = {"model": "criticalmass:block/" + NAME + ("" if along == upright else "_sideways")}
             variant.update(rotation)
             variants["axis_along_first=%s,facing=%s" % (along, facing)] = variant
     write(os.path.join(ASSETS, "blockstates", NAME + ".json"), {"variants": variants})
@@ -157,13 +181,17 @@ def main():
         if os.path.exists(stale):
             os.remove(stale)
     print(len(body), "body cubes,", len(wheel), "wheel cubes")
+    spans = [[min(e["from"][i] for e in body + mounted) for i in range(3)], [max(e["to"][i] for e in body + mounted) for i in range(3)]]
+    print("extent", spans)
     if len(sys.argv) > 1:
-        iso.load_model = lambda ref: whole
-        iso._cache.clear()
-        views = [iso.render(TEXTURE, 320, 225, 30), iso.render(TEXTURE, 320, 315, 30), iso.render(TEXTURE, 320, 180, 0), iso.render(TEXTURE, 320, 270, 0)]
-        sheet = Image.new("RGBA", (320 * len(views), 320), (88, 110, 74, 255))
-        for i, v in enumerate(views):
-            sheet.alpha_composite(v, (320 * i, 0))
+        sheets = []
+        for model in (whole, {"textures": textures, "elements": sideways + mounted}, {"textures": textures, "elements": wheel}):
+            iso.load_model = lambda ref, model=model: model
+            iso._cache.clear()
+            sheets += [iso.render(TEXTURE, 300, 225, 30), iso.render(TEXTURE, 300, 315, 30)]
+        sheet = Image.new("RGBA", (300 * len(sheets), 300), (88, 110, 74, 255))
+        for i, v in enumerate(sheets):
+            sheet.alpha_composite(v, (300 * i, 0))
         sheet.save(sys.argv[1])
 
 

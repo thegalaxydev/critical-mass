@@ -15,7 +15,9 @@
   {
    "cmds": [
     "/fill 34 -59 34 52 -54 50 minecraft:air",
-    "/setblock 40 -59 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 40 -60 40 create:creative_motor[facing=up]{ScrollValue:32}",
+    "/setblock 40 -59 40 create:shaft[axis=y]",
+    "/setblock 40 -57 40 create:shaft[axis=y]",
     "/setblock 40 -58 40 criticalmass:circulation_pump[facing=east,axis_along_first=true]",
     "/setblock 39 -58 40 criticalmass:reinforced_pipe",
     "/setblock 38 -58 40 criticalmass:reinforced_pipe",
@@ -38,8 +40,8 @@
   },
   {
    "cmds": [
-    "/setblock 41 -58 36 minecraft:barrier",
-    "/tp @p 41.50 -56.60 36.40 facing 40.50 -59.02 40.50"
+    "/setblock 42 -58 37 minecraft:barrier",
+    "/tp @p 42.30 -56.20 37.60 facing 40.50 -59.22 40.50"
    ],
    "wait": 30,
    "slot": 1
@@ -50,6 +52,28 @@
   },
   {
    "shot": "side_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 49 -58 38 minecraft:barrier",
+    "/tp @p 49.80 -56.30 38.20 facing 48.50 -59.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "north",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 46 -58 42 minecraft:barrier",
+    "/tp @p 46.90 -56.20 42.20 facing 45.50 -59.22 44.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "up",
    "wait": 2
   },
   {

@@ -1,13 +1,13 @@
 {
  "variants": {
   "axis_along_first=true,facing=north": {
-   "model": "criticalmass:block/circulation_pump"
+   "model": "criticalmass:block/circulation_pump_sideways"
   },
   "axis_along_first=false,facing=north": {
    "model": "criticalmass:block/circulation_pump"
   },
   "axis_along_first=true,facing=south": {
-   "model": "criticalmass:block/circulation_pump",
+   "model": "criticalmass:block/circulation_pump_sideways",
    "y": 180
   },
   "axis_along_first=false,facing=south": {
@@ -19,7 +19,7 @@
    "y": 90
   },
   "axis_along_first=false,facing=east": {
-   "model": "criticalmass:block/circulation_pump",
+   "model": "criticalmass:block/circulation_pump_sideways",
    "y": 90
   },
   "axis_along_first=true,facing=west": {
@@ -27,11 +27,11 @@
    "y": 270
   },
   "axis_along_first=false,facing=west": {
-   "model": "criticalmass:block/circulation_pump",
+   "model": "criticalmass:block/circulation_pump_sideways",
    "y": 270
   },
   "axis_along_first=true,facing=up": {
-   "model": "criticalmass:block/circulation_pump",
+   "model": "criticalmass:block/circulation_pump_sideways",
    "x": 270
   },
   "axis_along_first=false,facing=up": {
@@ -39,7 +39,7 @@
    "x": 270
   },
   "axis_along_first=true,facing=down": {
-   "model": "criticalmass:block/circulation_pump",
+   "model": "criticalmass:block/circulation_pump_sideways",
    "x": 90
   },
   "axis_along_first=false,facing=down": {

@@ -3,6 +3,7 @@ package com.criticalmass.client;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import net.createmod.catnip.render.CachedBuffers;
@@ -25,5 +26,10 @@ public class PumpRenderer extends SafeBlockEntityRenderer<CirculationPumpBlockEn
         SuperByteBuffer wheel = CachedBuffers.partialFacingVertical(CMPartialModels.CIRCULATION_PUMP_ROTOR, state, facing);
         float angle = KineticBlockEntityRenderer.getAngleForBe(be, be.getBlockPos(), axis);
         KineticBlockEntityRenderer.kineticRotationTransform(wheel, be, axis, angle, light).renderInto(ms, buffer.getBuffer(RenderType.solid()));
+        Direction.Axis shaft = KineticBlockEntityRenderer.getRotationAxisOf(be);
+        for (Direction.AxisDirection end : Direction.AxisDirection.values()) {
+            SuperByteBuffer stub = CachedBuffers.partialFacing(AllPartialModels.SHAFT_HALF, state, Direction.fromAxisAndDirection(shaft, end));
+            KineticBlockEntityRenderer.standardKineticRotationTransform(stub, be, light).renderInto(ms, buffer.getBuffer(RenderType.solid()));
+        }
     }
 }
