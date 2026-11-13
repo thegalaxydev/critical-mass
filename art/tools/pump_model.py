@@ -147,13 +147,17 @@ def main():
     project = json.load(open(SOURCE, encoding="utf-8"))
     scale = 16.0 / project["resolution"]["width"]
     cubes = {c["uuid"]: c for c in project["elements"]}
-    groups = {}
+    names = {g["uuid"]: g["name"] for g in project.get("groups", [])}
+
+    def gather(node):
+        if isinstance(node, str):
+            return [cubes[node]]
+        return [c for child in node.get("children", []) for c in gather(child)]
+    body_cubes, wheel_cubes = [], []
     for node in project["outliner"]:
-        if isinstance(node, dict):
-            name = node.get("name") or next(g["name"] for g in project.get("groups", []) if g["uuid"] == node["uuid"])
-            groups[name] = [cubes[c] for c in node["children"] if isinstance(c, str)]
-    assert "flywheel" in groups and len(groups) > 1, list(groups)
-    body_cubes = [c for name, members in groups.items() if name != "flywheel" for c in members]
+        name = "" if isinstance(node, str) else node.get("name") or names.get(node.get("uuid"), "")
+        (wheel_cubes if name.startswith("flywheel") else body_cubes).extend(gather(node))
+    assert body_cubes and wheel_cubes, (len(body_cubes), len(wheel_cubes))
     source = project["textures"][0]["source"]
     png = os.path.join(ASSETS, "textures", "block", NAME + ".png")
     with open(png, "wb") as f:
@@ -161,8 +165,8 @@ def main():
     textures = {"0": TEXTURE, "particle": TEXTURE}
     body = [body_element(c, scale, [OUTLET_NORTH]) for c in body_cubes]
     sideways = [body_element(c, scale, [OUTLET_NORTH, SIDEWAYS]) for c in body_cubes]
-    wheel = [wheel_element(c, scale, [OUTLET_UP]) for c in groups["flywheel"]]
-    mounted = [wheel_element(c, scale, [OUTLET_NORTH]) for c in groups["flywheel"]]
+    wheel = [wheel_element(c, scale, [OUTLET_UP]) for c in wheel_cubes]
+    mounted = [wheel_element(c, scale, [OUTLET_NORTH]) for c in wheel_cubes]
     models = os.path.join(ASSETS, "models", "block")
     write(os.path.join(models, NAME + ".json"), {"parent": "minecraft:block/block", "textures": textures, "elements": body})
     write(os.path.join(models, NAME + "_sideways.json"), {"parent": "minecraft:block/block", "textures": textures, "elements": sideways})
