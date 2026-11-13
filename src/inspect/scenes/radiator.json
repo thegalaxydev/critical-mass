@@ -89,6 +89,17 @@
   },
   {
    "cmds": [
+    "/setblock 38 -58 42 minecraft:barrier",
+    "/tp @p 38.70 -56.90 42.30 facing 40.20 -58.32 40.80"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "corner",
+   "wait": 2
+  },
+  {
+   "cmds": [
     "/tp @p 43.00 -55.60 35.20 facing 43.00 -58.62 40.50"
    ],
    "slot": 0,

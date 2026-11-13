@@ -34,6 +34,7 @@ steps = [
     {"cmds": ["/setblock 41 -57 37 minecraft:barrier", close], "wait": 30}, {"shot": "close", "wait": 2},
     {"cmds": ["/setblock 38 -57 37 minecraft:barrier", look(38.9, -55.6, 37.8, 37.5, -56.4, 40.5)], "wait": 30}, {"shot": "plain", "wait": 2},
     {"cmds": ["/setblock 41 -59 37 minecraft:barrier", look(41.9, -57.4, 37.8, 40.5, -57.6, 40.5)], "wait": 30}, {"shot": "below", "wait": 2},
+    {"cmds": ["/setblock 38 -58 42 minecraft:barrier", look(38.7, -56.9, 42.3, 40.2, -56.7, 40.8)], "wait": 30}, {"shot": "corner", "wait": 2},
     {"cmds": [wide], "slot": 0, "gui": True, "wait": 20}, {"shot": "held", "wait": 2},
 ]
 json.dump({"name": "radiator", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "radiator.json"), "w", newline="\n"), indent=1)
