@@ -26,6 +26,7 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -226,6 +227,39 @@ public final class PipeTests {
             h.assertTrue(BuiltInRegistries.BLOCK_ENTITY_TYPE.get(CriticalMass.asResource(tank)) == AllBlockEntityTypes.FLUID_TANK.get(), "Old tank data should load as Create Fluid Tanks: " + tank);
         }
         h.assertTrue(BuiltInRegistries.BLOCK.get(CriticalMass.asResource("tower_distributor")) == AllBlocks.FLUID_PIPE.get(), "Old distributors should load as Create pipes");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void circulationPumpTurnsToATouchingPipeWhenPlaced(GameTestHelper h) {
+        BlockPos floor = new BlockPos(3, 1, 3);
+        BlockPos spot = floor.above();
+        h.setBlock(floor, Blocks.STONE);
+        Player player = h.makeMockPlayer(GameType.CREATIVE);
+        player.setYRot(0);
+        player.setXRot(0);
+        Direction look = Direction.orderedByNearest(player)[0];
+        Direction side = look.getClockWise();
+        BlockPos abs = h.absolutePos(floor);
+        BlockPlaceContext click = new BlockPlaceContext(player, InteractionHand.MAIN_HAND, new ItemStack(CMBlocks.CIRCULATION_PUMP.get()), new BlockHitResult(Vec3.atCenterOf(abs).add(0, 0.5, 0), Direction.UP, abs, false));
+        h.assertTrue(click.getClickedPos().equals(h.absolutePos(spot)), "The click should place the pump on the floor block");
+        Direction alone = CMBlocks.CIRCULATION_PUMP.get().getStateForPlacement(click).getValue(DirectionalKineticBlock.FACING);
+        h.assertTrue(alone == look.getOpposite(), "A pump with nothing beside it should face the player: " + alone);
+        TestVessels.pipes(h, List.of(spot.relative(side)));
+        Direction turned = CMBlocks.CIRCULATION_PUMP.get().getStateForPlacement(click).getValue(DirectionalKineticBlock.FACING);
+        h.assertTrue(turned == side, "A pump placed beside a pipe should point into it: " + turned);
+        player.setShiftKeyDown(true);
+        Direction held = CMBlocks.CIRCULATION_PUMP.get().getStateForPlacement(click).getValue(DirectionalKineticBlock.FACING);
+        h.assertTrue(held == look, "Sneaking should keep the facing the player chose: " + held);
+        player.setShiftKeyDown(false);
+        h.setBlock(spot.relative(side), Blocks.AIR);
+        h.setBlock(spot.relative(side), AllBlocks.FLUID_TANK.getDefaultState());
+        Direction tank = CMBlocks.CIRCULATION_PUMP.get().getStateForPlacement(click).getValue(DirectionalKineticBlock.FACING);
+        h.assertTrue(tank == side, "A pump placed beside a Fluid Tank should point into it: " + tank);
+        h.setBlock(spot.relative(side), Blocks.AIR);
+        TestVessels.pipes(h, List.of(spot.relative(look)));
+        Direction inLine = CMBlocks.CIRCULATION_PUMP.get().getStateForPlacement(click).getValue(DirectionalKineticBlock.FACING);
+        h.assertTrue(inLine == look.getOpposite(), "A pipe already in line with the pump should leave it as placed: " + inLine);
         h.succeed();
     }
 }

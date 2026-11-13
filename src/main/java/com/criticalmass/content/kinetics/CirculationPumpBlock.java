@@ -2,14 +2,19 @@ package com.criticalmass.content.kinetics;
 
 import com.criticalmass.content.CMShapes;
 import com.criticalmass.registry.CMBlockEntities;
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -23,6 +28,31 @@ public class CirculationPumpBlock extends DirectionalAxisKineticBlock implements
 
     public CirculationPumpBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    protected Direction getFacingForPlacement(BlockPlaceContext context) {
+        Direction facing = super.getFacingForPlacement(context);
+        Player player = context.getPlayer();
+        if (player != null && player.isShiftKeyDown()) {
+            return facing;
+        }
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction best = null;
+        double bestDistance = Double.MAX_VALUE;
+        for (Direction d : Direction.values()) {
+            BlockPos other = pos.relative(d);
+            if (!FluidPipeBlock.canConnectTo(level, other, level.getBlockState(other), d)) {
+                continue;
+            }
+            double distance = Vec3.atLowerCornerOf(d.getNormal()).distanceTo(Vec3.atLowerCornerOf(facing.getNormal()));
+            if (distance <= bestDistance) {
+                bestDistance = distance;
+                best = d;
+            }
+        }
+        return best != null && best.getAxis() != facing.getAxis() ? best : facing;
     }
 
     @Override

@@ -67,7 +67,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - Integrity is saved with the controller and also shows on the blocks themselves.
 
 **Loops.**
-- **Primary loop:** run pipe from the outlet port, through a Circulation Pump (back to front) and any machines on the way, to the inlet port. The controller holds the vessel coolant (8,000 mB).
+- **Primary loop:** run pipe from the outlet port, through a Circulation Pump (back to front) and any machines on the way, to the inlet port. The controller holds the vessel coolant (8,000 mB). A pump placed beside a pipe, tank or machine turns to point into it, like Create's Mechanical Pump; sneak to keep the facing you chose.
 - **Closed loops:** a pump can also drive a loop that comes back to its own back face without touching a vessel. Use this for the secondary circuit.
 - **Paths:** every loop must be a single path without branches.
 - **Pipes:** loops are plumbed with Create's fluid pipes, copper, glass or encased. Plain pipes carry anything, but they are not sealed or shielded: they leak under pressure and give off radiation while they hold primary coolant. Reinforced Pipe does neither. Every pipe block in a loop holds 100 mB of coolant, so a new loop takes extra coolant to fill, and the coolant travels through it.
