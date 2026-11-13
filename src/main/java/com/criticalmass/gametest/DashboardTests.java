@@ -11,14 +11,20 @@ import com.criticalmass.registry.CMComponents;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.redstone.link.RedstoneLinkBlock;
 import net.minecraft.core.BlockPos;
+import java.util.List;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BlockItemStateProperties;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.GameType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -80,6 +86,44 @@ public final class DashboardTests {
                 "Removing a desk should open the run on both sides");
         h.assertTrue(!h.getBlockState(new BlockPos(4, 2, 3)).getValue(DashboardBlock.JOIN_CW) || !h.getBlockState(new BlockPos(4, 2, 3)).getValue(DashboardBlock.JOIN_CCW),
                 "Removing a desk should open the run on both sides");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void dyeRecoloursAJoinedRunAndTheDropKeepsIt(GameTestHelper h) {
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setYRot(0);
+        player.setXRot(0);
+        DashboardBlock block = CMBlocks.DASHBOARD.get();
+        for (int x = 1; x <= 3; x++) {
+            BlockPos floor = new BlockPos(x, 1, 3);
+            h.setBlock(floor, Blocks.STONE);
+            BlockPos abs = h.absolutePos(floor);
+            BlockState state = block.getStateForPlacement(new BlockPlaceContext(player, InteractionHand.MAIN_HAND, new ItemStack(block),
+                    new BlockHitResult(Vec3.atCenterOf(abs).add(0, 0.5, 0), Direction.UP, abs, false)));
+            h.setBlock(floor.above(), state);
+        }
+        BlockPos alone = new BlockPos(5, 1, 3);
+        h.setBlock(alone, block);
+        DashboardBlockEntity fitted = h.getBlockEntity(new BlockPos(1, 2, 3));
+        fitted.install(0, new DashPart(DashPart.Type.SWITCH));
+        BlockPos middle = h.absolutePos(new BlockPos(2, 2, 3));
+        ItemStack dye = new ItemStack(Items.RED_DYE, 2);
+        h.getLevel().getBlockState(middle).useItemOn(dye, h.getLevel(), player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(middle), Direction.UP, middle, false));
+        for (int x = 1; x <= 3; x++) {
+            h.assertTrue(h.getBlockState(new BlockPos(x, 2, 3)).getValue(DashboardBlock.COLOR) == DyeColor.RED, "One dye should recolour the whole run, desk " + x);
+        }
+        h.assertTrue(dye.getCount() == 1, "One dye should be used for the run: " + dye.getCount() + " left");
+        h.assertTrue(h.getBlockState(alone).getValue(DashboardBlock.COLOR) == DashboardBlock.DEFAULT_COLOR, "A desk outside the run should keep its colour");
+        DashboardBlockEntity kept = h.getBlockEntity(new BlockPos(1, 2, 3));
+        h.assertTrue(kept.part(0) != null && kept.part(0).type == DashPart.Type.SWITCH, "Dyeing should not disturb the parts on a desk");
+        h.assertTrue(h.getBlockState(new BlockPos(2, 2, 3)).getValue(DashboardBlock.JOIN_CW) && h.getBlockState(new BlockPos(2, 2, 3)).getValue(DashboardBlock.JOIN_CCW),
+                "Dyeing should not break the run apart");
+        List<ItemStack> dyed = Block.getDrops(h.getBlockState(new BlockPos(3, 2, 3)), h.getLevel(), h.absolutePos(new BlockPos(3, 2, 3)), null);
+        BlockItemStateProperties stored = dyed.isEmpty() ? null : dyed.get(0).get(DataComponents.BLOCK_STATE);
+        h.assertTrue(stored != null && "red".equals(stored.properties().get("color")), "A dyed desk should drop as a dyed desk");
+        List<ItemStack> plain = Block.getDrops(h.getBlockState(alone), h.getLevel(), h.absolutePos(alone), null);
+        h.assertTrue(plain.size() == 1 && !plain.get(0).has(DataComponents.BLOCK_STATE), "A desk in the standard colour should drop as a plain desk");
         h.succeed();
     }
 

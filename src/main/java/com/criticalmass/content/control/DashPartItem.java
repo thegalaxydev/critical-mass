@@ -72,5 +72,6 @@ public class DashPartItem extends Item {
         if (stored != null) {
             tooltip.add(Component.translatable("criticalmass.dashboard.item.tooltip_bound", stored.getX(), stored.getY(), stored.getZ()).withStyle(ChatFormatting.AQUA));
         }
+        tooltip.add(Component.translatable("criticalmass.dashboard.credit").withStyle(ChatFormatting.DARK_GRAY));
     }
 }

@@ -122,11 +122,13 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Dial Panel:** links to nothing. Use it to switch its signal on and off, and sneak-use it to raise the strength from 1 to 15. It suits anything that takes an analog signal, such as the controller's rod signal or a turbine's governor.
   - Panels ignore each other's signals, so a lever beside the SCRAM Panel does not trip the reactor.
 - **Dashboard:** a sloped control desk that is taking over from the panels above. Desks placed side by side join into one run of up to 5. Each desk holds two parts, one in each half.
+  - **Look:** the desk and its parts are drawn with the Dashboard, gauge, button, switch and lever models from Create: Loconautics, which is a required mod. None of its files are copied into this mod. Loconautics' own dashboards still work beside ours through Redstone Links.
+  - **Colour:** use any dye on a desk to recolour its whole run. A dyed desk keeps its colour when broken.
   - **Parts:** Dashboard Button, Switch, Lever, Gauge and Alarm. Sneak-use a part on its target to bind it, then use it on the half of a desk you want it in. A part already on a desk can be re-bound with the Plant Linker.
   - **Button:** on a Reactor Controller it is SCRAM, reset, rods in or rods out; on a Steam Turbine it is trip or reset; on a receiving Redstone Link it sends a full signal for one second. A redstone pulse into the desk presses its buttons.
   - **Switch and Lever:** bind to a receiving Redstone Link. The switch holds it on or off. The lever sets any strength from 0 to 15 by where you click along it. Two controls on one link do not fight: the strongest wins.
   - **Gauge:** binds to any plant machine and shows one of its readings on a needle; using it shows the number.
-  - **Alarm:** binds to a Reactor Controller and watches one alarm or all of them. A new alarm flashes and the desk gives a redstone signal until you press the lamp; a comparator counts the active alarms.
+  - **Alarm:** binds to a Reactor Controller and watches one alarm or all of them. It is a large amber cap that lights when its alarm is active. A new alarm flashes and the desk gives a redstone signal until you press the cap; a comparator counts the active alarms.
   - **Wrench:** use it on a part to step through its settings (which action, which reading, which alarm). Sneak-use it on a part to take the part off. Breaking a desk while aiming at a part takes only that part.
 - **Pumps and valves** are switched with Create's own parts: a clutch or gearshift and a lever on the pump shaft, a Valve Handle or powered shaft on a Reinforced Valve.
 - **Primary pressure:** vessel coolant boils at 350 °C unless it is pressurized. Coolant hotter than its boiling point flashes to steam and is lost, a quarter of the excess each tick, and the Alarm Panel's boiling lamp lights.
@@ -254,9 +256,11 @@ All versions live in `gradle.properties`.
 | Ponder / Flywheel / Registrate | 1.0.82 / 1.0.6 / MC1.21-1.3.0+67 | Versions paired with Create 6.0.10 on the Create wiki |
 | Sable | 2.0.6 | Physics engine for Aeronautics bodies; Aeronautics 1.3.2 requires `[2.0.0,3.0.0)` |
 | Create Aeronautics | 1.3.2+mc1.21.1 | Dev runtime only, pulled from Modrinth's Maven to build and fly test vehicles |
+| Create: Loconautics | 0.1.2BETA | Supplies the Dashboard's desk and part models and their renderers. Not on a public Maven: put its jar in `libs/` (the folder ignores jars) |
 | JEI | 19.69.0.456 | Dev runtime only, to check recipe pages |
 
-Create is a hard dependency. Sable is declared optional in `neoforge.mods.toml` until the mobile-integration
+Create and Create: Loconautics are hard dependencies. Loconautics in turn needs Sable and Create: Simulated, which Create Aeronautics bundles, so in practice Aeronautics is needed too.
+Sable is declared optional in `neoforge.mods.toml` until the mobile-integration
 design settles whether stationary-only play should work without it.
 
 Maven sources: `maven.createmod.net` (Create, Ponder, Flywheel), `mvn.devos.one/snapshots` (Registrate),

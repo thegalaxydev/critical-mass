@@ -8,6 +8,8 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
+import java.util.List;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -16,7 +18,11 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
@@ -28,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -42,6 +49,8 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
     public static final int MAX_RUN = 5;
     public static final BooleanProperty JOIN_CW = BooleanProperty.create("join_cw");
     public static final BooleanProperty JOIN_CCW = BooleanProperty.create("join_ccw");
+    public static final EnumProperty<DyeColor> COLOR = EnumProperty.create("color", DyeColor.class);
+    public static final DyeColor DEFAULT_COLOR = DyeColor.LIGHT_GRAY;
     public static final double CELL_FRONT = 7 / 16.0;
     public static final double CELL_DEPTH = 8 / 16.0;
     private static final VoxelShape NORTH = Shapes.or(
@@ -56,7 +65,7 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
 
     public DashboardBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(JOIN_CW, false).setValue(JOIN_CCW, false));
+        registerDefaultState(defaultBlockState().setValue(FACING, Direction.NORTH).setValue(JOIN_CW, false).setValue(JOIN_CCW, false).setValue(COLOR, DEFAULT_COLOR));
     }
 
     @Override
@@ -66,7 +75,7 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACING, JOIN_CW, JOIN_CCW);
+        builder.add(FACING, JOIN_CW, JOIN_CCW, COLOR);
     }
 
     @Override
@@ -119,6 +128,42 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         boolean joinBefore = before > 0 && before < MAX_RUN;
         boolean joinAfter = after > 0 && (joinBefore ? before + 1 : 1) + after <= MAX_RUN;
         return defaultBlockState().setValue(FACING, facing).setValue(JOIN_CCW, joinBefore).setValue(JOIN_CW, joinAfter);
+    }
+
+    private boolean dye(Level level, BlockPos pos, BlockState state, DyeColor color) {
+        Direction facing = state.getValue(FACING);
+        BlockPos at = pos;
+        BlockState current = state;
+        for (int i = 0; i < MAX_RUN && current.getValue(JOIN_CCW); i++) {
+            BlockPos previous = at.relative(facing.getCounterClockWise());
+            BlockState previousState = level.getBlockState(previous);
+            if (!matches(previousState, facing)) {
+                break;
+            }
+            at = previous;
+            current = previousState;
+        }
+        boolean changed = false;
+        for (int i = 0; i < MAX_RUN; i++) {
+            if (current.getValue(COLOR) != color) {
+                level.setBlock(at, current.setValue(COLOR, color), Block.UPDATE_ALL);
+                changed = true;
+            }
+            if (!current.getValue(JOIN_CW)) {
+                break;
+            }
+            at = at.relative(facing.getClockWise());
+            current = level.getBlockState(at);
+            if (!matches(current, facing)) {
+                break;
+            }
+        }
+        return changed;
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+        tooltip.add(Component.translatable("criticalmass.dashboard.credit").withStyle(ChatFormatting.DARK_GRAY));
     }
 
     private void setJoin(Level level, BlockPos pos, Direction facing, BooleanProperty property, boolean joined) {
@@ -185,6 +230,18 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         int slot = slotAt(state, pos, hit.getLocation());
         if (AllItems.WRENCH.isIn(stack)) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (stack.getItem() instanceof DyeItem dyeItem) {
+            if (state.getValue(COLOR) == dyeItem.getDyeColor()) {
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            }
+            if (!level.isClientSide && dye(level, pos, state, dyeItem.getDyeColor())) {
+                level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0f, 1.0f);
+                if (!player.isCreative()) {
+                    stack.shrink(1);
+                }
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
         if (stack.getItem() instanceof DashPartItem item && be.part(slot) == null) {
             if (!level.isClientSide) {

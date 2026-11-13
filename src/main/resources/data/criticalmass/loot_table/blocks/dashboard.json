@@ -7,7 +7,28 @@
    "entries": [
     {
      "type": "minecraft:item",
-     "name": "criticalmass:dashboard"
+     "name": "criticalmass:dashboard",
+     "functions": [
+      {
+       "function": "minecraft:copy_state",
+       "block": "criticalmass:dashboard",
+       "properties": [
+        "color"
+       ],
+       "conditions": [
+        {
+         "condition": "minecraft:inverted",
+         "term": {
+          "condition": "minecraft:block_state_property",
+          "block": "criticalmass:dashboard",
+          "properties": {
+           "color": "light_gray"
+          }
+         }
+        }
+       ]
+      }
+     ]
     }
    ],
    "conditions": [

@@ -473,6 +473,7 @@
   "criticalmass.dashboard.part.gauge": "Gauge",
   "criticalmass.dashboard.part.alarm": "Alarm",
   "criticalmass.dashboard.unbound": "Not bound to anything",
+  "criticalmass.dashboard.credit": "Desk and control models from Create: Loconautics",
   "criticalmass.dashboard.empty": "No parts fitted",
   "criticalmass.dashboard.no_modes": "This part has only one setting",
   "criticalmass.dashboard.press.pulse": "Sends a one second pulse",
