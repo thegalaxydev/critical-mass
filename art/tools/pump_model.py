@@ -69,7 +69,7 @@ def bake(frm, to, faces, steps):
             shifts = set()
             for j, t in enumerate(target):
                 i = next(k for k, m in enumerate(moved) if close(m, t))
-                shifts.add((i + r - j) % 4)
+                shifts.add((j - i + r) % 4)
             assert len(shifts) == 1, (old, new, shifts)
             g = {"uv": f["uv"], "texture": f["texture"]}
             shift = shifts.pop()

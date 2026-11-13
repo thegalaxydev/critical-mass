@@ -112,7 +112,7 @@ def uv_rect(face, tex):
     W, H = tex.size
     pts = [(u0 * W / 16, v0 * H / 16), (u1 * W / 16, v0 * H / 16), (u1 * W / 16, v1 * H / 16), (u0 * W / 16, v1 * H / 16)]
     r = (face.get("rotation", 0) // 90) % 4
-    return pts[r:] + pts[:r] if r else pts
+    return pts[-r:] + pts[:-r] if r else pts
 
 
 def render(model_refs, size=256, yaw_deg=225, pitch_deg=30, supersample=4, scale=None, offset=(0, 0, 0)):
