@@ -8,16 +8,21 @@ import com.criticalmass.content.thermal.TankCoolant;
 import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMStress;
+import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CirculationPumpBlockEntity extends KineticBlockEntity {
     private CoolantCircuit circuit;
@@ -30,6 +35,28 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
 
     public CirculationPumpBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        behaviours.add(new Pipework(this));
+    }
+
+    private static final class Pipework extends FluidTransportBehaviour {
+        Pipework(SmartBlockEntity be) {
+            super(be);
+        }
+
+        @Override
+        public boolean canHaveFlowToward(BlockState state, Direction direction) {
+            return state.getBlock() instanceof CirculationPumpBlock && direction.getAxis() == state.getValue(CirculationPumpBlock.FACING).getAxis();
+        }
+
+        @Override
+        public boolean canPullFluidFrom(FluidStack fluid, BlockState state, Direction direction) {
+            return false;
+        }
     }
 
     @Override
