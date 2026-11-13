@@ -25,7 +25,7 @@ public final class CMThermal {
     public static final double TOWER_MAX_TILT = 15.0;
     public static final double EVAPORATION_HEAT_PER_MB = 2000.0;
     public static final int RADIATOR_CAPACITY = 250;
-    public static final double RADIATOR_RATE = 0.002;
+    public static final double RADIATOR_RATE = 0.0015;
     public static final double RADIATOR_MAX_BONUS = 2.0;
     public static final double RADIATOR_REFERENCE_SPEED = 20.0;
     public static final int BOILER_PLATE_CAPACITY = 500;

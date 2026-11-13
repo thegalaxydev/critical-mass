@@ -87,43 +87,6 @@ def condenser(jar):
 
 
 
-def radiator(jar):
-    front = blank(16, 16)
-    bevel(front, 0, 0, 15, 15, IRON, 3)
-    for x in range(1, 15):
-        for y in range(1, 15):
-            if x % 2 == 1:
-                put(front, x, y, COPPER[5] if y < 4 else COPPER[4] if y < 11 else COPPER[3])
-            else:
-                put(front, x, y, HOLE)
-    for x in range(1, 15):
-        put(front, x, 7, IRON[3])
-        put(front, x, 8, IRON[1])
-    back = blank(16, 16)
-    bevel(back, 0, 0, 15, 15, IRON, 3)
-    rect(back, 2, 2, 13, 13, STEEL[4])
-    for x in range(2, 14):
-        put(back, x, 2, STEEL[7])
-        put(back, x, 13, STEEL[2])
-    for x in (3, 12):
-        for y in (3, 12):
-            put(back, x, y, IRON[4])
-    edge = blank(4, 16)
-    for y in range(16):
-        for x in range(4):
-            put(edge, x, y, COPPER[4] if x in (1, 2) else IRON[2])
-    top = blank(16, 4)
-    for x in range(16):
-        for y in range(4):
-            put(top, x, y, (COPPER[4] if x % 2 else STEEL[0]) if y in (1, 2) else IRON[3])
-    img = blank(32, 32)
-    img.paste(front, (0, 0))
-    img.paste(back, (16, 0))
-    img.paste(edge, (0, 16))
-    img.paste(top, (4, 16))
-    return img
-
-
 def boiler_plate(jar):
     top = jar.tex("copper_casing")
     rect(top, 3, 3, 12, 12, STEEL[1])
@@ -212,7 +175,6 @@ def relief_valve(jar):
 PLANT = {
     "heat_exchanger": heat_exchanger,
     "condenser": condenser,
-    "radiator_panel": radiator,
     "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,
     "relief_valve": relief_valve,

@@ -18,7 +18,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 public class RadiatorBlock extends HorizontalBlock implements IBE<RadiatorBlockEntity>, PipeConnectable {
     public RadiatorBlock(Properties properties) {
-        super(properties, Block.box(0, 0, 12, 16, 16, 16), true);
+        super(properties, Block.box(1, 1, 1, 15, 15, 15), false);
     }
 
     @Override

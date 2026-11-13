@@ -1,0 +1,78 @@
+{
+ "name": "radiator",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -59 34 52 -52 50 minecraft:air",
+    "/setblock 40 -57 40 criticalmass:radiator_panel",
+    "/setblock 40 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -55 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -59 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -56 40 minecraft:air",
+    "/setblock 40 -56 40 criticalmass:reinforced_pipe",
+    "/setblock 40 -58 40 minecraft:air",
+    "/setblock 40 -58 40 criticalmass:reinforced_pipe",
+    "/setblock 44 -57 40 criticalmass:radiator_panel",
+    "/setblock 44 -56 40 create:fluid_pipe",
+    "/setblock 44 -55 40 create:fluid_pipe",
+    "/setblock 44 -58 40 create:fluid_pipe",
+    "/setblock 44 -59 40 create:fluid_pipe",
+    "/setblock 44 -56 40 minecraft:air",
+    "/setblock 44 -56 40 create:fluid_pipe",
+    "/setblock 44 -58 40 minecraft:air",
+    "/setblock 44 -58 40 create:fluid_pipe",
+    "/setblock 48 -59 40 criticalmass:radiator_panel",
+    "/item replace entity @p hotbar.0 with criticalmass:radiator_panel",
+    "/item replace entity @p hotbar.1 with minecraft:air"
+   ],
+   "wait": 40
+  },
+  {
+   "cmds": [
+    "/setblock 43 -57 35 minecraft:barrier",
+    "/tp @p 43.00 -55.60 35.20 facing 43.00 -58.62 40.50"
+   ],
+   "wait": 30,
+   "slot": 1
+  },
+  {
+   "shot": "wide",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 41 -57 37 minecraft:barrier",
+    "/tp @p 41.90 -55.90 37.80 facing 40.50 -58.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 43.00 -55.60 35.20 facing 43.00 -58.62 40.50"
+   ],
+   "slot": 0,
+   "gui": true,
+   "wait": 20
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  }
+ ]
+}

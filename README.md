@@ -152,7 +152,8 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Relief Valve:** fits inline. It senses the loop's peak pressure, vents through its front from 8 bar down to 6 bar, and gives a redstone signal while venting. Vented water and heat are logged.
 - **Rupture:** any steam buffer above 12 bar ruptures and loses its contents (logged).
 - **Condenser:** steam side front/back, cooling water top/bottom. It condenses only while cooling water flows.
-- **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiator Panels, then back.
+- **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiators, then back.
+- **Radiator:** a 14×14×14 block that takes its pipes on top and bottom. It rejects heat through each of its four sides that is open to air, and up to twice as much on a body moving through the air.
 - **Cooling tower:** build it bottom to top: a Create Fluid Tank to catch the water, up to 12 Cooling Tower Packing blocks as fill, a pipe bringing the hot water down onto the top fill block, and optionally a Cooling Tower Fan above that pipe. The fan is one block, but its blades sweep the eight blocks around it like a water wheel, so keep those clear.
   - Hot water falls through the fill into the tank, and a pipe on the tank's side returns it to the loop.
   - **Airflow** sets how hard each fill block works. Bare packing with open sky gets 25%. With the water coming in through a pipe on top and open sky above it, the tower gets 25% plus 5% per extra fill block, up to 75%. A fan adds 100% at 64 RPM and a little more above that, and needs no open sky. The fan takes its shaft from above and costs 2 SU per RPM.

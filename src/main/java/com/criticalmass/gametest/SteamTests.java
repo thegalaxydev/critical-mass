@@ -334,7 +334,14 @@ public final class SteamTests {
         h.startSequence()
                 .thenIdle(5)
                 .thenExecute(() -> {
-                    h.assertTrue(r.openFaces() == 3 && r.lastRejected() > 0, "Open radiator should reject heat");
+                    h.assertTrue(r.openFaces() == 3 && r.lastRejected() > 0, "A radiator with three sides open should reject heat");
+                    double three = r.lastRejected();
+                    h.setBlock(pos.south(), Blocks.AIR);
+                    h.runAfterDelay(3, () -> h.assertTrue(r.openFaces() == 4 && r.lastRejected() > three, "A fourth open side should reject more: " + r.lastRejected()));
+                })
+                .thenIdle(6)
+                .thenExecute(() -> {
+                    h.setBlock(pos.south(), Blocks.STONE);
                     h.setBlock(pos.north(), Blocks.STONE);
                     h.setBlock(pos.east(), Blocks.STONE);
                     h.setBlock(pos.west(), Blocks.STONE);

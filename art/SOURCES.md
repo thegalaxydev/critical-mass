@@ -14,7 +14,7 @@ All art is a candidate for replacement by hand-made art later.
 - `shielded_glass`: Create's tiled glass with an iron frame and tinted panes.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - `shielding_concrete`: hand-drawn poured slabs.
-- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `radiator_panel`, `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
+- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `cooling_tower_packing` on Create's andesite casing with wood slats; `boiler_heating_plate` and `relief_valve` hand-drawn with Create's copper, brass and iron ramps.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `steam_turbine`, `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
 ## Block texture passover (2026-10-19)
 
@@ -634,21 +634,9 @@ Atlas with two front faces of the primary coolant port in iron casing: a copper 
 
 ## radiator_panel
 
-- Used by: `textures/block/radiator_panel.png`
-- Raw output: `art/generated/radiator_panel-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: radiator panel, 32x32 game pixels.
-Atlas for a wall-mounted radiator panel: front face of many thin vertical copper cooling fins inside a brass frame, brass edge strips with small copper header stubs, iron back plate.
-
-```
+- Used by: `textures/block/radiator_panel.png` and the radiator's block model
+- Source: modelled and painted by the author in Blockbench, saved as `art/blockbench/radiator.bbmodel`, with the texture also kept as `art/originals/radiator.png`. `art/tools/radiator_model.py` exports it into the game.
+- Date: 2026-11-12
 
 ## reactor_controller
 

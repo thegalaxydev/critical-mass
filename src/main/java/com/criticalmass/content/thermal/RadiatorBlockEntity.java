@@ -41,9 +41,8 @@ public class RadiatorBlockEntity extends SingleBufferNodeBlockEntity {
 
     @Override
     protected void serverTick() {
-        Direction front = getBlockState().getValue(HorizontalBlock.FACING);
         openFaces = 0;
-        for (Direction d : new Direction[]{front, front.getClockWise(), front.getCounterClockWise()}) {
+        for (Direction d : Direction.Plane.HORIZONTAL) {
             if (level.getBlockState(worldPosition.relative(d)).isAir()) {
                 openFaces++;
             }
