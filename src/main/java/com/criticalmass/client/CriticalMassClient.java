@@ -3,6 +3,8 @@ package com.criticalmass.client;
 import com.criticalmass.content.fuel.CentrifugeBlockEntity;
 import com.criticalmass.content.thermal.TowerParts;
 import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.CreateClient;
+import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlock;
@@ -30,6 +32,7 @@ public class CriticalMassClient {
     public CriticalMassClient(IEventBus modEventBus) {
         CMPartialModels.init();
         CMSpriteShifts.init();
+        CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);

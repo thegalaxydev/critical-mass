@@ -71,8 +71,6 @@ def multipart():
             detailed.append({side: "true", d: "true"})
             detailed.append({side: "true", "rim_" + d: "true"})
         parts.append({"when": {"OR": detailed}, "apply": {"model": "%s:block/reinforced_pipe/rim_connector/%s" % (NS, side)}})
-    for side in SIDES:
-        parts.append({"when": {"rim_" + side: "true"}, "apply": {"model": "%s:block/reinforced_pipe/rim/%s" % (NS, side)}})
     casing = []
     for axis in AXES.values():
         around = [d for d in SIDES if d not in axis]
@@ -92,6 +90,9 @@ def main():
         key = "0"
         tex = TEXTURE if name.startswith(("reinforced_pipe/connection/", "reinforced_pipe/rim_connector/", "reinforced_pipe/rim/", "reinforced_pipe/casing")) else CONNECTED
         write(os.path.join(md, name + ".json"), {"parent": "create:block/fluid_pipe/" + name.split("reinforced_pipe/")[1], "textures": {key: tex, "particle": TEXTURE}})
+    for piece in ("rim", "drain"):
+        for side in SIDES:
+            write(os.path.join(md, "reinforced_pipe", piece, side + ".json"), {"parent": "create:block/fluid_pipe/%s/%s" % (piece, side), "textures": {"0": TEXTURE, "particle": TEXTURE}})
     write(os.path.join(md, "reinforced_pipe", "item.json"), {"parent": "create:block/fluid_pipe/item", "textures": {"1": TEXTURE, "particle": TEXTURE}})
     write(os.path.join(ASSETS, "models", "item", "reinforced_pipe.json"), {"parent": NS + ":block/reinforced_pipe/item"})
     for old in ("reinforced_pipe_core", "reinforced_pipe_arm", "reinforced_pipe_item"):

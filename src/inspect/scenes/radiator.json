@@ -34,6 +34,9 @@
     "/setblock 44 -58 40 minecraft:air",
     "/setblock 44 -58 40 create:fluid_pipe",
     "/setblock 48 -59 40 criticalmass:radiator_panel",
+    "/setblock 37 -58 40 minecraft:stone",
+    "/setblock 37 -57 40 criticalmass:reinforced_pipe",
+    "/setblock 37 -56 40 criticalmass:reinforced_pipe",
     "/item replace entity @p hotbar.0 with criticalmass:radiator_panel",
     "/item replace entity @p hotbar.1 with minecraft:air"
    ],
@@ -60,6 +63,28 @@
   },
   {
    "shot": "close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 38 -57 37 minecraft:barrier",
+    "/tp @p 38.90 -55.60 37.80 facing 37.50 -58.02 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "plain",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 41 -59 37 minecraft:barrier",
+    "/tp @p 41.90 -57.40 37.80 facing 40.50 -59.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "below",
    "wait": 2
   },
   {

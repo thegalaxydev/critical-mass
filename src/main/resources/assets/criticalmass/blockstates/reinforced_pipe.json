@@ -1568,54 +1568,6 @@
   },
   {
    "when": {
-    "rim_north": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/north"
-   }
-  },
-  {
-   "when": {
-    "rim_east": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/east"
-   }
-  },
-  {
-   "when": {
-    "rim_south": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/south"
-   }
-  },
-  {
-   "when": {
-    "rim_west": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/west"
-   }
-  },
-  {
-   "when": {
-    "rim_up": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/up"
-   }
-  },
-  {
-   "when": {
-    "rim_down": "true"
-   },
-   "apply": {
-    "model": "criticalmass:block/reinforced_pipe/rim/down"
-   }
-  },
-  {
-   "when": {
     "OR": [
      {
       "north": "true",
