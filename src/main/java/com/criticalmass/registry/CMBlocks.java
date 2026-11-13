@@ -6,7 +6,7 @@ import com.criticalmass.content.fuel.CentrifugeBlock;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlock;
 import net.minecraft.core.Direction;
-import com.criticalmass.content.control.AlloyDashboardBlock;
+import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.SignalInterfaceBlock;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.thermal.ChannelBlocks;
@@ -77,7 +77,7 @@ public final class CMBlocks {
     public static final DeferredBlock<WasteCanisterBlock> OPEN_WASTE_CANISTER = register("open_waste_canister", WasteCanisterBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<SealedWasteCanisterBlock> SEALED_WASTE_CANISTER = BLOCKS.register("sealed_waste_canister", () -> new SealedWasteCanisterBlock(metal(3.0f).noOcclusion()));
     public static final DeferredBlock<ScreenBlock> PLANT_SCREEN = register("plant_screen", ScreenBlock::new, metal(2.0f).noOcclusion());
-    public static final DeferredBlock<AlloyDashboardBlock> REACTOR_ALLOY_DASHBOARD = register("reactor_alloy_dashboard", AlloyDashboardBlock::new, metal(2.5f).noOcclusion());
+    public static final DeferredBlock<DashboardBlock> REACTOR_ALLOY_DASHBOARD = register("reactor_alloy_dashboard", DashboardBlock::new, metal(2.5f).noOcclusion());
     public static final DeferredBlock<SignalInterfaceBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", SignalInterfaceBlock::new, metal(4.0f));
     public static final DeferredBlock<DockingConnectorBlock> DOCKING_SERVICE_CONNECTOR = register("docking_service_connector", DockingConnectorBlock::new, metal(4.0f));
 

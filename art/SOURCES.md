@@ -823,11 +823,22 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 ## reactor_alloy_dashboard
 
 - Used by: `textures/block/reactor_alloy_dashboard.png`
-- Source: painted by hand on the same UV layout as Create: Loconautics' dashboard textures, so it fits their models as they are. The block's models only name theirs as parents and swap this texture in. There is no generator for it: edit the PNG directly.
+- Source: painted by hand on the same UV layout as Create: Loconautics' dashboard textures, so it fits their dashboard model. There is no generator for it: edit the PNG directly.
+
+## Dashboard and parts from Create: Loconautics
+
+- Used by: `models/block/reactor_alloy_dashboard/*.json`, `models/block/dashboard_part/*.json` except the alarm, `models/item/dashboard_button|switch|lever|gauge.json`, `textures/block/dashboard_part/*_atlas.png` except the alarm sheets, `textures/gui/dashboard_part.png`
+- Source: Create: Loconautics by Lycoris, MDLOP, Basilforrealss, TugKanTheMan and Hatchet. Used with their permission, given on condition that the dashboard has its own colour theme and that Loconautics is credited. `art/tools/loconautics_assets.py` imports them from the jar in `libs/` and only writes files that are missing.
+- Our additions: `art/tools/alloy_body.py` adds a reactor alloy row to the three body sheets, 24 pixels below the first frame.
+
+## Dashboard Alarm
+
+- Used by: `models/block/dashboard_part/alarm_lamp.json`, `alarm_cage.json`, `models/item/dashboard_alarm.json`, `textures/block/dashboard_part/alarm_atlas.png`, `alarm_atlas_lit.png`
+- Source: `art/blockbench/alarm.bbmodel`, hand-made. `art/tools/alarm_model.py` exports it. The lamp and cage sheets are `art/originals/alarm_atlas.png` and `alarm_atlas_lit.png`: 35 lamp colours in cells of 9 by 8 pixels (side 4 by 7, top 4 by 4), with the cage pieces from x 46. The script paints the sheets only when they are missing or when run with `paint`, and re-maps the model's UVs only when run with `map`.
 
 ## alarm sound
 
-- Used by: `sounds/alarm.ogg`, played by the Dashboard Alarm.
+- Used by: `sounds/alarm.ogg`, played by a desk with an unacknowledged Dashboard Alarm.
 - Source: synthesised by `art/tools/alarm_sound.py`: two alternating horn tones built from sine harmonics, two seconds long so it repeats cleanly.
 
 ## centrifuge, enriched_uranium and depleted_uranium

@@ -1,0 +1,46 @@
+{
+ "texture_size": [
+  64,
+  64
+ ],
+ "render_type": "minecraft:cutout",
+ "textures": {
+  "0": "criticalmass:block/dashboard_part/gauge_atlas",
+  "particle": "criticalmass:block/dashboard_part/gauge_atlas"
+ },
+ "elements": [
+  {
+   "name": "GAUGE_FACE",
+   "from": [
+    1,
+    2,
+    1
+   ],
+   "to": [
+    7,
+    1.5,
+    7
+   ],
+   "rotation": {
+    "angle": 0,
+    "axis": "y",
+    "origin": [
+     5,
+     2,
+     5
+    ]
+   },
+   "faces": {
+    "up": {
+     "uv": [
+      5.75,
+      1.75,
+      4.25,
+      0.25
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

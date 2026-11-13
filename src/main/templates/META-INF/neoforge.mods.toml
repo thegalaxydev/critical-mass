@@ -7,6 +7,7 @@ modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
 authors="${mod_authors}"
+credits="Dashboard and control part models and textures from Create: Loconautics by Lycoris, MDLOP, Basilforrealss, TugKanTheMan and Hatchet, used with permission"
 description='''${mod_description}'''
 
 [[mixins]]
@@ -42,7 +43,7 @@ config="${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
     modId="loconautics"
-    type="required"
+    type="optional"
     versionRange="${loconautics_version_range}"
     ordering="AFTER"
     side="BOTH"

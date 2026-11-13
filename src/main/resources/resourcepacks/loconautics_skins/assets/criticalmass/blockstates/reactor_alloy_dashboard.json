@@ -1,0 +1,1024 @@
+{
+ "variants": {
+  "facing=north,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=white": {
+   "model": "loconautics:block/dashboard/white/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=white": {
+   "model": "loconautics:block/dashboard/white/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "loconautics:block/dashboard/orange/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "loconautics:block/dashboard/magenta/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "loconautics:block/dashboard/light_blue/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "loconautics:block/dashboard/yellow/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "loconautics:block/dashboard/lime/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "loconautics:block/dashboard/pink/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "loconautics:block/dashboard/gray/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "loconautics:block/dashboard/light_gray/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "loconautics:block/dashboard/cyan/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "loconautics:block/dashboard/purple/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "loconautics:block/dashboard/blue/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "loconautics:block/dashboard/brown/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=green": {
+   "model": "loconautics:block/dashboard/green/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=green": {
+   "model": "loconautics:block/dashboard/green/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=red": {
+   "model": "loconautics:block/dashboard/red/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=red": {
+   "model": "loconautics:block/dashboard/red/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=black": {
+   "model": "loconautics:block/dashboard/black/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=black": {
+   "model": "loconautics:block/dashboard/black/middle",
+   "y": 270
+  }
+ }
+}

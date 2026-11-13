@@ -30,8 +30,7 @@ import com.criticalmass.registry.CMStress;
 import com.mojang.logging.LogUtils;
 import java.util.List;
 import java.util.Map;
-import com.criticalmass.content.control.PlantReadings;
-import com.lycoris.loconautics.content.dashboard.DashboardBlocks;
+import com.criticalmass.content.control.DashPartEdit;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
@@ -43,7 +42,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 
@@ -74,20 +72,15 @@ public class CriticalMass {
         CMItems.ITEMS.addAlias(asResource("tower_distributor"), CREATE_PIPE);
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("tower_distributor"), CREATE_PIPE);
         CMItems.ITEMS.addAlias(asResource("shielding_plate"), asResource("steel_plate"));
-        Map<String, String> retired = Map.ofEntries(Map.entry("dashboard", "criticalmass:reactor_alloy_dashboard"),
-                Map.entry("scram_panel", "loconautics:gauge_button"), Map.entry("rod_panel", "loconautics:gauge_button"), Map.entry("turbine_panel", "loconautics:gauge_button"),
-                Map.entry("dashboard_button", "loconautics:gauge_button"), Map.entry("lever_panel", "loconautics:gauge_switch"), Map.entry("dashboard_switch", "loconautics:gauge_switch"),
-                Map.entry("dial_panel", "loconautics:gauge_lever"), Map.entry("dashboard_lever", "loconautics:gauge_lever"), Map.entry("alarm_panel", "criticalmass:dashboard_alarm"),
-                Map.entry("dashboard_gauge", "loconautics:locomotive_gauge"));
+        Map<String, String> retired = Map.of("dashboard", "reactor_alloy_dashboard", "scram_panel", "dashboard_button", "rod_panel", "dashboard_button", "turbine_panel", "dashboard_button",
+                "lever_panel", "dashboard_switch", "dial_panel", "dashboard_lever", "alarm_panel", "dashboard_alarm");
         for (Map.Entry<String, String> entry : retired.entrySet()) {
-            CMItems.ITEMS.addAlias(asResource(entry.getKey()), ResourceLocation.parse(entry.getValue()));
+            CMItems.ITEMS.addAlias(asResource(entry.getKey()), asResource(entry.getValue()));
         }
         for (String block : List.of("dashboard", "scram_panel", "rod_panel", "turbine_panel", "alarm_panel", "lever_panel", "dial_panel")) {
             CMBlocks.BLOCKS.addAlias(asResource(block), asResource("reactor_alloy_dashboard"));
         }
-        for (String type : List.of("dashboard", "control_panel")) {
-            CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource(type), ResourceLocation.fromNamespaceAndPath("loconautics", "dashboard"));
-        }
+        CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("control_panel"), asResource("dashboard"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMSounds.SOUNDS.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
@@ -100,8 +93,7 @@ public class CriticalMass {
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
-        modEventBus.addListener((BlockEntityTypeAddBlocksEvent e) -> e.modify(DashboardBlocks.DASHBOARD_BE.get(), CMBlocks.REACTOR_ALLOY_DASHBOARD.get()));
-        modEventBus.addListener(PlantReadings::register);
+        modEventBus.addListener(DashPartEdit::register);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);

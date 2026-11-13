@@ -162,10 +162,11 @@ dependencies {
 
     // Aeronautics is only needed in the dev client to build and fly test vehicles.
     localRuntime("maven.modrinth:create-aeronautics:${aeronautics_version}") { transitive = false }
-    // Create: Loconautics supplies the control desk and its parts. It is not on a public maven,
-    // so the jar is kept in libs/ (not committed).
-    compileOnly(files("libs/loconautics-${loconautics_version}.jar"))
-    localRuntime(files("libs/loconautics-${loconautics_version}.jar"))
+    // Create: Loconautics is optional. Its jar is not on a public maven, so it is kept in libs/ (not committed)
+    // and joins the dev runtime unless the build is run with -Ploconautics=false.
+    if (providers.gradleProperty('loconautics').getOrElse('true') != 'false' && file("libs/loconautics-${loconautics_version}.jar").exists()) {
+        localRuntime(files("libs/loconautics-${loconautics_version}.jar"))
+    }
     localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") { transitive = false }
     inspectCompileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}") { transitive = false }
 }

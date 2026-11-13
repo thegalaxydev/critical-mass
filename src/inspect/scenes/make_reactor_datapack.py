@@ -30,16 +30,13 @@ SCREEN_SHAFT = (-5, 4, 13)
 SCREEN_MOTOR = (-5, 4, 14)
 PRESSURIZER = (6, 5, 5)
 DESK_Z = 11
-SCRAM_LINK, RESET_LINK, RODS_IN_LINK, RODS_OUT_LINK, TRIP_LINK = (2, 2, 0), (4, 2, 0), (2, 4, 0), (4, 4, 0), (6, 6, 7)
-PORTS = [((2, 2, 1), "scram", SCRAM_LINK), ((4, 2, 1), "reset", RESET_LINK), ((2, 4, 1), "rods_in", RODS_IN_LINK), ((4, 4, 1), "rods_out", RODS_OUT_LINK)]
 DESKS = {
-    -3: [("reset", "button", RESET_LINK, 7, "RESET"), ("scram", "button", SCRAM_LINK, 0, "SCRAM")],
-    -4: [("rod_out", "button", RODS_OUT_LINK, 2, "RODS OUT"), ("rod_in", "button", RODS_IN_LINK, 4, "RODS IN")],
-    -5: [("power", "gauge", CONTROLLER, "cm_reactor_neutron"), ("alarm", "alarm", CONTROLLER)],
-    -6: [("pressure", "gauge", CONTROLLER, "cm_reactor_pressure"), ("coolant", "gauge", CONTROLLER, "cm_reactor_coolant_temperature")],
-    -7: [("trip", "switch", TRIP_LINK, 1, "TURBINE TRIP"), ("speed", "gauge", TURBINE, "cm_turbine_speed")],
+    -3: [("reset", "button", CONTROLLER, 1, 7, "RESET"), ("scram", "button", CONTROLLER, 0, 0, "SCRAM")],
+    -4: [("rod_out", "button", CONTROLLER, 3, 2, "RODS OUT"), ("rod_in", "button", CONTROLLER, 2, 4, "RODS IN")],
+    -5: [("power", "gauge", CONTROLLER, 5, 4, "HEAT OUTPUT"), ("alarm", "alarm", CONTROLLER, 0, 0, "ALARM")],
+    -6: [("pressure", "gauge", CONTROLLER, 2, 4, "PRESSURE"), ("coolant", "gauge", CONTROLLER, 1, 4, "COOLANT")],
+    -7: [("turbine_reset", "button", TURBINE, 1, 7, "TURBINE RESET"), ("trip", "button", TURBINE, 0, 1, "TURBINE TRIP")],
 }
-SIDES = ("right", "left")
 RUN_POWER = 0.7
 RUN_COOLANT = 125
 
@@ -78,13 +75,9 @@ def bind(panel, target, extra="", key="Target"):
     return cmds + ["kill @e[type=minecraft:marker,tag=%s]" % TEMP]
 
 
-def fit(desk, side, part):
-    kind, target = part[1], part[2]
-    if kind == "alarm":
-        return ["criticalmass desk %s %s alarm %s" % (w(*desk), side, w(*target))]
-    if kind == "gauge":
-        return ["criticalmass desk %s %s gauge %s %s" % (w(*desk), side, w(*target), part[3])]
-    return ["criticalmass desk %s %s %s %s %d %s" % (w(*desk), side, kind, w(*target), part[3], part[4])]
+def fit(desk, slot, part):
+    _, kind, target, mode, color, label = part
+    return ["criticalmass desk %s %d %s %s %d %d %s" % (w(*desk), slot, kind, w(*target), mode, color, label)]
 
 
 (x0, z0), (x1, z1) = AREA
@@ -156,13 +149,10 @@ desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(bx1
         setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
 desk += ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz), w(bx1, 1, bz))]
 desk += [setblock((x, 0, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower())) for x in sorted(DESKS)]
-desk += [setblock(pos, "criticalmass:reactor_signal_interface[facing=north,function=%s]" % function) for pos, function, _ in PORTS]
-desk += [setblock(link, "create:redstone_link[facing=north,receiver=true]") for _, _, link in PORTS]
-desk += [setblock(TRIP_LINK, "create:redstone_link[facing=south,receiver=true]")]
 wiring = []
 for x, parts in sorted(DESKS.items()):
-    for side, part in zip(SIDES, parts):
-        wiring += fit((x, 0, DESK_Z), side, part)
+    for slot, part in enumerate(parts):
+        wiring += fit((x, 0, DESK_Z), slot, part)
 wiring += bind((bx1, by1, bz), CONTROLLER, key="Reactor") + bind((bx1, by1, bz), TURBINE, key="Turbine")
 
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),

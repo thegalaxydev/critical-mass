@@ -3,7 +3,7 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "loconautics:gauge_button"
+      "item": "criticalmass:dashboard_button"
     },
     {
       "item": "minecraft:redstone_lamp"

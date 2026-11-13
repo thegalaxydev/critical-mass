@@ -1,0 +1,17 @@
+{
+ "replace": false,
+ "values": [
+  {
+   "id": "loconautics:gauge_button",
+   "required": false
+  },
+  {
+   "id": "loconautics:gauge_lever",
+   "required": false
+  },
+  {
+   "id": "loconautics:gauge_switch",
+   "required": false
+  }
+ ]
+}

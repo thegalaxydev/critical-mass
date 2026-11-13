@@ -43,17 +43,17 @@ A wall you have not linked shows Display Link text instead, three green lines to
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
-The control desk is built from Create: Loconautics parts: a Dashboard, or this mod's Reactor Alloy Dashboard, with Dashboard Gauges, Gauge Buttons, Gauge Switches and Gauge Levers on it.
+The control desk is a Reactor Alloy Dashboard with Dashboard parts on it. Sneak-use a part on its target, then use it on a desk. A wrench on a fitted part opens its settings.
 
-| On the desk | Bind it to | What it does |
+| Part | Bind it to | What it does |
 | --- | --- | --- |
-| Dashboard Gauge | Reactor Controller, Pressurizer, Steam Turbine, Circulation Pump, Control Rod Drive or any coolant machine | Shows one reading of that machine on a needle. Pick the reading in the gauge's settings |
-| Dashboard Alarm | Reactor Controller | Lights while any alarm is active. A new alarm flashes and sounds until you press it. Goggles list the alarms |
-| Gauge Button | A receiving Redstone Link on a Reactor Signal Interface | SCRAM, reset, rods in or rods out, whichever the interface is set to |
-| Gauge Lever | A receiving Redstone Link at a Control Rod Drive or the Reactor Controller | Sets the rods coarsely: 0 is fully in, 15 fully out |
-| Gauge Switch | A receiving Redstone Link at a Steam Turbine | On shuts the steam off and resets an overspeed trip |
+| Dashboard Button | Reactor Controller | SCRAM, reset, rods in or rods out, chosen in its settings |
+| Dashboard Button | Steam Turbine | Trip or reset |
+| Dashboard Button, Switch, Lever | A receiving Redstone Link | A one second pulse, on or off, or any strength from 0 to 15 |
+| Dashboard Gauge | Any plant machine | One reading of that machine on a needle, chosen in its settings |
+| Dashboard Alarm | Reactor Controller | Lights while an alarm is active. A new alarm flashes and sounds until you press it |
 
-Set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
+For redstone instead of direct binding, set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
 
 **Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into a Signal Interface set to SCRAM trips the reactor. Compare that signal against one you set and feed the result into the interface, and you have an earlier high-temperature trip. An interface set to alarm gives a redstone signal while any alarm is active, so wiring it to the SCRAM interface trips on any alarm. If you remove the wire, the trip is gone.
 
@@ -135,7 +135,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the RODS OUT button on the desk.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under an Encased Fan, driven by a motor underneath through the fill's shaft. The cooled water leaves by the side of the bottom block, and a creative tank pumps make-up water through a pipe into the side of the block above it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. In front of the screens stands a run of five Reactor Alloy Dashboards: SCRAM and reset buttons, rods in and out, a Dashboard Alarm and neutron power, coolant temperature and pressure, and turbine speed beside a turbine trip switch. The buttons are bound to Redstone Links on four Reactor Signal Interfaces in the vessel's north wall.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under an Encased Fan, driven by a motor underneath through the fill's shaft. The cooled water leaves by the side of the bottom block, and a creative tank pumps make-up water through a pipe into the side of the block above it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. In front of the screens stands a run of five Reactor Alloy Dashboards: SCRAM and reset buttons, rods in and out, a Dashboard Alarm and heat output, coolant temperature and pressure, and turbine trip and reset. Every part is bound straight to its machine and labelled.
 
 To skip the start-up, run:
 

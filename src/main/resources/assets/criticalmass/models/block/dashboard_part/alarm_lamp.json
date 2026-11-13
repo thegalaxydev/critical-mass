@@ -1,0 +1,68 @@
+{
+ "render_type": "minecraft:cutout",
+ "textures": {
+  "0": "criticalmass:block/dashboard_part/alarm_atlas",
+  "particle": "criticalmass:block/dashboard_part/alarm_atlas"
+ },
+ "elements": [
+  {
+   "from": [
+    2,
+    2,
+    2
+   ],
+   "to": [
+    6,
+    9,
+    6
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0.0,
+      0.0,
+      1.0,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0.0,
+      0.0,
+      1.0,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0.0,
+      0.0,
+      1.0,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0.0,
+      0.0,
+      1.0,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      1.0,
+      0.0,
+      2.0,
+      1.0
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

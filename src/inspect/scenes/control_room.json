@@ -100,15 +100,6 @@
     "/setblock ~-5 ~0 ~11 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=true,join_ccw=true]",
     "/setblock ~-4 ~0 ~11 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=true,join_ccw=true]",
     "/setblock ~-3 ~0 ~11 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=false,join_ccw=true]",
-    "/setblock ~2 ~2 ~1 criticalmass:reactor_signal_interface[facing=north,function=scram]",
-    "/setblock ~4 ~2 ~1 criticalmass:reactor_signal_interface[facing=north,function=reset]",
-    "/setblock ~2 ~4 ~1 criticalmass:reactor_signal_interface[facing=north,function=rods_in]",
-    "/setblock ~4 ~4 ~1 criticalmass:reactor_signal_interface[facing=north,function=rods_out]",
-    "/setblock ~2 ~2 ~0 create:redstone_link[facing=north,receiver=true]",
-    "/setblock ~4 ~2 ~0 create:redstone_link[facing=north,receiver=true]",
-    "/setblock ~2 ~4 ~0 create:redstone_link[facing=north,receiver=true]",
-    "/setblock ~4 ~4 ~0 create:redstone_link[facing=north,receiver=true]",
-    "/setblock ~6 ~6 ~7 create:redstone_link[facing=south,receiver=true]",
     "/setblock ~3 ~3 ~6 criticalmass:reinforced_pipe",
     "/setblock ~5 ~3 ~6 criticalmass:reinforced_pipe",
     "/setblock ~7 ~3 ~6 criticalmass:reinforced_pipe",
@@ -269,16 +260,16 @@
     "/data merge block ~8 ~5 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:500},Heat:0.0d}}",
     "/data merge block ~9 ~1 ~6 {TankContent:{Fluid:{id:\"minecraft:water\",amount:1500}},\"neoforge:attachments\":{\"criticalmass:tank_coolant\":{Fluid:{id:\"minecraft:water\",amount:1500},Heat:120000.0d}}}",
     "/data merge block ~11 ~4 ~9 {Buffer:{Fluid:{id:\"minecraft:water\",amount:250},Heat:0.0d}}",
-    "/criticalmass desk ~-7 ~0 ~11 right switch ~6 ~6 ~7 1 TURBINE TRIP",
-    "/criticalmass desk ~-7 ~0 ~11 left gauge ~6 ~6 ~6 cm_turbine_speed",
-    "/criticalmass desk ~-6 ~0 ~11 right gauge ~1 ~3 ~3 cm_reactor_pressure",
-    "/criticalmass desk ~-6 ~0 ~11 left gauge ~1 ~3 ~3 cm_reactor_coolant_temperature",
-    "/criticalmass desk ~-5 ~0 ~11 right gauge ~1 ~3 ~3 cm_reactor_neutron",
-    "/criticalmass desk ~-5 ~0 ~11 left alarm ~1 ~3 ~3",
-    "/criticalmass desk ~-4 ~0 ~11 right button ~4 ~4 ~0 2 RODS OUT",
-    "/criticalmass desk ~-4 ~0 ~11 left button ~2 ~4 ~0 4 RODS IN",
-    "/criticalmass desk ~-3 ~0 ~11 right button ~4 ~2 ~0 7 RESET",
-    "/criticalmass desk ~-3 ~0 ~11 left button ~2 ~2 ~0 0 SCRAM",
+    "/criticalmass desk ~-7 ~0 ~11 0 button ~6 ~6 ~6 1 7 TURBINE RESET",
+    "/criticalmass desk ~-7 ~0 ~11 1 button ~6 ~6 ~6 0 1 TURBINE TRIP",
+    "/criticalmass desk ~-6 ~0 ~11 0 gauge ~1 ~3 ~3 2 4 PRESSURE",
+    "/criticalmass desk ~-6 ~0 ~11 1 gauge ~1 ~3 ~3 1 4 COOLANT",
+    "/criticalmass desk ~-5 ~0 ~11 0 gauge ~1 ~3 ~3 5 4 HEAT OUTPUT",
+    "/criticalmass desk ~-5 ~0 ~11 1 alarm ~1 ~3 ~3 0 0 ALARM",
+    "/criticalmass desk ~-4 ~0 ~11 0 button ~1 ~3 ~3 3 2 RODS OUT",
+    "/criticalmass desk ~-4 ~0 ~11 1 button ~1 ~3 ~3 2 4 RODS IN",
+    "/criticalmass desk ~-3 ~0 ~11 0 button ~1 ~3 ~3 1 7 RESET",
+    "/criticalmass desk ~-3 ~0 ~11 1 button ~1 ~3 ~3 0 0 SCRAM",
     "/data merge block ~-1 ~6 ~12 {Reactor:[I;0,0,0]}",
     "/summon minecraft:marker ~1 ~3 ~3 {Tags:[\"cm_bind\"]}",
     "/execute store result block ~-1 ~6 ~12 Reactor[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_bind,limit=1] Pos[0]",
@@ -471,22 +462,90 @@
    "wait": 25
   },
   {
-   "shot": "goggles_speed",
-   "wait": 2
-  },
-  {
-   "cmds": [
-    "/tp @p 293.25 -60.00 310.10 facing 293.250 -60.640 311.690"
-   ],
-   "wait": 25
-  },
-  {
    "shot": "goggles_trip",
    "wait": 2
   },
   {
-   "gui": false,
+   "cmds": [
+    "/item replace entity @p hotbar.1 with create:wrench"
+   ],
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 295.75 -60.00 310.10 facing 295.750 -60.640 311.690"
+   ],
+   "wait": 12
+  },
+  {
+   "use": [
+    295,
+    -60,
+    311,
+    "up"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "menu_alarm",
    "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 297.75 -60.00 310.10 facing 297.750 -60.640 311.690"
+   ],
+   "wait": 12
+  },
+  {
+   "use": [
+    297,
+    -60,
+    311,
+    "up"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "menu_scram",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/tp @p 295.25 -60.00 310.10 facing 295.250 -60.640 311.690"
+   ],
+   "wait": 12
+  },
+  {
+   "use": [
+    295,
+    -60,
+    311,
+    "up"
+   ],
+   "wait": 15
+  },
+  {
+   "shot": "menu_power",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "cmds": [
+    "/item replace entity @p hotbar.1 with minecraft:air"
+   ],
+   "gui": false,
+   "wait": 5
   },
   {
    "cmds": [
@@ -645,10 +704,10 @@
   {
    "cmds": [
     "/item replace entity @p hotbar.0 with criticalmass:reactor_alloy_dashboard",
-    "/item replace entity @p hotbar.1 with loconautics:gauge_button",
-    "/item replace entity @p hotbar.2 with loconautics:gauge_switch",
-    "/item replace entity @p hotbar.3 with loconautics:gauge_lever",
-    "/item replace entity @p hotbar.4 with loconautics:locomotive_gauge",
+    "/item replace entity @p hotbar.1 with criticalmass:dashboard_button",
+    "/item replace entity @p hotbar.2 with criticalmass:dashboard_switch",
+    "/item replace entity @p hotbar.3 with criticalmass:dashboard_lever",
+    "/item replace entity @p hotbar.4 with criticalmass:dashboard_gauge",
     "/item replace entity @p hotbar.5 with criticalmass:dashboard_alarm",
     "/item replace entity @p hotbar.7 with criticalmass:plant_screen"
    ],

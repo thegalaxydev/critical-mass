@@ -1,18 +1,1023 @@
 {
  "variants": {
-  "facing=north": {
-   "model": "criticalmass:block/reactor_alloy_dashboard/block"
+  "facing=north,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
   },
-  "facing=east": {
-   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+  "facing=north,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
    "y": 90
   },
-  "facing=south": {
-   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+  "facing=east,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
    "y": 180
   },
-  "facing=west": {
-   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+  "facing=south,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=alloy": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=white": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=orange": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=magenta": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=light_blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=yellow": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=lime": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=pink": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=light_gray": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=cyan": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=purple": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=blue": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=brown": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=green": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=red": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 270
+  },
+  "facing=north,join_ccw=false,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single"
+  },
+  "facing=north,join_ccw=false,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start"
+  },
+  "facing=north,join_ccw=true,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end"
+  },
+  "facing=north,join_ccw=true,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle"
+  },
+  "facing=east,join_ccw=false,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 90
+  },
+  "facing=east,join_ccw=false,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 90
+  },
+  "facing=east,join_ccw=true,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 90
+  },
+  "facing=south,join_ccw=false,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 180
+  },
+  "facing=south,join_ccw=false,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 180
+  },
+  "facing=south,join_ccw=true,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
+   "y": 180
+  },
+  "facing=west,join_ccw=false,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/single",
+   "y": 270
+  },
+  "facing=west,join_ccw=false,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/start",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=false,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/end",
+   "y": 270
+  },
+  "facing=west,join_ccw=true,join_cw=true,skin=black": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/middle",
    "y": 270
   }
  }

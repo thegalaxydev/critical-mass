@@ -1,8 +1,8 @@
 package com.criticalmass.registry;
 
-import com.criticalmass.content.control.AlarmPartItem;
+import com.criticalmass.content.control.DashPart;
+import com.criticalmass.content.control.DashPartItem;
 import com.criticalmass.content.control.PlantLinkerItem;
-import com.lycoris.loconautics.content.boiler.BoilerBlocks;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.WasteCanisterItem;
@@ -13,7 +13,9 @@ import com.criticalmass.content.radiation.SurveyMeterItem;
 import com.criticalmass.content.thermal.WeldingTorchItem;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyItem;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
@@ -56,7 +58,14 @@ public final class CMItems {
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<PlantLinkerItem> PLANT_LINKER = custom("plant_linker", () -> new PlantLinkerItem(new Item.Properties().stacksTo(1)));
-    public static final DeferredItem<AlarmPartItem> DASHBOARD_ALARM = custom("dashboard_alarm", () -> new AlarmPartItem(BoilerBlocks.LOCOMOTIVE_GAUGE.get(), new Item.Properties()));
+    public static final Map<DashPart.Type, DeferredItem<DashPartItem>> DASHBOARD_PARTS = new EnumMap<>(DashPart.Type.class);
+
+    static {
+        for (DashPart.Type type : DashPart.Type.values()) {
+            DASHBOARD_PARTS.put(type, custom("dashboard_" + type.key, () -> new DashPartItem(type, new Item.Properties())));
+        }
+    }
+
     public static final DeferredItem<WeldingTorchItem> WELDING_TORCH = custom("welding_torch", () -> new WeldingTorchItem(new Item.Properties().durability(128)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(CMBlocks.SEALED_WASTE_CANISTER.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_WASTE_CANISTER = ITEMS.register("incomplete_waste_canister", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));

@@ -20,11 +20,18 @@ import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
-import com.criticalmass.content.control.PlantReadings;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.common.NeoForge;
+import com.criticalmass.content.control.LoconauticsCompat;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.PackSource;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
@@ -36,16 +43,32 @@ public class CriticalMassClient {
     public CriticalMassClient(IEventBus modEventBus) {
         CMPartialModels.init();
         CMSpriteShifts.init();
+        DashPartDraw.init();
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
-        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> {
-            ClientLevel level = Minecraft.getInstance().level;
-            if (level != null) {
-                PlantReadings.clientTick(level.getGameTime());
-            }
-        });
+        modEventBus.addListener(this::addSkinPack);
+        modEventBus.addListener(this::hideDuplicateParts);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);
+    }
+
+    private void addSkinPack(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES && LoconauticsCompat.loaded()) {
+            event.addPackFinders(CriticalMass.asResource("resourcepacks/loconautics_skins"), PackType.CLIENT_RESOURCES, Component.translatable("criticalmass.pack.loconautics_skins"),
+                    PackSource.BUILT_IN, true, Pack.Position.TOP);
+        }
+    }
+
+    private void hideDuplicateParts(BuildCreativeModeTabContentsEvent event) {
+        if (!LoconauticsCompat.loaded()) {
+            return;
+        }
+        for (String name : LoconauticsCompat.DUPLICATE_PARTS) {
+            Item item = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(LoconauticsCompat.MOD, name));
+            if (item != Items.AIR) {
+                event.remove(new ItemStack(item), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+            }
+        }
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
@@ -56,6 +79,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.CENTRIFUGE.get(), ctx -> new AxialRotorRenderer<CentrifugeBlockEntity>(ctx, CMPartialModels.CENTRIFUGE_ROTOR));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.COOLING_TOWER.get(), PackingRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.DASHBOARD.get(), DashboardRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

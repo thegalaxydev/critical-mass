@@ -7,14 +7,8 @@ import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.mojang.brigadier.CommandDispatcher;
-import com.criticalmass.content.control.AlarmPart;
-import com.lycoris.loconautics.content.controls.panel.PanelPart;
-import com.lycoris.loconautics.content.controls.panel.PanelSlot;
-import com.lycoris.loconautics.content.controls.panelbutton.ButtonPart;
-import com.lycoris.loconautics.content.controls.panelgauge.GaugeBlockEntity;
-import com.lycoris.loconautics.content.controls.panelgauge.GaugeMetric;
-import com.lycoris.loconautics.content.controls.panellever.LeverPart;
-import com.lycoris.loconautics.content.controls.panelswitch.SwitchPart;
+import com.criticalmass.content.control.DashPart;
+import com.criticalmass.content.control.DashboardBlockEntity;
 import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -39,18 +33,16 @@ public final class LedgerCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("criticalmass").requires(s -> s.hasPermission(2))
                 .then(Commands.literal("ledger").executes(ctx -> report(ctx.getSource())))
-                .then(Commands.literal("desk").then(Commands.argument("desk", BlockPosArgument.blockPos()).then(Commands.argument("side", StringArgumentType.word())
-                        .then(Commands.literal("gauge").then(Commands.argument("target", BlockPosArgument.blockPos()).then(Commands.argument("metric", StringArgumentType.word())
-                                .executes(ctx -> gauge(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), StringArgumentType.getString(ctx, "side"),
-                                        BlockPosArgument.getLoadedBlockPos(ctx, "target"), StringArgumentType.getString(ctx, "metric"))))))
-                        .then(Commands.literal("alarm").then(Commands.argument("reactor", BlockPosArgument.blockPos())
-                                .executes(ctx -> alarm(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), StringArgumentType.getString(ctx, "side"), BlockPosArgument.getLoadedBlockPos(ctx, "reactor")))))
-                        .then(Commands.argument("part", StringArgumentType.word()).then(Commands.argument("link", BlockPosArgument.blockPos()).then(Commands.argument("color", IntegerArgumentType.integer(0, 34))
-                                .executes(ctx -> control(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), StringArgumentType.getString(ctx, "side"), StringArgumentType.getString(ctx, "part"),
-                                        BlockPosArgument.getLoadedBlockPos(ctx, "link"), IntegerArgumentType.getInteger(ctx, "color"), ""))
-                                .then(Commands.argument("label", StringArgumentType.greedyString())
-                                        .executes(ctx -> control(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), StringArgumentType.getString(ctx, "side"), StringArgumentType.getString(ctx, "part"),
-                                                BlockPosArgument.getLoadedBlockPos(ctx, "link"), IntegerArgumentType.getInteger(ctx, "color"), StringArgumentType.getString(ctx, "label"))))))))))
+                .then(Commands.literal("desk").then(Commands.argument("desk", BlockPosArgument.blockPos()).then(Commands.argument("slot", IntegerArgumentType.integer(0, 1))
+                        .then(Commands.argument("part", StringArgumentType.word()).then(Commands.argument("target", BlockPosArgument.blockPos())
+                                .then(Commands.argument("mode", IntegerArgumentType.integer(0)).then(Commands.argument("color", IntegerArgumentType.integer(0, 34))
+                                        .executes(ctx -> desk(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), IntegerArgumentType.getInteger(ctx, "slot"),
+                                                StringArgumentType.getString(ctx, "part"), BlockPosArgument.getLoadedBlockPos(ctx, "target"), IntegerArgumentType.getInteger(ctx, "mode"),
+                                                IntegerArgumentType.getInteger(ctx, "color"), ""))
+                                        .then(Commands.argument("label", StringArgumentType.greedyString())
+                                                .executes(ctx -> desk(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "desk"), IntegerArgumentType.getInteger(ctx, "slot"),
+                                                        StringArgumentType.getString(ctx, "part"), BlockPosArgument.getLoadedBlockPos(ctx, "target"), IntegerArgumentType.getInteger(ctx, "mode"),
+                                                        IntegerArgumentType.getInteger(ctx, "color"), StringArgumentType.getString(ctx, "label")))))))))))
                 .then(Commands.literal("radiation").then(Commands.argument("pos", Vec3Argument.vec3())
                         .executes(ctx -> probe(ctx.getSource(), Vec3Argument.getVec3(ctx, "pos")))))
                 .then(Commands.literal("contaminate").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
@@ -69,74 +61,28 @@ public final class LedgerCommand {
                                 .executes(ctx -> fuel(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "remaining"))))))));
     }
 
-    private static PanelSlot slot(String side) {
-        return side.equals("left") ? PanelSlot.TOP_LEFT : PanelSlot.TOP_RIGHT;
-    }
-
-    private static int gauge(CommandSourceStack source, BlockPos desk, String side, BlockPos target, String metricName) {
-        if (!(source.getLevel().getBlockEntity(desk) instanceof GaugeBlockEntity panel)) {
-            source.sendFailure(Component.literal("No dashboard at " + desk.toShortString()));
+    private static int desk(CommandSourceStack source, BlockPos pos, int slot, String kind, BlockPos target, int mode, int color, String label) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof DashboardBlockEntity desk)) {
+            source.sendFailure(Component.literal("No dashboard at " + pos.toShortString()));
             return 0;
         }
-        GaugeMetric metric = GaugeMetric.byName(metricName);
-        if (!metric.getSerializedName().equals(metricName) || GaugeMetric.Group.of(source.getLevel().getBlockEntity(target)) != metric.group()) {
-            source.sendFailure(Component.literal("The block at " + target.toShortString() + " has no reading called " + metricName));
+        DashPart.Type type = DashPart.Type.byKey(kind);
+        if (!type.key.equals(kind)) {
+            source.sendFailure(Component.literal("Parts are button, switch, lever, gauge and alarm"));
             return 0;
         }
-        PanelSlot slot = slot(side);
-        panel.removePart(slot);
-        if (!panel.addGauge(slot, target, metric)) {
-            source.sendFailure(Component.literal("The dashboard would not take the gauge"));
+        desk.remove(slot);
+        DashPart part = new DashPart(type);
+        desk.install(slot, part);
+        if (!desk.bind(slot, target)) {
+            source.sendFailure(Component.literal("A " + kind + " cannot use the block at " + target.toShortString()));
             return 0;
         }
-        source.sendSuccess(() -> Component.literal("Gauge fitted: " + metricName), false);
-        return 1;
-    }
-
-    private static int alarm(CommandSourceStack source, BlockPos desk, String side, BlockPos reactor) {
-        if (!(source.getLevel().getBlockEntity(desk) instanceof GaugeBlockEntity panel)) {
-            source.sendFailure(Component.literal("No dashboard at " + desk.toShortString()));
-            return 0;
+        desk.edit(slot, part.body, color, part.style, part.options, part.face, mode, false, label);
+        if (type == DashPart.Type.GAUGE) {
+            desk.edit(slot, part.body, part.color, part.style, part.options, DashPart.face(part.channel(source.getLevel())), part.mode, false, label);
         }
-        if (!(source.getLevel().getBlockEntity(reactor) instanceof ReactorControllerBlockEntity)) {
-            source.sendFailure(Component.literal("No reactor controller at " + reactor.toShortString()));
-            return 0;
-        }
-        PanelSlot slot = slot(side);
-        panel.removePart(slot);
-        if (!panel.putPart(slot, new AlarmPart(reactor, 0, 0))) {
-            source.sendFailure(Component.literal("The dashboard would not take the alarm"));
-            return 0;
-        }
-        source.sendSuccess(() -> Component.literal("alarm fitted"), false);
-        return 1;
-    }
-
-    private static int control(CommandSourceStack source, BlockPos desk, String side, String kind, BlockPos link, int color, String label) {
-        if (!(source.getLevel().getBlockEntity(desk) instanceof GaugeBlockEntity panel)) {
-            source.sendFailure(Component.literal("No dashboard at " + desk.toShortString()));
-            return 0;
-        }
-        PanelPart part = switch (kind) {
-            case "button" -> new ButtonPart(0L, link, ButtonPart.DEFAULT_BODY, color, ButtonPart.DEFAULT_STYLE, ButtonPart.DEFAULT_OPTIONS);
-            case "switch" -> new SwitchPart(0, link, SwitchPart.DEFAULT_BODY, color, SwitchPart.DEFAULT_STYLE, SwitchPart.DEFAULT_OPTIONS);
-            case "lever" -> new LeverPart(0, link, LeverPart.DEFAULT_BODY, color, LeverPart.DEFAULT_STYLE, LeverPart.DEFAULT_OPTIONS);
-            default -> null;
-        };
-        if (part == null) {
-            source.sendFailure(Component.literal("Parts are button, switch, lever and gauge"));
-            return 0;
-        }
-        PanelSlot slot = slot(side);
-        panel.removePart(slot);
-        if (!panel.putPart(slot, part)) {
-            source.sendFailure(Component.literal("The dashboard would not take the " + kind));
-            return 0;
-        }
-        if (!label.isEmpty()) {
-            panel.setLabel(slot, Component.literal(label));
-        }
-        source.sendSuccess(() -> Component.literal(kind + " fitted"), false);
+        source.sendSuccess(() -> Component.literal(kind + " fitted: " + desk.modeKey(part)), false);
         return 1;
     }
 

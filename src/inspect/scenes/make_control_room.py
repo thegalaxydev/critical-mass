@@ -9,7 +9,7 @@ HOME = "/tp @p %d %d %d" % (OX, OY, OZ)
 PART = {part[0]: (x, slot) for x, parts in m.DESKS.items() for slot, part in enumerate(parts)}
 MID = sum(m.DESKS) / len(m.DESKS) + 0.5
 DESK_Z = m.DESK_Z
-PARTS = ["loconautics:gauge_button", "loconautics:gauge_switch", "loconautics:gauge_lever", "loconautics:locomotive_gauge", "criticalmass:dashboard_alarm"]
+PARTS = ["criticalmass:dashboard_button", "criticalmass:dashboard_switch", "criticalmass:dashboard_lever", "criticalmass:dashboard_gauge", "criticalmass:dashboard_alarm"]
 
 
 def look(pos, target):
@@ -58,9 +58,12 @@ steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weathe
          {"cmds": [right], "wait": 30}, {"shot": "desk_right", "wait": 2},
          {"cmds": [side], "wait": 30}, {"shot": "desk_side", "wait": 2},
          {"cmds": ["/item replace entity @p armor.head with create:goggles"], "wait": 5, "gui": True}]
-for name in ("scram", "rod_out", "alarm", "power", "coolant", "speed", "trip"):
+for name in ("scram", "rod_out", "alarm", "power", "coolant", "trip"):
     steps += [{"cmds": [aim(name)], "wait": 25}, {"shot": "goggles_" + name, "wait": 2}]
-steps += [{"gui": False, "wait": 2}]
+steps += [{"cmds": ["/item replace entity @p hotbar.1 with create:wrench"], "wait": 5}]
+for name in ("alarm", "scram", "power"):
+    steps += click(name, 15) + [{"shot": "menu_" + name, "wait": 2}, {"closeScreen": True, "wait": 5}]
+steps += [{"cmds": ["/item replace entity @p hotbar.1 with minecraft:air"], "gui": False, "wait": 5}]
 steps += click("rod_out")
 steps += [{"cmds": state, "wait": 5}]
 steps += click("scram", 40)
