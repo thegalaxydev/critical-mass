@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
+import net.createmod.catnip.math.AngleHelper;
 import net.createmod.catnip.render.CachedBuffers;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,7 +25,7 @@ public class PumpRenderer extends SafeBlockEntityRenderer<CirculationPumpBlockEn
         Direction facing = state.getValue(CirculationPumpBlock.FACING);
         Direction.Axis axis = facing.getAxis();
         SuperByteBuffer wheel = CachedBuffers.partialFacingVertical(CMPartialModels.CIRCULATION_PUMP_ROTOR, state, facing);
-        float angle = KineticBlockEntityRenderer.getAngleForBe(be, be.getBlockPos(), axis);
+        float angle = AngleHelper.rad(be.wheelAngle(partialTicks));
         KineticBlockEntityRenderer.kineticRotationTransform(wheel, be, axis, angle, light).renderInto(ms, buffer.getBuffer(RenderType.solid()));
         Direction.Axis shaft = KineticBlockEntityRenderer.getRotationAxisOf(be);
         for (Direction.AxisDirection end : Direction.AxisDirection.values()) {

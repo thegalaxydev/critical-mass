@@ -14,6 +14,7 @@ import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.ArrayList;
 import java.util.List;
+import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,6 +33,8 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
     private String status = "criticalmass.circuit.idle";
     private int syncCooldown;
     private boolean syncPending;
+    private final LerpedFloat wheelSpeed = LerpedFloat.linear().chase(0, 1 / 64f, LerpedFloat.Chaser.EXP);
+    private float wheelAngle;
 
     public CirculationPumpBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -83,6 +86,10 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         return status;
     }
 
+    public float wheelAngle(float partialTicks) {
+        return wheelAngle + wheelSpeed.getValue(partialTicks) * 3 / 10f * partialTicks;
+    }
+
     public List<ThermalNode> pipeContents() {
         List<ThermalNode> out = new ArrayList<>();
         if (circuit == null || level == null) {
@@ -107,7 +114,13 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) {
+        if (level == null) {
+            return;
+        }
+        if (level.isClientSide) {
+            wheelSpeed.updateChaseTarget(getSpeed());
+            wheelSpeed.tickChaser();
+            wheelAngle = (wheelAngle + wheelSpeed.getValue() * 3 / 10f) % 360;
             return;
         }
         if (circuit == null || retraceIn-- <= 0) {

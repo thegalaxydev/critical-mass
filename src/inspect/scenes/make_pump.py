@@ -44,6 +44,10 @@ steps = [
     {"cmds": ["/setblock 44 -57 34 minecraft:barrier", wide], "wait": 30}, {"shot": "wide", "wait": 2},
     {"cmds": ["/setblock 41 -58 45 minecraft:barrier", look(41.6, -56.4, 45.2, 40.7, -57.6, 47.5)], "wait": 30}, {"shot": "copper", "wait": 2},
     {"cmds": ["/data get block 40 -58 40 Speed", "/data get block 45 -58 40 Speed", "/data get block 48 -58 40 Speed", "/data get block 45 -58 44 Speed"], "wait": 5},
+    {"cmds": [side], "wait": 30}, {"shot": "run_a", "wait": 3}, {"shot": "run_b", "wait": 2},
+    {"cmds": ["/setblock 40 -60 40 minecraft:air"], "wait": 20}, {"cmds": ["/data get block 40 -58 40 Speed"], "wait": 1},
+    {"shot": "coast_a", "wait": 3}, {"shot": "coast_b", "wait": 500},
+    {"shot": "still_a", "wait": 3}, {"shot": "still_b", "wait": 2},
     {"slot": 0, "gui": True, "wait": 10}, {"shot": "held", "wait": 2},
 ]
 json.dump({"name": "pump", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "pump.json"), "w", newline="\n"), indent=1)
