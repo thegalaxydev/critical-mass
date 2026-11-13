@@ -1,0 +1,304 @@
+{
+ "parent": "minecraft:block/block",
+ "render_type": "minecraft:cutout",
+ "textures": {
+  "0": "criticalmass:block/dashboard_switch",
+  "particle": "criticalmass:block/dashboard_switch"
+ },
+ "elements": [
+  {
+   "name": "plate",
+   "from": [
+    6,
+    5,
+    5
+   ],
+   "to": [
+    10,
+    6,
+    11
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0.25,
+      0.25,
+      1.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "boot",
+   "from": [
+    7,
+    6,
+    7
+   ],
+   "to": [
+    9,
+    6.5,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      2.25,
+      0.25,
+      3.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "paddle",
+   "from": [
+    7.25,
+    6,
+    7.5
+   ],
+   "to": [
+    8.75,
+    9,
+    8.5
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      8.25,
+      0.25,
+      9.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ],
+ "display": {
+  "gui": {
+   "rotation": [
+    30,
+    225,
+    0
+   ],
+   "translation": [
+    0,
+    3,
+    0
+   ],
+   "scale": [
+    1.1,
+    1.1,
+    1.1
+   ]
+  },
+  "ground": {
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    3,
+    0
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "fixed": {
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    -4
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  },
+  "thirdperson_righthand": {
+   "rotation": [
+    75,
+    45,
+    0
+   ],
+   "translation": [
+    0,
+    2.5,
+    0
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "firstperson_righthand": {
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "translation": [
+    0,
+    4,
+    0
+   ],
+   "scale": [
+    0.6,
+    0.6,
+    0.6
+   ]
+  }
+ }
+}

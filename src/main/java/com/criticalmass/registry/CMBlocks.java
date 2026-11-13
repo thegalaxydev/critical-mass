@@ -6,6 +6,7 @@ import com.criticalmass.content.fuel.CentrifugeBlock;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlock;
 import net.minecraft.core.Direction;
+import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.PanelBlock;
 import com.criticalmass.content.control.PanelBlockEntity;
 import com.criticalmass.content.control.ScreenBlock;
@@ -83,6 +84,7 @@ public final class CMBlocks {
     public static final DeferredBlock<PanelBlock> LEVER_PANEL = register("lever_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.LEVER), metal(2.5f).noOcclusion());
     public static final DeferredBlock<PanelBlock> DIAL_PANEL = register("dial_panel", p -> new PanelBlock(p, PanelBlockEntity.Type.DIAL), metal(2.5f).noOcclusion());
     public static final DeferredBlock<ScreenBlock> PLANT_SCREEN = register("plant_screen", ScreenBlock::new, metal(2.0f).noOcclusion());
+    public static final DeferredBlock<DashboardBlock> DASHBOARD = register("dashboard", DashboardBlock::new, metal(2.5f).noOcclusion());
     public static final DeferredBlock<HorizontalBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", HorizontalBlock::new, metal(4.0f));
     public static final DeferredBlock<DockingConnectorBlock> DOCKING_SERVICE_CONNECTOR = register("docking_service_connector", DockingConnectorBlock::new, metal(4.0f));
 

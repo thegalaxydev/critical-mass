@@ -6,6 +6,7 @@ import com.criticalmass.content.fuel.CentrifugeBlockEntity;
 import com.criticalmass.content.CoolantPortBlockEntity;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
+import com.criticalmass.content.control.DashboardBlockEntity;
 import com.criticalmass.content.control.PanelBlockEntity;
 import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.CriticalMass;
@@ -65,6 +66,8 @@ public final class CMBlockEntities {
     public static final Supplier<BlockEntityType<PanelBlockEntity>> CONTROL_PANEL = BLOCK_ENTITIES.register("control_panel",
             () -> BlockEntityType.Builder.of((pos, state) -> new PanelBlockEntity(CMBlockEntities.CONTROL_PANEL.get(), pos, state),
                     CMBlocks.SCRAM_PANEL.get(), CMBlocks.ROD_PANEL.get(), CMBlocks.TURBINE_PANEL.get(), CMBlocks.ALARM_PANEL.get(), CMBlocks.LEVER_PANEL.get(), CMBlocks.DIAL_PANEL.get()).build(null));
+    public static final Supplier<BlockEntityType<DashboardBlockEntity>> DASHBOARD = BLOCK_ENTITIES.register("dashboard",
+            () -> BlockEntityType.Builder.of((pos, state) -> new DashboardBlockEntity(CMBlockEntities.DASHBOARD.get(), pos, state), CMBlocks.DASHBOARD.get()).build(null));
     public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
             () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
     public static final Supplier<BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE = BLOCK_ENTITIES.register("centrifuge",

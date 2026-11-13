@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "minecraft:redstone_torch"
+    },
+    {
+      "tag": "c:glass_panes"
+    },
+    {
+      "tag": "c:plates/brass"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:dashboard_alarm"
+  }
+}

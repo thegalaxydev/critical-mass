@@ -46,6 +46,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.CENTRIFUGE.get(), ctx -> new AxialRotorRenderer<CentrifugeBlockEntity>(ctx, CMPartialModels.CENTRIFUGE_ROTOR));
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.COOLING_TOWER.get(), PackingRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.DASHBOARD.get(), DashboardRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

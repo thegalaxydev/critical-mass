@@ -1,0 +1,99 @@
+{
+ "name": "dashboard",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamemode creative",
+    "/tp @p 42 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -59 34 54 -50 50 minecraft:air",
+    "/setblock 40 -59 40 criticalmass:dashboard[facing=north,join_cw=true,join_ccw=false]{Part0:{Type:\"button\"},Part1:{Type:\"switch\",On:1b}}",
+    "/setblock 41 -59 40 criticalmass:dashboard[facing=north,join_cw=true,join_ccw=true]{Part0:{Type:\"lever\",Level:11},Part1:{Type:\"gauge\",Fraction:0.6f,Readout:\"310 C\"}}",
+    "/setblock 42 -59 40 criticalmass:dashboard[facing=north,join_cw=false,join_ccw=true]{Part0:{Type:\"alarm\",Alarms:1},Part1:{Type:\"alarm\"}}",
+    "/setblock 45 -59 40 criticalmass:dashboard[facing=north,join_cw=false,join_ccw=false]{Part0:{Type:\"button\"}}",
+    "/setblock 47 -59 41 criticalmass:dashboard[facing=west,join_cw=false,join_ccw=false]{Part0:{Type:\"gauge\",Fraction:0.2f},Part1:{Type:\"lever\",Level:2}}",
+    "/item replace entity @p hotbar.0 with criticalmass:dashboard",
+    "/item replace entity @p hotbar.1 with minecraft:air",
+    "/item replace entity @p hotbar.2 with criticalmass:dashboard_gauge"
+   ],
+   "wait": 60
+  },
+  {
+   "cmds": [
+    "/setblock 41 -60 37 minecraft:barrier",
+    "/tp @p 41.50 -58.90 37.60 facing 41.50 -60.12 40.50"
+   ],
+   "wait": 40,
+   "slot": 1
+  },
+  {
+   "shot": "front",
+   "wait": 8
+  },
+  {
+   "shot": "front_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 43 -59 38 minecraft:barrier",
+    "/tp @p 43.80 -57.90 38.30 facing 41.60 -60.02 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "angle",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 40 -59 43 minecraft:barrier",
+    "/tp @p 40.20 -57.90 43.60 facing 41.50 -60.22 40.50"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "back",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 45 -60 38 minecraft:barrier",
+    "/tp @p 45.60 -58.80 38.40 facing 46.40 -60.12 40.80"
+   ],
+   "wait": 30
+  },
+  {
+   "shot": "single",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 41.50 -58.90 37.60 facing 41.50 -60.12 40.50"
+   ],
+   "slot": 0,
+   "gui": true,
+   "wait": 20
+  },
+  {
+   "shot": "held",
+   "wait": 2
+  },
+  {
+   "slot": 2,
+   "wait": 10
+  },
+  {
+   "shot": "held_part",
+   "wait": 2
+  }
+ ]
+}

@@ -121,6 +121,13 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Lever Panel:** links to nothing. Use it to switch a full redstone signal on and off.
   - **Dial Panel:** links to nothing. Use it to switch its signal on and off, and sneak-use it to raise the strength from 1 to 15. It suits anything that takes an analog signal, such as the controller's rod signal or a turbine's governor.
   - Panels ignore each other's signals, so a lever beside the SCRAM Panel does not trip the reactor.
+- **Dashboard:** a sloped control desk that is taking over from the panels above. Desks placed side by side join into one run of up to 5. Each desk holds two parts, one in each half.
+  - **Parts:** Dashboard Button, Switch, Lever, Gauge and Alarm. Sneak-use a part on its target to bind it, then use it on the half of a desk you want it in. A part already on a desk can be re-bound with the Plant Linker.
+  - **Button:** on a Reactor Controller it is SCRAM, reset, rods in or rods out; on a Steam Turbine it is trip or reset; on a receiving Redstone Link it sends a full signal for one second. A redstone pulse into the desk presses its buttons.
+  - **Switch and Lever:** bind to a receiving Redstone Link. The switch holds it on or off. The lever sets any strength from 0 to 15 by where you click along it. Two controls on one link do not fight: the strongest wins.
+  - **Gauge:** binds to any plant machine and shows one of its readings on a needle; using it shows the number.
+  - **Alarm:** binds to a Reactor Controller and watches one alarm or all of them. A new alarm flashes and the desk gives a redstone signal until you press the lamp; a comparator counts the active alarms.
+  - **Wrench:** use it on a part to step through its settings (which action, which reading, which alarm). Sneak-use it on a part to take the part off. Breaking a desk while aiming at a part takes only that part.
 - **Pumps and valves** are switched with Create's own parts: a clutch or gearshift and a lever on the pump shaft, a Valve Handle or powered shaft on a Reinforced Valve.
 - **Primary pressure:** vessel coolant boils at 350 °C unless it is pressurized. Coolant hotter than its boiling point flashes to steam and is lost, a quarter of the excess each tick, and the Alarm Panel's boiling lamp lights.
 - **Pressurizer:** touching the vessel, it raises the primary pressure with heaters, and every bar adds 2 °C to the boiling point (100 bar gives 548 °C, the 150 bar maximum 648 °C).

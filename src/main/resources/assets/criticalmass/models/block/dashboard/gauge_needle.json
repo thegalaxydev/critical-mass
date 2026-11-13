@@ -1,0 +1,78 @@
+{
+ "render_type": "minecraft:cutout",
+ "textures": {
+  "0": "criticalmass:block/dashboard_gauge",
+  "particle": "criticalmass:block/dashboard_gauge"
+ },
+ "elements": [
+  {
+   "name": "needle",
+   "from": [
+    3.75,
+    1.55,
+    1.75
+   ],
+   "to": [
+    4.25,
+    1.8,
+    4.25
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

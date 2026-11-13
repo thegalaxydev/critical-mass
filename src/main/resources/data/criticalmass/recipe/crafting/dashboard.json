@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "tag": "c:plates/iron"
+    },
+    "C": {
+      "item": "create:railway_casing"
+    }
+  },
+  "pattern": [
+    "PPP",
+    "PCP"
+  ],
+  "result": {
+    "id": "criticalmass:dashboard",
+    "count": 2
+  }
+}

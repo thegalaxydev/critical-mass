@@ -42,6 +42,7 @@
     "criticalmass:centrifuge",
     "criticalmass:reinforced_pipe",
     "criticalmass:reinforced_valve",
-    "criticalmass:cooling_tower_packing"
+    "criticalmass:cooling_tower_packing",
+    "criticalmass:dashboard"
   ]
 }

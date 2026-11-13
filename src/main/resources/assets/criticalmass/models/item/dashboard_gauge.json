@@ -1,0 +1,235 @@
+{
+ "parent": "minecraft:block/block",
+ "render_type": "minecraft:cutout",
+ "textures": {
+  "0": "criticalmass:block/dashboard_gauge",
+  "particle": "criticalmass:block/dashboard_gauge"
+ },
+ "elements": [
+  {
+   "name": "case",
+   "from": [
+    5,
+    5,
+    5
+   ],
+   "to": [
+    11,
+    6.5,
+    11
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      4.25,
+      0.25,
+      5.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      4.25,
+      0.25,
+      5.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      4.25,
+      0.25,
+      5.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      4.25,
+      0.25,
+      5.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      10.25,
+      0.25,
+      11.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      4.25,
+      0.25,
+      5.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "needle",
+   "from": [
+    7.75,
+    6.55,
+    5.75
+   ],
+   "to": [
+    8.25,
+    6.8,
+    8.25
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      12.25,
+      0.25,
+      13.75,
+      1.75
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ],
+ "display": {
+  "gui": {
+   "rotation": [
+    30,
+    225,
+    0
+   ],
+   "translation": [
+    0,
+    3,
+    0
+   ],
+   "scale": [
+    1.1,
+    1.1,
+    1.1
+   ]
+  },
+  "ground": {
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    3,
+    0
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "fixed": {
+   "rotation": [
+    -90,
+    0,
+    0
+   ],
+   "translation": [
+    0,
+    0,
+    -4
+   ],
+   "scale": [
+    1,
+    1,
+    1
+   ]
+  },
+  "thirdperson_righthand": {
+   "rotation": [
+    75,
+    45,
+    0
+   ],
+   "translation": [
+    0,
+    2.5,
+    0
+   ],
+   "scale": [
+    0.5,
+    0.5,
+    0.5
+   ]
+  },
+  "firstperson_righthand": {
+   "rotation": [
+    0,
+    45,
+    0
+   ],
+   "translation": [
+    0,
+    4,
+    0
+   ],
+   "scale": [
+    0.6,
+    0.6,
+    0.6
+   ]
+  }
+ }
+}

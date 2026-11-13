@@ -3,6 +3,7 @@ package com.criticalmass.client;
 import com.criticalmass.CriticalMass;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.Direction;
 
@@ -24,6 +25,8 @@ public final class CMPartialModels {
     public static final PartialModel PANEL_DIAL_POINTER = block("panel/dial_pointer");
     public static final PartialModel PANEL_DIAL_COLLAR = block("panel/dial_collar");
     public static final PartialModel PANEL_LAMP = block("panel/lamp");
+    public static final Map<String, PartialModel> DASHBOARD = pieces("dashboard/", "button_base", "button_cap", "switch_base", "switch_paddle", "lever_base", "lever_handle",
+            "gauge_body", "gauge_needle", "alarm_base", "alarm_lamp", "alarm_lamp_lit");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_RIM = facings("reinforced_pipe/rim/");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_DRAIN = facings("reinforced_pipe/drain/");
 
@@ -32,6 +35,14 @@ public final class CMPartialModels {
 
     private static PartialModel block(String path) {
         return PartialModel.of(CriticalMass.asResource("block/" + path));
+    }
+
+    private static Map<String, PartialModel> pieces(String path, String... names) {
+        Map<String, PartialModel> map = new HashMap<>();
+        for (String name : names) {
+            map.put(name, block(path + name));
+        }
+        return map;
     }
 
     private static Map<Direction, PartialModel> facings(String path) {
