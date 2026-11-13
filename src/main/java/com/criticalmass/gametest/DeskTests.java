@@ -20,6 +20,8 @@ import com.lycoris.loconautics.content.controls.panelgauge.GaugeBlockEntity;
 import com.lycoris.loconautics.content.controls.panelgauge.GaugeMetric;
 import com.lycoris.loconautics.content.dashboard.DashboardBlock;
 import com.lycoris.loconautics.content.dashboard.DashboardBlockEntity;
+import com.lycoris.loconautics.content.dashboard.DashboardBlocks;
+import com.lycoris.loconautics.content.variantpicker.BlockVariantRegistry;
 import com.mojang.serialization.JsonOps;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
@@ -33,6 +35,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -185,6 +188,10 @@ public final class DeskTests {
         ItemStack dye = new ItemStack(Items.RED_DYE);
         h.getLevel().getBlockState(abs).useItemOn(dye, h.getLevel(), player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false));
         h.assertTrue(h.getBlockState(first).is(block) && dye.getCount() == 1, "Dye should leave an alloy dashboard as it is");
+        BlockVariantRegistry.Location skin = BlockVariantRegistry.locate(block);
+        BlockVariantRegistry.Location red = BlockVariantRegistry.locate(DashboardBlocks.DASHBOARDS.get(DyeColor.RED).get());
+        h.assertTrue(skin != null && red != null && skin.family() == red.family() && BlockVariantRegistry.family(skin.family()).size() == 17,
+                "The alloy dashboard should be a seventeenth skin in Loconautics' dashboard family: " + skin + " " + red);
         h.assertTrue(h.getLevel().getRecipeManager().byKey(CriticalMass.asResource("crafting/reactor_alloy_dashboard")).isPresent()
                 && h.getLevel().getRecipeManager().byKey(CriticalMass.asResource("crafting/reactor_alloy_dashboard_from_dashboard")).isPresent(), "Both alloy dashboard recipes should load");
         h.startSequence()
