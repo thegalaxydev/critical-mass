@@ -160,8 +160,9 @@ def main():
     assert body_cubes and wheel_cubes, (len(body_cubes), len(wheel_cubes))
     source = project["textures"][0]["source"]
     png = os.path.join(ASSETS, "textures", "block", NAME + ".png")
-    with open(png, "wb") as f:
-        f.write(base64.b64decode(source.split(",", 1)[1]))
+    if not os.path.exists(png) or os.path.getmtime(SOURCE) > os.path.getmtime(png):
+        with open(png, "wb") as f:
+            f.write(base64.b64decode(source.split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
     body = [body_element(c, scale, [OUTLET_NORTH]) for c in body_cubes]
     sideways = [body_element(c, scale, [OUTLET_NORTH, SIDEWAYS]) for c in body_cubes]
