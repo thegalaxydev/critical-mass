@@ -7,13 +7,13 @@ from reactor_layout import CONTROLLER, PRIMARY, REDSTONE
 
 STEAM = [(6, 1, 6), (6, 2, 6), (6, 5, 6), (6, 7, 6), (7, 7, 6), (9, 7, 6), (10, 7, 6), (10, 6, 6), (10, 5, 6), (10, 4, 6), (10, 3, 6),
          (10, 2, 6), (10, 1, 6), (9, 1, 6), (8, 1, 6)]
-COOLING = [(8, 6, 6), (8, 6, 7), (8, 6, 8), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
+COOLING = [(8, 6, 6), (8, 6, 7), (8, 6, 8), (8, 1, 9), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
            (11, 7, 9), (11, 8, 9), (11, 9, 9), (11, 9, 8), (11, 9, 7), (11, 9, 6), (10, 9, 6), (9, 9, 6), (8, 9, 6), (8, 8, 6)]
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
 FEEDWATER = (9, 1, 6)
-MAKEUP = (6, 1, 9)
-BASIN = (8, 1, 9)
+MAKEUP = (5, 2, 9)
+FILL = [(8, y, 9) for y in range(2, 6)]
 TOWER_INLET = (8, 6, 9)
 ECCS_PORT, ECCS_PUMP, ECCS_TANK, ECCS_LEVER = (1, 2, 2), (0, 2, 2), (-1, 2, 2), (-1, 4, 2)
 PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING + [TOWER_INLET]
@@ -84,14 +84,14 @@ plant = [
     setblock((7, 6, 6), "create:stressometer[facing=south,axis_along_first=true]"),
     setblock((5, 6, 6), "create:mechanical_press[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
-    setblock(BASIN, "create:fluid_tank"),
-    "fill %s %s criticalmass:cooling_tower_packing" % (w(8, 2, 9), w(8, 5, 9)),
+    "fill %s %s criticalmass:cooling_tower_packing" % (w(*FILL[0]), w(*FILL[-1])),
     setblock((8, 7, 9), "criticalmass:tower_fan"),
     setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:24}"),
-    setblock((7, 1, 9), "create:mechanical_pump[facing=east]"),
     setblock(MAKEUP, "create:creative_fluid_tank"),
-    setblock((7, 2, 9), "create:cogwheel[axis=x]"),
-    setblock((6, 2, 9), "create:creative_motor[facing=east]"),
+    setblock((6, 2, 9), "create:mechanical_pump[facing=east]"),
+    setblock((7, 2, 9), "create:fluid_pipe"),
+    setblock((6, 3, 9), "create:cogwheel[axis=x]"),
+    setblock((5, 3, 9), "create:creative_motor[facing=east]"),
     setblock(FEEDWATER, "create:fluid_tank"),
     setblock(PRESSURIZER, "criticalmass:pressurizer"),
     setblock((PRESSURIZER[0], PRESSURIZER[1] - 1, PRESSURIZER[2]), "create:blaze_burner[blaze=kindled]{isCreative:1b}"),
@@ -164,7 +164,7 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
               merge((-5, 0, 1), "Buffer", "minecraft:water", 4000, 0),
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(10, 4, 2),
               "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*MAKEUP)]
-start_here += [tank(BASIN, "minecraft:water", 2500), tank(FEEDWATER, "minecraft:water", 1500, 1500 * 80.0)]
+start_here += [merge(p, "Buffer", "minecraft:water", 500, 0) for p in FILL] + [tank(FEEDWATER, "minecraft:water", 1500, 1500 * 80.0)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
 start_here += wiring
 start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),

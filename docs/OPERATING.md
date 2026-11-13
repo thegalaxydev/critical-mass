@@ -8,7 +8,7 @@ This is the working manual: what each circuit does, the smallest plant that runs
 | --- | --- | --- | --- |
 | Primary | Primary coolant | Vessel outlet port, Circulation Pump, Heat Exchanger front and back, vessel inlet port | Takes heat out of the fuel. A Pressurizer on the vessel lets it run hotter than 350 °C |
 | Steam | Water and steam | Heat Exchanger top and bottom, Steam Turbine, Condenser, a Fluid Tank for feedwater, pump, back to the exchanger | Boils in the exchanger, turns the turbine, condenses and returns |
-| Cooling | Water | Condenser cooling side, a pipe down onto the tower fill, the fill, a Fluid Tank, pump, back to the condenser | Throws the turbine's waste heat away |
+| Cooling | Water | Condenser cooling side, a pipe down onto the tower fill, the fill, a pipe out from under it, pump, back to the condenser | Throws the turbine's waste heat away |
 
 The circuits never mix. Each one is a single pipe path with its own Circulation Pump. A closed valve, a missing pipe or a stopped pump stops that circuit only, and the plant feels it downstream: no primary flow trips the reactor, no steam flow starves the turbine, no cooling flow leaves the condenser hot and the steam loop pressure climbing to the relief valve.
 
@@ -21,9 +21,9 @@ Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce t
 3. **Rods.** A Control Rod Drive on the top face above each control column, with a shaft to its back.
 4. **Primary loop.** Outlet port, pipe, Circulation Pump, Heat Exchanger (front and back), pipe, inlet port. Fill the vessel with primary coolant by bucket or through a port.
 5. **Steam loop.** Heat Exchanger bottom to top, pipe to the Steam Turbine bottom, turbine top to the Condenser, a Create Fluid Tank for feedwater, pump, back to the exchanger bottom. Fill the tank with water. Put a Relief Valve on the hot side.
-6. **Cooling loop.** Condenser cooling side to a tower: a Create Fluid Tank at the bottom, two or more Packing blocks on it, the hot pipe coming down onto the top block, and a Fan above that pipe if you want more than natural draft. A pipe from the tank's side, pump, back to the condenser. Fill the tank with water.
+6. **Cooling loop.** Condenser cooling side to a tower: two or more Packing blocks standing on a pipe, the hot pipe coming down onto the top block, and a Fan above that pipe if you want more than natural draft. The pipe under the fill runs to the pump and back to the condenser. Fill the loop with water through the make-up line, or with buckets on the fill.
    - **Size it for the core.** Nearly all of the core's heat ends up in the tower. Five fuel columns at full power make 750 HU/t, which takes four Packing blocks under a fan at 128 RPM. A tower that is too small shows as steam that never condenses and a relief valve that starts venting after a few minutes.
-   - **Make-up water.** At that rate the tower evaporates about 370 mB a minute. Set a Mechanical Pump directly against the tank to top it up. Keep other pipes off that tank: the loop leaves by the first pipe it finds on it, checking north, east, south, then west.
+   - **Make-up water.** At that rate the tower evaporates about 370 mB a minute. Pipe water into the side of the bottom Packing block with a Mechanical Pump and leave it running: the fill only takes what it has room for.
 7. **Power.** The turbine shaft is the output. Put Create machinery on it, through a Clutch if you want to be able to drop the load.
 
 ## Wiring a control room
@@ -85,7 +85,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **Cold water is reactivity:** anything that cools the primary coolant quickly, such as starting a big steam demand, adds reactivity fast. Do it in steps.
 - **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the boiling alarm lamp means you are losing coolant.
 - **Load changes:** change the shaft load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
-- **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the tower's tank topped up.
+- **Water:** the tower evaporates water, 1 mB for every 2,000 HU it rejects. Keep the tower's make-up line running.
 - **Tower fan:** a fan that is too fast cools the steam loop below boiling at part power and the turbine stops. Slow it until the loop boils again.
 
 ## Shutdown
@@ -135,7 +135,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water into the Fluid Tank under it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. Under the screens runs a row of six panels: SCRAM, rods, alarms and turbine, each linked to its machine, plus a spare lever and dial. A Redstone Link under the Alarm Panel sounds the Steam Whistle on the plant's Create boiler.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under a fan, and a creative tank pumps make-up water through a pipe into the side of the bottom block. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. Under the screens runs a row of six panels: SCRAM, rods, alarms and turbine, each linked to its machine, plus a spare lever and dial. A Redstone Link under the Alarm Panel sounds the Steam Whistle on the plant's Create boiler.
 
 To skip the start-up, run:
 

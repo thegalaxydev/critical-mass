@@ -4,6 +4,7 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.TankCoolant;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -88,6 +90,92 @@ public final class EquipmentTests {
                     h.assertTrue(natural.get(0).lastRejected() == 0 && natural.get(0).status().endsWith("covered"), "A covered natural-draft tower should stop: " + natural.get(0).status());
                     double still = HOT * CMThermal.TOWER_RATE * CMThermal.TOWER_NATURAL_DRAFT;
                     h.assertTrue(Math.abs(forced.get(0).lastRejected() - still) < 1e-6, "A stopped fan should leave natural draft only: " + forced.get(0).lastRejected());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 700)
+    public static void towerRunsOnPipesAloneWithMakeUpWaterPipedIntoTheFill(GameTestHelper h) {
+        BlockPos outletPos = new BlockPos(4, 1, 4);
+        List<CoolingTowerBlockEntity> packing = fill(h, outletPos.above(), 2);
+        BlockPos inletPos = outletPos.above(3);
+        h.setBlock(inletPos.above(), CMBlocks.TOWER_FAN.get());
+        h.setBlock(inletPos.above(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity fanMotor = h.getBlockEntity(inletPos.above(2));
+        fanMotor.generatedSpeed.setValue(128);
+        BlockPos pumpPos = new BlockPos(5, 4, 4);
+        h.setBlock(pumpPos, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
+                .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
+        List<BlockPos> pipes = List.of(inletPos, outletPos, new BlockPos(5, 1, 4), new BlockPos(6, 1, 4), new BlockPos(6, 2, 4), new BlockPos(6, 3, 4), new BlockPos(6, 4, 4));
+        TestVessels.pipes(h, pipes);
+        h.setBlock(pumpPos.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        BlockPos makeUpPipe = new BlockPos(3, 2, 4);
+        BlockPos makeUpPump = makeUpPipe.west();
+        BlockPos tankPos = makeUpPump.west();
+        h.setBlock(tankPos, AllBlocks.FLUID_TANK.getDefaultState());
+        h.setBlock(makeUpPump, AllBlocks.MECHANICAL_PUMP.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        h.setBlock(makeUpPump.above(), AllBlocks.COGWHEEL.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.X));
+        TestVessels.createPipes(h, List.of(makeUpPipe));
+        FluidTankBlockEntity tank = h.getBlockEntity(tankPos);
+        tank.getTankInventory().setFluid(new FluidStack(Fluids.WATER, 3000));
+        for (CoolingTowerBlockEntity t : packing) {
+            t.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TOWER_CAPACITY), HOT);
+        }
+        int started = 2 * CMThermal.TOWER_CAPACITY;
+        int[] left = new int[2];
+        h.startSequence()
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(pumpPos);
+                    h.assertTrue(pump.flow() > 0, "Water should fall through the fill and leave by the pipe underneath: " + pump.status());
+                    h.assertTrue(tank.getTankInventory().getFluidAmount() == 3000, "A stopped make-up pump should add nothing");
+                    long evaporated = 0;
+                    int water = TestVessels.pipeVolume(h, pipes);
+                    for (CoolingTowerBlockEntity t : packing) {
+                        evaporated += t.sinks().evaporatedVolume;
+                        water += t.coolant().amount();
+                    }
+                    h.assertTrue(evaporated > 0 && water + evaporated == started, "Water should be in the loop or evaporated: " + water + " + " + evaporated);
+                    h.assertTrue(PipeCoolant.at(h.getLevel(), h.absolutePos(makeUpPipe)).coolant().amount() == 0, "The loop should not run out through the make-up pipe");
+                    h.setBlock(tankPos.above(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+                    CreativeMotorBlockEntity motor = h.getBlockEntity(tankPos.above());
+                    motor.generatedSpeed.setValue(64);
+                })
+                .thenIdle(300)
+                .thenExecute(() -> {
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(pumpPos);
+                    h.assertTrue(pump.flow() > 0, "The loop should keep circulating while it is topped up: " + pump.status());
+                    long evaporated = 0;
+                    double rejected = 0;
+                    int water = TestVessels.pipeVolume(h, pipes);
+                    double heat = TestVessels.pipeHeat(h, pipes);
+                    for (CoolingTowerBlockEntity t : packing) {
+                        evaporated += t.sinks().evaporatedVolume;
+                        rejected += t.sinks().rejectedHeat;
+                        water += t.coolant().amount();
+                        heat += t.coolant().heat();
+                    }
+                    int added = 3000 - tank.getTankInventory().getFluidAmount();
+                    h.assertTrue(added > 0, "A Mechanical Pump should pipe make-up water into the side of the fill");
+                    h.assertTrue(packing.get(0).coolant().amount() >= CMThermal.TOWER_CAPACITY - 10, "Make-up water should keep the bottom of the fill topped up: " + packing.get(0).coolant().amount());
+                    h.assertTrue(water + evaporated == started + added, "Water should be in the loop or evaporated: " + water + " + " + evaporated + " after adding " + added);
+                    h.assertTrue(Math.abs(heat + rejected - 2 * HOT) < 1e-3, "Make-up water should arrive cold: " + (heat + rejected));
+                    h.assertTrue(packing.get(1).towerRejecting() >= 0 && packing.get(1).status().endsWith("tower.ok"), "The top of the fill should see the tower working: " + packing.get(1).status());
+                    packing.get(1).coolant().take(packing.get(1).coolant().amount() - 10);
+                    for (BlockPos pipe : pipes) {
+                        PipeCoolant held = PipeCoolant.at(h.getLevel(), h.absolutePos(pipe));
+                        held.coolant().take(held.coolant().amount() - 10);
+                    }
+                    left[0] = tank.getTankInventory().getFluidAmount();
+                    left[1] = pump.flow();
+                })
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    CirculationPumpBlockEntity pump = h.getBlockEntity(pumpPos);
+                    h.assertTrue(pump.flow() >= left[1], "A loop that has run low should get back to full flow: " + pump.flow() + " of " + left[1]);
+                    int refilled = left[0] - tank.getTankInventory().getFluidAmount();
+                    h.assertTrue(refilled > 100, "Water lost anywhere in the loop should be made up through the fill: " + refilled);
+                    h.assertTrue(packing.get(0).coolant().amount() >= CMThermal.TOWER_CAPACITY - 40, "The bottom of the fill should fill back up: " + packing.get(0).coolant().amount());
                 })
                 .thenSucceed();
     }

@@ -154,13 +154,14 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Condenser:** steam side front/back, cooling water top/bottom. It condenses only while cooling water flows.
 - **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiators, then back.
 - **Radiator:** a 14×14×14 block that takes its pipes on top and bottom. It rejects heat through each of its four sides that is open to air, and up to twice as much on a body moving through the air.
-- **Cooling tower:** build it bottom to top: a Create Fluid Tank to catch the water, up to 12 Cooling Tower Packing blocks as fill, a pipe bringing the hot water down onto the top fill block, and optionally a Cooling Tower Fan above that pipe. The fan is one block, but its blades sweep the eight blocks around it like a water wheel, so keep those clear.
-  - Hot water falls through the fill into the tank, and a pipe on the tank's side returns it to the loop.
+- **Cooling tower:** build it bottom to top: a pipe to carry the cooled water away, up to 12 Cooling Tower Packing blocks as fill standing on that pipe, a pipe bringing the hot water down onto the top fill block, and optionally a Cooling Tower Fan above that pipe. The fan is one block, but its blades sweep the eight blocks around it like a water wheel, so keep those clear.
+  - Hot water falls through the fill and leaves by the pipe under the bottom block. With no pipe underneath, it leaves by a pipe on the bottom block's side.
   - **Airflow** sets how hard each fill block works. Bare packing with open sky gets 25%. With the water coming in through a pipe on top and open sky above it, the tower gets 25% plus 5% per extra fill block, up to 75%. A fan adds 100% at 64 RPM and a little more above that, and needs no open sky. The fan takes its shaft from above and costs 2 SU per RPM.
-  - Rejected heat evaporates water (1 mB per 2,000 HU), so the tank slowly empties. Top it up with a Mechanical Pump set directly against the tank.
+  - Rejected heat evaporates water (1 mB per 2,000 HU), so the loop slowly loses water. Pipe make-up water into the side of the bottom fill block with a Mechanical Pump. The fill only takes water while it has room, so the pump can be left running. The same line fills a new loop, or use buckets on the fill.
+  - If the cooled water leaves by a side pipe instead of from underneath, put the make-up pipe on a different fill block, or the loop may follow it.
   - The top fill block shows the tower's airflow and total heat rejection in goggles, and a vapour plume rises while the tower works.
 - **Fluid Tanks in a loop:** a Create Fluid Tank of any size can sit inline in a loop as a surge tank, for example for feedwater, and the water in it keeps its temperature.
-  - It needs the loop's two pipes on it, or the tower fill above it and one pipe. With more pipes on it, the loop leaves by the first one it finds, checking north, east, south, then west, so set make-up pumps directly against the tank.
+  - It needs the loop's two pipes on it. With more pipes on it, the loop leaves by the first one it finds, checking north, east, south, then west, so set make-up pumps directly against the tank.
   - Water that a Create pump adds arrives cold, and water it takes out takes its share of the heat.
 - **Enrichment:** a Centrifuge turns 2 Uranium Concentrate into 1 Enriched Uranium and 1 Depleted Uranium.
   - It takes its shaft from above or below, so centrifuges stack on one shaft. It costs 8 SU per RPM.

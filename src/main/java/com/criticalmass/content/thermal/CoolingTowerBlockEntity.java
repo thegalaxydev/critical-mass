@@ -61,7 +61,7 @@ public class CoolingTowerBlockEntity extends SingleBufferNodeBlockEntity {
     public Direction passThroughExit(Direction enteredFrom) {
         boolean below = packing(worldPosition.below());
         boolean above = packing(worldPosition.above());
-        if (enteredFrom == Direction.UP && !below && TankCoolant.isTank(level.getBlockState(worldPosition.below()))) {
+        if (enteredFrom == Direction.UP && !below && (NodeBlocks.pipeOn(level, worldPosition, Direction.DOWN) || TankCoolant.isTank(level.getBlockState(worldPosition.below())))) {
             return Direction.DOWN;
         }
         if (enteredFrom == Direction.DOWN && !above && NodeBlocks.pipeOn(level, worldPosition, Direction.UP)) {
