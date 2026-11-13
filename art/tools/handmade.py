@@ -209,28 +209,6 @@ def coolant_port(jar):
     return img
 
 
-CONCRETE = [(84, 86, 88), (98, 100, 102), (112, 114, 116), (124, 126, 128), (136, 138, 140), (152, 154, 156)]
-PORES = [(2, 3), (11, 2), (6, 6), (13, 9), (4, 12), (9, 13), (14, 14), (1, 9)]
-
-
-def concrete(jar):
-    img = Image.new("RGBA", (16, 16))
-    for ty in (0, 8):
-        for tx in (0, 8):
-            rect(img, tx, ty, tx + 7, ty + 7, CONCRETE[3])
-            for k in range(8):
-                put(img, tx + k, ty, CONCRETE[4])
-                put(img, tx, ty + k, CONCRETE[4])
-                put(img, tx + k, ty + 7, CONCRETE[1])
-                put(img, tx + 7, ty + k, CONCRETE[1])
-            put(img, tx, ty, CONCRETE[5])
-            put(img, tx + 7, ty + 7, CONCRETE[0])
-    for x, y in PORES:
-        if x % 8 not in (0, 7) and y % 8 not in (0, 7):
-            put(img, x, y, CONCRETE[1])
-    return img
-
-
 HAZARD = [(40, 34, 20), (212, 154, 28), (240, 192, 58)]
 GLASS_TINT = (54, 92, 98)
 
@@ -277,7 +255,6 @@ TEXTURES = {
     "reactor_service_port": service_port,
     "reactor_signal_interface": signal_interface,
     "primary_coolant_port": coolant_port,
-    "shielding_concrete": concrete,
     "shielded_glass": shielded_glass,
     "shielded_hatch": shielded_hatch,
 }
