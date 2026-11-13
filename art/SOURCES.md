@@ -837,7 +837,7 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 ## reactor_alloy_dashboard
 
 - Used by: `textures/block/reactor_alloy_dashboard.png`
-- Source: painted by `art/tools/alloy_dashboard.py` from `reactor_vessel_casing.png`. The script reads the face layout of Create: Loconautics' dashboard models from the jar in `libs/` so the texture fits them. None of Loconautics' textures are read or copied, and the block's models only name theirs as parents.
+- Source: painted by hand on the same UV layout as Create: Loconautics' dashboard textures, so it fits their models as they are. The block's models only name theirs as parents and swap this texture in. There is no generator for it: edit the PNG directly.
 
 ## alarm sound
 
