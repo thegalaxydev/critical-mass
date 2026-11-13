@@ -91,11 +91,6 @@ def parts():
     }
 
 
-def create_tile(jar, name, crop=None):
-    img = Image.open(io.BytesIO(jar.read("assets/create/textures/block/%s.png" % name))).convert("RGBA")
-    return img.crop(crop) if crop else img
-
-
 def nine(tile, w, h, b):
     tw, th = tile.size
     out = Image.new("RGBA", (w, h), (0, 0, 0, 0))
@@ -119,14 +114,20 @@ def nine(tile, w, h, b):
 
 
 def desk_texture():
-    import zipfile
-    from pipe_models import create_jar
     img = Image.new("RGBA", (64, 64), (0, 0, 0, 0))
-    with zipfile.ZipFile(create_jar()) as jar:
-        iron = create_tile(jar, "industrial_iron_block")
-        slats = create_tile(jar, "industrial_iron_block_top")
-        rail = create_tile(jar, "railway_casing")
-        wood = create_tile(jar, "controls", (1, 1, 13, 17))
+    casing = Image.open(os.path.join(ASSETS, "textures", "block", "reactor_vessel_casing.png")).convert("RGBA").crop((0, 0, 16, 16))
+    iron = rail = wood = casing
+    slats = Image.new("RGBA", (16, 16))
+    plate = casing.crop((3, 3, 13, 13))
+    for y in range(0, 16, 10):
+        for x in range(0, 16, 10):
+            slats.paste(plate, (x, y))
+    for x in range(16):
+        for y in (0, 15):
+            slats.putpixel((x, y), casing.getpixel((x, 2)))
+    for y in range(16):
+        for x in (0, 15):
+            slats.putpixel((x, y), casing.getpixel((2, y)))
 
     def put(region, tile):
         img.paste(tile, (region[0], region[1]))

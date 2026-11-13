@@ -20,6 +20,7 @@
     "/setblock 42 -59 40 criticalmass:dashboard[facing=north,join_cw=false,join_ccw=true]{Part0:{Type:\"alarm\",Alarms:1},Part1:{Type:\"alarm\"}}",
     "/setblock 45 -59 40 criticalmass:dashboard[facing=north,join_cw=false,join_ccw=false]{Part0:{Type:\"button\"}}",
     "/setblock 47 -59 41 criticalmass:dashboard[facing=west,join_cw=false,join_ccw=false]{Part0:{Type:\"gauge\",Fraction:0.2f},Part1:{Type:\"lever\",Level:2}}",
+    "/fill 39 -59 41 43 -57 41 criticalmass:reactor_vessel_casing",
     "/item replace entity @p hotbar.0 with criticalmass:dashboard",
     "/item replace entity @p hotbar.1 with minecraft:air",
     "/item replace entity @p hotbar.2 with criticalmass:dashboard_gauge"

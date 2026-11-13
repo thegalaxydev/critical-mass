@@ -21,6 +21,7 @@ build = [
     desk(42, 40, "north", False, True, ['Type:"alarm",Alarms:1', 'Type:"alarm"']),
     desk(45, 40, "north", False, False, ['Type:"button"', None]),
     desk(47, 41, "west", False, False, ['Type:"gauge",Fraction:0.2f', 'Type:"lever",Level:2']),
+    "/fill 39 -59 41 43 -57 41 criticalmass:reactor_vessel_casing",
     "/item replace entity @p hotbar.0 with criticalmass:dashboard",
     "/item replace entity @p hotbar.1 with minecraft:air",
     "/item replace entity @p hotbar.2 with criticalmass:dashboard_gauge",
