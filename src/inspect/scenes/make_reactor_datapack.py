@@ -29,11 +29,17 @@ SCREENS = ((-9, 2), (-1, 6), 12)
 SCREEN_SHAFT = (-5, 4, 13)
 SCREEN_MOTOR = (-5, 4, 14)
 PRESSURIZER = (6, 5, 5)
-DESK = ((-8, -2), 12)
-PANELS = [((-2, 1, 12), "scram_panel", CONTROLLER), ((-3, 1, 12), "rod_panel", CONTROLLER), ((-4, 1, 12), "alarm_panel", CONTROLLER),
-          ((-5, 1, 12), "turbine_panel", TURBINE), ((-6, 1, 12), "lever_panel", None), ((-7, 1, 12), "dial_panel", None)]
-ALARM_LINK = (-4, 0, 12)
-WHISTLE_LINK = (7, 6, 2)
+DESK_Z = 11
+SCRAM_LINK, RESET_LINK, RODS_IN_LINK, RODS_OUT_LINK, TRIP_LINK = (2, 2, 0), (4, 2, 0), (2, 4, 0), (4, 4, 0), (6, 6, 7)
+PORTS = [((2, 2, 1), "scram", SCRAM_LINK), ((4, 2, 1), "reset", RESET_LINK), ((2, 4, 1), "rods_in", RODS_IN_LINK), ((4, 4, 1), "rods_out", RODS_OUT_LINK)]
+DESKS = {
+    -3: [("reset", "button", RESET_LINK, 7, "RESET"), ("scram", "button", SCRAM_LINK, 0, "SCRAM")],
+    -4: [("rod_out", "button", RODS_OUT_LINK, 2, "RODS OUT"), ("rod_in", "button", RODS_IN_LINK, 4, "RODS IN")],
+    -5: [("power", "gauge", CONTROLLER, "cm_reactor_neutron"), ("alarm", "alarm", CONTROLLER)],
+    -6: [("pressure", "gauge", CONTROLLER, "cm_reactor_pressure"), ("coolant", "gauge", CONTROLLER, "cm_reactor_coolant_temperature")],
+    -7: [("trip", "switch", TRIP_LINK, 1, "TURBINE TRIP"), ("speed", "gauge", TURBINE, "cm_turbine_speed")],
+}
+SIDES = ("right", "left")
 RUN_POWER = 0.7
 RUN_COOLANT = 125
 
@@ -70,6 +76,15 @@ def bind(panel, target, extra="", key="Target"):
             "summon minecraft:marker %s {Tags:[\"%s\"]}" % (w(*target), TEMP)]
     cmds += ["execute store result block %s %s[%d] int 1 run data get entity @e[type=minecraft:marker,tag=%s,limit=1] Pos[%d]" % (w(*panel), key, i, TEMP, i) for i in range(3)]
     return cmds + ["kill @e[type=minecraft:marker,tag=%s]" % TEMP]
+
+
+def fit(desk, side, part):
+    kind, target = part[1], part[2]
+    if kind == "alarm":
+        return ["criticalmass desk %s %s alarm %s" % (w(*desk), side, w(*target))]
+    if kind == "gauge":
+        return ["criticalmass desk %s %s gauge %s %s" % (w(*desk), side, w(*target), part[3])]
+    return ["criticalmass desk %s %s %s %s %d %s" % (w(*desk), side, kind, w(*target), part[3], part[4])]
 
 
 (x0, z0), (x1, z1) = AREA
@@ -139,11 +154,15 @@ desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(bx1
         "fill %s %s criticalmass:plant_screen[facing=north]" % (w(bx0, by0, bz), w(bx1, by1, bz)),
         setblock(SCREEN_SHAFT, "create:shaft[axis=z]"),
         setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
-desk += [setblock(pos, "criticalmass:%s[facing=north]" % name) for pos, name, _ in PANELS] + [setblock(ALARM_LINK, "create:redstone_link[facing=north,receiver=false]"), setblock(WHISTLE_LINK, "create:redstone_link[facing=up,receiver=true]")]
+desk += ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz), w(bx1, 1, bz))]
+desk += [setblock((x, 0, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower())) for x in sorted(DESKS)]
+desk += [setblock(pos, "criticalmass:reactor_signal_interface[facing=north,function=%s]" % function) for pos, function, _ in PORTS]
+desk += [setblock(link, "create:redstone_link[facing=north,receiver=true]") for _, _, link in PORTS]
+desk += [setblock(TRIP_LINK, "create:redstone_link[facing=south,receiver=true]")]
 wiring = []
-for pos, _, target in PANELS:
-    if target:
-        wiring += bind(pos, target)
+for x, parts in sorted(DESKS.items()):
+    for side, part in zip(SIDES, parts):
+        wiring += fit((x, 0, DESK_Z), side, part)
 wiring += bind((bx1, by1, bz), CONTROLLER, key="Reactor") + bind((bx1, by1, bz), TURBINE, key="Turbine")
 
 place = ["fill %s %s minecraft:air" % (w(x0, 0, z0), w(x1, 12, z1)),
@@ -176,10 +195,10 @@ start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),
 for pos, facing, motor, lever in DRIVES:
     start_here += [setblock(pos, "criticalmass:control_rod_drive[facing=%s]" % facing),
                    setblock(motor, "create:creative_motor[facing=%s]" % facing)]
-start_here += ["tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out at the rod panel and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"]
+start_here += ["tellraw @a {\"text\":\"Plant built: fuelled, pumps running, rods in. Start it by stepping the rods out with the RODS OUT button on the desk and watching the period, or run the reactor/run function to jump to power.\",\"color\":\"green\"}"]
 
 run_here = ["criticalmass steady %s %.2f %d" % (w(*CONTROLLER), RUN_POWER, RUN_COOLANT)]
-run_here += ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod panel.\",\"color\":\"green\"}"]
+run_here += ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod buttons on the desk.\",\"color\":\"green\"}"]
 
 build = ["kill @e[type=minecraft:marker,tag=%s]" % TAG,
          "summon minecraft:marker ~%d ~ ~%d {Tags:[\"%s\"]}" % (1 - x0, 1 - z0, TAG),

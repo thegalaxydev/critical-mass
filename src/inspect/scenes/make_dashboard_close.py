@@ -2,7 +2,7 @@ import json
 import os
 
 EYE = 1.62
-D = "criticalmass:dashboard"
+D = "criticalmass:reactor_alloy_dashboard"
 
 
 def look(px, py, pz, tx, ty, tz):

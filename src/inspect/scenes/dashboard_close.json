@@ -16,10 +16,10 @@
   {
    "cmds": [
     "/fill 34 -59 34 54 -50 50 minecraft:air",
-    "/setblock 40 -59 40 criticalmass:dashboard[facing=north]",
-    "/setblock 44 -58 40 criticalmass:dashboard[facing=north]",
-    "/setblock 47 -59 40 criticalmass:dashboard[facing=north,join_cw=true]",
-    "/setblock 48 -59 40 criticalmass:dashboard[facing=north,join_ccw=true]",
+    "/setblock 40 -59 40 criticalmass:reactor_alloy_dashboard[facing=north]",
+    "/setblock 44 -58 40 criticalmass:reactor_alloy_dashboard[facing=north]",
+    "/setblock 47 -59 40 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=true]",
+    "/setblock 48 -59 40 criticalmass:reactor_alloy_dashboard[facing=north,join_ccw=true]",
     "/setblock 40 -59 38 minecraft:barrier",
     "/setblock 40 -58 38 minecraft:barrier",
     "/item replace entity @p hotbar.0 with minecraft:air"

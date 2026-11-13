@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "D": {
+      "item": "create:display_board"
+    },
+    "A": {
+      "item": "criticalmass:reactor_alloy_ingot"
+    },
+    "B": {
+      "item": "create:industrial_iron_block"
+    }
+  },
+  "pattern": [
+    " D ",
+    "ABA"
+  ],
+  "result": {
+    "id": "criticalmass:reactor_alloy_dashboard"
+  }
+}

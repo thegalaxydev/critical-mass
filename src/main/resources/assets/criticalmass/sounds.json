@@ -1,0 +1,11 @@
+{
+ "alarm": {
+  "subtitle": "criticalmass.subtitle.alarm",
+  "sounds": [
+   {
+    "name": "criticalmass:alarm",
+    "attenuation_distance": 32
+   }
+  ]
+ }
+}

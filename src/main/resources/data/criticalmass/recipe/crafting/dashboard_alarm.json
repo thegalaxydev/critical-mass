@@ -3,13 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "minecraft:redstone_torch"
+      "item": "loconautics:gauge_button"
     },
     {
-      "tag": "c:glass_panes"
+      "item": "minecraft:redstone_lamp"
     },
     {
-      "tag": "c:plates/brass"
+      "item": "minecraft:note_block"
     }
   ],
   "result": {

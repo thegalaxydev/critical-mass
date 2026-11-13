@@ -33,16 +33,10 @@
     "criticalmass:corium",
     "criticalmass:ruined_channel",
     "criticalmass:plant_screen",
-    "criticalmass:scram_panel",
-    "criticalmass:rod_panel",
-    "criticalmass:turbine_panel",
-    "criticalmass:alarm_panel",
-    "criticalmass:lever_panel",
-    "criticalmass:dial_panel",
     "criticalmass:centrifuge",
     "criticalmass:reinforced_pipe",
     "criticalmass:reinforced_valve",
     "criticalmass:cooling_tower_packing",
-    "criticalmass:dashboard"
+    "criticalmass:reactor_alloy_dashboard"
   ]
 }

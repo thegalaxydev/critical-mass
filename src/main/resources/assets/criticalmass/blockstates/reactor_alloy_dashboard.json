@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/block"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/reactor_alloy_dashboard/block",
+   "y": 270
+  }
+ }
+}

@@ -43,20 +43,19 @@ A wall you have not linked shows Display Link text instead, three green lines to
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
-Controls are separate panels that you place and link yourself. Each is a thin wall panel, as deep as a Plant Screen, with its controls on the front. Mount them side by side or above each other to make a board, flush with the screens if you like. Use the Plant Linker on a machine and then on the panel that controls it. Then look at a control and use it.
+The control desk is built from Create: Loconautics parts: a Dashboard, or this mod's Reactor Alloy Dashboard, with Dashboard Gauges, Gauge Buttons, Gauge Switches and Gauge Levers on it.
 
-| Panel | Link to | Controls |
+| On the desk | Bind it to | What it does |
 | --- | --- | --- |
-| SCRAM Panel | Reactor Controller | SCRAM, reset |
-| Rod Control Panel | Reactor Controller | Rods in, rods out |
-| Alarm Panel | Reactor Controller | Six alarm lamps and acknowledge. Its redstone signal can sound a Steam Whistle or a bell |
-| Turbine Panel | Steam Turbine | Trip, reset |
-| Lever Panel | Nothing | A redstone signal you switch on and off |
-| Dial Panel | Nothing | A redstone signal of the strength you set. Sneak-use raises it |
+| Dashboard Gauge | Reactor Controller, Pressurizer, Steam Turbine, Circulation Pump, Control Rod Drive or any coolant machine | Shows one reading of that machine on a needle. Pick the reading in the gauge's settings |
+| Dashboard Alarm | Reactor Controller | Lights while any alarm is active. A new alarm flashes and sounds until you press it. Goggles list the alarms |
+| Gauge Button | A receiving Redstone Link on a Reactor Signal Interface | SCRAM, reset, rods in or rods out, whichever the interface is set to |
+| Gauge Lever | A receiving Redstone Link at a Control Rod Drive or the Reactor Controller | Sets the rods coarsely: 0 is fully in, 15 fully out |
+| Gauge Switch | A receiving Redstone Link at a Steam Turbine | On shuts the steam off and resets an overspeed trip |
 
-Name a panel in an anvil and the name shows on its face, which is how you tell one lever from the next.
+Set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
 
-**Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into the SCRAM Panel presses SCRAM. Compare that signal against one you set and feed the result into the SCRAM Panel, and you have an earlier high-temperature trip. The Alarm Panel gives a redstone signal on any new alarm. Panels ignore each other's signals, so run it through dust or a repeater on its way to the SCRAM Panel to trip on any alarm. If you remove the wire, the trip is gone.
+**Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into a Signal Interface set to SCRAM trips the reactor. Compare that signal against one you set and feed the result into the interface, and you have an earlier high-temperature trip. An interface set to alarm gives a redstone signal while any alarm is active, so wiring it to the SCRAM interface trips on any alarm. If you remove the wire, the trip is gone.
 
 **Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Reinforced Valve.
 
@@ -68,7 +67,7 @@ A cold core with its rods in is thousands of pcm below critical. Starting it mea
 2. Check the alarm lamps are dark and the vessel is at least half full.
 3. Start the primary pump. The controller will not let rods move until coolant is flowing.
 4. Start the steam and cooling pumps and the tower fan.
-5. Press OUT on the Rod Control Panel a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
+5. Press the rods out button on the desk a few times, then wait and read the reactivity. Each press moves the rods 0.5%. Near the ends of the stroke a press is worth a few pcm, near the middle up to 120.
 6. As reactivity nears zero, slow down. Neutron power climbs on its own as the core approaches critical. Once reactivity is positive, stop pressing and let the period do the work. A period between 10 and 30 seconds is a comfortable climb. Under 3 seconds trips the reactor.
 7. Power climbs through many decades before it makes any heat. When neutron power reaches a few percent the fuel warms, reactivity falls back toward zero and the power levels off by itself.
 8. Raise power in small steps from there. Each step raises power until the hotter fuel and coolant cancel it.
@@ -134,9 +133,9 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 /function criticalmass_demo:reactor/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the OUT button on the Rod Control Panel.
+It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the RODS OUT button on the desk.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under an Encased Fan, driven by a motor underneath through the fill's shaft. The cooled water leaves by the side of the bottom block, and a creative tank pumps make-up water through a pipe into the side of the block above it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. Under the screens runs a row of six panels: SCRAM, rods, alarms and turbine, each linked to its machine, plus a spare lever and dial. A Redstone Link under the Alarm Panel sounds the Steam Whistle on the plant's Create boiler.
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under an Encased Fan, driven by a motor underneath through the fill's shaft. The cooled water leaves by the side of the bottom block, and a creative tank pumps make-up water through a pipe into the side of the block above it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. In front of the screens stands a run of five Reactor Alloy Dashboards: SCRAM and reset buttons, rods in and out, a Dashboard Alarm and neutron power, coolant temperature and pressure, and turbine speed beside a turbine trip switch. The buttons are bound to Redstone Links on four Reactor Signal Interfaces in the vessel's north wall.
 
 To skip the start-up, run:
 
@@ -144,4 +143,4 @@ To skip the start-up, run:
 /function criticalmass_demo:reactor/run
 ```
 
-That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the Rod Control Panel holds it.
+That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons hold it.

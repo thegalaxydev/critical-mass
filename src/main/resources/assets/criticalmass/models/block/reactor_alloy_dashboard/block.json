@@ -1,0 +1,10 @@
+{
+ "loader": "loconautics:connected_variants",
+ "textures": {
+  "particle": "criticalmass:block/reactor_alloy_dashboard"
+ },
+ "single": "criticalmass:block/reactor_alloy_dashboard/single",
+ "start": "criticalmass:block/reactor_alloy_dashboard/start",
+ "middle": "criticalmass:block/reactor_alloy_dashboard/middle",
+ "end": "criticalmass:block/reactor_alloy_dashboard/end"
+}

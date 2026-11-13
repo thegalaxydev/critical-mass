@@ -6,7 +6,7 @@ from PIL import Image
 from handmade import AMBER, BLUE, BRASS, COPPER, GREEN, IRON, OUT, RED, STEEL, bevel, put, rect
 from handmade_plant import disc, opening
 from handmade_rest import LEAD, casing, plate
-import panel_blocks
+import screen_blocks
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 RES = os.path.join(ROOT, "src", "main", "resources")
@@ -454,9 +454,9 @@ def main():
     rod_partials()
     linker_item()
     uranium_items()
-    panel_blocks.write_all(write, ASSETS, DATA, OUT)
-    entries.update(panel_blocks.LANG)
-    pickaxe(list(BLOCKS) + list(panel_blocks.PANELS) + ["plant_screen", "reinforced_pipe", "reinforced_valve", "cooling_tower_packing"])
+    screen_blocks.write_all(write, ASSETS, DATA, OUT)
+    entries.update(screen_blocks.LANG)
+    pickaxe(list(BLOCKS) + ["plant_screen", "reinforced_pipe", "reinforced_valve", "cooling_tower_packing"])
     lang(entries)
     print("plant blocks:", ", ".join(BLOCKS))
 

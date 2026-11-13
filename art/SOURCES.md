@@ -831,8 +831,18 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 
 ## Overhaul blocks (not generated)
 
-- Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `control_panel.png`, `control_panel_parts.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
-- Source: painted by `art/tools/plant_blocks.py` and `art/tools/panel_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
+- Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
+- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
+
+## reactor_alloy_dashboard
+
+- Used by: `textures/block/reactor_alloy_dashboard.png`
+- Source: painted by `art/tools/alloy_dashboard.py` from `reactor_vessel_casing.png`. The script reads the face layout of Create: Loconautics' dashboard models from the jar in `libs/` so the texture fits them. None of Loconautics' textures are read or copied, and the block's models only name theirs as parents.
+
+## alarm sound
+
+- Used by: `sounds/alarm.ogg`, played by the Dashboard Alarm.
+- Source: synthesised by `art/tools/alarm_sound.py`: two alternating horn tones built from sine harmonics, two seconds long so it repeats cleanly.
 
 ## centrifuge, enriched_uranium and depleted_uranium
 

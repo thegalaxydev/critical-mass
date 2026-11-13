@@ -14,16 +14,6 @@ public final class CMPartialModels {
     public static final PartialModel REINFORCED_VALVE_POINTER = block("reinforced_valve/pointer");
     public static final PartialModel CENTRIFUGE_ROTOR = block("centrifuge_rotor");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
-    public static final PartialModel PANEL_BUTTON = block("panel/button");
-    public static final PartialModel PANEL_BUTTON_COLLAR = block("panel/button_collar");
-    public static final PartialModel PANEL_BIG_BUTTON = block("panel/big_button");
-    public static final PartialModel PANEL_BIG_BUTTON_COLLAR = block("panel/big_button_collar");
-    public static final PartialModel PANEL_SWITCH_BASE = block("panel/switch_base");
-    public static final PartialModel PANEL_SWITCH_LEVER = block("panel/switch_lever");
-    public static final PartialModel PANEL_DIAL = block("panel/dial");
-    public static final PartialModel PANEL_DIAL_POINTER = block("panel/dial_pointer");
-    public static final PartialModel PANEL_DIAL_COLLAR = block("panel/dial_collar");
-    public static final PartialModel PANEL_LAMP = block("panel/lamp");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_RIM = facings("reinforced_pipe/rim/");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_DRAIN = facings("reinforced_pipe/drain/");
 

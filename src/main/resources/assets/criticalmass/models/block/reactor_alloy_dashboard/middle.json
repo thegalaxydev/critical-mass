@@ -1,0 +1,7 @@
+{
+ "parent": "loconautics:block/dashboard/gray/middle",
+ "textures": {
+  "0": "criticalmass:block/reactor_alloy_dashboard",
+  "particle": "criticalmass:block/reactor_alloy_dashboard"
+ }
+}

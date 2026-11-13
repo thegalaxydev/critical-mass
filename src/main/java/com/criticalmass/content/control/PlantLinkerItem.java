@@ -60,23 +60,6 @@ public class PlantLinkerItem extends Item {
             }
             return InteractionResult.SUCCESS;
         }
-        if (be instanceof PanelBlockEntity panel) {
-            if (level.isClientSide) {
-                return InteractionResult.SUCCESS;
-            }
-            BlockPos stored = stack.get(CMComponents.LINK_TARGET.get());
-            if (stored == null) {
-                player.displayClientMessage(Component.translatable("criticalmass.linker.nothing_stored"), true);
-                return InteractionResult.FAIL;
-            }
-            if (!panel.bind(stored)) {
-                player.displayClientMessage(Component.translatable("criticalmass.linker.refused"), true);
-                return InteractionResult.FAIL;
-            }
-            level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
-            player.displayClientMessage(Component.translatable("criticalmass.linker.bound", level.getBlockState(stored).getBlock().getName(), stored.getX(), stored.getY(), stored.getZ()), true);
-            return InteractionResult.SUCCESS;
-        }
         if (PlantChannel.isTarget(be)) {
             if (!level.isClientSide) {
                 stack.set(CMComponents.LINK_TARGET.get(), pos.immutable());
