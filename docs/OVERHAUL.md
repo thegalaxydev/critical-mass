@@ -19,7 +19,7 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
 | Inspection | Goggles only | Vessel viewport block; rods and fuel glow visible through it |
 | Controls | Redstone on the controller and drives | Panel blocks bound to a target with the Plant Linker: buttons, bank controls, switches, gauges, lamps, annunciator |
 | Primary pressure | None (liquid coolant has no pressure) | Pressurizer on the primary loop: heaters, spray, relief; low pressure lets coolant boil in the core |
-| Cooling tower | Stack of packing blocks | Built tower: fill standing on its outlet pipe, an inlet pipe on top, make-up water piped into the fill, Create-driven fan; capacity from fill, water and airflow; makeup water and evaporation |
+| Cooling tower | Stack of packing blocks | Built tower: fill standing on its outlet pipe, the hot inlet in the side of the top block, make-up water piped into the fill, a Create-driven fan standing on the fill; capacity from fill, water and airflow; makeup water and evaporation |
 | Feedwater | Loop pump only | A Create Fluid Tank inline in the loop, with a make-up pump |
 | Reactivity | Rods and fuel only | Fuel-temperature and coolant-temperature feedback; operating modes with start-up permissives |
 | Accidents | Trip, cracks, breach leak | Fuel damage, clad failure, core melt, corium, burn-through, wreckage and contaminated blocks that persist |

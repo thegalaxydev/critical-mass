@@ -7,16 +7,15 @@ from reactor_layout import CONTROLLER, PRIMARY, REDSTONE
 
 STEAM = [(6, 1, 6), (6, 2, 6), (6, 5, 6), (6, 7, 6), (7, 7, 6), (9, 7, 6), (10, 7, 6), (10, 6, 6), (10, 5, 6), (10, 4, 6), (10, 3, 6),
          (10, 2, 6), (10, 1, 6), (9, 1, 6), (8, 1, 6)]
-COOLING = [(8, 6, 6), (8, 6, 7), (8, 6, 8), (8, 1, 9), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
+COOLING = [(8, 6, 6), (8, 6, 7), (8, 5, 7), (8, 5, 8), (8, 1, 9), (9, 1, 9), (11, 1, 9), (11, 2, 9), (11, 3, 9), (11, 5, 9), (11, 6, 9),
            (11, 7, 9), (11, 8, 9), (11, 9, 9), (11, 9, 8), (11, 9, 7), (11, 9, 6), (10, 9, 6), (9, 9, 6), (8, 9, 6), (8, 8, 6)]
 VALVE = (7, 3, 4)
 PLATE = (7, 3, 2)
 FEEDWATER = (9, 1, 6)
 MAKEUP = (5, 2, 9)
 FILL = [(8, y, 9) for y in range(2, 6)]
-TOWER_INLET = (8, 6, 9)
 ECCS_PORT, ECCS_PUMP, ECCS_TANK, ECCS_LEVER = (1, 2, 2), (0, 2, 2), (-1, 2, 2), (-1, 4, 2)
-PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING + [TOWER_INLET]
+PIPES = [p for p in PRIMARY if p not in (VALVE, PLATE)] + [p for p in STEAM if p != FEEDWATER] + COOLING
 DRIVES = [((3, 6, 2), "south", (3, 6, 1), (2, 6, 2)), ((3, 6, 4), "north", (3, 6, 5), (2, 6, 4))]
 VIEWPORTS = [(5, 2, 4), (5, 3, 4), (5, 4, 4), (3, 2, 5), (3, 4, 5)]
 CORE = ["frf", "cfc", "frf"]
@@ -85,8 +84,8 @@ plant = [
     setblock((5, 6, 6), "create:mechanical_press[facing=west]"),
     setblock((8, 7, 6), "criticalmass:condenser[facing=east]"),
     "fill %s %s criticalmass:cooling_tower_packing" % (w(*FILL[0]), w(*FILL[-1])),
-    setblock((8, 7, 9), "criticalmass:tower_fan"),
-    setblock((8, 8, 9), "create:creative_motor[facing=down]{ScrollValue:24}"),
+    setblock((8, 6, 9), "criticalmass:tower_fan"),
+    setblock((8, 7, 9), "create:creative_motor[facing=down]{ScrollValue:24}"),
     setblock(MAKEUP, "create:creative_fluid_tank"),
     setblock((6, 2, 9), "create:mechanical_pump[facing=east]"),
     setblock((7, 2, 9), "create:fluid_pipe"),

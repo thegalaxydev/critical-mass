@@ -8,7 +8,7 @@ This is the working manual: what each circuit does, the smallest plant that runs
 | --- | --- | --- | --- |
 | Primary | Primary coolant | Vessel outlet port, Circulation Pump, Heat Exchanger front and back, vessel inlet port | Takes heat out of the fuel. A Pressurizer on the vessel lets it run hotter than 350 °C |
 | Steam | Water and steam | Heat Exchanger top and bottom, Steam Turbine, Condenser, a Fluid Tank for feedwater, pump, back to the exchanger | Boils in the exchanger, turns the turbine, condenses and returns |
-| Cooling | Water | Condenser cooling side, a pipe down onto the tower fill, the fill, a pipe out from under it, pump, back to the condenser | Throws the turbine's waste heat away |
+| Cooling | Water | Condenser cooling side, a pipe into the side of the top of the tower fill, the fill, a pipe out from under it, pump, back to the condenser | Throws the turbine's waste heat away |
 
 The circuits never mix. Each one is a single pipe path with its own Circulation Pump. A closed valve, a missing pipe or a stopped pump stops that circuit only, and the plant feels it downstream: no primary flow trips the reactor, no steam flow starves the turbine, no cooling flow leaves the condenser hot and the steam loop pressure climbing to the relief valve.
 
@@ -21,7 +21,7 @@ Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce t
 3. **Rods.** A Control Rod Drive on the top face above each control column, with a shaft to its back.
 4. **Primary loop.** Outlet port, pipe, Circulation Pump, Heat Exchanger (front and back), pipe, inlet port. Fill the vessel with primary coolant by bucket or through a port.
 5. **Steam loop.** Heat Exchanger bottom to top, pipe to the Steam Turbine bottom, turbine top to the Condenser, a Create Fluid Tank for feedwater, pump, back to the exchanger bottom. Fill the tank with water. Put a Relief Valve on the hot side.
-6. **Cooling loop.** Condenser cooling side to a tower: two or more Packing blocks standing on a pipe, the hot pipe coming down onto the top block, and a Fan above that pipe if you want more than natural draft. The pipe under the fill runs to the pump and back to the condenser. Fill the loop with water through the make-up line, or with buckets on the fill.
+6. **Cooling loop.** Condenser cooling side to a tower: two or more Packing blocks standing on a pipe, the hot pipe coming into the side of the top block, and a Fan standing on the fill if you want more than natural draft. The pipe under the fill runs to the pump and back to the condenser. Fill the loop with water through the make-up line, or with buckets on the fill.
    - **Size it for the core.** Nearly all of the core's heat ends up in the tower. Five fuel columns at full power make 750 HU/t, which takes four Packing blocks under a fan at 128 RPM. A tower that is too small shows as steam that never condenses and a relief valve that starts venting after a few minutes.
    - **Make-up water.** At that rate the tower evaporates about 370 mB a minute. Pipe water into the side of the bottom Packing block with a Mechanical Pump and leave it running: the fill only takes what it has room for.
 7. **Power.** The turbine shaft is the output. Put Create machinery on it, through a Clutch if you want to be able to drop the load.

@@ -33,7 +33,7 @@ public final class TowerParts {
         if (!level.canSeeSky(open)) {
             return 0;
         }
-        return inlet ? Math.min(CMThermal.TOWER_NATURAL_MAX, CMThermal.TOWER_NATURAL_DRAFT + CMThermal.TOWER_NATURAL_PER_BLOCK * (packingCount - 1)) : CMThermal.TOWER_NATURAL_DRAFT;
+        return Math.min(CMThermal.TOWER_NATURAL_MAX, CMThermal.TOWER_NATURAL_DRAFT + CMThermal.TOWER_NATURAL_PER_BLOCK * (packingCount - 1));
     }
 
     public static class Fan extends KineticBlockEntity {

@@ -56,10 +56,10 @@ public final class EquipmentTests {
         BlockPos fanBase = new BlockPos(7, 1, 1);
         h.setBlock(fanBase, AllBlocks.FLUID_TANK.getDefaultState());
         List<CoolingTowerBlockEntity> forced = fill(h, fanBase.above(), 3);
-        TestVessels.pipes(h, List.of(naturalBase.above(4), fanBase.above(4)));
-        h.setBlock(fanBase.above(5), CMBlocks.TOWER_FAN.get());
-        h.setBlock(fanBase.above(6), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
-        CreativeMotorBlockEntity motor = h.getBlockEntity(fanBase.above(6));
+        TestVessels.pipes(h, List.of(naturalBase.above(4)));
+        h.setBlock(fanBase.above(4), CMBlocks.TOWER_FAN.get());
+        h.setBlock(fanBase.above(5), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(fanBase.above(5));
         motor.generatedSpeed.setValue(64);
         List<CoolingTowerBlockEntity> all = new ArrayList<>(bare);
         all.addAll(natural);
@@ -75,15 +75,15 @@ public final class EquipmentTests {
                 .thenExecute(() -> {
                     double base = HOT * CMThermal.TOWER_RATE;
                     double tall = CMThermal.TOWER_NATURAL_DRAFT + 2 * CMThermal.TOWER_NATURAL_PER_BLOCK;
-                    h.assertTrue(Math.abs(bare.get(0).lastRejected() - base * CMThermal.TOWER_NATURAL_DRAFT) < 1e-6, "Bare packing should only get natural draft: " + bare.get(0).lastRejected());
-                    h.assertTrue(Math.abs(natural.get(1).lastRejected() - base * tall) < 1e-6, "A tower fed from a pipe on top should draw more the taller it is: " + natural.get(1).lastRejected());
-                    h.assertTrue(Math.abs(forced.get(2).lastRejected() - base * (CMThermal.TOWER_NATURAL_DRAFT + 1.0)) < 1e-6, "A fan at 64 RPM should add full airflow: " + forced.get(2).lastRejected());
+                    h.assertTrue(Math.abs(bare.get(0).lastRejected() - base * tall) < 1e-6, "A tower open to the sky should draw more the taller it is: " + bare.get(0).lastRejected());
+                    h.assertTrue(Math.abs(natural.get(1).lastRejected() - base * tall) < 1e-6, "A pipe on top of the fill should not block its draft: " + natural.get(1).lastRejected());
+                    h.assertTrue(Math.abs(forced.get(2).lastRejected() - base * (CMThermal.TOWER_NATURAL_DRAFT + 1.0)) < 1e-6, "A fan standing on the fill at 64 RPM should add full airflow: " + forced.get(2).lastRejected());
                     CoolingTowerBlockEntity top = forced.get(2);
                     h.assertTrue(top.towerFill() == 3 && Math.abs(top.towerAirflow() - 1.25) < 1e-6 && top.status().endsWith("tower.ok"), "The top of the fill should report its tower: " + top.towerFill() + " " + top.towerAirflow() + " " + top.status());
                     h.assertTrue(Math.abs(top.towerRejecting() - 3 * base * 1.25) < base * 0.2, "The top of the fill should total the heat rejection: " + top.towerRejecting());
                     h.assertTrue(forced.get(0).towerFill() == 0, "Only the top block should carry the tower totals");
                     h.setBlock(naturalBase.above(5), Blocks.STONE);
-                    h.setBlock(fanBase.above(6), Blocks.AIR);
+                    h.setBlock(fanBase.above(5), Blocks.AIR);
                 })
                 .thenIdle(20)
                 .thenExecute(() -> {
@@ -98,15 +98,15 @@ public final class EquipmentTests {
     public static void towerRunsOnPipesAloneWithMakeUpWaterPipedIntoTheFill(GameTestHelper h) {
         BlockPos outletPos = new BlockPos(4, 1, 4);
         List<CoolingTowerBlockEntity> packing = fill(h, outletPos.above(), 2);
-        BlockPos inletPos = outletPos.above(3);
-        h.setBlock(inletPos.above(), CMBlocks.TOWER_FAN.get());
-        h.setBlock(inletPos.above(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
-        CreativeMotorBlockEntity fanMotor = h.getBlockEntity(inletPos.above(2));
+        BlockPos fanPos = outletPos.above(3);
+        h.setBlock(fanPos, CMBlocks.TOWER_FAN.get());
+        h.setBlock(fanPos.above(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity fanMotor = h.getBlockEntity(fanPos.above());
         fanMotor.generatedSpeed.setValue(128);
-        BlockPos pumpPos = new BlockPos(5, 4, 4);
+        BlockPos pumpPos = new BlockPos(6, 3, 4);
         h.setBlock(pumpPos, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
-        List<BlockPos> pipes = List.of(inletPos, outletPos, new BlockPos(5, 1, 4), new BlockPos(6, 1, 4), new BlockPos(6, 2, 4), new BlockPos(6, 3, 4), new BlockPos(6, 4, 4));
+        List<BlockPos> pipes = List.of(new BlockPos(5, 3, 4), outletPos, new BlockPos(5, 1, 4), new BlockPos(6, 1, 4), new BlockPos(7, 1, 4), new BlockPos(7, 2, 4), new BlockPos(7, 3, 4));
         TestVessels.pipes(h, pipes);
         h.setBlock(pumpPos.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
         BlockPos makeUpPipe = new BlockPos(3, 2, 4);
@@ -127,7 +127,7 @@ public final class EquipmentTests {
                 .thenIdle(100)
                 .thenExecute(() -> {
                     CirculationPumpBlockEntity pump = h.getBlockEntity(pumpPos);
-                    h.assertTrue(pump.flow() > 0, "Water should fall through the fill and leave by the pipe underneath: " + pump.status());
+                    h.assertTrue(pump.flow() > 0, "Water should enter the side of the top block, fall through the fill and leave by the pipe underneath: " + pump.status());
                     h.assertTrue(tank.getTankInventory().getFluidAmount() == 3000, "A stopped make-up pump should add nothing");
                     long evaporated = 0;
                     int water = TestVessels.pipeVolume(h, pipes);

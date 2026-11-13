@@ -25,7 +25,8 @@ steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weathe
          {"cmds": state, "wait": 5},
          {"cmds": ["/setblock %s minecraft:barrier" % at((6, 1, 11)), look((6.5, 2.0, 11.5), (7.0, 2.6, 9.5))], "wait": 40}, {"shot": "makeup", "wait": 2},
          {"cmds": ["/setblock %s minecraft:barrier" % at((10, 3, 13)), look((10.5, 4.0, 13.5), (8.5, 4.5, 9.5))], "wait": 40}, {"shot": "tower", "wait": 2},
-         {"cmds": [HOME], "wait": 3000},
+         {"cmds": ["/setblock %s minecraft:barrier" % at((11, 6, 12)), look((11.5, 7.0, 12.5), (8.5, 5.6, 9.5))], "wait": 40}, {"shot": "fan", "wait": 2},
+         {"cmds": [HOME], "wait": 600},
          {"cmds": state, "wait": 5}, {"wait": 2}]
 json.dump({"name": "tower", "steps": steps}, open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "tower.json"), "w", newline="\n"), indent=1)
 print(len(steps), "steps")
