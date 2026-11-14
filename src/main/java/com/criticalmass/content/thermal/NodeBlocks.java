@@ -9,6 +9,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public final class NodeBlocks {
@@ -16,10 +17,11 @@ public final class NodeBlocks {
     }
 
     public static ItemInteractionResult fill(Level level, BlockPos pos, Player player, InteractionHand hand, @Nullable CoolantBuffer buffer) {
-        if (buffer == null) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-        }
-        return FluidUtil.interactWithFluidHandler(player, hand, buffer.handler(level, pos, null))
+        return buffer == null ? ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION : fill(level, player, hand, buffer.handler(level, pos, null));
+    }
+
+    public static ItemInteractionResult fill(Level level, Player player, InteractionHand hand, IFluidHandler handler) {
+        return FluidUtil.interactWithFluidHandler(player, hand, handler)
                 ? ItemInteractionResult.sidedSuccess(level.isClientSide)
                 : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }

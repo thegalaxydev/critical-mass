@@ -145,8 +145,8 @@ public class CoolingTowerBlockEntity extends KineticBlockEntity implements Buffe
         return stack.get(Math.min(stack.size(), CMThermal.TOWER_MAX_PACKING) - 1).status;
     }
 
-    public IFluidHandler stackHandler() {
-        return new TowerStackHandler(this);
+    public IFluidHandler stackHandler(@Nullable Direction side) {
+        return new TowerStackHandler(this, side);
     }
 
     public double lastRejected() {

@@ -95,7 +95,7 @@ public class CoolingTowerBlock extends KineticBlock implements IBE<CoolingTowerB
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        return onBlockEntityUseItemOn(level, pos, be -> NodeBlocks.fill(level, pos, player, hand, be.coolant()));
+        return onBlockEntityUseItemOn(level, pos, be -> NodeBlocks.fill(level, player, hand, be.stackHandler(null)));
     }
 
     @Override

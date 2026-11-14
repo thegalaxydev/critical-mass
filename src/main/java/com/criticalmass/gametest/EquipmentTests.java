@@ -24,11 +24,18 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -179,6 +186,16 @@ public final class EquipmentTests {
         h.assertTrue(whole.fill(new FluidStack(Fluids.WATER, 900), IFluidHandler.FluidAction.EXECUTE) == 500, "The stack should take water until all of it is full");
         h.assertTrue(packing.get(0).coolant().amount() == 500 && packing.get(1).coolant().amount() == 500 && packing.get(2).coolant().amount() == 500, "Water added to the stack should fill it from the bottom");
         h.assertTrue(whole.drain(1200, IFluidHandler.FluidAction.EXECUTE).getAmount() == 1200 && packing.get(0).coolant().amount() == 300 && packing.get(2).coolant().amount() == 0, "Water taken from the stack should come off the top");
+        BlockPos topPos = h.absolutePos(bottom.above(2));
+        IFluidHandler pipe = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, topPos, Direction.EAST);
+        h.assertTrue(pipe.fill(new FluidStack(Fluids.WATER, 700), IFluidHandler.FluidAction.EXECUTE) == 700, "A pipe on a full block should go on filling the rest of the stack");
+        h.assertTrue(packing.get(2).coolant().amount() == 500 && packing.get(0).coolant().amount() == 500 && packing.get(1).coolant().amount() == 0, "Piped water should fill the block it enters first, then the stack from the bottom");
+        h.assertTrue(pipe.drain(600, IFluidHandler.FluidAction.EXECUTE).getAmount() == 500 && packing.get(0).coolant().amount() == 500, "A pipe should still only draw from the block it touches");
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(Items.WATER_BUCKET));
+        h.getLevel().getBlockState(topPos).useItemOn(player.getMainHandItem(), h.getLevel(), player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(topPos), Direction.NORTH, topPos, false));
+        h.assertTrue(player.getMainHandItem().is(Items.BUCKET), "A bucket should empty into a stack with room for it, though no one block holds a bucket");
+        h.assertTrue(packing.get(0).coolant().amount() == 500 && packing.get(1).coolant().amount() == 500 && packing.get(2).coolant().amount() == 500, "The bucket should fill the stack from the bottom");
         h.succeed();
     }
 
