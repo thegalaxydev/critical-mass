@@ -11,6 +11,7 @@ import com.simibubi.create.foundation.block.connected.SimpleCTBehaviour;
 
 public final class CMSpriteShifts {
     public static final CTSpriteShiftEntry REACTOR_VESSEL_CASING = omni("reactor_vessel_casing");
+    public static final CTSpriteShiftEntry SHIELDED_GLASS = omni("shielded_glass");
 
     private CMSpriteShifts() {
     }
@@ -22,5 +23,7 @@ public final class CMSpriteShifts {
     public static void init() {
         SimpleCTBehaviour casing = new SimpleCTBehaviour(REACTOR_VESSEL_CASING);
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REACTOR_VESSEL_CASING.getId(), model -> new CTModel(model, casing));
+        SimpleCTBehaviour glass = new SimpleCTBehaviour(SHIELDED_GLASS);
+        CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.SHIELDED_GLASS.getId(), model -> new CTModel(model, glass));
     }
 }

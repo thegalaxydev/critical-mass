@@ -210,34 +210,6 @@ def coolant_port(jar):
 
 
 HAZARD = [(40, 34, 20), (212, 154, 28), (240, 192, 58)]
-GLASS_TINT = (54, 92, 98)
-
-
-def shielded_glass(jar):
-    src = jar.tex("palettes/tiled_glass")
-    img = Image.new("RGBA", (16, 16))
-    px = src.load()
-    for y in range(16):
-        for x in range(16):
-            p = px[x, y]
-            if p[3] == 0:
-                img.putpixel((x, y), GLASS_TINT + (120,))
-                continue
-            l = (p[0] + p[1] + p[2]) / 3
-            edge = x in (0, 15) or y in (0, 15)
-            if edge:
-                c = IRON[3] if (x == 0 or y == 0) else IRON[1]
-            elif l > 225:
-                c = (200, 226, 228)
-            else:
-                c = STEEL[6] if l > 180 else STEEL[4]
-            img.putpixel((x, y), c + (255,))
-    for (x, y) in ((2, 3), (3, 2), (10, 3), (11, 2), (2, 11), (3, 10), (13, 12), (12, 13)):
-        if img.getpixel((x, y))[3] < 255:
-            img.putpixel((x, y), (168, 210, 212, 170))
-    return img
-
-
 def shielded_hatch(jar):
     img = remap(jar.tex("train_trapdoor"), BRASS_TO_IRON)
     for x in range(3, 13):
@@ -255,7 +227,6 @@ TEXTURES = {
     "reactor_service_port": service_port,
     "reactor_signal_interface": signal_interface,
     "primary_coolant_port": coolant_port,
-    "shielded_glass": shielded_glass,
     "shielded_hatch": shielded_hatch,
 }
 
