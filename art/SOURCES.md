@@ -763,7 +763,8 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 
 ## shielding_concrete
 
-- Used by: `textures/block/shielding_concrete.png`
+- Used by: `textures/block/shielding_concrete.png`, `textures/block/shielding_concrete_connected.png` (connected-texture sheet in Create's omnidirectional casing layout)
+- Connected sheet: `art/tools/concrete_connected.py` draws its 47 tiles from the single texture's colours: the bevel only on sides with no concrete beside them, streaks that run on across blocks, and one form-tie hole where four blocks meet. It keeps the sheet in `art/originals/shielding_concrete_connected.png` and only redraws it when run with `fresh`, so a hand-edited sheet is safe.
 - Source: `art/originals/shielding_concrete.png`. One bevelled slab per block with soft diagonal streaks on a seven-tone grey ramp (cool shadows, slightly warm highlights) and two form-tie holes, drawn after Create's polished cut stone so it sits beside Create blocks. No script produces it: edit the PNG and copy it over the texture.
 
 ## steam_turbine
