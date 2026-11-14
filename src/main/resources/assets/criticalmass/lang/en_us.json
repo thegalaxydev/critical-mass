@@ -156,7 +156,7 @@
   "criticalmass.goggles.admission": "Steam admission: %s%%",
   "criticalmass.goggles.steam": "Steam: %s%% boiled, %s bar",
   "criticalmass.goggles.rejecting": "Rejecting: %s HU/t",
-  "criticalmass.goggles.tower_stack": "Packing level %s (counts up to %s)",
+  "criticalmass.goggles.tower_stack": "Packing blocks in the stack: %s (counts up to %s)",
   "criticalmass.goggles.evaporated": "Water evaporated: %s mB",
   "criticalmass.goggles.radiator_faces": "%s of 4 sides open, airflow x%s",
   "criticalmass.goggles.boiler_level": "Boiler heat level: %s",

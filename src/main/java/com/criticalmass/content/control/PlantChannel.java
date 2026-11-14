@@ -7,6 +7,7 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
+import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.ThermalNode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -122,6 +123,9 @@ public enum PlantChannel {
                 case RODS_A, RODS_B, RODS_C, RODS_D -> of(d.insertion() * 100, 0, 100);
                 default -> null;
             };
+        }
+        if (be instanceof CoolingTowerBlockEntity t) {
+            return buffer(t.stackCoolant());
         }
         if (be instanceof ThermalNode n) {
             return buffer(n.coolant());

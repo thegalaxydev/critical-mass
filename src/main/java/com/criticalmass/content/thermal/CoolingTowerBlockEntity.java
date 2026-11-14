@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import java.util.ArrayList;
 import java.util.List;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
@@ -16,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class CoolingTowerBlockEntity extends KineticBlockEntity implements BufferNode {
@@ -99,6 +101,52 @@ public class CoolingTowerBlockEntity extends KineticBlockEntity implements Buffe
             p = p.below();
         }
         return n;
+    }
+
+    public List<CoolingTowerBlockEntity> stack() {
+        List<CoolingTowerBlockEntity> out = new ArrayList<>();
+        if (level == null) {
+            out.add(this);
+            return out;
+        }
+        BlockPos p = worldPosition;
+        for (int i = 0; i < SCAN_LIMIT && packing(p.below()); i++) {
+            p = p.below();
+        }
+        while (out.size() < SCAN_LIMIT && level.getBlockEntity(p) instanceof CoolingTowerBlockEntity t) {
+            out.add(t);
+            p = p.above();
+        }
+        if (out.isEmpty()) {
+            out.add(this);
+        }
+        return out;
+    }
+
+    public CoolantBuffer stackCoolant() {
+        List<CoolingTowerBlockEntity> stack = stack();
+        CoolantBuffer whole = new CoolantBuffer(stack.size() * CMThermal.TOWER_CAPACITY, () -> {
+        });
+        for (CoolingTowerBlockEntity t : stack) {
+            if (t.buffer.amount() > 0) {
+                whole.give(new CoolantBuffer.Packet(t.buffer.fluid().copy(), t.buffer.heat()));
+            }
+        }
+        return whole;
+    }
+
+    public String stackStatus() {
+        List<CoolingTowerBlockEntity> stack = stack();
+        for (CoolingTowerBlockEntity t : stack) {
+            if (t.status.endsWith(".ok")) {
+                return t.status;
+            }
+        }
+        return stack.get(Math.min(stack.size(), CMThermal.TOWER_MAX_PACKING) - 1).status;
+    }
+
+    public IFluidHandler stackHandler() {
+        return new TowerStackHandler(this);
     }
 
     public double lastRejected() {
@@ -342,17 +390,25 @@ public class CoolingTowerBlockEntity extends KineticBlockEntity implements Buffe
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        if (!status.isEmpty()) {
-            tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        List<CoolingTowerBlockEntity> stack = stack();
+        CoolingTowerBlockEntity top = stack.get(stack.size() - 1);
+        String shown = stackStatus();
+        double rejecting = 0;
+        long evaporated = 0;
+        for (CoolingTowerBlockEntity t : stack) {
+            rejecting += t.lastRejected;
+            evaporated += t.sinks.evaporatedVolume;
         }
-        ThermalTooltips.coolant(tooltip, buffer);
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rejecting", lastRejected > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastRejected)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_stack", ChatFormatting.GRAY, stackIndex + 1, CMThermal.TOWER_MAX_PACKING));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.evaporated", ChatFormatting.GRAY, sinks.evaporatedVolume));
-        if (towerFill > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_airflow", towerAirflow > 0 ? ChatFormatting.AQUA : ChatFormatting.RED, Math.round(towerAirflow * 100)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_rejecting", towerRejecting > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(towerRejecting)));
+        if (!shown.isEmpty()) {
+            tooltip.add(ThermalTooltips.line(shown, shown.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
         }
+        ThermalTooltips.coolant(tooltip, stackCoolant());
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rejecting", rejecting > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(rejecting)));
+        if (top.towerFill > 0) {
+            tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_airflow", top.towerAirflow > 0 ? ChatFormatting.AQUA : ChatFormatting.RED, Math.round(top.towerAirflow * 100)));
+        }
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_stack", ChatFormatting.GRAY, stack.size(), CMThermal.TOWER_MAX_PACKING));
+        tooltip.add(ThermalTooltips.line("criticalmass.goggles.evaporated", ChatFormatting.GRAY, evaporated));
         return true;
     }
 }

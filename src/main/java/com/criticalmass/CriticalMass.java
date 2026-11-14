@@ -124,7 +124,7 @@ public class CriticalMass {
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), CriticalMass::coolantFace);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), (be, side) -> side == null ? be.stackHandler() : coolantFace(be, side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.BOILER_PLATE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REINFORCED_VALVE.get(), CriticalMass::coolantFace);

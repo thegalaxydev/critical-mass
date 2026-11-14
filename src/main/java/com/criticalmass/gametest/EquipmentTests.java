@@ -23,12 +23,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Pig;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -146,6 +149,37 @@ public final class EquipmentTests {
                     h.assertTrue(cool.getHealth() == cool.getMaxHealth(), "Exhaust over cool water should be harmless: " + cool.getHealth() + " at " + cold.get(1).coolant().temperature());
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void aStackOfPackingReadsAsOneTank(GameTestHelper h) {
+        BlockPos bottom = new BlockPos(2, 2, 2);
+        List<CoolingTowerBlockEntity> packing = fill(h, bottom, 3);
+        int[] held = {435, 440, 125};
+        for (int i = 0; i < 3; i++) {
+            packing.get(i).coolant().set(new FluidStack(Fluids.WATER, held[i]), held[i] * 40.0);
+        }
+        List<String> first = null;
+        for (int i = 0; i < 3; i++) {
+            CoolingTowerBlockEntity t = packing.get(i);
+            h.assertTrue(t.stack().equals(packing), "Every block should see the same stack, bottom to top");
+            h.assertTrue(t.stackCoolant().amount() == 1000 && t.stackCoolant().capacity() == 3 * CMThermal.TOWER_CAPACITY, "The stack should read 1000 of 1500 mB: " + t.stackCoolant().amount());
+            h.assertTrue(Math.abs(t.stackCoolant().heat() - 1000 * 40.0) < 1e-6, "The stack should hold the heat of all its water");
+            IFluidHandler whole = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(bottom.above(i)), null);
+            h.assertTrue(whole != null && whole.getTanks() == 1 && whole.getFluidInTank(0).getAmount() == 1000 && whole.getTankCapacity(0) == 1500, "A tank reader should see one tank for the stack");
+            IFluidHandler face = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(bottom.above(i)), Direction.EAST);
+            h.assertTrue(face != null && face.getFluidInTank(0).getAmount() == held[i] && face.getTankCapacity(0) == CMThermal.TOWER_CAPACITY, "A pipe on a block's side still works that block alone");
+            List<Component> lines = new ArrayList<>();
+            t.addToGoggleTooltip(lines, false);
+            List<String> text = lines.stream().map(Component::getString).toList();
+            h.assertTrue(first == null || first.equals(text), "Goggles should read the same on every block of the stack: " + text);
+            first = text;
+        }
+        IFluidHandler whole = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(bottom.above(2)), null);
+        h.assertTrue(whole.fill(new FluidStack(Fluids.WATER, 900), IFluidHandler.FluidAction.EXECUTE) == 500, "The stack should take water until all of it is full");
+        h.assertTrue(packing.get(0).coolant().amount() == 500 && packing.get(1).coolant().amount() == 500 && packing.get(2).coolant().amount() == 500, "Water added to the stack should fill it from the bottom");
+        h.assertTrue(whole.drain(1200, IFluidHandler.FluidAction.EXECUTE).getAmount() == 1200 && packing.get(0).coolant().amount() == 300 && packing.get(2).coolant().amount() == 0, "Water taken from the stack should come off the top");
+        h.succeed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 700)
