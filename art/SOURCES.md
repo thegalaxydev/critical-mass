@@ -820,6 +820,11 @@ Atlas for the rotating turbine rotor: a round bladed disc seen face-on, polished
 - Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
 - Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
 
+## Plant Screen frame
+
+- Used by: `models/block/plant_screen.json` and `models/item/plant_screen.json`, which take Create's Display Board models (`create:block/display_board/block` and `item`) as their parent, and `textures/block/plant_screen_side.png`, `plant_screen_top.png`, `plant_screen_inside.png` and `plant_screen_back.png`.
+- Source: Create's `flap_display_side.png`, `flap_display_top.png`, `flap_display_inside.png` and `dark_metal_block.png`, recoloured onto the colours of our `steel_block.png` by `art/tools/screen_blocks.py`. The recoloured originals are kept in `art/originals/plant_screen_*.png` and are only made again when the script is run with `fresh`. The screen face `plant_screen.png` is still painted by the same script.
+
 ## reactor_alloy_dashboard
 
 - Used by: `textures/block/reactor_alloy_dashboard.png`

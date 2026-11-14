@@ -95,6 +95,10 @@ public class CriticalMassClient {
                 .factory(ReinforcedValveVisual::new)
                 .skipVanillaRender(be -> false)
                 .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.PLANT_SCREEN.get())
+                .factory(SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))
+                .skipVanillaRender(be -> false)
+                .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.STEAM_TURBINE.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.STEAM_TURBINE_ROTOR))
                 .skipVanillaRender(be -> true)

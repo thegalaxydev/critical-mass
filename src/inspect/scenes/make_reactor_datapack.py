@@ -26,8 +26,8 @@ AREA = ((-9, -2), (14, 13))
 TEMP = "cm_bind"
 PUMP1, TURBINE = (4, 3, 6), (6, 6, 6)
 SCREENS = ((-9, 2), (-1, 6), 12)
-SCREEN_SHAFT = (-5, 4, 13)
-SCREEN_MOTOR = (-5, 4, 14)
+SCREEN_COG = (0, 4, 12)
+SCREEN_MOTOR = (0, 4, 13)
 PRESSURIZER = (6, 5, 5)
 DESK_Z = 11
 DESKS = {
@@ -145,8 +145,7 @@ bay = ["fill %s %s criticalmass:shielding_concrete" % (w(-2, 0, -1), w(-2, 2, 7)
 (bx0, by0), (bx1, by1), bz = SCREENS
 desk = ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz + 1), w(bx1 + 1, by1 + 1, bz + 1)),
         "fill %s %s criticalmass:plant_screen[facing=north]" % (w(bx0, by0, bz), w(bx1, by1, bz)),
-        setblock(SCREEN_SHAFT, "create:shaft[axis=z]"),
-        setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
+        setblock(SCREEN_COG, "create:cogwheel[axis=z]")]
 desk += ["fill %s %s criticalmass:shielding_concrete" % (w(bx0, 0, bz), w(bx1, 1, bz))]
 desk += [setblock((x, 0, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower())) for x in sorted(DESKS)]
 wiring = []
@@ -175,6 +174,7 @@ start_here = [merge(CONTROLLER, "Coolant", "criticalmass:primary_coolant", 6000,
 start_here += [merge(p, "Buffer", "minecraft:water", 500, 0) for p in FILL] + [tank(FEEDWATER, "minecraft:water", 1500, 1500 * 80.0)]
 start_here += [merge((11, 4, 9), "Buffer", "minecraft:water", 250, 0)]
 start_here += wiring
+start_here += [setblock(SCREEN_MOTOR, "create:creative_motor[facing=north]")]
 start_here += ["criticalmass fuel %s fill" % w(*CONTROLLER),
                setblock((6, 3, 4), "minecraft:air"),
                setblock((8, 3, 4), "create:copper_valve_handle[facing=east]"),

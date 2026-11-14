@@ -28,7 +28,7 @@ Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce t
 
 ## Wiring a control room
 
-Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They run on rotation, like a Display Board: turn a shaft into the back of any one screen and it shares with the rest.
+Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They run on rotation, like a Display Board: each screen holds a cogwheel that meshes with its neighbours, so one turning cogwheel beside any screen drives the whole wall.
 
 Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine the same way to add its speed and shaft load. If the wall is too small it tells you so.
 

@@ -7,9 +7,14 @@ import com.criticalmass.content.control.ScreenBlockEntity.Trend;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
+import com.criticalmass.content.control.ScreenBlock;
+import com.simibubi.create.AllPartialModels;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntityRenderer;
 import java.util.ArrayList;
 import java.util.List;
+import net.createmod.catnip.render.CachedBuffers;
+import net.createmod.catnip.render.SuperByteBuffer;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
@@ -21,13 +26,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix4f;
 
-public class ScreenRenderer extends SafeBlockEntityRenderer<ScreenBlockEntity> {
+public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity> {
     private static final int GREEN = 0x41FF6A;
     private static final int DIM = 0x25A54D;
     private static final int GRID = 0x12491F;
     private static final int AMBER = 0xFFC23A;
     private static final int RED = 0xFF5548;
-    private static final float FRONT = 13 / 16f - 0.004f;
+    private static final float FRONT = 3 / 16f - 0.004f;
     private static final float MARGIN = 1.5f / 16f;
     private static final float LINE = 1f / ScreenBlockEntity.LINES_PER_BLOCK;
     private static final float SCALE = LINE / 10f;
@@ -36,10 +41,17 @@ public class ScreenRenderer extends SafeBlockEntityRenderer<ScreenBlockEntity> {
     private static final int RIGHT = 1;
 
     public ScreenRenderer(BlockEntityRendererProvider.Context context) {
+        super(context);
+    }
+
+    @Override
+    protected SuperByteBuffer getRotatedModel(ScreenBlockEntity be, BlockState state) {
+        return CachedBuffers.partialFacingVertical(AllPartialModels.SHAFTLESS_COGWHEEL, state, state.getValue(ScreenBlock.FACING));
     }
 
     @Override
     protected void renderSafe(ScreenBlockEntity be, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
+        super.renderSafe(be, partialTicks, ms, buffer, light, overlay);
         if (!be.isController() || !be.powered()) {
             return;
         }

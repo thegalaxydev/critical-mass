@@ -13,6 +13,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockEntity;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public final class ScreenTests {
     }
 
     @GameTest(template = LARGE, timeoutTicks = 700)
-    public static void screenWallSharesPowerAndShowsLinkedText(GameTestHelper h) {
+    public static void screenWallTurnsFromACogwheelAndShowsLinkedText(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         List<ScreenBlockEntity> screens = new ArrayList<>();
         BlockPos corner = new BlockPos(8, 1, 10);
@@ -72,20 +73,21 @@ public final class ScreenTests {
                     h.assertTrue(main.lines().size() <= 6, "A three by two wall holds six lines: " + main.lines().size());
                     main.setLine(6, "overflow");
                     h.assertTrue(main.lines().size() <= 6, "Lines past the bottom of the wall should be dropped");
-                    h.setBlock(corner.south(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
+                    h.setBlock(corner.west(), AllBlocks.COGWHEEL.getDefaultState().setValue(CogWheelBlock.AXIS, Direction.Axis.Z));
+                    h.setBlock(corner.west().south(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.NORTH));
                 })
                 .thenIdle(20)
                 .thenExecute(() -> {
                     for (ScreenBlockEntity s : screens) {
-                        h.assertTrue(s.powered(), "A shaft turning behind one screen should power the whole wall");
+                        h.assertTrue(s.powered() && s.getSpeed() != 0, "A cogwheel meshed with one screen should turn and power the whole wall");
                     }
-                    h.assertTrue(((ScreenBlockEntity) h.getBlockEntity(corner)).getSpeed() != 0, "The screen should be turned through its back");
-                    h.setBlock(corner.south(), Blocks.AIR);
+                    h.assertTrue(screens.get(0).getSpeed() == -screens.get(1).getSpeed(), "Neighbouring screens should mesh like cogwheels and turn opposite ways");
+                    h.setBlock(corner.west().south(), Blocks.AIR);
                 })
                 .thenIdle(ScreenBlockEntity.CAPACITY + 20)
                 .thenExecute(() -> {
                     for (ScreenBlockEntity s : screens) {
-                        h.assertTrue(!s.powered(), "The wall should go dark a while after the shaft stops");
+                        h.assertTrue(!s.powered(), "The wall should go dark a while after the cogwheel stops");
                     }
                     h.assertTrue(!main.lines().isEmpty(), "A dark wall should keep its text for when power returns");
                 })

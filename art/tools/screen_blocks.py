@@ -1,83 +1,105 @@
+import glob
+import io
+import json
 import os
+import sys
+import zipfile
 
 from PIL import Image
 
-from handmade import BRASS, IRON, STEEL, put, rect
-from handmade_rest import casing
+from handmade import OUT, rect
 
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+ORIGINALS = os.path.join(ROOT, "art", "originals")
 M = "criticalmass:"
-QUADS = {"a": [0, 0, 8, 8], "b": [8, 0, 16, 8], "c": [0, 8, 8, 16], "d": [8, 8, 16, 16]}
+BOARD = "create:block/display_board/"
 ROTATIONS = {"north": 0, "east": 90, "south": 180, "west": 270}
 GLASS = (10, 20, 14, 255)
+FRAME = {"side": "flap_display_side", "top": "flap_display_top", "inside": "flap_display_inside", "back": "dark_metal_block"}
+STEEL_FROM = "steel_block"
 
 
-def atlas(quads):
-    img = Image.new("RGBA", (32, 32))
-    for key, painter in quads.items():
-        u0, v0, _, _ = QUADS[key]
-        img.paste(painter(16, 16), (u0 * 2, v0 * 2))
+def front():
+    img = Image.new("RGBA", (16, 16), GLASS)
+    for y in range(1, 16, 2):
+        rect(img, 0, y, 15, y, (12, 26, 17))
     return img
 
 
-def screen_texture():
-    def front(w, h):
-        img = Image.new("RGBA", (w, h), GLASS)
-        for y in range(1, 16, 2):
-            rect(img, 0, y, 15, y, (12, 26, 17))
-        return img
-
-    def bezel(w, h):
-        img = Image.new("RGBA", (w, h), IRON[1] + (255,) if len(IRON[1]) == 3 else IRON[1])
-        rect(img, 0, 0, 15, 0, IRON[3])
-        rect(img, 0, 15, 15, 15, IRON[0])
-        return img
-
-    def back(w, h):
-        img = casing(IRON, STEEL)(w, h)
-        put(img, 12, 12, BRASS[3])
-        return img
-    return atlas({"a": front, "b": back, "c": bezel, "d": back})
+def properties():
+    out = {}
+    with open(os.path.join(ROOT, "gradle.properties"), encoding="utf8") as f:
+        for line in f:
+            if "=" in line and not line.startswith("#"):
+                key, value = line.strip().split("=", 1)
+                out[key] = value
+    return out
 
 
-def face(quad, cull=None, uv=None):
-    f = {"uv": uv or QUADS[quad], "texture": "#0"}
-    if cull:
-        f["cullface"] = cull
-    return f
+def create_jar():
+    p = properties()
+    name = "create-%s-%s-slim.jar" % (p["minecraft_version"], p["create_version"])
+    found = glob.glob(os.path.join(os.path.expanduser("~"), ".gradle", "caches", "modules-2", "files-2.1", "com.simibubi.create", "*", p["create_version"], "*", name))
+    if not found:
+        raise SystemExit("Create's jar is not in the Gradle cache: build the project once, then run this again")
+    return found[0]
 
 
-def box(lo, hi, quad, top=None, rotation=None, cull=()):
-    faces = {}
-    for d in ("north", "south", "east", "west", "up", "down"):
-        faces[d] = face(top if top and d == "up" else quad, d if d in cull else None)
-    e = {"from": lo, "to": hi, "faces": faces}
-    if rotation:
-        e["rotation"] = rotation
-    return e
+def brightness(c):
+    return (c[0] + c[1] + c[2]) / 3.0
 
 
-def write_all(write, assets, data, out):
-    screen_texture().save(os.path.join(out, "plant_screen.png"))
-    stex = {"0": M + "block/plant_screen", "particle": M + "block/plant_screen"}
-    screen = box([0, 0, 13], [16, 16, 16], "b", cull=("south",))
-    screen["faces"]["north"] = face("a")
-    edges = {"top": ("up", [0, 15, 12.4], [16, 16, 13]), "bottom": ("down", [0, 0, 12.4], [16, 1, 13]),
-             "left": ("left", [15, 0, 12.4], [16, 16, 13]), "right": ("right", [0, 0, 12.4], [1, 16, 13])}
-    models = {"plant_screen": [screen]}
-    for edge, (_, lo, hi) in edges.items():
-        models["plant_screen_" + edge] = [box(lo, hi, "c")]
-    for model, elements in models.items():
-        write(os.path.join(assets, "models", "block", model + ".json"), {"parent": "minecraft:block/block", "textures": stex, "elements": elements})
-    multipart = []
-    for d, y in ROTATIONS.items():
-        def apply(model):
-            return {"model": M + "block/" + model, "y": y} if y else {"model": M + "block/" + model}
-        multipart.append({"when": {"facing": d}, "apply": apply("plant_screen")})
-        for edge, (prop, _, _) in edges.items():
-            multipart.append({"when": {"facing": d, prop: "false"}, "apply": apply("plant_screen_" + edge)})
-    write(os.path.join(assets, "blockstates", "plant_screen.json"), {"multipart": multipart})
-    write(os.path.join(assets, "models", "item", "plant_screen.json"),
-          {"parent": "minecraft:block/block", "textures": stex, "elements": [screen] + [box(lo, hi, "c") for _, lo, hi in edges.values()]})
+def steel_ramp():
+    img = Image.open(os.path.join(OUT, STEEL_FROM + ".png")).convert("RGBA")
+    return sorted({img.getpixel((x, y))[:3] for y in range(img.height) for x in range(img.width)}, key=brightness)
+
+
+def recolour(sources):
+    ramp = steel_ramp()
+    seen = [brightness(img.getpixel((x, y))) for img in sources.values() for y in range(img.height) for x in range(img.width) if img.getpixel((x, y))[3] > 0]
+    low, high = min(seen), max(seen)
+    out = {}
+    for name, img in sources.items():
+        steel = Image.new("RGBA", img.size, (0, 0, 0, 0))
+        for y in range(img.height):
+            for x in range(img.width):
+                c = img.getpixel((x, y))
+                if c[3] == 0:
+                    continue
+                at = (brightness(c) - low) / (high - low) * (len(ramp) - 1)
+                a, b = ramp[int(at)], ramp[min(len(ramp) - 1, int(at) + 1)]
+                t = at - int(at)
+                steel.putpixel((x, y), tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3)) + (c[3],))
+        out[name] = steel
+    return out
+
+
+def frame(out, fresh):
+    paths = {name: os.path.join(ORIGINALS, "plant_screen_" + name + ".png") for name in FRAME}
+    if fresh or not all(os.path.exists(p) for p in paths.values()):
+        with zipfile.ZipFile(create_jar()) as jar:
+            sources = {name: Image.open(io.BytesIO(jar.read("assets/create/textures/block/" + source + ".png"))).convert("RGBA") for name, source in FRAME.items()}
+        for name, img in recolour(sources).items():
+            if fresh or not os.path.exists(paths[name]):
+                img.save(paths[name])
+                print("recoloured", os.path.basename(paths[name]))
+    for name, path in paths.items():
+        Image.open(path).save(os.path.join(out, "plant_screen_" + name + ".png"))
+
+
+def write_all(write, assets, data, out, fresh=False):
+    front().save(os.path.join(out, "plant_screen.png"))
+    frame(out, fresh)
+    textures = {"2": M + "block/plant_screen", "3": M + "block/plant_screen_back", "4": M + "block/plant_screen_side", "5": M + "block/plant_screen_top",
+                "6": M + "block/plant_screen_inside", "particle": M + "block/plant_screen_back"}
+    write(os.path.join(assets, "models", "block", "plant_screen.json"), {"parent": BOARD + "block", "render_type": "minecraft:cutout_mipped", "textures": textures})
+    write(os.path.join(assets, "models", "item", "plant_screen.json"), {"parent": BOARD + "item", "render_type": "minecraft:cutout_mipped", "textures": textures})
+    for edge in ("top", "bottom", "left", "right"):
+        old = os.path.join(assets, "models", "block", "plant_screen_" + edge + ".json")
+        if os.path.exists(old):
+            os.remove(old)
+    variants = {"facing=" + d: ({"model": M + "block/plant_screen", "y": y} if y else {"model": M + "block/plant_screen"}) for d, y in ROTATIONS.items()}
+    write(os.path.join(assets, "blockstates", "plant_screen.json"), {"variants": variants})
     write(os.path.join(data, "criticalmass", "loot_table", "blocks", "plant_screen.json"), {"type": "minecraft:block", "pools": [{"rolls": 1, "entries": [{
         "type": "minecraft:item", "name": M + "plant_screen"}], "conditions": [{"condition": "minecraft:survives_explosion"}]}]})
 
@@ -85,8 +107,8 @@ def write_all(write, assets, data, out):
 LANG = {
     "block.criticalmass.plant_screen": "Plant Screen",
     "criticalmass.goggles.screen": "Plant Screen",
-    "criticalmass.screen.powered": "Powered by the shaft behind the wall",
-    "criticalmass.screen.unpowered": "No power: turn a shaft into the back of any screen of the wall",
+    "criticalmass.screen.powered": "Powered by its cogwheel",
+    "criticalmass.screen.unpowered": "No power: mesh a turning cogwheel with any screen of the wall",
     "criticalmass.screen.size": "Screen wall %s by %s: %s lines of %s characters",
     "criticalmass.screen.unlinked": "Shows Display Link text. Link a Reactor Controller with a Plant Linker for the reactor display, which needs a wall %s wide and %s high",
     "criticalmass.screen.linked": "Reactor display for the controller at %s %s %s",
@@ -120,3 +142,19 @@ LANG = {
     "criticalmass.screen.events.none": "NOTHING TO REPORT",
     "criticalmass.screen.event.cleared": "CLEARED: %s",
 }
+
+
+def main():
+    res = os.path.join(ROOT, "src", "main", "resources")
+
+    def write(path, obj):
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, "w", newline="\n", encoding="utf8") as f:
+            json.dump(obj, f, indent=1)
+            f.write("\n")
+    write_all(write, os.path.join(res, "assets", "criticalmass"), os.path.join(res, "data"), OUT, "fresh" in sys.argv[1:])
+    print("plant screen: model, blockstate, item and textures")
+
+
+if __name__ == "__main__":
+    main()
