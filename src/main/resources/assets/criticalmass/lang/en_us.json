@@ -445,6 +445,7 @@
   "criticalmass.dashboard.connected_missing": "The block it was connected to at %s %s %s is gone",
   "criticalmass.dashboard.no_alarm": "No alarm",
   "criticalmass.dashboard.empty": "No parts fitted",
+  "criticalmass.dashboard.empty_half": "Nothing fitted on this half",
   "criticalmass.dashboard.no_modes": "This part has only one setting",
   "criticalmass.dashboard.adopt_refused": "Take the Loconautics parts off this dashboard first",
   "criticalmass.dashboard.press.pulse": "Sends a one second pulse",

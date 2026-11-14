@@ -406,22 +406,30 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        readout(tooltip, level != null && level.isClientSide ? DashboardAim.slot(worldPosition, getBlockState()) : -1);
+        return true;
+    }
+
+    public void readout(List<Component> tooltip, int aimed) {
         tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        int aimed = level != null && level.isClientSide ? DashboardAim.slot(worldPosition, getBlockState()) : -1;
-        boolean only = part(aimed) != null;
-        boolean any = false;
-        for (int slot = 0; slot < SLOTS; slot++) {
-            DashPart part = parts[slot];
-            if (part == null || only && slot != aimed) {
-                continue;
+        if (aimed >= 0 && aimed < SLOTS) {
+            if (parts[aimed] == null) {
+                tooltip.add(ThermalTooltips.line("criticalmass.dashboard.empty_half", ChatFormatting.DARK_GRAY));
+            } else {
+                describe(tooltip, parts[aimed]);
             }
-            any = true;
-            describe(tooltip, part);
+            return;
+        }
+        boolean any = false;
+        for (DashPart part : parts) {
+            if (part != null) {
+                any = true;
+                describe(tooltip, part);
+            }
         }
         if (!any) {
             tooltip.add(ThermalTooltips.line("criticalmass.dashboard.empty", ChatFormatting.DARK_GRAY));
         }
-        return true;
     }
 
     private void describe(List<Component> tooltip, DashPart part) {

@@ -22,7 +22,9 @@ import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import com.simibubi.create.content.redstone.link.RedstoneLinkBlock;
 import net.minecraft.core.BlockPos;
+import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -247,6 +249,22 @@ public final class DashboardTests {
     private static int signal(GameTestHelper h, BlockPos pos, Direction side) {
         BlockPos abs = h.absolutePos(pos);
         return h.getLevel().getBlockState(abs).getSignal(h.getLevel(), abs, side);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void gogglesReadOnlyTheHalfBeingLookedAt(GameTestHelper h) {
+        DashboardBlockEntity desk = desk(h, new BlockPos(2, 1, 2));
+        fit(h, desk, 0, DashPart.Type.ALARM, null);
+        List<Component> fitted = new ArrayList<>();
+        List<Component> empty = new ArrayList<>();
+        List<Component> whole = new ArrayList<>();
+        desk.readout(fitted, 0);
+        desk.readout(empty, 1);
+        desk.readout(whole, -1);
+        h.assertTrue(fitted.size() == 3, "Looking at the alarm should name it and say it is not connected");
+        h.assertTrue(empty.size() == 2 && !empty.get(1).getString().equals(fitted.get(1).getString()), "Looking at the empty half must not show the part on the other half");
+        h.assertTrue(whole.size() == fitted.size(), "With no half in view every fitted part is listed");
+        h.succeed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 60)
