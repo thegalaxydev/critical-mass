@@ -8,22 +8,25 @@ ORIGINALS = os.path.join(ROOT, "art", "originals")
 TEXTURES = os.path.join(ROOT, "src", "main", "resources", "assets", "criticalmass", "textures", "block")
 SINGLE = "shielding_concrete.png"
 SHEET = "shielding_concrete_connected.png"
-BANDS = [4, 4, 4, 3, 3, 3, 3, 2, 2, 2, 3, 3, 3, 4, 3, 3]
-DRIFT = [0, 0, 0, 1, 1, 1, 2, 2, 1, 1, 0, 0, 15, 15, 15, 0]
-FLECKS = {(6, 9): 1, (7, 8): 1, (12, 4): 2, (3, 12): 2, (10, 12): 4, (4, 5): 4}
 NAMES = ("up", "down", "left", "right", "top_left", "top_right", "bottom_left", "bottom_right")
 
 
-def ramp(single):
-    return sorted(set(single.getdata()), key=lambda c: c[0] + c[1] + c[2])
+def between(tones, a, b, part):
+    i, j = tones.index(a), tones.index(b)
+    return tones[int(round(i + (j - i) * part / 3.0))]
 
 
-def field(tones):
-    img = Image.new("RGBA", (16, 16))
+def slab(single):
+    tones = sorted(set(single.getdata()), key=lambda c: c[0] + c[1] + c[2])
+    img = single.copy()
+    for x in range(1, 15):
+        low, high = single.getpixel((x, 14)), single.getpixel((x, 1))
+        img.putpixel((x, 15), between(tones, low, high, 1))
+        img.putpixel((x, 0), between(tones, low, high, 2))
     for y in range(16):
-        for x in range(16):
-            tone = BANDS[(x + y + DRIFT[(x - y) % 16]) % 16]
-            img.putpixel((x, y), tones[FLECKS.get((x, y), tone)])
+        low, high = img.getpixel((14, y)), img.getpixel((1, y))
+        img.putpixel((15, y), between(tones, low, high, 1))
+        img.putpixel((0, y), between(tones, low, high, 2))
     return img
 
 
@@ -62,55 +65,50 @@ def index(c):
     return x, y
 
 
-def tile(c, single, slab):
-    tones = ramp(single)
-    light, dark, mixed, hole, lip = single.getpixel((8, 0)), single.getpixel((8, 15)), single.getpixel((15, 0)), tones[0], tones[4]
-    img = slab.copy()
-    put = img.putpixel
-    put((1, 1), hole)
-    put((2, 1), lip)
-    put((1, 2), lip)
-    if not (c["right"] and c["down"] and c["bottom_right"]):
-        put((14, 14), hole)
-        put((13, 14), lip)
-        put((14, 13), lip)
+def corner(img, single, at, across, along, inner, missing):
+    x, y = at
+    side = (x, 1 if y == 0 else 14)
+    level = (1 if x == 0 else 14, y)
+    if not across and not along:
+        img.putpixel(at, single.getpixel(at))
+    elif not across:
+        img.putpixel(at, single.getpixel(level))
+    elif not along:
+        img.putpixel(at, single.getpixel(side))
+    elif missing:
+        img.putpixel(at, single.getpixel(inner))
+
+
+def tile(c, single, base):
+    img = base.copy()
     up, down, left, right = c["up"], c["down"], c["left"], c["right"]
-    for i in range(16):
+    for i in range(1, 15):
         if not up:
-            put((i, 0), light)
-        if not left:
-            put((0, i), light)
+            img.putpixel((i, 0), single.getpixel((i, 0)))
         if not down:
-            put((i, 15), dark)
+            img.putpixel((i, 15), single.getpixel((i, 15)))
+        if not left:
+            img.putpixel((0, i), single.getpixel((0, i)))
         if not right:
-            put((15, i), dark)
-    if not up and not left:
-        put((0, 0), single.getpixel((0, 0)))
-    elif up and left and not c["top_left"]:
-        put((0, 0), light)
-    if up != right:
-        put((15, 0), dark if up else light)
-    elif not up or not c["top_right"]:
-        put((15, 0), mixed)
-    if down != left:
-        put((0, 15), light if down else dark)
-    elif not down or not c["bottom_left"]:
-        put((0, 15), mixed)
-    if down and right and not c["bottom_right"]:
-        put((15, 15), dark)
+            img.putpixel((15, i), single.getpixel((15, i)))
+    corner(img, single, (0, 0), up, left, (0, 1), not c["top_left"])
+    corner(img, single, (15, 0), up, right, (15, 0), not c["top_right"])
+    corner(img, single, (0, 15), down, left, (0, 15), not c["bottom_left"])
+    corner(img, single, (15, 15), down, right, (15, 15), not c["bottom_right"])
     return img
 
 
 def sheet(single):
-    slab = field(ramp(single))
+    base = slab(single)
     cells = {}
     for c in contexts():
         at = index(c)
-        made = tile(c, single, slab)
+        made = tile(c, single, base)
         if at in cells and list(cells[at].getdata()) != list(made.getdata()):
             raise SystemExit("two different tiles want cell %s" % (at,))
         cells[at] = made
-    cells[(0, 0)] = single
+    if list(cells[(0, 0)].getdata()) != list(single.getdata()):
+        raise SystemExit("the lone tile does not match the single texture")
     img = Image.new("RGBA", (128, 128))
     for (x, y), made in cells.items():
         img.paste(made, (x * 16, y * 16))
