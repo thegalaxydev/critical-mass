@@ -65,6 +65,85 @@ STATE_NOTES = {
     "fuel_channel": "rotated pillar (axis)", "control_channel": "rotated pillar (axis)", "coolant_channel": "rotated pillar (axis)",
 }
 
+ART = {
+    "reactor_vessel_casing": "author",
+    "circulation_pump": "author",
+    "cooling_tower_packing": "author",
+    "radiator_panel": "author",
+    "reinforced_valve": "author",
+    "shielding_concrete": "author",
+    "shielded_glass": "author",
+    "open_waste_canister": "author",
+    "sealed_waste_canister": "author",
+    "steel_block": "author",
+    "reactor_alloy_block": "author",
+    "steel_ingot": "author",
+    "steel_nugget": "author",
+    "steel_plate": "author",
+    "control_rod": "author",
+    "turbine_blade": "author",
+    "sealing_gasket": "author",
+    "welding_torch": "author",
+    "dosimeter": "author",
+    "survey_meter": "author",
+    "decontamination_compound": "author",
+    "ceramic_fuel_pellet": "author",
+    "reactor_alloy_ingot": "author",
+    "reactor_alloy_sheet": "author",
+    "reactor_controller": "script",
+    "reactor_viewport": "script",
+    "fuel_channel": "script",
+    "control_channel": "script",
+    "coolant_channel": "script",
+    "reactor_service_port": "script",
+    "primary_coolant_port": "script",
+    "reinforced_pipe": "script",
+    "heat_exchanger": "script",
+    "condenser": "script",
+    "centrifuge": "script",
+    "pressurizer": "script",
+    "ruined_channel": "script",
+    "corium": "script",
+    "boiler_heating_plate": "script",
+    "shielded_hatch": "script",
+    "spent_fuel_rack": "script",
+    "shielded_cask": "script",
+    "plant_screen": "script",
+    "reactor_signal_interface": "script",
+    "docking_service_connector": "script",
+    "uranium_ore": "script",
+    "deepslate_uranium_ore": "script",
+    "plant_linker": "script",
+    "enriched_uranium": "script",
+    "depleted_uranium": "script",
+    "raw_uranium": "generated",
+    "crushed_uranium": "generated",
+    "uranium_concentrate": "generated",
+    "fuel_cladding": "generated",
+    "empty_fuel_assembly": "generated",
+    "fuel_assembly": "generated",
+    "spent_fuel_assembly": "generated",
+    "damaged_fuel_assembly": "generated",
+    "protective_hood": "generated",
+    "protective_suit": "generated",
+    "protective_leggings": "generated",
+    "protective_boots": "generated",
+    "primary_coolant": "generated",
+    "steam": "generated",
+    "contaminated_coolant": "generated",
+    "control_rod_drive": "script, generated pinion",
+    "steam_turbine": "author's model, script texture",
+    "relief_valve": "script, approved",
+    "reactor_alloy_dashboard": "not recorded"
+}
+GONE = {"alarm_siren", "contaminated_filter", "emergency_coolant_tank", "fuel_assembly_bench", "instrumentation_panel", "repair_kit", "shielding_plate", "steam_bypass_valve"}
+ART_LEGEND = "The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is."
+
+
+def art(name, fallback="not recorded"):
+    return ART.get(name, "removed" if name in GONE else fallback)
+
+
 REFS = {
     "reactor_vessel_casing": ["create:block/andesite_casing", "simulated:block/iron_gearbox"],
     "circulation_pump": ["create:block/pump", "create:block/pipes", "create:block/gearbox"],
@@ -187,7 +266,7 @@ def build(qa=None, render_icons=True):
             "state_notes": STATE_NOTES.get(name, ""),
             "partials": partials, "kinetic": KINETIC.get(name),
             "references": REFS.get(name, ["see docs/art/REFERENCES.md"]),
-            "generation": "generated" if all(t["generated_source"] for t in tex) else ("partial" if any(t["generated_source"] for t in tex) else "blockout-only"),
+            "generation": art(name),
             "integration": "integrated" if all(t["exists"] for t in tex) else "missing-texture",
             "verification": qa.get(name, {"iso": False, "in_game": False, "moving_body": False}),
             "issues": ISSUES.get(name, []),
@@ -204,7 +283,7 @@ def build(qa=None, render_icons=True):
             "item_model": "src/main/resources/assets/criticalmass/models/item/%s.json" % name,
             "presentation": "flat sprite, %s" % ("item/handheld" if d.get("handheld") else "item/generated"),
             "references": ["create:item/precision_mechanism", "create:item/brass_sheet"] if not name.startswith("protective") else ["create:item/goggles", "create:item/copper_diving_helmet"],
-            "generation": "generated" if src.get("src") else "blockout-only",
+            "generation": art(name),
             "integration": "integrated" if os.path.exists(p) else "missing-texture",
             "verification": qa.get(name, {"iso": False, "in_game": False}),
             "issues": ISSUES.get(name, []),
@@ -227,7 +306,7 @@ def build(qa=None, render_icons=True):
                         "textures": [{"path": "src/main/resources/assets/criticalmass/textures/fluid/%s_still.png" % n, "exists": os.path.exists(st), "size": [16, 256], "animated": "16 frames, frametime 3, interpolated"},
                                      {"path": "src/main/resources/assets/criticalmass/textures/fluid/%s_flow.png" % n, "exists": os.path.exists(st.replace("_still", "_flow")), "size": [32, 512], "animated": "16 frames scrolling, frametime 2"}],
                         "registration": "FluidType + BaseFlowingFluid source/flowing, no world block, no bucket; IClientFluidTypeExtensions still/flow textures",
-                        "generation": "generated" if src.get("src") else "blockout-only", "integration": "integrated" if os.path.exists(st) else "missing-texture",
+                        "generation": art(n), "integration": "integrated" if os.path.exists(st) else "missing-texture",
                         "verification": qa.get(n, {"in_game": False}), "issues": ["No world block or bucket by design; it is only visible inside Create tanks and pipes (animation confirmed in a tank in game). Textures are stitched into the block atlas through assets/minecraft/atlases/blocks.json (directory source fluid/)."],
                         "related_tasks": ["tsk-078", "tsk-079", "tsk-080"], "icon": "src/main/resources/assets/criticalmass/textures/fluid/%s_still.png" % n})
     records.append({"key": "water", "registry_id": "minecraft:water", "type": "fluid", "console_id": "fld-water", "name": "Water", "textures": [], "generation": "vanilla", "integration": "vanilla", "verification": {}, "issues": [], "related_tasks": [], "icon": None})
@@ -245,10 +324,10 @@ def yesno(v):
 
 def write_md(manifest):
     out = ["# Asset manifest", "", "Generated %s from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs)." % manifest["generated"], "",
-           "Minecraft %s, NeoForge %s, Create %s, Aeronautics %s, Sable %s. %s." % (manifest["minecraft"], manifest["neoforge"], manifest["create"], manifest["aeronautics"], manifest["sable"], manifest["density"]), ""]
+           "Minecraft %s, NeoForge %s, Create %s, Aeronautics %s, Sable %s. %s." % (manifest["minecraft"], manifest["neoforge"], manifest["create"], manifest["aeronautics"], manifest["sable"], manifest["density"]), "", ART_LEGEND, ""]
     for kind, title in (("block", "Blocks"), ("item", "Items"), ("fluid", "Fluids")):
         recs = [r for r in manifest["records"] if r["type"] == kind]
-        out += ["## %s (%d)" % (title, len(recs)), "", "| Registry ID | Textures | Generation | Integration | Verified | Issues |", "|---|---|---|---|---|---|"]
+        out += ["## %s (%d)" % (title, len(recs)), "", "| Registry ID | Textures | Art | Integration | Verified | Issues |", "|---|---|---|---|---|---|"]
         for r in recs:
             tex = "<br>".join("`%s` %s" % (t["path"].split("/textures/")[-1], "x".join(map(str, t["size"])) if t.get("size") else "") for t in r.get("textures", [])) or "none"
             ver = ", ".join("%s: %s" % (k, yesno(v)) for k, v in r.get("verification", {}).items()) or "n/a"

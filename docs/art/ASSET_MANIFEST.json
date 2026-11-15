@@ -47,7 +47,7 @@
     "create:block/andesite_casing",
     "simulated:block/iron_gearbox"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -212,7 +212,7 @@
     "create:block/pipes",
     "create:block/gearbox"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -376,7 +376,7 @@
     "aeronautics:block/propeller_bearing",
     "create:block/axis"
    ],
-   "generation": "generated",
+   "generation": "author's model, script texture",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -455,7 +455,7 @@
     "create:block/gauge",
     "create:block/boiler_gauge"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -511,7 +511,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -572,7 +572,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -631,7 +631,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -769,7 +769,7 @@
     "aeronautics:block/gyroscopic_propeller_bearing",
     "create:block/gearbox"
    ],
-   "generation": "generated",
+   "generation": "script, generated pinion",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -834,7 +834,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -886,7 +886,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -965,7 +965,7 @@
    "references": [
     "create:block/pipes"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1036,7 +1036,7 @@
     "create:block/fluid_tank_top",
     "create:block/pipes"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1107,7 +1107,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1164,7 +1164,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1233,7 +1233,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1291,7 +1291,7 @@
     "create:block/fluid_tank",
     "create:block/fluid_tank_window"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1410,7 +1410,7 @@
     "aeronautics:block/steam_vent",
     "create:block/fluid_valve"
    ],
-   "generation": "generated",
+   "generation": "script, approved",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1535,7 +1535,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1604,7 +1604,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1656,7 +1656,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1708,7 +1708,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1762,7 +1762,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1861,7 +1861,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -1923,7 +1923,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2019,7 +2019,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2073,7 +2073,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2181,7 +2181,7 @@
    "references": [
     "see docs/art/REFERENCES.md"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2266,7 +2266,7 @@
     "simulated:block/dock",
     "simulated:block/dock_powered"
    ],
-   "generation": "generated",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2352,7 +2352,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2704,7 +2704,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2891,7 +2891,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2927,7 +2927,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2963,7 +2963,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -2999,7 +2999,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3035,7 +3035,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3071,7 +3071,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3107,7 +3107,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3147,7 +3147,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3184,7 +3184,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3221,7 +3221,7 @@
     "create:item/precision_mechanism",
     "create:item/brass_sheet"
    ],
-   "generation": "generated",
+   "generation": "author",
    "integration": "integrated",
    "verification": {
     "iso": true,
@@ -3247,7 +3247,7 @@
    "console_id": "itm-filter",
    "name": "Contaminated Filter",
    "textures": [],
-   "generation": "deferred",
+   "generation": "removed",
    "integration": "deferred",
    "verification": {},
    "issues": [

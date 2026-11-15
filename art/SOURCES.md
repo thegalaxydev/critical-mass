@@ -7,35 +7,67 @@ All art is a candidate for replacement by hand-made art later.
 
 
 
-## Hand-made block textures (2026-10-19)
+## Whose art each texture is
 
-`art/tools/handmade.py` draws these from Create textures (MIT) plus hand-placed pixels, replacing the generated versions:
+This table is the current state and overrides anything further down. Only the rows marked Author are the author's own work. Script means a script in `art/tools/` drew it, and Generated means it is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. Approved marks a placeholder the author has accepted as it is. The sections below record how each texture, and each earlier version of it, was made.
+
+| Texture | Art | Made with |
+|---|---|---|
+| Reactor Vessel Casing and its crack overlays | Author | `art/originals/` |
+| Shielding Concrete, Shielded Glass | Author | `art/originals/` |
+| Steel Block, Reactor Alloy Block | Author | `art/originals/` |
+| Open and Sealed Waste Canister | Author | `art/originals/` |
+| Reinforced Valve | Author | `art/originals/` |
+| Circulation Pump | Author | `art/blockbench/mechanical_pump.bbmodel` |
+| Radiator Panel | Author | `art/blockbench/radiator.bbmodel` |
+| Cooling Tower Packing | Author | `art/originals/cooling_tower*.png`, `art/blockbench/cooling_tower_packing*.bbmodel` |
+| Steam Turbine | Author's model, script texture | `art/tools/turbine_texture.py`, painted from the author's textures at the author's request |
+| Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
+| Reactor Controller, Reactor Service Port, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
+| Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
+| Fuel, Control and Coolant Channel, Control Rod Drive, Spent Fuel Rack, Shielded Cask, Docking Service Connector | Script | `art/tools/handmade_rest.py` |
+| Reactor Viewport and its cracked stages, the rod and glow channel variants, the rod shaft, Centrifuge, Pressurizer, Ruined Fuel Channel, Corium | Script | `art/tools/plant_blocks.py` |
+| Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
+| Reinforced Pipe | Script | Create's pipe sheets recoloured |
+| Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
+| Control Rod Drive pinion | Generated | |
+| Reactor Alloy Dashboard texture, Dashboard Alarm | Not recorded | Their sections say hand-made without saying by whom |
+| Dashboard and its other parts | Create: Loconautics | Used with its authors' permission |
+| Steel Ingot, Nugget and Plate, Control Rod, Turbine Blade, Sealing Gasket, Welding Torch, Dosimeter, Survey Meter, Decontamination Compound, Ceramic Fuel Pellet, Reactor Alloy Ingot and Sheet | Author | `art/originals/` |
+| Raw Uranium, Crushed Uranium, Uranium Concentrate, Fuel Cladding, the four Fuel Assembly icons, the four Protective Suit icons and the worn suit layers | Generated | |
+| Enriched Uranium, Depleted Uranium, Plant Linker | Script | `art/tools/plant_blocks.py`; the two uranium icons are recolours of Uranium Concentrate |
+| Primary Coolant, Contaminated Coolant and Steam fluids | Generated | |
+| Alarm sound | Script | `art/tools/alarm_sound.py` |
+
+## Script-painted block textures (2026-10-19)
+
+`art/tools/handmade.py` draws these from Create textures (MIT) plus pixels the script places, replacing the earlier generated versions. They are placeholders, not the author's art:
 - `reactor_controller`, `reactor_service_port`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a round brass-rimmed hatch, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
-- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` hand-drawn with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. Rotor and pinion textures keep their cleaned generated versions.
+- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. The pinion texture keeps its cleaned generated version.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
-## steel_ingot, steel_nugget and steel_plate (not generated)
+## steel_ingot, steel_nugget and steel_plate (the author's own)
 
 - Used by: `textures/item/steel_ingot.png`, `textures/item/steel_nugget.png`, `textures/item/steel_plate.png`
 - Source: hand-made by the author, originals in `art/originals/`.
 - Date: 2026-11-10
 
-## control_rod, turbine_blade, sealing_gasket, welding_torch, dosimeter, survey_meter and decontamination_compound (not generated)
+## control_rod, turbine_blade, sealing_gasket, welding_torch, dosimeter, survey_meter and decontamination_compound (the author's own)
 
 - Used by: `textures/item/control_rod.png`, `textures/item/turbine_blade.png`, `textures/item/sealing_gasket.png`, `textures/item/welding_torch.png`, `textures/item/dosimeter.png`, `textures/item/survey_meter.png`, `textures/item/decontamination_compound.png`
 - Source: hand-made by the author, originals in `art/originals/` (the welding torch is `portable_welder.png`).
 - Date: 2026-11-11
 
-## sealed_waste_canister and open_waste_canister (not generated)
+## sealed_waste_canister and open_waste_canister (the author's own)
 
 - Used by: `textures/block/sealed_waste_canister.png`, `textures/block/open_waste_canister.png` and `models/block/sealed_waste_canister.json` (the open canister and the incomplete canister reuse the model)
 - Source: hand-made by the author, texture originals in `art/originals/`.
 - Date: 2026-11-10
 
-## steel_block and reactor_alloy_block (not generated)
+## steel_block and reactor_alloy_block (the author's own)
 
 - Used by: `textures/block/steel_block.png`, `textures/block/reactor_alloy_block.png`
 - Source: hand-made by the author, originals in `art/originals/`.
@@ -381,7 +413,7 @@ Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark st
 
 ```
 
-## ceramic_fuel_pellet (not generated)
+## ceramic_fuel_pellet (the author's own)
 
 - Used by: `textures/item/ceramic_fuel_pellet.png`
 - Source: hand-made by the author, original in `art/originals/ceramic_fuel_pellet.png`. Replaces the earlier generated icon.
@@ -566,12 +598,12 @@ Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yello
 
 ```
 
-## reactor_alloy_ingot (not generated)
+## reactor_alloy_ingot (the author's own)
 
 - Used by: `textures/item/reactor_alloy_ingot.png`
 - Source: hand-made by the author, original in `art/originals/reactor_alloy.png`.
 - Date: 2026-11-10
-## reactor_alloy_sheet (not generated)
+## reactor_alloy_sheet (the author's own)
 
 - Used by: `textures/item/reactor_alloy_sheet.png`
 - Source: hand-made by the author, original in `art/originals/reactor_alloy_sheet.png`.
@@ -690,13 +722,13 @@ Front face of the reactor signal interface in iron casing: recessed steel panel 
 
 ```
 
-## casing_crack_1, casing_crack_2 and casing_crack_3 (not generated)
+## casing_crack_1, casing_crack_2 and casing_crack_3 (the author's own)
 
 - Used by: `textures/block/casing_crack_1.png`, `textures/block/casing_crack_2.png`, `textures/block/casing_crack_3.png` (translucent crack layer of the cracked Reactor Vessel Casing models)
 - Source: the author recoloured Minecraft's `destroy_stage_5` (original in `art/originals/casing_destroy_stage_5.png`); the other nine stages in `art/casing_break/` keep Minecraft's crack layout with the same colours and opacity. Cracks 1, 2 and 3 are stages 3, 6 and 9.
 - Date: 2026-11-11
 
-## reactor_vessel_casing (not generated)
+## reactor_vessel_casing (the author's own)
 
 - Used by: `textures/block/reactor_vessel_casing.png`, `textures/block/reactor_vessel_casing_connected.png` (connected-texture sheet in Create's omnidirectional casing layout)
 - Source: hand-made by the author, originals in `art/originals/reactor_vessel_casing.png` and `art/originals/reactor_vessel_casing_connected.png`. Replaces the earlier generated and Create-derived versions.
@@ -705,6 +737,7 @@ Front face of the reactor signal interface in iron casing: recessed steel panel 
 
 - Used by: `textures/block/relief_valve.png` and the valve's body, stub and item models
 - Source: `art/blockbench/relief_valve.bbmodel`. The hub and the flanged stubs are the Reinforced Pipe's own junction casing, tube and rim, mapped onto the pipe's texture, so the valve always matches the line it sits in. `art/tools/relief_valve_texture.py` paints the small sheet for the parts that stand on the hub: a bolted seat flange, a spring bonnet with a brass band, a brass cap round the dark vent bore, and a red test lever. Its steel tones are sampled from the author's Reinforced Pipe texture, and the brass and red are the mod's own ramps.
+- Status: script-painted, and approved by the author as it is on 2026-11-15.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/relief_valve_model.py` then exports the models and the blockstate. The Blockbench file needs three groups: `hub`, `valve` (modelled with the vent pointing up) and `stub_north`.
 - Date: 2026-11-15
 
@@ -760,13 +793,14 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 
 - Used by: `textures/block/steam_turbine.png` and the turbine's block, glass, exhaust, rotor and item models
 - Source: modelled by the author in Blockbench, saved as `art/blockbench/steam_turbine.bbmodel`. `art/tools/turbine_texture.py` paints the texture from the author's hand-made textures: the casing plates are the Steel Block, the back plate is the Reactor Vessel Casing with a pipe socket set into it, the dark inside faces, shaft and fixed vanes use the navy tones of the vessel casing's inset and the Reinforced Pipe, and the window frames and panes use the Shielded Glass tones. The tool checks that every tone it uses is still present in those four textures. The layout follows Create's casings and fan: bevelled plates with corner bolts, a flanged rim, and a solid hub with a ring of blades. Create Simulated's parts were looked at for style only and none of their pixels are used, because that art is all rights reserved. The two exhaust duct islands are the author's own painting and the tool keeps them as they are.
+- Status: the model is the author's. The texture is script-painted, at the author's request.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/turbine_model.py` then exports the model and texture into the game. `art/blockbench/steam_turbine_uv_guide.png` names the islands.
 - Date: 2026-11-15
 
-## Overhaul blocks (not generated)
+## Overhaul blocks (script-painted)
 
 - Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
-- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the hand-made channel textures, and the cracked viewports use the casing crack overlays.
+- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the script-painted channel textures, and the cracked viewports use the casing crack overlays.
 
 ## Plant Screen frame
 
