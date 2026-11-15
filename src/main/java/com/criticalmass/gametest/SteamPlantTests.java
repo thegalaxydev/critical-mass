@@ -34,7 +34,7 @@ public final class SteamPlantTests {
     private static final String LARGE = "empty_large";
     private static final BlockPos PLATE = new BlockPos(7, 3, 2);
     private static final BlockPos RELIEF = new BlockPos(6, 5, 6);
-    private static final BlockPos CONDENSER = new BlockPos(8, 9, 6);
+    private static final BlockPos CONDENSER = new BlockPos(8, 7, 6);
 
     private SteamPlantTests() {
     }

@@ -38,12 +38,12 @@ import org.jetbrains.annotations.Nullable;
 public class SteamTurbineStructuralBlock extends KineticBlock implements EntityBlock, IProxyHoveringInformation {
     public SteamTurbineStructuralBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(TurbineStructure.AXIS, Direction.Axis.X).setValue(TurbineStructure.ALONG, 1).setValue(TurbineStructure.ACROSS, 1).setValue(TurbineStructure.RISE, 0));
+        registerDefaultState(defaultBlockState().setValue(TurbineStructure.FACING, Direction.NORTH).setValue(TurbineStructure.ALONG, 1).setValue(TurbineStructure.ACROSS, 1).setValue(TurbineStructure.RISE, 0));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(TurbineStructure.AXIS, TurbineStructure.ALONG, TurbineStructure.ACROSS, TurbineStructure.RISE));
+        super.createBlockStateDefinition(builder.add(TurbineStructure.FACING, TurbineStructure.ALONG, TurbineStructure.ACROSS, TurbineStructure.RISE));
     }
 
     @Override
@@ -63,12 +63,12 @@ public class SteamTurbineStructuralBlock extends KineticBlock implements EntityB
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(TurbineStructure.AXIS);
+        return state.getValue(TurbineStructure.FACING).getAxis();
     }
 
     @Override
     public boolean hasShaftTowards(LevelReader level, BlockPos pos, BlockState state, Direction face) {
-        return TurbineStructure.isShaft(state) && face.getAxis() == state.getValue(TurbineStructure.AXIS);
+        return TurbineStructure.isShaft(state) && face.getAxis() == state.getValue(TurbineStructure.FACING).getAxis();
     }
 
     @Override

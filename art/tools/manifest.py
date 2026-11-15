@@ -34,10 +34,10 @@ KINETIC = {
     "steam_turbine": {
         "role": "generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor or a disconnected shaft",
         "impact_su": "capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat",
-        "block_class": "HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)",
-        "shaft_faces": "both ends of the three-block structure, through shaft pass-through parts",
-        "axis": "horizontal X or Z",
-        "placement": "axis follows player look; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes through the top-centre and bottom-centre parts",
+        "block_class": "HorizontalKineticBlock (blockstate property 'facing' = the side the big end and the shaft face)",
+        "shaft_faces": "the front end of the three-block structure, through a shaft pass-through part",
+        "axis": "horizontal, along the facing",
+        "placement": "big end faces the player; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes in through the back-centre part and out through the bottom-centre part",
         "rotating": "steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front and the side windows",
         "stationary": "three stepped octagonal casing rings with an open framed window in each side, five stator rings and the back plate",
         "direction": "rotor follows network speed and direction 1:1",
@@ -78,7 +78,7 @@ REFS = {
 
 ISSUES = {
     "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
-    "steam_turbine": ["Takes up three blocks each way, less the four back corners. The big end always faces west or north, since the block only stores its axis. The texture is a placeholder."],
+    "steam_turbine": ["Takes up three blocks each way, less the four back corners. The texture is a placeholder."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
     "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],
     "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],

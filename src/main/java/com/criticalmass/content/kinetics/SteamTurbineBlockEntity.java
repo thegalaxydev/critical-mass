@@ -7,7 +7,6 @@ import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ThermalSafety;
 import com.criticalmass.content.thermal.ThermalSinks;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.kinetics.KineticNetwork;
@@ -127,7 +126,11 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     @Override
     @Nullable
     public Direction passThroughExit(Direction enteredFrom) {
-        return enteredFrom.getAxis() == Direction.Axis.Y ? enteredFrom.getOpposite() : null;
+        Direction back = TurbineStructure.facing(getBlockState()).getOpposite();
+        if (enteredFrom == back) {
+            return Direction.DOWN;
+        }
+        return enteredFrom == Direction.DOWN ? back : null;
     }
 
     public double heatRate() {
@@ -159,13 +162,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (level == null) {
             return false;
         }
-        Direction.Axis axis = getBlockState().getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS);
-        for (Direction d : new Direction[]{Direction.fromAxisAndDirection(axis, Direction.AxisDirection.POSITIVE), Direction.fromAxisAndDirection(axis, Direction.AxisDirection.NEGATIVE)}) {
-            if (level.getBlockEntity(worldPosition.relative(d, 2)) instanceof KineticBlockEntity) {
-                return true;
-            }
-        }
-        return false;
+        return level.getBlockEntity(worldPosition.relative(TurbineStructure.facing(getBlockState()), 2)) instanceof KineticBlockEntity;
     }
 
     @Override
@@ -178,7 +175,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
             status = "criticalmass.turbine.ruptured";
         }
         boolean connected = shaftConnected();
-        double governor = TurbineStructure.signal(level, worldPosition, getBlockState().getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS)) / 15.0;
+        double governor = TurbineStructure.signal(level, worldPosition, TurbineStructure.facing(getBlockState())) / 15.0;
         if (overspeedTrip && governor >= 1) {
             resetTrip();
         }
@@ -296,7 +293,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
         @Override
         protected boolean isSideActive(BlockState state, Direction direction) {
-            return direction.getAxis().isHorizontal() && direction.getAxis() != state.getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS);
+            return direction.getAxis().isHorizontal() && direction.getAxis() != TurbineStructure.facing(state).getAxis();
         }
     }
 

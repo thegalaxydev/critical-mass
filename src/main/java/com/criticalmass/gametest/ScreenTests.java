@@ -12,7 +12,6 @@ import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockEntity;
@@ -100,7 +99,7 @@ public final class ScreenTests {
         ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
         c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * (300 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
         BlockPos turbinePos = new BlockPos(8, 1, 2);
-        h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(turbinePos, TestVessels.turbine(Direction.EAST));
         List<ScreenBlockEntity> wall = new ArrayList<>();
         BlockPos corner = new BlockPos(4, 1, 13);
         for (int y = 0; y < ScreenBlockEntity.BOARD_HEIGHT; y++) {

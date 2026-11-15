@@ -10,7 +10,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 |---|---|---|---|---|---|
 | `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up. |
 | `criticalmass:circulation_pump` | `block/circulation_pump.png` 64x64<br>`block/circulation_pump_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes, stops_when_overstressed: yes |  |
-| `criticalmass:steam_turbine` | `block/steam_turbine.png` 128x128 | placeholder | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Takes up three blocks each way, less the four back corners. The big end always faces west or north, since the block only stores its axis. The texture is a placeholder. |
+| `criticalmass:steam_turbine` | `block/steam_turbine.png` 128x128 | placeholder | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Takes up three blocks each way, less the four back corners. The texture is a placeholder. |
 | `criticalmass:instrumentation_panel` | `block/instrumentation_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet. |
 | `criticalmass:reactor_controller` | `block/reactor_controller.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:fuel_channel` | `block/fuel_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -93,10 +93,10 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 
 - **role**: generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor, upstream bypass valve, or a disconnected shaft
 - **impact su**: capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat
-- **block class**: HorizontalAxisKineticBlock (blockstate property 'axis' = x|z)
-- **shaft faces**: both ends of the three-block structure, through shaft pass-through parts
-- **axis**: horizontal X or Z
-- **placement**: axis follows player look; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes through the top-centre and bottom-centre parts
+- **block class**: HorizontalKineticBlock (blockstate property 'facing' = the side the big end and the shaft face)
+- **shaft faces**: the front end of the three-block structure, through a shaft pass-through part
+- **axis**: horizontal, along the facing
+- **placement**: big end faces the player; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes in through the back-centre part and out through the bottom-centre part
 - **rotating**: steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front and the side windows
 - **stationary**: three stepped octagonal casing rings with an open framed window in each side, five stator rings and the back plate
 - **direction**: rotor follows network speed and direction 1:1

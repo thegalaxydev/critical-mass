@@ -8,7 +8,6 @@ import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -163,7 +162,7 @@ public final class CoolantLoopTests {
     public static void turbineCapacityScalesWithHeatNotSpeed(GameTestHelper h) {
         BlockPos a = new BlockPos(2, 2, 2);
         BlockPos b = new BlockPos(5, 2, 5);
-        BlockState turbine = CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X);
+        BlockState turbine = TestVessels.turbine(Direction.EAST);
         h.setBlock(a, turbine);
         h.setBlock(b, turbine);
         h.setBlock(a.east(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));

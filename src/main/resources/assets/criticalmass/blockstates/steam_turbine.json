@@ -1,11 +1,19 @@
 {
  "variants": {
-  "axis=x": {
+  "facing=west": {
    "model": "criticalmass:block/steam_turbine"
   },
-  "axis=z": {
+  "facing=north": {
    "model": "criticalmass:block/steam_turbine",
    "y": 90
+  },
+  "facing=east": {
+   "model": "criticalmass:block/steam_turbine",
+   "y": 180
+  },
+  "facing=south": {
+   "model": "criticalmass:block/steam_turbine",
+   "y": 270
   }
  }
 }

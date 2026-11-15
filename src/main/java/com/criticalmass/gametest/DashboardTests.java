@@ -17,7 +17,6 @@ import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import com.simibubi.create.content.redstone.link.RedstoneLinkBlock;
@@ -303,7 +302,7 @@ public final class DashboardTests {
         ControlRodDriveBlockEntity a = drive(h, new BlockPos(3, 6, 2));
         ControlRodDriveBlockEntity b = drive(h, new BlockPos(3, 6, 4));
         BlockPos turbinePos = new BlockPos(9, 1, 2);
-        h.setBlock(turbinePos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(turbinePos, TestVessels.turbine(Direction.EAST));
         SteamTurbineBlockEntity turbine = h.getBlockEntity(turbinePos);
         BlockPos scramPos = new BlockPos(8, 1, 10);
         BlockPos alarmPos = new BlockPos(12, 1, 10);

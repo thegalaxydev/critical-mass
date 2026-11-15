@@ -22,7 +22,6 @@ import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.crank.ValveHandleBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import java.util.ArrayList;
 import java.util.List;
 import net.minecraft.core.BlockPos;
@@ -55,7 +54,7 @@ public final class SteamTests {
     }
 
     private static SteamTurbineBlockEntity turbine(GameTestHelper h, BlockPos pos, boolean shaft) {
-        h.setBlock(pos, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(pos, TestVessels.turbine(Direction.EAST));
         if (shaft) {
             h.setBlock(pos.east(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         }
@@ -121,9 +120,8 @@ public final class SteamTests {
     private static final BlockPos RING_PUMP = new BlockPos(2, 1, 2);
     private static final BlockPos RING_VALVE = new BlockPos(3, 1, 2);
     private static final BlockPos RING_TURBINE = new BlockPos(5, 4, 2);
-    private static final List<BlockPos> RING_PIPES = List.of(new BlockPos(4, 1, 2), new BlockPos(5, 1, 2), new BlockPos(5, 2, 2), new BlockPos(5, 6, 2),
-            new BlockPos(4, 6, 2), new BlockPos(3, 6, 2), new BlockPos(2, 6, 2), new BlockPos(1, 6, 2), new BlockPos(1, 5, 2), new BlockPos(1, 4, 2),
-            new BlockPos(1, 3, 2), new BlockPos(1, 2, 2), new BlockPos(1, 1, 2));
+    private static final List<BlockPos> RING_PIPES = List.of(new BlockPos(4, 1, 2), new BlockPos(5, 1, 2), new BlockPos(5, 2, 2), new BlockPos(3, 4, 2),
+            new BlockPos(2, 4, 2), new BlockPos(1, 4, 2), new BlockPos(1, 3, 2), new BlockPos(1, 2, 2), new BlockPos(1, 1, 2));
 
     private static boolean valveOpen(GameTestHelper h) {
         return h.getBlockState(RING_VALVE).getValue(FluidValveBlock.ENABLED);

@@ -1,7 +1,7 @@
 package com.criticalmass.content.kinetics;
 
 import com.criticalmass.registry.CMBlockEntities;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -12,23 +12,20 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
 
-public class SteamTurbineBlock extends HorizontalAxisKineticBlock implements IBE<SteamTurbineBlockEntity> {
+public class SteamTurbineBlock extends HorizontalKineticBlock implements IBE<SteamTurbineBlockEntity> {
     public SteamTurbineBlock(Properties properties) {
         super(properties);
-    }
-
-    public Direction.Axis axisForPlacement(BlockPlaceContext context) {
-        return super.getStateForPlacement(context).getValue(HORIZONTAL_AXIS);
     }
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
         BlockState state = super.getStateForPlacement(context);
-        return TurbineStructure.clear(context.getLevel(), context.getClickedPos(), state.getValue(HORIZONTAL_AXIS)) ? state : null;
+        return TurbineStructure.clear(context.getLevel(), context.getClickedPos(), state.getValue(HORIZONTAL_FACING)) ? state : null;
     }
 
     @Override
@@ -37,14 +34,14 @@ public class SteamTurbineBlock extends HorizontalAxisKineticBlock implements IBE
         if (level.isClientSide() || oldState.is(this)) {
             return;
         }
-        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_AXIS)) && !level.getBlockTicks().hasScheduledTick(pos, this)) {
+        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_FACING)) && !level.getBlockTicks().hasScheduledTick(pos, this)) {
             level.scheduleTick(pos, this, 1);
         }
     }
 
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
-        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_AXIS))) {
+        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_FACING))) {
             level.destroyBlock(pos, true);
         }
     }
@@ -61,8 +58,18 @@ public class SteamTurbineBlock extends HorizontalAxisKineticBlock implements IBE
     public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
         super.onRemove(state, level, pos, newState, moving);
         if (!level.isClientSide() && !newState.is(this)) {
-            TurbineStructure.clearAway(level, pos, state.getValue(HORIZONTAL_AXIS));
+            TurbineStructure.clearAway(level, pos, state.getValue(HORIZONTAL_FACING));
         }
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(HORIZONTAL_FACING).getAxis();
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader level, BlockPos pos, BlockState state, Direction face) {
+        return face == state.getValue(HORIZONTAL_FACING);
     }
 
     @Override

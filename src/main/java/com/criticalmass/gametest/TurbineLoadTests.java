@@ -6,7 +6,6 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.stress.BlockStressValues;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -39,7 +38,7 @@ public final class TurbineLoadTests {
     }
 
     private static SteamTurbineBlockEntity turbine(GameTestHelper h, double steam) {
-        h.setBlock(TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(TURBINE, TestVessels.turbine(Direction.EAST));
         SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
         h.onEachTick(() -> turbine.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TURBINE_CAPACITY), CMThermal.TURBINE_CAPACITY * CMThermal.SATURATION_ENERGY + steam));
         return turbine;

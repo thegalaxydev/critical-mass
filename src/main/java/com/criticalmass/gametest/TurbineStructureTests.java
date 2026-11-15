@@ -7,7 +7,6 @@ import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,6 +24,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -33,12 +33,9 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class TurbineStructureTests {
     private static final String EMPTY = "empty";
     private static final BlockPos TURBINE = new BlockPos(3, 3, 3);
+    private static final Direction[] FACINGS = {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
 
     private TurbineStructureTests() {
-    }
-
-    private static BlockState turbine(Direction.Axis axis) {
-        return CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, axis);
     }
 
     private static int parts(GameTestHelper h) {
@@ -55,21 +52,31 @@ public final class TurbineStructureTests {
         return found;
     }
 
+    private static IFluidHandler port(GameTestHelper h, BlockPos pos, Direction side) {
+        return h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(pos), side);
+    }
+
     @GameTest(template = EMPTY, timeoutTicks = 100)
-    public static void turbineFillsItsSpaceOnBothAxes(GameTestHelper h) {
-        for (Direction.Axis axis : new Direction.Axis[]{Direction.Axis.X, Direction.Axis.Z}) {
-            h.setBlock(TURBINE, turbine(axis));
+    public static void turbineFillsItsSpaceWhicheverWayItFaces(GameTestHelper h) {
+        for (Direction facing : FACINGS) {
+            Direction back = facing.getOpposite();
+            h.setBlock(TURBINE, TestVessels.turbine(facing));
             h.assertTrue(parts(h) == TurbineStructure.PARTS.size() && TurbineStructure.PARTS.size() == 22, "A placed turbine should fill 22 blocks around it, found " + parts(h));
             for (TurbineStructure.Part part : TurbineStructure.PARTS) {
-                BlockPos at = TURBINE.offset(TurbineStructure.offset(axis, part));
+                BlockPos at = TURBINE.offset(TurbineStructure.offset(facing, part));
                 BlockState state = h.getBlockState(at);
                 h.assertTrue(TurbineStructure.valid(h.getLevel(), h.absolutePos(at), state) && TurbineStructure.master(at, state).equals(TURBINE), "Every part should point back at the turbine: " + at);
             }
-            Direction along = Direction.fromAxisAndDirection(axis, Direction.AxisDirection.POSITIVE);
-            h.assertTrue(h.getBlockEntity(TURBINE.relative(along)) instanceof KineticBlockEntity && h.getBlockEntity(TURBINE.relative(along.getOpposite())) instanceof KineticBlockEntity, "Both ends on the axis should carry the shaft");
-            h.assertTrue(h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(TURBINE.above()), Direction.UP) != null, "The top part should take steam through its top face");
-            h.assertTrue(h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(TURBINE.below()), Direction.DOWN) != null, "The bottom part should give exhaust through its bottom face");
-            h.assertTrue(h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(TURBINE.above()), Direction.NORTH) == null, "A steam port only works through its outer face");
+            h.assertTrue(h.getBlockEntity(TURBINE.relative(facing)) instanceof KineticBlockEntity, "The front end should carry the shaft, facing " + facing);
+            h.assertTrue(!(h.getLevel().getBlockEntity(h.absolutePos(TURBINE.relative(back))) instanceof KineticBlockEntity), "The back end takes the pipe, not a shaft, facing " + facing);
+            h.assertTrue(port(h, TURBINE.relative(back), back) != null, "Steam should go in through the back, facing " + facing);
+            h.assertTrue(port(h, TURBINE.below(), Direction.DOWN) != null, "Exhaust should leave through the bottom");
+            h.assertTrue(port(h, TURBINE.relative(back), Direction.UP) == null && port(h, TURBINE.above(), Direction.UP) == null, "Only the back and the bottom take pipes");
+            for (TurbineStructure.Part part : TurbineStructure.PARTS) {
+                BlockPos at = TURBINE.offset(TurbineStructure.offset(facing, part));
+                boolean inFront = at.getX() * facing.getStepX() + at.getZ() * facing.getStepZ() > TURBINE.getX() * facing.getStepX() + TURBINE.getZ() * facing.getStepZ();
+                h.assertTrue((part.along() == -1) == inFront, "The big end should be the side the turbine faces: " + part + " facing " + facing);
+            }
             h.setBlock(TURBINE, Blocks.AIR);
             h.assertTrue(parts(h) == 0, "Removing the turbine should clear every part, left " + parts(h));
         }
@@ -78,7 +85,7 @@ public final class TurbineStructureTests {
 
     @GameTest(template = EMPTY, timeoutTicks = 100)
     public static void breakingAnyPartRemovesTheWholeTurbine(GameTestHelper h) {
-        h.setBlock(TURBINE, turbine(Direction.Axis.X));
+        h.setBlock(TURBINE, TestVessels.turbine(Direction.WEST));
         h.getLevel().destroyBlock(h.absolutePos(TURBINE.offset(-1, 1, 1)), false);
         h.startSequence()
                 .thenIdle(5)
@@ -93,7 +100,7 @@ public final class TurbineStructureTests {
     @GameTest(template = EMPTY, timeoutTicks = 100)
     public static void turbineWithoutRoomPopsOff(GameTestHelper h) {
         h.setBlock(TURBINE.offset(1, 0, 1), Blocks.STONE);
-        h.setBlock(TURBINE, turbine(Direction.Axis.X));
+        h.setBlock(TURBINE, TestVessels.turbine(Direction.WEST));
         h.startSequence()
                 .thenIdle(5)
                 .thenExecute(() -> {
@@ -113,7 +120,7 @@ public final class TurbineStructureTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 100)
-    public static void itemPlacesTheTurbineRestingOnTheClickedBlock(GameTestHelper h) {
+    public static void itemPlacesTheTurbineRestingOnTheClickedBlockFacingThePlayer(GameTestHelper h) {
         BlockPos floor = new BlockPos(3, 1, 3);
         h.setBlock(floor, Blocks.STONE);
         Player player = h.makeMockPlayer(GameType.CREATIVE);
@@ -125,21 +132,23 @@ public final class TurbineStructureTests {
         h.assertBlockPresent(CMBlocks.STEAM_TURBINE.get(), floor.above(2));
         h.assertBlockPresent(Blocks.STONE, floor);
         h.assertTrue(parts(h) == TurbineStructure.PARTS.size(), "The placed turbine should rest on the clicked block with all its parts, found " + parts(h));
+        h.assertTrue(TurbineStructure.facing(h.getBlockState(floor.above(2))) == player.getDirection().getOpposite(), "The big end should face the player who placed it");
         h.succeed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 200)
-    public static void shaftRunsThroughBothEnds(GameTestHelper h) {
-        h.setBlock(TURBINE, turbine(Direction.Axis.X));
+    public static void shaftComesOutOfTheFrontOnly(GameTestHelper h) {
+        h.setBlock(TURBINE, TestVessels.turbine(Direction.EAST));
         h.setBlock(TURBINE.east(2), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
         h.setBlock(TURBINE.west(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         SteamTurbineBlockEntity turbine = h.getBlockEntity(TURBINE);
         h.startSequence()
                 .thenIdle(40)
                 .thenExecute(() -> {
-                    KineticBlockEntity far = h.getBlockEntity(TURBINE.west(2));
-                    h.assertTrue(turbine.getSpeed() != 0 && far.getSpeed() == turbine.getSpeed(), "Rotation should pass from one end of the turbine to the other: " + turbine.getSpeed() + " and " + far.getSpeed());
-                    h.assertTrue(turbine.shaftConnected(), "A shaft on the end of the structure counts as connected");
+                    KineticBlockEntity behind = h.getBlockEntity(TURBINE.west(2));
+                    h.assertTrue(turbine.getSpeed() != 0, "A motor on the front should turn the rotor: " + turbine.getSpeed());
+                    h.assertTrue(behind.getSpeed() == 0, "Nothing should turn behind the turbine, where the pipe goes: " + behind.getSpeed());
+                    h.assertTrue(turbine.shaftConnected(), "A shaft on the front of the structure counts as connected");
                 })
                 .thenSucceed();
     }

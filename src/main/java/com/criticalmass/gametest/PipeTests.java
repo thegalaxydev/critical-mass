@@ -43,7 +43,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 public final class PipeTests {
     private static final String EMPTY = "empty";
     private static final String LARGE = "empty_large";
-    private static final BlockPos CREATE_PIPE = new BlockPos(8, 7, 3);
+    private static final BlockPos CREATE_PIPE = new BlockPos(8, 5, 3);
 
     private PipeTests() {
     }

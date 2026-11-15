@@ -13,7 +13,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
-import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -34,25 +34,23 @@ final class TestVessels {
     static final BlockPos TURBINE = new BlockPos(8, 5, 6);
     static final List<BlockPos> PIPES = List.of(
             new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(6, 3, 6), new BlockPos(7, 3, 6), new BlockPos(8, 3, 6),
-            new BlockPos(8, 7, 6), new BlockPos(8, 7, 5), new BlockPos(8, 7, 4), new BlockPos(8, 7, 3), new BlockPos(8, 7, 2),
-            new BlockPos(8, 7, 1), new BlockPos(8, 7, 0), new BlockPos(7, 7, 0), new BlockPos(6, 7, 0), new BlockPos(5, 7, 0),
-            new BlockPos(4, 7, 0), new BlockPos(3, 7, 0), new BlockPos(3, 6, 0), new BlockPos(3, 5, 0), new BlockPos(3, 4, 0),
-            new BlockPos(3, 3, 0));
+            new BlockPos(8, 5, 4), new BlockPos(8, 5, 3), new BlockPos(8, 5, 2), new BlockPos(8, 5, 1), new BlockPos(8, 5, 0),
+            new BlockPos(7, 5, 0), new BlockPos(6, 5, 0), new BlockPos(5, 5, 0), new BlockPos(4, 5, 0), new BlockPos(3, 5, 0),
+            new BlockPos(3, 4, 0), new BlockPos(3, 3, 0));
 
     static final BlockPos EXCHANGER = new BlockPos(6, 3, 6);
     static final BlockPos PUMP2 = new BlockPos(7, 1, 6);
     static final BlockPos MOTOR2 = new BlockPos(7, 0, 6);
     static final BlockPos PLANT_TURBINE = new BlockPos(6, 7, 6);
-    static final BlockPos PLANT_SHAFT = PLANT_TURBINE.east(2);
+    static final BlockPos PLANT_SHAFT = PLANT_TURBINE.west(2);
     static final List<BlockPos> PRIMARY_PIPES = List.of(
             new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(7, 3, 6), new BlockPos(7, 3, 5), new BlockPos(7, 3, 4),
             new BlockPos(7, 3, 3), new BlockPos(7, 3, 2), new BlockPos(7, 3, 1), new BlockPos(7, 3, 0), new BlockPos(6, 3, 0),
             new BlockPos(5, 3, 0), new BlockPos(4, 3, 0), new BlockPos(3, 3, 0));
     static final List<BlockPos> SECONDARY_PIPES = List.of(
-            new BlockPos(6, 1, 6), new BlockPos(6, 2, 6), new BlockPos(6, 4, 6), new BlockPos(6, 5, 6), new BlockPos(6, 9, 6),
-            new BlockPos(7, 9, 6), new BlockPos(8, 9, 6), new BlockPos(9, 9, 6), new BlockPos(9, 8, 6), new BlockPos(9, 7, 6),
-            new BlockPos(9, 6, 6), new BlockPos(9, 5, 6), new BlockPos(9, 4, 6), new BlockPos(9, 3, 6), new BlockPos(9, 2, 6),
-            new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
+            new BlockPos(6, 1, 6), new BlockPos(6, 2, 6), new BlockPos(6, 4, 6), new BlockPos(6, 5, 6), new BlockPos(8, 7, 6),
+            new BlockPos(9, 7, 6), new BlockPos(9, 6, 6), new BlockPos(9, 5, 6), new BlockPos(9, 4, 6), new BlockPos(9, 3, 6),
+            new BlockPos(9, 2, 6), new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
 
     static final char[][] COOLED = {
             {'c', 'f', 'c'},
@@ -135,6 +133,10 @@ final class TestVessels {
         }
     }
 
+    static BlockState turbine(Direction facing) {
+        return CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, facing);
+    }
+
     static BlockState port(Direction facing, CoolantPortBlock.Mode mode) {
         return CMBlocks.PRIMARY_COOLANT_PORT.get().defaultBlockState().setValue(FacingBlock.FACING, facing).setValue(CoolantPortBlock.MODE, mode);
     }
@@ -188,7 +190,7 @@ final class TestVessels {
         h.setBlock(EXCHANGER, CMBlocks.HEAT_EXCHANGER.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.EAST));
         h.setBlock(PUMP2, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
-        h.setBlock(PLANT_TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(PLANT_TURBINE, turbine(Direction.WEST));
         h.setBlock(PLANT_SHAFT, AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         pipes(h, PRIMARY_PIPES);
         pipes(h, SECONDARY_PIPES);
@@ -199,7 +201,7 @@ final class TestVessels {
     static void loop(GameTestHelper h, boolean motor) {
         h.setBlock(PUMP, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.EAST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
-        h.setBlock(TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
+        h.setBlock(TURBINE, turbine(Direction.SOUTH));
         pipes(h, PIPES);
         if (motor) {
             h.setBlock(MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));

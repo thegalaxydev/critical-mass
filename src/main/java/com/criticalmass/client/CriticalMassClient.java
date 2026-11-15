@@ -17,6 +17,7 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
@@ -73,7 +74,7 @@ public class CriticalMassClient {
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(CMBlockEntities.CIRCULATION_PUMP.get(), PumpRenderer::new);
-        event.registerBlockEntityRenderer(CMBlockEntities.STEAM_TURBINE.get(), ctx -> new AxialRotorRenderer<SteamTurbineBlockEntity>(ctx, CMPartialModels.STEAM_TURBINE_ROTOR, 2));
+        event.registerBlockEntityRenderer(CMBlockEntities.STEAM_TURBINE.get(), ctx -> new AxialRotorRenderer<SteamTurbineBlockEntity>(ctx, CMPartialModels.STEAM_TURBINE_ROTOR, 2, state -> TurbineStructure.facing(state).getOpposite()));
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.PLANT_SCREEN.get(), ScreenRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CENTRIFUGE.get(), ctx -> new AxialRotorRenderer<CentrifugeBlockEntity>(ctx, CMPartialModels.CENTRIFUGE_ROTOR));
@@ -100,7 +101,8 @@ public class CriticalMassClient {
                 .skipVanillaRender(be -> false)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.STEAM_TURBINE.get())
-                .factory(SingleAxisRotatingVisual.of(CMPartialModels.STEAM_TURBINE_ROTOR))
+                .factory((context, turbine, partialTick) -> new SingleAxisRotatingVisual<>(context, turbine, partialTick,
+                        TurbineStructure.facing(turbine.getBlockState()).getAxisDirection() == Direction.AxisDirection.POSITIVE ? Direction.DOWN : Direction.UP, Models.partial(CMPartialModels.STEAM_TURBINE_ROTOR)))
                 .skipVanillaRender(be -> true)
                 .apply();
     }

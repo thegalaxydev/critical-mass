@@ -148,6 +148,9 @@ def main():
     write(os.path.join(ASSETS, "models", "block", NAME + ".json"), housing)
     write(os.path.join(ASSETS, "models", "block", NAME + "_rotor.json"), rotor)
     write(os.path.join(ASSETS, "models", "item", NAME + ".json"), whole)
+    turns = {"west": 0, "north": 90, "east": 180, "south": 270}
+    variants = {"facing=" + f: ({"model": TEXTURE, "y": y} if y else {"model": TEXTURE}) for f, y in turns.items()}
+    write(os.path.join(ASSETS, "blockstates", NAME + ".json"), {"variants": variants})
     print(len(still), "fixed cubes,", len(moving), "rotor cubes")
 
 
