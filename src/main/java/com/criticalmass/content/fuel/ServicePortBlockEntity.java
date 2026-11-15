@@ -4,14 +4,17 @@ import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
-import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.List;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
@@ -21,7 +24,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
+public class ServicePortBlockEntity extends KineticBlockEntity implements IHaveGoggleInformation, Clearable {
+    public final LerpedFloat lid = LerpedFloat.linear().startWithValue(0).chase(0, 0, Chaser.LINEAR);
     private ItemStack output = ItemStack.EMPTY;
     private String status = "criticalmass.service.no_vessel";
     private final IItemHandler handler = new Handler();
@@ -45,6 +49,25 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+    }
+
+    public boolean open() {
+        return lid.getValue() >= 1;
+    }
+
+    public void setLid(boolean open) {
+        lid.startWithValue(open ? 1 : 0);
+        lid.chase(open ? 1 : 0, 0, Chaser.LINEAR);
+        setChanged();
+        sendData();
+    }
+
+    @Override
+    public void onSpeedChanged(float previousSpeed) {
+        super.onSpeedChanged(previousSpeed);
+        float speed = getSpeed();
+        lid.chase(speed > 0 ? 1 : 0, Mth.clamp(Math.abs(speed) / 16 / 10, 0, 1), Chaser.LINEAR);
+        sendData();
     }
 
     public IItemHandler handler() {
@@ -76,6 +99,9 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
     public String refuseReason(ItemStack stack) {
         if (!(stack.getItem() instanceof FuelAssemblyItem a)) {
             return "criticalmass.service.not_fuel";
+        }
+        if (!open()) {
+            return "criticalmass.service.closed";
         }
         FuelState s = FuelAssemblyItem.state(stack);
         if (a.form() == FuelAssemblyItem.Form.DAMAGED || (s != null && s.damaged())) {
@@ -112,7 +138,7 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
     }
 
     public ItemStack takeOutput(boolean simulate) {
-        if (output.isEmpty()) {
+        if (output.isEmpty() || !open()) {
             return ItemStack.EMPTY;
         }
         ItemStack out = output.copy();
@@ -127,6 +153,7 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
     @Override
     public void tick() {
         super.tick();
+        lid.tickChaser();
         if (level == null || level.isClientSide) {
             return;
         }
@@ -150,7 +177,7 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
                 next = "criticalmass.service.output_full";
             } else {
                 String blocker = c.refuelBlocker();
-                next = blocker != null ? blocker : "criticalmass.service.ready";
+                next = blocker != null ? blocker : open() ? "criticalmass.service.ready" : "criticalmass.service.closed";
             }
         }
         if (!next.equals(status)) {
@@ -180,6 +207,7 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
             tag.put("Output", output.save(registries));
         }
         tag.putString("Status", status);
+        tag.put("Lid", lid.writeNBT());
     }
 
     @Override
@@ -187,6 +215,9 @@ public class ServicePortBlockEntity extends SmartBlockEntity implements IHaveGog
         super.read(tag, registries, clientPacket);
         output = tag.contains("Output") ? ItemStack.parseOptional(registries, tag.getCompound("Output")) : ItemStack.EMPTY;
         status = tag.getString("Status");
+        if (tag.contains("Lid")) {
+            lid.readNBT(tag.getCompound("Lid"), clientPacket);
+        }
     }
 
     @Override

@@ -1,23 +1,41 @@
 package com.criticalmass.content.fuel;
 
-import com.criticalmass.content.FacingBlock;
 import com.criticalmass.registry.CMBlockEntities;
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-public class ServicePortBlock extends FacingBlock implements IBE<ServicePortBlockEntity> {
+public class ServicePortBlock extends DirectionalKineticBlock implements IBE<ServicePortBlockEntity> {
     public ServicePortBlock(Properties properties) {
         super(properties);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return defaultBlockState().setValue(FACING, context.getNearestLookingDirection().getOpposite());
+    }
+
+    @Override
+    public Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(FACING).getAxis();
+    }
+
+    @Override
+    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+        return face == state.getValue(FACING);
     }
 
     @Override
@@ -51,7 +69,7 @@ public class ServicePortBlock extends FacingBlock implements IBE<ServicePortBloc
         return onBlockEntityUse(level, pos, be -> {
             ItemStack out = be.takeOutput(false);
             if (out.isEmpty()) {
-                player.displayClientMessage(Component.translatable(be.status()), true);
+                player.displayClientMessage(Component.translatable(be.open() ? be.status() : "criticalmass.service.closed"), true);
                 return InteractionResult.PASS;
             }
             if (!player.getInventory().add(out)) {
@@ -62,7 +80,7 @@ public class ServicePortBlock extends FacingBlock implements IBE<ServicePortBloc
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
         IBE.onRemove(state, level, pos, newState);
     }
 

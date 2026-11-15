@@ -13,6 +13,7 @@ import net.neoforged.neoforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.Nullable;
 import com.criticalmass.content.radiation.RadiationEvents;
 import com.criticalmass.content.control.PlantDisplaySources;
+import com.criticalmass.content.fuel.ServicePortArmType;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.content.thermal.VesselEvents;
@@ -89,6 +90,7 @@ public class CriticalMass {
         CMComponents.COMPONENTS.register(modEventBus);
         CMAttachments.ATTACHMENTS.register(modEventBus);
         PlantDisplaySources.SOURCES.register(modEventBus);
+        ServicePortArmType.TYPES.register(modEventBus);
         PlantDisplaySources.TARGETS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);

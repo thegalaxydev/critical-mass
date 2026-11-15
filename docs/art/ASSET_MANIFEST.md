@@ -19,7 +19,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:control_channel` | `block/control_channel.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:control_rod_drive` | `block/control_rod_drive.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | The rack is static: rod insertion control is not implemented. |
 | `criticalmass:coolant_channel` | `block/coolant_channel.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:reactor_service_port` | `block/reactor_service_port.png` 16x16 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
+| `criticalmass:reactor_service_port` | `block/reactor_service_port.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:primary_coolant_port` | `block/primary_coolant_port.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:heat_exchanger` | `block/heat_exchanger.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:condenser` | `block/condenser.png` 32x32 | script | integrated | iso: yes, in_game: yes |  |
@@ -130,7 +130,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - `control_channel`: inventory = item model control_channel (parent: block model); placed = blockstate control_channel (raw); rotated pillar (axis)
 - `control_rod_drive`: inventory = item model control_rod_drive (body with Create's cogwheel); placed = blockstate control_rod_drive (horizontal)
 - `coolant_channel`: inventory = item model coolant_channel (parent: block model); placed = blockstate coolant_channel (raw); rotated pillar (axis)
-- `reactor_service_port`: inventory = item model reactor_service_port (parent: block model); placed = blockstate reactor_service_port (facing)
+- `reactor_service_port`: inventory = item model reactor_service_port (body with both doors shut); placed = blockstate reactor_service_port (facing), with the two doors drawn by the renderer; the hatch turns open and shut by rotation on its top face
 - `primary_coolant_port`: inventory = item model primary_coolant_port (parent: block model); placed = blockstate primary_coolant_port (raw); mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar
 - `heat_exchanger`: inventory = item model heat_exchanger (parent: block model); placed = blockstate heat_exchanger (horizontal)
 - `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (horizontal)

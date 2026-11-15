@@ -4,6 +4,7 @@ import com.criticalmass.content.thermal.ReactorCore;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
+import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.fuel.FuelState;
@@ -107,6 +108,7 @@ final class TestVessels {
         shell(h, MIN, 5, 5, 5);
         h.setBlock(CONTROLLER, CMBlocks.REACTOR_CONTROLLER.get().defaultBlockState().setValue(HorizontalBlock.FACING, Direction.WEST));
         h.setBlock(SERVICE, CMBlocks.REACTOR_SERVICE_PORT.get().defaultBlockState().setValue(FacingBlock.FACING, Direction.UP));
+        h.<ServicePortBlockEntity>getBlockEntity(SERVICE).setLid(true);
         h.setBlock(OUTLET, port(Direction.SOUTH, CoolantPortBlock.Mode.OUTLET));
         h.setBlock(INLET, port(Direction.NORTH, CoolantPortBlock.Mode.INLET));
         for (int i = 0; i < 3; i++) {

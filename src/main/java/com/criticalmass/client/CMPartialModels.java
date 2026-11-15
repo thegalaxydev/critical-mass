@@ -14,6 +14,8 @@ public final class CMPartialModels {
     public static final PartialModel REINFORCED_VALVE_POINTER = block("reinforced_valve/pointer");
     public static final PartialModel CENTRIFUGE_ROTOR = block("centrifuge_rotor");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
+    public static final PartialModel SERVICE_PORT_DOOR_WEST = block("reactor_service_port_door_west");
+    public static final PartialModel SERVICE_PORT_DOOR_EAST = block("reactor_service_port_door_east");
     public static final Map<String, PartialModel> DASH = pieces("dashboard_part/", "back", "body", "big_body", "slim_body", "plate", "slim_plate", "face", "button_cap", "button_big_cap",
             "lever_handle", "lever_knob", "lever_ball_base", "lever_ball_handle", "lever_ball_knob", "switch_paddle", "needle_default", "needle_classic", "needle_vertical",
             "needle_linear", "alarm_lamp", "alarm_cage");

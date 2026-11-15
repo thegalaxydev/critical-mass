@@ -856,6 +856,7 @@ def start(w):
     cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]" % facing) for pos, facing in DRIVES]
     cmds += [setblock(w, pos, "create:cogwheel[axis=y]") for pos in DRIVE_COGS]
     cmds += [setblock(w, DRIVE_MOTOR, "create:creative_motor[facing=down]")]
+    cmds += [setblock(w, (SERVICE[0], SERVICE[1] + 1, SERVICE[2]), "create:copper_valve_handle[facing=up]")]
     return cmds
 
 

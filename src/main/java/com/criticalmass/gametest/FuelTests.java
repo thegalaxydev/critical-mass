@@ -1,5 +1,11 @@
 package com.criticalmass.gametest;
 
+import com.criticalmass.content.fuel.ServicePortArmType;
+import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.content.kinetics.mechanicalArm.ArmInteractionPointType;
+import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
+import net.minecraft.core.Direction;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
@@ -159,6 +165,40 @@ public final class FuelTests {
                 })
                 .thenIdle(3)
                 .thenExecute(() -> h.assertTrue(c.isTripped() && c.tripReason().equals("fuel_failure"), "Fuel failure should trip: " + c.tripReason()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 300)
+    public static void servicePortHatchTurnsOpenAndShut(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.COOLED, false);
+        ServicePortBlockEntity port = h.getBlockEntity(TestVessels.SERVICE);
+        port.setLid(false);
+        ItemStack fuel = FuelAssemblyItem.stackFor(FuelState.fresh());
+        h.assertTrue("criticalmass.service.closed".equals(port.refuseReason(fuel)), "A shut hatch should refuse fuel: " + port.refuseReason(fuel));
+        h.assertTrue(port.insert(fuel, true).getCount() == fuel.getCount(), "A shut hatch should take nothing");
+        BlockPos above = TestVessels.SERVICE.above();
+        h.setBlock(above, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(above);
+        motor.generatedSpeed.setValue(64);
+        boolean[] first = new boolean[1];
+        h.startSequence()
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    first[0] = port.open();
+                    motor.generatedSpeed.setValue(-64);
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(first[0] != port.open(), "Turning one way should open the hatch and the other way shut it: " + first[0] + " then " + port.open());
+                    motor.generatedSpeed.setValue(first[0] ? 64 : -64);
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(port.open(), "Turning it back should open the hatch again");
+                    h.assertTrue(port.refuseReason(fuel) == null, "An open hatch on a cold vessel should take fuel: " + port.refuseReason(fuel));
+                    BlockPos at = h.absolutePos(TestVessels.SERVICE);
+                    h.assertTrue(ArmInteractionPointType.getPrimaryType(h.getLevel(), at, h.getLevel().getBlockState(at)) instanceof ServicePortArmType, "A Mechanical Arm should be able to pick the port as a target");
+                })
                 .thenSucceed();
     }
 

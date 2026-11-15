@@ -253,6 +253,7 @@
   "criticalmass.service.no_channel": "Refused: every fuel channel is loaded",
   "criticalmass.service.output_full": "Refueling blocked: remove the assembly waiting in the port",
   "criticalmass.service.ready": "Ready for fuel",
+  "criticalmass.service.closed": "The hatch is closed: turn it open with a Valve Handle on top",
   "criticalmass.service.not_fuel": "Only fuel assemblies fit the service port",
   "criticalmass.service.damaged": "Damaged fuel can never be reinserted",
   "criticalmass.service.spent": "Spent fuel cannot be reinserted",

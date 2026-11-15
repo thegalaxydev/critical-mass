@@ -224,7 +224,6 @@ def shielded_hatch(jar):
 
 TEXTURES = {
     "reactor_controller": controller,
-    "reactor_service_port": service_port,
     "reactor_signal_interface": signal_interface,
     "primary_coolant_port": coolant_port,
     "shielded_hatch": shielded_hatch,

@@ -38,7 +38,7 @@ Values live in `content/thermal/CMThermal.java`.
 **Vessel.** A vessel is a box of Reactor Vessel Casing, odd on every side, from 5x5x5 up to 11x11x13.
 - Exactly one Reactor Controller sits on a side face and faces outward.
 - A Primary Coolant Port set to inlet and one set to outlet go on faces, facing outward (toggle with a wrench).
-- A Reactor Service Port goes on the top face, facing up.
+- A Reactor Service Port goes on the top face, facing up. Its hatch is shut until it is turned open: put a Valve Handle on top and use it to open the hatch, and sneak-use it to shut it again. A shaft from above does the same, by its direction. Fuel goes in and comes out only while the hatch is open, by hand, by a funnel or hopper, or by a Mechanical Arm, which can pick the port as a target.
 - Only casing may sit on edges and corners.
 - The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed. Each channel is an open bundle of rods between two end plates, so you can see through a column to the ones behind it.
 

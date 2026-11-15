@@ -1,0 +1,43 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/reactor_service_port",
+  "particle": "criticalmass:block/reactor_vessel_casing"
+ },
+ "elements": [
+  {
+   "name": "door_turned",
+   "from": [
+    9,
+    14,
+    4
+   ],
+   "to": [
+    12,
+    15,
+    12
+   ],
+   "faces": {
+    "west": {
+     "uv": [
+      2,
+      10,
+      6,
+      10.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0,
+      10,
+      1.5,
+      14
+     ],
+     "texture": "#0",
+     "rotation": 180
+    }
+   }
+  }
+ ]
+}

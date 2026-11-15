@@ -23,7 +23,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Cooling Tower Packing | Author | `art/originals/cooling_tower*.png`, `art/blockbench/cooling_tower_packing*.bbmodel` |
 | Steam Turbine | Author's model, script texture | `art/tools/turbine_texture.py`, painted from the author's textures at the author's request |
 | Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
-| Reactor Controller, Reactor Service Port, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
+| Reactor Controller, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
+| Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
@@ -43,7 +44,7 @@ This table is the current state and overrides anything further down. Only the ro
 ## Script-painted block textures (2026-10-19)
 
 `art/tools/handmade.py` draws these from Create textures (MIT) plus pixels the script places, replacing the earlier generated versions. They are placeholders, not the author's art:
-- `reactor_controller`, `reactor_service_port`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a round brass-rimmed hatch, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
+- `reactor_controller`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
@@ -599,21 +600,12 @@ Front face of the reactor controller, set into riveted iron casing: brass facepl
 
 ## reactor_service_port
 
-- Used by: `textures/block/reactor_service_port.png`
-- Raw output: `art/generated/reactor_service_port-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: reactor service port, 16x16 game pixels.
-Front face of the reactor fuel service port in riveted iron casing: a large round brass-ringed hatch with a second inner brass ring, a vertical brass locking bar across it and four bolts.
-
-```
+- Used by: `textures/block/reactor_service_port.png` and the port's body, door and item models
+- Source: `art/blockbench/reactor_service_port.bbmodel`, modelled with the hatch facing up. The group `body` is the shell, a steel hatch ring round a dark well, a bar across the well and a brass-ringed boss on the bar where a Valve Handle or a shaft turns the hatch. The group `door_west` is one sliding door; the exporter mirrors it for the other side, and the renderer slides the pair apart under the ring as the hatch opens.
+- Texture: the four sides and the underside use the author's Reactor Vessel Casing texture directly, so the port sits in the vessel wall like the casing round it. `art/tools/service_port_texture.py` paints the small sheet for the top: the ring is the author's Steel Block, the well and doors are the casing's inset tones, the bar is steel and the boss is brass.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/service_port_model.py` then exports the models and the blockstate.
+- Date: 2026-11-15
 
 ## reactor_signal_interface
 
