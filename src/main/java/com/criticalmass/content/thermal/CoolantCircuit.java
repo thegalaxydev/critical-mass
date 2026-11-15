@@ -165,6 +165,9 @@ public final class CoolantCircuit {
                     return w.fail("criticalmass.circuit.wrong_face", next);
                 }
                 Direction exit = turbine.passThroughExit(back);
+                if (exit == null) {
+                    return w.fail(turbine.exhausts() > 1 ? "criticalmass.circuit.branch" : "criticalmass.circuit.open_end", next);
+                }
                 w.hops.add(new Hop(master, downstream ? back : exit));
                 cur = master.relative(exit);
                 d = exit;

@@ -37,7 +37,7 @@ KINETIC = {
         "block_class": "HorizontalKineticBlock (blockstate property 'facing' = the side the big end and the shaft face)",
         "shaft_faces": "the front end of the three-block structure, through a shaft pass-through part",
         "axis": "horizontal, along the facing",
-        "placement": "big end faces the player; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes in through the back-centre part and out through the bottom-centre part",
+        "placement": "big end faces the player; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes in through the back-centre part and out through the bottom-centre or top-centre part, whichever has a pipe, and an exhaust duct shows only there",
         "rotating": "steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front and the side windows",
         "stationary": "three stepped octagonal casing rings with an open framed window in each side, five stator rings and the back plate",
         "direction": "rotor follows network speed and direction 1:1",

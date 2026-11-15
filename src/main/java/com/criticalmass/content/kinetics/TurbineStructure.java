@@ -1,5 +1,6 @@
 package com.criticalmass.content.kinetics;
 
+import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import java.util.ArrayList;
@@ -9,14 +10,17 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 public final class TurbineStructure {
@@ -24,9 +28,10 @@ public final class TurbineStructure {
     public static final IntegerProperty ALONG = IntegerProperty.create("along", 0, 2);
     public static final IntegerProperty ACROSS = IntegerProperty.create("across", 0, 2);
     public static final IntegerProperty RISE = IntegerProperty.create("rise", 0, 2);
+    public static final BooleanProperty DUCT = BooleanProperty.create("duct");
     private static final double[] APOTHEM = {19.3137, 15.3137, 11.3137};
     private static final double[] WINDOW = {5, 3.3431, 1.6863};
-    private static final VoxelShape[] SHAPES = new VoxelShape[108];
+    private static final VoxelShape[] SHAPES = new VoxelShape[216];
 
     public record Part(int along, int across, int rise) {
     }
@@ -103,7 +108,30 @@ public final class TurbineStructure {
         if (p.along() == 1 && p.rise() == 0) {
             return state.getValue(FACING).getOpposite();
         }
-        return p.along() == 0 && p.rise() == -1 ? Direction.DOWN : null;
+        return ductFace(state);
+    }
+
+    @Nullable
+    public static Direction ductFace(BlockState state) {
+        Part p = part(state);
+        if (p.along() != 0 || p.across() != 0 || p.rise() == 0) {
+            return null;
+        }
+        return p.rise() > 0 ? Direction.UP : Direction.DOWN;
+    }
+
+    public static boolean piped(LevelAccessor level, BlockPos port, Direction face) {
+        BlockPos at = port.relative(face);
+        BlockState state = level.getBlockState(at);
+        if (PipeCoolant.isPipe(state)) {
+            return PipeCoolant.open(level, at, state, face.getOpposite());
+        }
+        return level instanceof Level real && real.getCapability(Capabilities.FluidHandler.BLOCK, at, face.getOpposite()) != null;
+    }
+
+    public static boolean hasDuct(BlockGetter level, BlockPos master, Direction face) {
+        BlockState state = level.getBlockState(master.relative(face));
+        return state.getBlock() instanceof SteamTurbineStructuralBlock && state.getValue(DUCT) && ductFace(state) == face;
     }
 
     public static boolean clear(BlockGetter level, BlockPos master, Direction facing) {
@@ -118,13 +146,17 @@ public final class TurbineStructure {
     public static boolean build(Level level, BlockPos master, Direction facing) {
         for (Part part : PARTS) {
             BlockPos at = master.offset(offset(facing, part));
-            BlockState wanted = state(facing, part);
             BlockState found = level.getBlockState(at);
-            if (found == wanted) {
+            if (found.getBlock() instanceof SteamTurbineStructuralBlock && found.getValue(FACING) == facing && part(found).equals(part)) {
                 continue;
             }
             if (!found.canBeReplaced()) {
                 return false;
+            }
+            BlockState wanted = state(facing, part);
+            Direction duct = ductFace(wanted);
+            if (duct != null) {
+                wanted = wanted.setValue(DUCT, piped(level, at, duct));
             }
             level.setBlock(at, wanted, Block.UPDATE_ALL);
         }
@@ -154,16 +186,17 @@ public final class TurbineStructure {
 
     public static VoxelShape shape(BlockState state) {
         Direction facing = state.getValue(FACING);
-        int index = facing.get2DDataValue() * 27 + state.getValue(ALONG) * 9 + state.getValue(ACROSS) * 3 + state.getValue(RISE);
+        boolean duct = state.getValue(DUCT) && ductFace(state) != null;
+        int index = (duct ? 108 : 0) + facing.get2DDataValue() * 27 + state.getValue(ALONG) * 9 + state.getValue(ACROSS) * 3 + state.getValue(RISE);
         VoxelShape shape = SHAPES[index];
         if (shape == null) {
-            shape = build(facing, part(state));
+            shape = build(facing, part(state), duct);
             SHAPES[index] = shape;
         }
         return shape;
     }
 
-    private static VoxelShape build(Direction facing, Part part) {
+    private static VoxelShape build(Direction facing, Part part, boolean duct) {
         if (part.across() == 0 && part.rise() == 0) {
             return Shapes.block();
         }
@@ -180,8 +213,8 @@ public final class TurbineStructure {
             double half = WINDOW[part.along() + 1];
             shape = Shapes.join(shape, box(facing, 2, 8 - half, z[0], 14, 8 + half, z[1]), BooleanOp.ONLY_FIRST);
         }
-        if (part.along() == 0 && part.across() == 0 && part.rise() == -1) {
-            shape = Shapes.or(shape, box(facing, 4, 0, 4, 12, y[0], 12));
+        if (duct) {
+            shape = Shapes.or(shape, part.rise() < 0 ? box(facing, 4, 0, 4, 12, y[0], 12) : box(facing, 4, y[1], 4, 12, 16, 12));
         }
         return shape;
     }

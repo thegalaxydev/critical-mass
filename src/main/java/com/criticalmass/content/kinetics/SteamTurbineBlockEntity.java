@@ -127,10 +127,26 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     @Nullable
     public Direction passThroughExit(Direction enteredFrom) {
         Direction back = TurbineStructure.facing(getBlockState()).getOpposite();
+        Direction exhaust = exhaust();
         if (enteredFrom == back) {
-            return Direction.DOWN;
+            return exhaust;
         }
-        return enteredFrom == Direction.DOWN ? back : null;
+        return exhaust != null && enteredFrom == exhaust ? back : null;
+    }
+
+    public int exhausts() {
+        if (level == null) {
+            return 0;
+        }
+        return (TurbineStructure.hasDuct(level, worldPosition, Direction.DOWN) ? 1 : 0) + (TurbineStructure.hasDuct(level, worldPosition, Direction.UP) ? 1 : 0);
+    }
+
+    @Nullable
+    private Direction exhaust() {
+        if (exhausts() != 1) {
+            return null;
+        }
+        return TurbineStructure.hasDuct(level, worldPosition, Direction.DOWN) ? Direction.DOWN : Direction.UP;
     }
 
     public double heatRate() {

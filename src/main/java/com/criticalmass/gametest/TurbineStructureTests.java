@@ -8,6 +8,7 @@ import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -70,8 +71,8 @@ public final class TurbineStructureTests {
             h.assertTrue(h.getBlockEntity(TURBINE.relative(facing)) instanceof KineticBlockEntity, "The front end should carry the shaft, facing " + facing);
             h.assertTrue(!(h.getLevel().getBlockEntity(h.absolutePos(TURBINE.relative(back))) instanceof KineticBlockEntity), "The back end takes the pipe, not a shaft, facing " + facing);
             h.assertTrue(port(h, TURBINE.relative(back), back) != null, "Steam should go in through the back, facing " + facing);
-            h.assertTrue(port(h, TURBINE.below(), Direction.DOWN) != null, "Exhaust should leave through the bottom");
-            h.assertTrue(port(h, TURBINE.relative(back), Direction.UP) == null && port(h, TURBINE.above(), Direction.UP) == null, "Only the back and the bottom take pipes");
+            h.assertTrue(port(h, TURBINE.below(), Direction.DOWN) != null && port(h, TURBINE.above(), Direction.UP) != null, "Exhaust should be able to leave through the bottom or the top");
+            h.assertTrue(port(h, TURBINE.relative(back), Direction.UP) == null && port(h, TURBINE.above(), facing) == null && port(h, TURBINE.relative(facing.getClockWise()), facing.getClockWise()) == null, "Only the back, the top and the bottom take pipes");
             for (TurbineStructure.Part part : TurbineStructure.PARTS) {
                 BlockPos at = TURBINE.offset(TurbineStructure.offset(facing, part));
                 boolean inFront = at.getX() * facing.getStepX() + at.getZ() * facing.getStepZ() > TURBINE.getX() * facing.getStepX() + TURBINE.getZ() * facing.getStepZ();
@@ -110,6 +111,31 @@ public final class TurbineStructureTests {
                     h.assertItemEntityCountIs(CMBlocks.STEAM_TURBINE.get().asItem(), TURBINE, 4, 1);
                 })
                 .thenSucceed();
+    }
+
+    private static boolean duct(GameTestHelper h, BlockPos part) {
+        return h.getBlockState(part).getValue(TurbineStructure.DUCT);
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void exhaustDuctShowsOnlyWhereAPipeIsAttached(GameTestHelper h) {
+        BlockPos centre = new BlockPos(3, 4, 3);
+        h.setBlock(centre, TestVessels.turbine(Direction.EAST));
+        SteamTurbineBlockEntity turbine = h.getBlockEntity(centre);
+        h.assertTrue(!duct(h, centre.below()) && !duct(h, centre.above()) && turbine.exhausts() == 0, "A turbine with no exhaust pipe should show no duct");
+        h.assertTrue(turbine.passThroughExit(Direction.WEST) == null, "Steam has nowhere to go without an exhaust pipe");
+        TestVessels.pipes(h, List.of(centre.below(2), centre.below(3)));
+        h.assertTrue(duct(h, centre.below()) && !duct(h, centre.above()), "A pipe underneath should bring out the bottom duct only");
+        h.assertTrue(turbine.passThroughExit(Direction.WEST) == Direction.DOWN && turbine.passThroughExit(Direction.DOWN) == Direction.WEST, "Steam from the back should leave through the piped bottom");
+        TestVessels.pipes(h, List.of(centre.above(2), centre.above(3)));
+        h.assertTrue(duct(h, centre.below()) && duct(h, centre.above()) && turbine.exhausts() == 2, "A second pipe on top should bring out the top duct too");
+        h.assertTrue(turbine.passThroughExit(Direction.WEST) == null, "Two exhaust pipes give the loop two ways out, which it cannot follow");
+        h.setBlock(centre.below(2), Blocks.AIR);
+        h.assertTrue(!duct(h, centre.below()) && duct(h, centre.above()), "Taking the bottom pipe away should put its duct away");
+        h.assertTrue(turbine.passThroughExit(Direction.WEST) == Direction.UP && turbine.passThroughExit(Direction.UP) == Direction.WEST, "Steam from the back should then leave through the top");
+        h.setBlock(centre.above(2), Blocks.AIR);
+        h.assertTrue(!duct(h, centre.above()) && turbine.exhausts() == 0, "With both pipes gone there should be no duct");
+        h.succeed();
     }
 
     private static InteractionResult useOnTop(GameTestHelper h, Player player, BlockPos clicked) {

@@ -139,7 +139,8 @@ def main():
     scale = 16.0 / project["textures"][0].get("uv_width", project["resolution"]["width"])
     moving = [c for c in project["elements"] if c["name"].startswith(("rotor", "shaft"))]
     glass = [c for c in project["elements"] if c["name"].startswith("window_glass")]
-    still = [c for c in project["elements"] if c not in moving and c not in glass]
+    ducts = [c for c in project["elements"] if c["name"] == "exhaust_duct"]
+    still = [c for c in project["elements"] if c not in moving and c not in glass and c not in ducts]
     with open(os.path.join(ASSETS, "textures", "block", NAME + ".png"), "wb") as f:
         f.write(base64.b64decode(project["textures"][0]["source"].split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
@@ -151,6 +152,12 @@ def main():
     write(os.path.join(ASSETS, "models", "block", NAME + ".json"), housing)
     write(os.path.join(ASSETS, "models", "block", NAME + "_glass.json"), panes)
     write(os.path.join(ASSETS, "models", "block", NAME + "_rotor.json"), rotor)
+    lifted = [dict(c, **{"from": [c["from"][0], c["from"][1] + 16, c["from"][2]], "to": [c["to"][0], c["to"][1] + 16, c["to"][2]]}) for c in ducts]
+    write(os.path.join(ASSETS, "models", "block", NAME + "_exhaust.json"), dict(base, elements=[element(c, scale) for c in lifted]))
+    exhaust = TEXTURE + "_exhaust"
+    write(os.path.join(ASSETS, "blockstates", NAME + "_structure.json"), {"multipart": [
+        {"when": {"duct": "true", "rise": "0"}, "apply": {"model": exhaust}},
+        {"when": {"duct": "true", "rise": "2"}, "apply": {"model": exhaust, "x": 180}}]})
     write(os.path.join(ASSETS, "models", "item", NAME + ".json"), whole)
     turns = {"west": 0, "north": 90, "east": 180, "south": 270}
     parts = []
@@ -158,7 +165,7 @@ def main():
         for model in (TEXTURE, TEXTURE + "_glass"):
             parts.append({"when": {"facing": f}, "apply": {"model": model, "y": y} if y else {"model": model}})
     write(os.path.join(ASSETS, "blockstates", NAME + ".json"), {"multipart": parts})
-    print(len(still), "fixed cubes,", len(glass), "glass panes,", len(moving), "rotor cubes")
+    print(len(still), "fixed cubes,", len(glass), "glass panes,", len(ducts), "exhaust duct,", len(moving), "rotor cubes")
 
 
 if __name__ == "__main__":

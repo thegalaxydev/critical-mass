@@ -38,17 +38,17 @@ import org.jetbrains.annotations.Nullable;
 public class SteamTurbineStructuralBlock extends KineticBlock implements EntityBlock, IProxyHoveringInformation {
     public SteamTurbineStructuralBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(TurbineStructure.FACING, Direction.NORTH).setValue(TurbineStructure.ALONG, 1).setValue(TurbineStructure.ACROSS, 1).setValue(TurbineStructure.RISE, 0));
+        registerDefaultState(defaultBlockState().setValue(TurbineStructure.FACING, Direction.NORTH).setValue(TurbineStructure.ALONG, 1).setValue(TurbineStructure.ACROSS, 1).setValue(TurbineStructure.RISE, 0).setValue(TurbineStructure.DUCT, false));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        super.createBlockStateDefinition(builder.add(TurbineStructure.FACING, TurbineStructure.ALONG, TurbineStructure.ACROSS, TurbineStructure.RISE));
+        super.createBlockStateDefinition(builder.add(TurbineStructure.FACING, TurbineStructure.ALONG, TurbineStructure.ACROSS, TurbineStructure.RISE, TurbineStructure.DUCT));
     }
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.INVISIBLE;
+        return state.getValue(TurbineStructure.DUCT) ? RenderShape.MODEL : RenderShape.INVISIBLE;
     }
 
     @Override
@@ -139,7 +139,8 @@ public class SteamTurbineStructuralBlock extends KineticBlock implements EntityB
         if (level instanceof Level real && !real.isClientSide() && !TurbineStructure.valid(level, pos, state) && !real.getBlockTicks().hasScheduledTick(pos, this)) {
             real.scheduleTick(pos, this, 1);
         }
-        return state;
+        Direction duct = TurbineStructure.ductFace(state);
+        return duct != null && direction == duct ? state.setValue(TurbineStructure.DUCT, TurbineStructure.piped(level, pos, duct)) : state;
     }
 
     @Override

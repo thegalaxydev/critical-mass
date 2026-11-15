@@ -1,7 +1,23 @@
 {
- "variants": {
-  "": {
-   "model": "minecraft:block/air"
+ "multipart": [
+  {
+   "when": {
+    "duct": "true",
+    "rise": "0"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_exhaust"
+   }
+  },
+  {
+   "when": {
+    "duct": "true",
+    "rise": "2"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_exhaust",
+    "x": 180
+   }
   }
- }
+ ]
 }
