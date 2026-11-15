@@ -13,7 +13,7 @@ GLOW_LEVELS = 3
 
 def cut(element, level):
     if level == ROD_LEVELS:
-        return dict(element)
+        return dict(element, faces={d: f for d, f in element["faces"].items() if d != "down"})
     frm, to = element["from"], element["to"]
     height = to[1] - frm[1]
     keep = height * level / ROD_LEVELS
@@ -44,7 +44,7 @@ def main():
     for level in range(ROD_LEVELS + 1):
         rod = [cut(e, level) for e in parts["rod"]] if level else []
         bbmodel.write(os.path.join(BLOCK, "control_channel_rod_%d.json" % level), bbmodel.model(parts["frame"] + rod, textures, textures["0"]))
-    bbmodel.write(os.path.join(BLOCK, "control_channel.json"), bbmodel.model(parts["frame"] + parts["rod"], textures, textures["0"]))
+    bbmodel.write(os.path.join(BLOCK, "control_channel.json"), bbmodel.model(parts["frame"] + [cut(e, ROD_LEVELS) for e in parts["rod"]], textures, textures["0"]))
     parts, textures = whole("coolant_channel", ("frame", "tubes"))
     bbmodel.write(os.path.join(BLOCK, "coolant_channel.json"), bbmodel.model(parts["frame"] + parts["tubes"], textures, textures["0"]))
     print("exported the channel models")
