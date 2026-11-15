@@ -52,10 +52,10 @@ public final class CMBlocks {
     public static final DeferredBlock<VesselCasingBlock> REACTOR_VESSEL_CASING = register("reactor_vessel_casing", VesselCasingBlock::new, metal(5.0f));
     public static final DeferredBlock<ReactorControllerBlock> REACTOR_CONTROLLER = register("reactor_controller", ReactorControllerBlock::new, metal(5.0f));
     public static final DeferredBlock<ChannelBlocks.Viewport> REACTOR_VIEWPORT = register("reactor_viewport", ChannelBlocks.Viewport::new, metal(5.0f).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
-    public static final DeferredBlock<ChannelBlocks.Fuel> FUEL_CHANNEL = register("fuel_channel", ChannelBlocks.Fuel::new, metal(4.0f));
-    public static final DeferredBlock<ChannelBlocks.Control> CONTROL_CHANNEL = register("control_channel", ChannelBlocks.Control::new, metal(4.0f));
+    public static final DeferredBlock<ChannelBlocks.Fuel> FUEL_CHANNEL = register("fuel_channel", ChannelBlocks.Fuel::new, metal(4.0f).noOcclusion());
+    public static final DeferredBlock<ChannelBlocks.Control> CONTROL_CHANNEL = register("control_channel", ChannelBlocks.Control::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<ControlRodDriveBlock> CONTROL_ROD_DRIVE = register("control_rod_drive", ControlRodDriveBlock::new, metal(3.5f).noOcclusion());
-    public static final DeferredBlock<RotatedPillarBlock> COOLANT_CHANNEL = register("coolant_channel", RotatedPillarBlock::new, metal(4.0f));
+    public static final DeferredBlock<RotatedPillarBlock> COOLANT_CHANNEL = register("coolant_channel", RotatedPillarBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<ServicePortBlock> REACTOR_SERVICE_PORT = register("reactor_service_port", ServicePortBlock::new, metal(5.0f));
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
@@ -63,7 +63,7 @@ public final class CMBlocks {
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
     public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
-    public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f));
+    public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));
     public static final DeferredBlock<SteamTurbineStructuralBlock> STEAM_TURBINE_STRUCTURE = BLOCKS.register("steam_turbine_structure",

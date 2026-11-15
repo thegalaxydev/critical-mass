@@ -25,9 +25,10 @@ This table is the current state and overrides anything further down. Only the ro
 | Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
 | Reactor Controller, Reactor Service Port, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
-| Fuel, Control and Coolant Channel, Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
+| Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
+| Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
-| Reactor Viewport and its cracked stages, the rod and glow channel variants, Centrifuge, Pressurizer, Ruined Fuel Channel, Corium | Script | `art/tools/plant_blocks.py` |
+| Reactor Viewport and its cracked stages, Centrifuge, Pressurizer, Corium | Script | `art/tools/plant_blocks.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
@@ -45,7 +46,7 @@ This table is the current state and overrides anything further down. Only the ro
 - `reactor_controller`, `reactor_service_port`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a round brass-rimmed hatch, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -167,24 +168,6 @@ Atlas for a steam condenser block: sides with horizontal copper cooling-coil fin
 
 ```
 
-## control_channel
-
-- Used by: `textures/block/control_channel.png`
-- Raw output: `art/generated/control_channel-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: control channel, 32x32 game pixels.
-Reactor control-rod channel column. Side: dark steel frame with a recessed window showing dark lead-grey absorber rods and a narrow brass insertion-position strip on the right with a small amber marker. Top/bottom: 3x3 grid of dark absorber rod ends.
-
-```
-
 ## control_rod_drive
 
 - Used by: `textures/block/control_rod_drive.png`, `textures/block/control_rod_shaft.png` and the drive's block and item models
@@ -193,24 +176,6 @@ Reactor control-rod channel column. Side: dark steel frame with a recessed windo
 - Status: script-painted placeholder, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/rod_drive_model.py` then exports the models.
 - Date: 2026-11-15
-
-## coolant_channel
-
-- Used by: `textures/block/coolant_channel.png`
-- Raw output: `art/generated/coolant_channel-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: coolant channel, 32x32 game pixels.
-Reactor coolant channel column. Side: dark steel frame with a recessed window showing vertical copper coolant pipes. Top/bottom: steel plate with four copper-rimmed coolant bores (black holes).
-
-```
 
 ## cooling_tower_packing
 
@@ -314,23 +279,14 @@ Atlas for a fuel assembly workbench: dark wooden worktop with a steel tray holdi
 
 ```
 
-## fuel_channel
+## fuel_channel, control_channel, coolant_channel and ruined_channel
 
-- Used by: `textures/block/fuel_channel.png`
-- Raw output: `art/generated/fuel_channel-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: fuel channel, 32x32 game pixels.
-Reactor fuel channel column. Side: dark steel frame with an iron border and a recessed vertical window showing pale ceramic fuel rods behind two bright iron spacer bands. Top/bottom: iron-framed steel plate with a 3x3 grid of ceramic fuel-rod ends.
-
-```
+- Used by: `textures/block/fuel_channel.png`, `fuel_channel_glow_1.png` to `_3.png`, `control_channel.png`, `coolant_channel.png`, `ruined_channel.png` and the channels' models
+- Source: `art/blockbench/fuel_channel.bbmodel` (groups `plates` and `rods`), `control_channel.bbmodel` (`frame` and `rod`) and `coolant_channel.bbmodel` (`frame` and `tubes`). Each channel is two thin end plates with real rods between them, so a stack reads as rods running through spacer grids and a viewport shows the rows behind. Fuel is nine silver rods between gold plates, after the author's fuel assembly and Control Rod icons. Control is four guide tubes round a gold absorber rod, which the exporter cuts to five lengths for the rod states. Coolant is four copper tubes.
+- Texture: `art/tools/channel_texture.py` paints flat ramps only. The silver and gold are sampled from the author's Control Rod icon, the dark plates and guide tubes from the author's Reactor Vessel Casing, the copper from `docs/art/palette.json`. The three glow sheets recolour only the rods. The Ruined Fuel Channel is the fuel layout in scorched tones.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/channel_model.py` then exports the models.
+- Date: 2026-11-15
 
 ## heat_exchanger
 
@@ -754,8 +710,8 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 
 ## Overhaul blocks (script-painted)
 
-- Used by: `textures/block/reactor_viewport*.png`, `control_channel_rod_*.png`, `fuel_channel_glow_*.png`, `control_rod_shaft.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `ruined_channel.png`, `textures/item/plant_linker.png`
-- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The channel variants are recolours of the script-painted channel textures, and the cracked viewports use the casing crack overlays.
+- Used by: `textures/block/reactor_viewport*.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `textures/item/plant_linker.png`
+- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The cracked viewports use the casing crack overlays.
 
 ## Plant Screen frame
 

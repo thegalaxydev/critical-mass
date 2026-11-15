@@ -4,6 +4,7 @@ import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.VesselStructure;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.VesselCasingBlock;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
@@ -111,7 +112,7 @@ public final class Radiation {
         if (state.getFluidState().is(FluidTags.WATER)) {
             return CMConfig.get(CMConfig.SHIELD_WATER);
         }
-        if (state.isSolidRender(level, pos)) {
+        if (state.isSolidRender(level, pos) || VesselStructure.channelKind(state.getBlock()) != VesselStructure.Kind.NONE || state.is(CMBlocks.RUINED_CHANNEL.get())) {
             return CMConfig.get(CMConfig.SHIELD_SOLID);
         }
         return 0;

@@ -40,7 +40,7 @@ Values live in `content/thermal/CMThermal.java`.
 - A Primary Coolant Port set to inlet and one set to outlet go on faces, facing outward (toggle with a wrench).
 - A Reactor Service Port goes on the top face, facing up.
 - Only casing may sit on edges and corners.
-- The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed.
+- The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed. Each channel is an open bundle of rods between two end plates, so you can see through a column to the ones behind it.
 
 With goggles on, invalid blocks are outlined in red, and the controller lists problems and missing parts.
 

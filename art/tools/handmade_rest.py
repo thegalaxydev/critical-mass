@@ -322,9 +322,6 @@ def instrument_panel(jar):
 
 
 REST = {
-    "fuel_channel": fuel_channel,
-    "control_channel": control_channel,
-    "coolant_channel": coolant_channel,
     "spent_fuel_rack": spent_rack,
     "shielded_cask": cask,
 }

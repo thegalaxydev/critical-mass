@@ -95,63 +95,6 @@ GLOWS = {1: {(0x17, 0x19, 0x1c): (14, 44, 84), (0x1e, 0x21, 0x26): (18, 54, 98),
          3: {(0x17, 0x19, 0x1c): (126, 34, 14), (0x1e, 0x21, 0x26): (146, 44, 16), (0x23, 0x26, 0x2b): (136, 38, 14), (0xd2, 0xc7, 0xb4): (255, 226, 160), (0x8f, 0x82, 0x73): (244, 150, 70)}}
 
 
-def channel_variants():
-    control = Image.open(os.path.join(OUT, "control_channel.png")).convert("RGBA")
-    for level in range(5):
-        img = control.copy()
-        rows = round(10 * level / 4)
-        for y in range(3, 13):
-            if y == 7:
-                continue
-            if y - 3 >= rows:
-                for x in (4, 5, 7, 8):
-                    put(img, x, y, WINDOW_DARK)
-            put(img, 11, y, (0xf7, 0xcb, 0x6c))
-            put(img, 12, y, (0x9e, 0x69, 0x47))
-        marker = 3 + min(9, rows)
-        if marker == 7:
-            marker = 8
-        put(img, 11, marker, (0xff, 0xbe, 0x4a))
-        put(img, 12, marker, (0xd8, 0x8a, 0x1c))
-        name = "control_channel_rod_%d" % level
-        img.save(os.path.join(OUT, name + ".png"))
-        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": M + "block/control_channel", "textures": {"0": M + "block/" + name, "particle": M + "block/" + name}})
-    write(os.path.join(ASSETS, "blockstates", "control_channel.json"), {"variants": {
-        "axis=%s,rod=%d" % (axis, level): dict({"model": M + "block/control_channel_rod_%d" % level}, **rot) for axis, rot in PILLAR.items() for level in range(5)}})
-    fuel = Image.open(os.path.join(OUT, "fuel_channel.png")).convert("RGBA")
-    for level, table in GLOWS.items():
-        img = fuel.copy()
-        for y in range(img.height):
-            for x in range(img.width):
-                c = img.getpixel((x, y))[:3]
-                if c in table:
-                    put(img, x, y, table[c])
-        name = "fuel_channel_glow_%d" % level
-        img.save(os.path.join(OUT, name + ".png"))
-        write(os.path.join(ASSETS, "models", "block", name + ".json"), {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/" + name, "particle": M + "block/" + name}})
-    write(os.path.join(ASSETS, "blockstates", "fuel_channel.json"), {"variants": {
-        "axis=%s,glow=%d" % (axis, level): dict({"model": M + "block/" + ("fuel_channel" if level == 0 else "fuel_channel_glow_%d" % level)}, **rot) for axis, rot in PILLAR.items() for level in range(4)}})
-
-
-def rod_partials():
-    img = Image.new("RGBA", (16, 16))
-    for y in range(16):
-        band = y % 8 == 0
-        put(img, 0, y, BRASS[3] if band else LEAD[4])
-        put(img, 1, y, BRASS[1] if band else LEAD[2])
-    bevel(img, 4, 0, 7, 1, BRASS, 3)
-    bevel(img, 4, 2, 7, 5, BRASS, 3)
-    img.save(os.path.join(OUT, "control_rod_shaft.png"))
-    tex = {"0": M + "block/control_rod_shaft", "particle": M + "block/control_rod_shaft"}
-    side = {"uv": [0, 0, 2, 16], "texture": "#0"}
-    write(os.path.join(ASSETS, "models", "block", "control_rod_shaft.json"), {"textures": tex, "elements": [
-        {"from": [7, 0, 7], "to": [9, 16, 9], "faces": {d: side for d in ("north", "south", "east", "west")}}]})
-    cap_side = {"uv": [4, 0, 8, 2], "texture": "#0"}
-    cap_top = {"uv": [4, 2, 8, 6], "texture": "#0"}
-    write(os.path.join(ASSETS, "models", "block", "control_rod_cap.json"), {"textures": tex, "elements": [
-        {"from": [6, 0, 6], "to": [10, 2, 10], "faces": {"north": cap_side, "south": cap_side, "east": cap_side, "west": cap_side, "up": cap_top, "down": cap_top}}]})
-
-
 GLASS_DARK = (20, 22, 26)
 ITEM_OUT = os.path.join(os.path.dirname(OUT), "item")
 
@@ -299,20 +242,6 @@ def corium_models():
             "corium_hot": {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/corium_hot"}}}
 
 
-def ruined_texture():
-    import random
-    rnd = random.Random(11)
-    img = Image.open(os.path.join(OUT, "fuel_channel.png")).convert("RGBA")
-    for y in range(img.height):
-        for x in range(img.width):
-            r, g, b, a = img.getpixel((x, y))
-            k = 0.45 + 0.15 * rnd.random()
-            sag = (y % 16) > 9 and rnd.random() < 0.5
-            c = (int(r * k) + (26 if sag else 0), int(g * k) + (8 if sag else 0), int(b * k))
-            put(img, x, y, c)
-    return img
-
-
 def simple_state(name):
     return {"variants": {"": {"model": M + "block/" + name}}}
 
@@ -320,7 +249,7 @@ def simple_state(name):
 BLOCKS = {
     "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
-    "ruined_channel": {"lang": "Ruined Fuel Channel", "texture": ruined_texture, "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
+    "ruined_channel": {"lang": "Ruined Fuel Channel", "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "centrifuge": {"lang": "Centrifuge", "texture": centrifuge_texture, "models": centrifuge_models, "state": simple_state, "item": "centrifuge_item"},
     "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
     "reactor_viewport": {
@@ -450,8 +379,6 @@ def main():
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": M + "block/" + d.get("item", name)})
         write(os.path.join(DATA, "criticalmass", "loot_table", "blocks", name + ".json"), loot(name))
         entries["block.criticalmass." + name] = d["lang"]
-    channel_variants()
-    rod_partials()
     linker_item()
     uranium_items()
     screen_blocks.write_all(write, ASSETS, DATA, OUT)
