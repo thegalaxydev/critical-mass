@@ -150,21 +150,6 @@ def apply(name, size, spec, base=None):
     return img
 
 
-def rod_drive(jar):
-    spec = {"models": ["control_rod_drive"], "faces": {
-        ("base", "up"): casing(IRON, STEEL),
-        ("base", "down"): plate(IRON, 2),
-        ("base", "north"): plate(IRON, 3),
-        ("housing", "east"): casing(ANDESITE, STEEL),
-        ("housing", "north"): casing(ANDESITE, STEEL),
-        ("housing", "south"): socket(ANDESITE),
-        ("housing", "up"): casing(ANDESITE, STEEL),
-        ("rack", "north"): rack_teeth,
-        ("rack", "up"): plate(IRON, 4),
-    }}
-    return apply("control_rod_drive", 64, spec)
-
-
 def rack_teeth(w, h):
     img = tile(w, h)
     for y in range(h):
@@ -361,7 +346,6 @@ def docking(jar):
 
 
 REST = {
-    "control_rod_drive": rod_drive,
     "fuel_channel": fuel_channel,
     "control_channel": control_channel,
     "coolant_channel": coolant_channel,

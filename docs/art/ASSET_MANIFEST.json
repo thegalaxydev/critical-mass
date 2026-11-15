@@ -656,103 +656,21 @@
      "path": "src/main/resources/assets/criticalmass/textures/block/control_rod_drive.png",
      "exists": true,
      "size": [
-      64,
-      64
+      32,
+      32
      ],
-     "generated_source": "control_rod_drive-v1.png",
-     "uv_regions": {
-      "base_top": [
-       0,
-       0,
-       16,
-       16
-      ],
-      "base_down": [
-       16,
-       0,
-       16,
-       16
-      ],
-      "base_side": [
-       12,
-       16,
-       16,
-       3
-      ],
-      "housing_side": [
-       42,
-       0,
-       10,
-       9
-      ],
-      "housing_front": [
-       52,
-       0,
-       10,
-       9
-      ],
-      "housing_back": [
-       0,
-       16,
-       10,
-       9
-      ],
-      "housing_top": [
-       32,
-       0,
-       10,
-       10
-      ],
-      "rack": [
-       10,
-       16,
-       2,
-       4
-      ],
-      "rack_top": [
-       28,
-       16,
-       2,
-       2
-      ]
-     }
-    },
-    {
-     "path": "src/main/resources/assets/criticalmass/textures/block/control_rod_drive_pinion.png",
-     "exists": true,
-     "size": [
-      16,
-      16
-     ],
-     "generated_source": "control_rod_drive_pinion-v1.png",
-     "uv_regions": {
-      "pinion": [
-       0,
-       0,
-       6,
-       6
-      ],
-      "pinion_edge": [
-       6,
-       0,
-       6,
-       2
-      ]
-     }
+     "generated_source": "control_rod_drive-v1.png"
     }
    ],
    "block_models": [
-    "src/main/resources/assets/criticalmass/models/block/control_rod_drive.json",
-    "src/main/resources/assets/criticalmass/models/block/control_rod_drive_pinion.json"
+    "src/main/resources/assets/criticalmass/models/block/control_rod_drive.json"
    ],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/control_rod_drive.json",
    "item_model": "src/main/resources/assets/criticalmass/models/item/control_rod_drive.json",
    "inventory_icon": "item model control_rod_drive (parent: block model)",
    "placed_appearance": "blockstate control_rod_drive (horizontal)",
    "state_notes": "",
-   "partials": [
-    "control_rod_drive_pinion"
-   ],
+   "partials": [],
    "kinetic": {
     "role": "consumer",
     "impact_su": "1.0 per RPM (CMStress.CONTROL_ROD_DRIVE_IMPACT, provisional)",
@@ -769,7 +687,7 @@
     "aeronautics:block/gyroscopic_propeller_bearing",
     "create:block/gearbox"
    ],
-   "generation": "script, generated pinion",
+   "generation": "script",
    "integration": "integrated",
    "verification": {
     "iso": true,

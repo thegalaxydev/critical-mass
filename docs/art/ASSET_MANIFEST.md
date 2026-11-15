@@ -17,7 +17,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:reactor_controller` | `block/reactor_controller.png` 16x16 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:fuel_channel` | `block/fuel_channel.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:control_channel` | `block/control_channel.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:control_rod_drive` | `block/control_rod_drive.png` 64x64<br>`block/control_rod_drive_pinion.png` 16x16 | script, generated pinion | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | The rack is static: rod insertion control is not implemented. |
+| `criticalmass:control_rod_drive` | `block/control_rod_drive.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | The rack is static: rod insertion control is not implemented. |
 | `criticalmass:coolant_channel` | `block/coolant_channel.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:reactor_service_port` | `block/reactor_service_port.png` 16x16 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:primary_coolant_port` | `block/primary_coolant_port.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -113,11 +113,11 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - **shaft faces**: back face only (hasShaftTowards: face == facing.getOpposite())
 - **axis**: facing axis
 - **placement**: 4 horizontal facings
-- **rotating**: control_rod_drive_pinion partial: half shaft from the back face plus the pinion gear
+- **rotating**: Create's shaft_half on both ends of the axis, turning with the network, and Create's cogwheel_shaftless lying on the deck, turning one turn for each block the rod travels
 - **stationary**: base plate, brass housing, red latch, rack (drawn at the stored full-insertion position; rod movement is not implemented)
-- **direction**: pinion follows network speed and direction 1:1; the rack does not move because insertion control is not implemented (M4 tasks)
+- **direction**: the shaft ends follow network speed and direction 1:1; the cogwheel and the rod follow the rod's travel
 - **renderer**: Flywheel OrientedRotatingVisual (UP to input side); fallback BER InputSideRotorRenderer
-- **partials**: control_rod_drive_pinion
+- **partials**: none of our own
 
 ## Inventory icon vs placed appearance
 
@@ -128,7 +128,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - `reactor_controller`: inventory = item model reactor_controller (parent: block model); placed = blockstate reactor_controller (horizontal)
 - `fuel_channel`: inventory = item model fuel_channel (parent: block model); placed = blockstate fuel_channel (raw); rotated pillar (axis)
 - `control_channel`: inventory = item model control_channel (parent: block model); placed = blockstate control_channel (raw); rotated pillar (axis)
-- `control_rod_drive`: inventory = item model control_rod_drive (parent: block model); placed = blockstate control_rod_drive (horizontal)
+- `control_rod_drive`: inventory = item model control_rod_drive (body with Create's cogwheel and shaft ends); placed = blockstate control_rod_drive (horizontal)
 - `coolant_channel`: inventory = item model coolant_channel (parent: block model); placed = blockstate coolant_channel (raw); rotated pillar (axis)
 - `reactor_service_port`: inventory = item model reactor_service_port (parent: block model); placed = blockstate reactor_service_port (facing)
 - `primary_coolant_port`: inventory = item model primary_coolant_port (parent: block model); placed = blockstate primary_coolant_port (raw); mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar

@@ -25,12 +25,12 @@ This table is the current state and overrides anything further down. Only the ro
 | Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
 | Reactor Controller, Reactor Service Port, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
-| Fuel, Control and Coolant Channel, Control Rod Drive, Spent Fuel Rack, Shielded Cask, Docking Service Connector | Script | `art/tools/handmade_rest.py` |
-| Reactor Viewport and its cracked stages, the rod and glow channel variants, the rod shaft, Centrifuge, Pressurizer, Ruined Fuel Channel, Corium | Script | `art/tools/plant_blocks.py` |
+| Fuel, Control and Coolant Channel, Spent Fuel Rack, Shielded Cask, Docking Service Connector | Script | `art/tools/handmade_rest.py` |
+| Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the shaft and cogwheel are Create's own models |
+| Reactor Viewport and its cracked stages, the rod and glow channel variants, Centrifuge, Pressurizer, Ruined Fuel Channel, Corium | Script | `art/tools/plant_blocks.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
-| Control Rod Drive pinion | Generated | |
 | Reactor Alloy Dashboard texture, Dashboard Alarm | Not recorded | Their sections say hand-made without saying by whom |
 | Dashboard and its other parts | Create: Loconautics | Used with its authors' permission |
 | Steel Ingot, Nugget and Plate, Control Rod, Turbine Blade, Sealing Gasket, Welding Torch, Dosimeter, Survey Meter, Decontamination Compound, Ceramic Fuel Pellet, Reactor Alloy Ingot and Sheet | Author | `art/originals/` |
@@ -45,7 +45,7 @@ This table is the current state and overrides anything further down. Only the ro
 - `reactor_controller`, `reactor_service_port`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a round brass-rimmed hatch, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `control_rod_drive`, the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges. The pinion texture keeps its cleaned generated version.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): the three channels, `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren`, `instrumentation_panel` and `docking_service_connector`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -187,39 +187,12 @@ Reactor control-rod channel column. Side: dark steel frame with a recessed windo
 
 ## control_rod_drive
 
-- Used by: `textures/block/control_rod_drive.png`
-- Raw output: `art/generated/control_rod_drive-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: control rod drive, 64x64 game pixels.
-Atlas for a control rod drive: iron base plate with bolts, brass drive housing with dark side windows, a red emergency latch lever on the front, a back face with an iron shaft socket ring and black hole, and an iron toothed rack.
-
-```
-
-## control_rod_drive_pinion
-
-- Used by: `textures/block/control_rod_drive_pinion.png`
-- Raw output: `art/generated/control_rod_drive_pinion-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: control rod drive pinion, 16x16 game pixels.
-Atlas for the rotating pinion gear of the control rod drive: small iron toothed gear seen face-on and its toothed edge strip.
-
-```
+- Used by: `textures/block/control_rod_drive.png`, `textures/block/control_rod_shaft.png` and the drive's block and item models
+- Source: `art/blockbench/control_rod_drive.bbmodel`, one group called `body`: a bolted base, a gear case, a bearing deck and a brass rod sleeve. `art/tools/rod_drive_texture.py` paints the sheet. The base and deck are the author's Steel Block, the gear case is the author's Reactor Vessel Casing cut to size with a brass bearing ring on the shaft faces and a brass-framed inspection window on the sides, and the sleeve is brass. The same tool repaints the rod as a threaded spindle in the Steel Block's tones and keeps its brass cap.
+- Moving parts: none of our own. The shaft ends and the cogwheel on the deck are Create's own `shaft_half` and `cogwheel_shaftless` models, drawn by the renderer. The item model includes copies of them so the icon shows the whole drive.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/rod_drive_model.py` then exports the models.
+- Date: 2026-11-15
 
 ## coolant_channel
 

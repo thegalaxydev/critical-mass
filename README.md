@@ -85,6 +85,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Rod drives:**
   - A Control Rod Drive on the top face above a control column moves that column's rods; its redstone signal withdraws them.
   - Rods move at a rate set by shaft speed, up to 0.02 per tick, and the drive uses stress only while moving.
+  - The shaft passes straight through a drive, so one line shaft can run a row of them. The cogwheel on top is the screw nut: it turns as the rod travels and stands still while the rod holds.
   - Columns without a drive follow the controller's redstone signal.
   - **Visible travel:** the rod stands up out of the drive as it withdraws, one block of rod per block of core height, and drops back in as it inserts. Inside the vessel each control channel shows how far its rod reaches.
   - **Banks:** every drive belongs to a bank, A to D. Use an empty hand on the drive to change it (sneak to go back). A bank target set on the reactor moves every drive in that bank and overrides their redstone signals.

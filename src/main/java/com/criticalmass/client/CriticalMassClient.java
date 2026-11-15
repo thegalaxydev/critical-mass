@@ -6,10 +6,7 @@ import com.simibubi.create.CreateClient;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
-import com.criticalmass.content.kinetics.ControlRodDriveBlock;
-import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.registry.CMFluids;
-import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
 import dev.engine_room.flywheel.lib.model.Models;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -84,10 +81,6 @@ public class CriticalMassClient {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
-        SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
-                .factory((ctx, be, pt) -> new OrientedRotatingVisual<>(ctx, be, pt, Direction.UP, ControlRodDriveBlock.inputSide(be.getBlockState()), Models.partial(CMPartialModels.CONTROL_ROD_DRIVE_PINION)))
-                .skipVanillaRender(be -> false)
-                .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CENTRIFUGE.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.CENTRIFUGE_ROTOR))
                 .skipVanillaRender(be -> true)

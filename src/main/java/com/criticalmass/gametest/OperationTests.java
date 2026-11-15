@@ -19,6 +19,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -386,6 +387,26 @@ public final class OperationTests {
                         h.assertTrue(right, "Wrong warning at " + p + ": " + r);
                     }
                     h.assertTrue(c.problemPositions().isEmpty(), "A layout warning should not make the vessel invalid: " + c.problemReasons());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void oneShaftRunsARowOfRodDrives(GameTestHelper h) {
+        BlockPos first = new BlockPos(5, 2, 3);
+        ControlRodDriveBlockEntity near = drive(h, first, 32);
+        h.setBlock(first.west(), CMBlocks.CONTROL_ROD_DRIVE.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
+        ControlRodDriveBlockEntity far = h.getBlockEntity(first.west());
+        h.setBlock(first.west(2), AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.X));
+        h.setBlock(first.north(), AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.Z));
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    KineticBlockEntity beyond = h.getBlockEntity(first.west(2));
+                    KineticBlockEntity beside = h.getBlockEntity(first.north());
+                    h.assertTrue(Math.abs(near.getSpeed()) == 32 && Math.abs(far.getSpeed()) == 32, "The shaft should turn both drives: " + near.getSpeed() + " and " + far.getSpeed());
+                    h.assertTrue(Math.abs(beyond.getSpeed()) == 32, "Rotation should come out of the far end of the row: " + beyond.getSpeed());
+                    h.assertTrue(beside.getSpeed() == 0, "A drive has no shaft on its sides: " + beside.getSpeed());
                 })
                 .thenSucceed();
     }

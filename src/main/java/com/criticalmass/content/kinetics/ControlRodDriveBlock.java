@@ -20,14 +20,10 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<ControlRodDriveBlockEntity> {
-    private static final VoxelShape NORTH = Shapes.or(box(0, 0, 0, 16, 3, 16), box(3, 3, 3, 13, 12, 13), box(7, 12, 7, 9, 16, 9));
+    private static final VoxelShape NORTH = Shapes.or(box(0, 0, 0, 16, 2, 16), box(2, 2, 2, 14, 12, 14), box(0, 12, 0, 16, 16, 16));
 
     public ControlRodDriveBlock(Properties properties) {
         super(properties);
-    }
-
-    public static Direction inputSide(BlockState state) {
-        return state.getValue(HORIZONTAL_FACING).getOpposite();
     }
 
     @Override
@@ -37,7 +33,7 @@ public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<
 
     @Override
     public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face == inputSide(state);
+        return face.getAxis() == state.getValue(HORIZONTAL_FACING).getAxis();
     }
 
     @Override

@@ -49,9 +49,9 @@ KINETIC = {
         "shaft_faces": "back face only (hasShaftTowards: face == facing.getOpposite())",
         "axis": "facing axis",
         "placement": "4 horizontal facings",
-        "rotating": "control_rod_drive_pinion partial: half shaft from the back face plus the pinion gear",
+        "rotating": "Create's shaft_half on both ends of the axis, turning with the network, and Create's cogwheel_shaftless lying on the deck, turning one turn for each block the rod travels",
         "stationary": "base plate, brass housing, red latch, rack (drawn at the stored full-insertion position; rod movement is not implemented)",
-        "direction": "pinion follows network speed and direction 1:1; the rack does not move because insertion control is not implemented (M4 tasks)",
+        "direction": "the shaft ends follow network speed and direction 1:1; the cogwheel and the rod follow the rod's travel",
         "renderer": "Flywheel OrientedRotatingVisual (UP to input side); fallback BER InputSideRotorRenderer",
     },
 }
@@ -131,7 +131,7 @@ ART = {
     "primary_coolant": "generated",
     "steam": "generated",
     "contaminated_coolant": "generated",
-    "control_rod_drive": "script, generated pinion",
+    "control_rod_drive": "script",
     "steam_turbine": "author's model, script texture",
     "relief_valve": "script, approved",
     "reactor_alloy_dashboard": "not recorded"
