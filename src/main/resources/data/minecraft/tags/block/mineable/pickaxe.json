@@ -22,6 +22,7 @@
     "criticalmass:shielding_concrete",
     "criticalmass:spent_fuel_rack",
     "criticalmass:steam_turbine",
+    "criticalmass:steam_turbine_structure",
     "criticalmass:uranium_ore",
     "criticalmass:deepslate_uranium_ore",
     "criticalmass:steel_block",

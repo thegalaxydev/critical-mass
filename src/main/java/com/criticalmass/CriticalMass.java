@@ -131,6 +131,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RELIEF_VALVE.get(), CriticalMass::coolantFace);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.REACTOR_CONTROLLER.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE.get(), (be, side) -> side == null || side.getAxis() == Direction.Axis.Y ? be.coolant().handler(be.getLevel(), be.getBlockPos(), side) : null);
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.STEAM_TURBINE_PORT.get(), (be, side) -> be.handler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.coolant().handler(be.getLevel(), be.getBlockPos(), side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.HEAT_EXCHANGER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLANT_PORT.get(), (be, side) -> side == null || side == be.getBlockState().getValue(FacingBlock.FACING) ? new CoolantPortHandler(be.getLevel(), be.getBlockPos(), side) : null);

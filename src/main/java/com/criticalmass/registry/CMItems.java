@@ -96,4 +96,8 @@ public final class CMItems {
         DeferredItem<BlockItem> item = ITEMS.register(name, () -> new BlockItem(block.get(), new Item.Properties()));
         TAB_ORDER.add(item);
     }
+
+    static void customBlockItem(String name, Supplier<? extends BlockItem> factory) {
+        TAB_ORDER.add(ITEMS.register(name, factory));
+    }
 }

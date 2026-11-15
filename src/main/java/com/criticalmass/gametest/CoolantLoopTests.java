@@ -27,6 +27,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class CoolantLoopTests {
     private static final String EMPTY = "empty";
+    private static final String LARGE = "empty_large";
 
     private CoolantLoopTests() {
     }
@@ -64,7 +65,7 @@ public final class CoolantLoopTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 700)
+    @GameTest(template = LARGE, timeoutTicks = 700)
     public static void reactorLoopConservesCoolantAndHeat(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);
@@ -140,7 +141,7 @@ public final class CoolantLoopTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = LARGE, timeoutTicks = 300)
     public static void unpoweredReactorGivesNoCapacity(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);
@@ -165,8 +166,8 @@ public final class CoolantLoopTests {
         BlockState turbine = CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X);
         h.setBlock(a, turbine);
         h.setBlock(b, turbine);
-        h.setBlock(a.east(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
-        h.setBlock(b.east(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(a.east(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(b.east(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         SteamTurbineBlockEntity low = h.getBlockEntity(a);
         SteamTurbineBlockEntity high = h.getBlockEntity(b);
         double base = 20000;

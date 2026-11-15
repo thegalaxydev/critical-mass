@@ -1,5 +1,6 @@
 package com.criticalmass.content.control;
 
+import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
 import java.util.List;
@@ -30,7 +31,7 @@ public class DashPartItem extends Item {
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        BlockPos pos = TurbineStructure.resolve(level, context.getClickedPos());
         if (LoconauticsCompat.theirDesk(level.getBlockState(pos)) && (player == null || !player.isShiftKeyDown())) {
             if (level.isClientSide) {
                 return InteractionResult.SUCCESS;

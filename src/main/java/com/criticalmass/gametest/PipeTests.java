@@ -42,7 +42,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class PipeTests {
     private static final String EMPTY = "empty";
-    private static final BlockPos CREATE_PIPE = new BlockPos(6, 6, 3);
+    private static final String LARGE = "empty_large";
+    private static final BlockPos CREATE_PIPE = new BlockPos(8, 7, 3);
 
     private PipeTests() {
     }
@@ -51,7 +52,7 @@ public final class PipeTests {
         return (celsius - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY;
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = LARGE, timeoutTicks = 300)
     public static void loopPipesHoldCoolantAndColdCoolantSparesCreatePipes(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);
@@ -73,7 +74,7 @@ public final class PipeTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = LARGE, timeoutTicks = 300)
     public static void hotCoolantRunsThroughPlainPipesWithoutPressure(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);
@@ -93,7 +94,7 @@ public final class PipeTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = LARGE, timeoutTicks = 300)
     public static void plainPipesLeakUnderPressureAndRadiate(GameTestHelper h) {
         TestVessels.standardVessel(h, TestVessels.STANDARD);
         TestVessels.loop(h, true);

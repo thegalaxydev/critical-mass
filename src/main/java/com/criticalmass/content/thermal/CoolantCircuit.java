@@ -1,5 +1,8 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.kinetics.SteamTurbineStructuralBlock;
+import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.content.CoolantPortBlock;
 import com.criticalmass.content.FacingBlock;
 import java.util.ArrayList;
@@ -155,6 +158,17 @@ public final class CoolantCircuit {
                 }
                 w.controller = vessel.controller();
                 return w;
+            }
+            if (state.getBlock() instanceof SteamTurbineStructuralBlock) {
+                BlockPos master = TurbineStructure.master(next, state);
+                if (TurbineStructure.portFace(state) != back || !TurbineStructure.valid(level, next, state) || !(level.getBlockEntity(master) instanceof SteamTurbineBlockEntity turbine)) {
+                    return w.fail("criticalmass.circuit.wrong_face", next);
+                }
+                Direction exit = turbine.passThroughExit(back);
+                w.hops.add(new Hop(master, downstream ? back : exit));
+                cur = master.relative(exit);
+                d = exit;
+                continue;
             }
             BlockEntity be = level.getBlockEntity(next);
             if (be instanceof ThermalNode node && !(be instanceof ReactorControllerBlockEntity)) {

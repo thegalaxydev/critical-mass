@@ -24,6 +24,8 @@ import com.criticalmass.content.fuel.SpentFuelRackBlock;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
 import com.criticalmass.content.kinetics.ControlRodDriveBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlock;
+import com.criticalmass.content.kinetics.SteamTurbineItem;
+import com.criticalmass.content.kinetics.SteamTurbineStructuralBlock;
 import com.criticalmass.content.thermal.BoilerPlateBlock;
 import com.criticalmass.content.thermal.CondenserBlock;
 import com.criticalmass.content.thermal.CoolingTowerBlock;
@@ -37,6 +39,8 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.TransparentBlock;
 import net.minecraft.world.level.block.TrapDoorBlock;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.material.MapColor;
@@ -62,7 +66,9 @@ public final class CMBlocks {
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f));
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
-    public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion());
+    public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));
+    public static final DeferredBlock<SteamTurbineStructuralBlock> STEAM_TURBINE_STRUCTURE = BLOCKS.register("steam_turbine_structure",
+            () -> new SteamTurbineStructuralBlock(metal(4.0f).noOcclusion().noLootTable()));
     public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));
     public static final DeferredBlock<CoolingTowerBlock> COOLING_TOWER_PACKING = register("cooling_tower_packing", CoolingTowerBlock::new, metal(3.0f).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
     public static final DeferredBlock<RadiatorBlock> RADIATOR_PANEL = register("radiator_panel", RadiatorBlock::new, metal(2.5f).noOcclusion());
@@ -92,6 +98,12 @@ public final class CMBlocks {
 
     static BlockBehaviour.Properties metal(float strength) {
         return BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(strength, strength * 1.5f).sound(SoundType.NETHERITE_BLOCK).requiresCorrectToolForDrops();
+    }
+
+    static <B extends Block> DeferredBlock<B> register(String name, Function<BlockBehaviour.Properties, B> factory, BlockBehaviour.Properties properties, Function<B, ? extends BlockItem> item) {
+        DeferredBlock<B> block = BLOCKS.register(name, () -> factory.apply(properties));
+        CMItems.customBlockItem(name, () -> item.apply(block.get()));
+        return block;
     }
 
     static <B extends Block> DeferredBlock<B> register(String name, Function<BlockBehaviour.Properties, B> factory, BlockBehaviour.Properties properties) {

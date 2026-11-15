@@ -16,6 +16,8 @@ import com.criticalmass.content.fuel.SpentFuelRackBlockEntity;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.kinetics.SteamTurbinePortBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.CoolingTowerBlockEntity;
 import com.criticalmass.content.thermal.RadiatorBlockEntity;
@@ -34,6 +36,10 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new CirculationPumpBlockEntity(CMBlockEntities.CIRCULATION_PUMP.get(), pos, state), CMBlocks.CIRCULATION_PUMP.get()).build(null));
     public static final Supplier<BlockEntityType<SteamTurbineBlockEntity>> STEAM_TURBINE = BLOCK_ENTITIES.register("steam_turbine",
             () -> BlockEntityType.Builder.of((pos, state) -> new SteamTurbineBlockEntity(CMBlockEntities.STEAM_TURBINE.get(), pos, state), CMBlocks.STEAM_TURBINE.get()).build(null));
+    public static final Supplier<BlockEntityType<KineticBlockEntity>> STEAM_TURBINE_SHAFT = BLOCK_ENTITIES.register("steam_turbine_shaft",
+            () -> BlockEntityType.Builder.of((pos, state) -> new KineticBlockEntity(CMBlockEntities.STEAM_TURBINE_SHAFT.get(), pos, state), CMBlocks.STEAM_TURBINE_STRUCTURE.get()).build(null));
+    public static final Supplier<BlockEntityType<SteamTurbinePortBlockEntity>> STEAM_TURBINE_PORT = BLOCK_ENTITIES.register("steam_turbine_port",
+            () -> BlockEntityType.Builder.of((pos, state) -> new SteamTurbinePortBlockEntity(CMBlockEntities.STEAM_TURBINE_PORT.get(), pos, state), CMBlocks.STEAM_TURBINE_STRUCTURE.get()).build(null));
 
     public static final Supplier<BlockEntityType<ControlRodDriveBlockEntity>> CONTROL_ROD_DRIVE = BLOCK_ENTITIES.register("control_rod_drive",
             () -> BlockEntityType.Builder.of((pos, state) -> new ControlRodDriveBlockEntity(CMBlockEntities.CONTROL_ROD_DRIVE.get(), pos, state), CMBlocks.CONTROL_ROD_DRIVE.get()).build(null));

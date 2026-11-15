@@ -1,5 +1,6 @@
 package com.criticalmass.content.control;
 
+import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMComponents;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -26,7 +27,7 @@ public class PlantLinkerItem extends Item {
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
+        BlockPos pos = TurbineStructure.resolve(level, context.getClickedPos());
         Player player = context.getPlayer();
         ItemStack stack = context.getItemInHand();
         BlockEntity be = level.getBlockEntity(pos);

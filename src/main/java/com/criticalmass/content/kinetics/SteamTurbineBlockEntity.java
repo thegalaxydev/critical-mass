@@ -161,7 +161,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         }
         Direction.Axis axis = getBlockState().getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS);
         for (Direction d : new Direction[]{Direction.fromAxisAndDirection(axis, Direction.AxisDirection.POSITIVE), Direction.fromAxisAndDirection(axis, Direction.AxisDirection.NEGATIVE)}) {
-            if (level.getBlockEntity(worldPosition.relative(d)) instanceof KineticBlockEntity) {
+            if (level.getBlockEntity(worldPosition.relative(d, 2)) instanceof KineticBlockEntity) {
                 return true;
             }
         }
@@ -178,7 +178,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
             status = "criticalmass.turbine.ruptured";
         }
         boolean connected = shaftConnected();
-        double governor = level.getBestNeighborSignal(worldPosition) / 15.0;
+        double governor = TurbineStructure.signal(level, worldPosition, getBlockState().getValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS)) / 15.0;
         if (overspeedTrip && governor >= 1) {
             resetTrip();
         }

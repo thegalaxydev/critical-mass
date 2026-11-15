@@ -110,7 +110,7 @@ public final class ControlTests {
         c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * 230.0);
         exchanger.secondary().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
         turbine.coolant().set(new net.neoforged.neoforge.fluids.FluidStack(net.minecraft.world.level.material.Fluids.WATER, 1000), 1000 * CMThermal.SATURATION_ENERGY);
-        h.setBlock(TestVessels.PLANT_TURBINE.west(), AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
+        h.setBlock(TestVessels.PLANT_TURBINE.west(2), AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
         ControlRodDriveBlockEntity a = drive(h, new BlockPos(3, 6, 2));
         ControlRodDriveBlockEntity b = drive(h, new BlockPos(3, 6, 4));
         c.setBankTarget(0, 0.0);

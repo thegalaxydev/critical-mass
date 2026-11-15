@@ -109,6 +109,7 @@ public class CriticalMassClient {
         fluid(event, CMFluids.PRIMARY_COOLANT);
         fluid(event, CMFluids.STEAM);
         fluid(event, CMFluids.CONTAMINATED_COOLANT);
+        event.registerBlock(new TurbineStructureEffects(), CMBlocks.STEAM_TURBINE_STRUCTURE.get());
     }
 
     private static void fluid(RegisterClientExtensionsEvent event, CMFluids.Entry entry) {

@@ -22,9 +22,10 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @GameTestHolder(CriticalMass.MODID)
 @PrefixGameTestTemplate(false)
 public final class TurbineLoadTests {
-    private static final String EMPTY = "empty";
+    private static final String EMPTY = "empty_large";
     private static final BlockPos TURBINE = new BlockPos(1, 1, 2);
-    private static final BlockPos CLUTCH = TURBINE.east();
+    private static final BlockPos SHAFT = TURBINE.east(2);
+    private static final BlockPos CLUTCH = SHAFT.east();
 
     private TurbineLoadTests() {
     }
@@ -45,6 +46,7 @@ public final class TurbineLoadTests {
     }
 
     private static void clutch(GameTestHelper h) {
+        h.setBlock(SHAFT, AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         h.setBlock(CLUTCH, AllBlocks.CLUTCH.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
     }
 
@@ -88,15 +90,15 @@ public final class TurbineLoadTests {
     @GameTest(template = EMPTY, timeoutTicks = 600)
     public static void losingHalfTheLoadDoesNotTrip(GameTestHelper h) {
         SteamTurbineBlockEntity turbine = turbine(h, 7000);
-        presses(h, TURBINE.east(), 4);
+        presses(h, SHAFT, 4);
         double[] full = new double[1];
         h.startSequence()
                 .thenIdle(200)
                 .thenExecute(() -> {
                     full[0] = turbine.shaftLoad();
                     h.assertTrue(full[0] > capacity(7000) * 0.85, "Four presses should take most of what the turbine can give: " + full[0]);
-                    h.setBlock(TURBINE.east(3), Blocks.AIR);
-                    h.setBlock(TURBINE.east(4), Blocks.AIR);
+                    h.setBlock(SHAFT.east(2), Blocks.AIR);
+                    h.setBlock(SHAFT.east(3), Blocks.AIR);
                 })
                 .thenIdle(120)
                 .thenExecute(() -> {
@@ -124,12 +126,12 @@ public final class TurbineLoadTests {
                 .thenExecute(() -> {
                     h.assertTrue(turbine.overspeedTripped() && turbine.admission() == 0, "A clutch dropping the whole load at once should trip on overspeed: " + turbine.overspeed());
                     h.assertTrue(turbine.status().endsWith("overspeed_trip"), "Status should name the trip: " + turbine.status());
-                    h.setBlock(TURBINE.north(), Blocks.REDSTONE_BLOCK);
+                    h.setBlock(TURBINE.north(2), Blocks.REDSTONE_BLOCK);
                 })
                 .thenIdle(10)
                 .thenExecute(() -> {
                     h.assertTrue(!turbine.overspeedTripped(), "Closing the governor should reset the trip");
-                    h.setBlock(TURBINE.north(), Blocks.AIR);
+                    h.setBlock(TURBINE.north(2), Blocks.AIR);
                     h.setBlock(CLUTCH.above(), Blocks.AIR);
                 })
                 .thenIdle(200)

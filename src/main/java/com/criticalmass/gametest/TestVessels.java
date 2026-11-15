@@ -31,25 +31,28 @@ final class TestVessels {
     static final BlockPos INLET = new BlockPos(3, 3, 1);
     static final BlockPos PUMP = new BlockPos(4, 3, 6);
     static final BlockPos MOTOR = new BlockPos(4, 2, 6);
-    static final BlockPos TURBINE = new BlockPos(6, 5, 6);
+    static final BlockPos TURBINE = new BlockPos(8, 5, 6);
     static final List<BlockPos> PIPES = List.of(
-            new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(6, 3, 6), new BlockPos(6, 4, 6), new BlockPos(6, 6, 6),
-            new BlockPos(6, 6, 5), new BlockPos(6, 6, 4), new BlockPos(6, 6, 3), new BlockPos(6, 6, 2), new BlockPos(6, 6, 1),
-            new BlockPos(6, 6, 0), new BlockPos(5, 6, 0), new BlockPos(4, 6, 0), new BlockPos(3, 6, 0), new BlockPos(3, 5, 0),
-            new BlockPos(3, 4, 0), new BlockPos(3, 3, 0));
+            new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(6, 3, 6), new BlockPos(7, 3, 6), new BlockPos(8, 3, 6),
+            new BlockPos(8, 7, 6), new BlockPos(8, 7, 5), new BlockPos(8, 7, 4), new BlockPos(8, 7, 3), new BlockPos(8, 7, 2),
+            new BlockPos(8, 7, 1), new BlockPos(8, 7, 0), new BlockPos(7, 7, 0), new BlockPos(6, 7, 0), new BlockPos(5, 7, 0),
+            new BlockPos(4, 7, 0), new BlockPos(3, 7, 0), new BlockPos(3, 6, 0), new BlockPos(3, 5, 0), new BlockPos(3, 4, 0),
+            new BlockPos(3, 3, 0));
 
     static final BlockPos EXCHANGER = new BlockPos(6, 3, 6);
     static final BlockPos PUMP2 = new BlockPos(7, 1, 6);
     static final BlockPos MOTOR2 = new BlockPos(7, 0, 6);
-    static final BlockPos PLANT_TURBINE = new BlockPos(6, 6, 6);
+    static final BlockPos PLANT_TURBINE = new BlockPos(6, 7, 6);
+    static final BlockPos PLANT_SHAFT = PLANT_TURBINE.east(2);
     static final List<BlockPos> PRIMARY_PIPES = List.of(
             new BlockPos(3, 3, 6), new BlockPos(5, 3, 6), new BlockPos(7, 3, 6), new BlockPos(7, 3, 5), new BlockPos(7, 3, 4),
             new BlockPos(7, 3, 3), new BlockPos(7, 3, 2), new BlockPos(7, 3, 1), new BlockPos(7, 3, 0), new BlockPos(6, 3, 0),
             new BlockPos(5, 3, 0), new BlockPos(4, 3, 0), new BlockPos(3, 3, 0));
     static final List<BlockPos> SECONDARY_PIPES = List.of(
-            new BlockPos(6, 1, 6), new BlockPos(6, 2, 6), new BlockPos(6, 4, 6), new BlockPos(6, 5, 6), new BlockPos(6, 7, 6),
-            new BlockPos(7, 7, 6), new BlockPos(8, 7, 6), new BlockPos(9, 7, 6), new BlockPos(9, 6, 6), new BlockPos(9, 5, 6),
-            new BlockPos(9, 4, 6), new BlockPos(9, 3, 6), new BlockPos(9, 2, 6), new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
+            new BlockPos(6, 1, 6), new BlockPos(6, 2, 6), new BlockPos(6, 4, 6), new BlockPos(6, 5, 6), new BlockPos(6, 9, 6),
+            new BlockPos(7, 9, 6), new BlockPos(8, 9, 6), new BlockPos(9, 9, 6), new BlockPos(9, 8, 6), new BlockPos(9, 7, 6),
+            new BlockPos(9, 6, 6), new BlockPos(9, 5, 6), new BlockPos(9, 4, 6), new BlockPos(9, 3, 6), new BlockPos(9, 2, 6),
+            new BlockPos(9, 1, 6), new BlockPos(8, 1, 6));
 
     static final char[][] COOLED = {
             {'c', 'f', 'c'},
@@ -186,7 +189,7 @@ final class TestVessels {
         h.setBlock(PUMP2, CMBlocks.CIRCULATION_PUMP.get().defaultBlockState()
                 .setValue(DirectionalKineticBlock.FACING, Direction.WEST).setValue(DirectionalAxisKineticBlock.AXIS_ALONG_FIRST_COORDINATE, true));
         h.setBlock(PLANT_TURBINE, CMBlocks.STEAM_TURBINE.get().defaultBlockState().setValue(HorizontalAxisKineticBlock.HORIZONTAL_AXIS, Direction.Axis.X));
-        h.setBlock(PLANT_TURBINE.east(), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(PLANT_SHAFT, AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         pipes(h, PRIMARY_PIPES);
         pipes(h, SECONDARY_PIPES);
         h.setBlock(MOTOR, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));

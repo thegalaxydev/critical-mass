@@ -5,24 +5,74 @@ import com.simibubi.create.content.kinetics.base.HorizontalAxisKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockGetter;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.shapes.CollisionContext;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraft.world.level.material.PushReaction;
 
 public class SteamTurbineBlock extends HorizontalAxisKineticBlock implements IBE<SteamTurbineBlockEntity> {
-    private static final VoxelShape X = Shapes.or(box(0, 1, 1, 16, 15, 15), box(5, 0, 5, 11, 16, 11));
-    private static final VoxelShape Z = Shapes.or(box(1, 1, 0, 15, 15, 16), box(5, 0, 5, 11, 16, 11));
-
     public SteamTurbineBlock(Properties properties) {
         super(properties);
     }
 
+    public Direction.Axis axisForPlacement(BlockPlaceContext context) {
+        return super.getStateForPlacement(context).getValue(HORIZONTAL_AXIS);
+    }
+
     @Override
-    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(HORIZONTAL_AXIS) == Direction.Axis.X ? X : Z;
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        BlockState state = super.getStateForPlacement(context);
+        return TurbineStructure.clear(context.getLevel(), context.getClickedPos(), state.getValue(HORIZONTAL_AXIS)) ? state : null;
+    }
+
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean moving) {
+        super.onPlace(state, level, pos, oldState, moving);
+        if (level.isClientSide() || oldState.is(this)) {
+            return;
+        }
+        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_AXIS)) && !level.getBlockTicks().hasScheduledTick(pos, this)) {
+            level.scheduleTick(pos, this, 1);
+        }
+    }
+
+    @Override
+    public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
+        if (!TurbineStructure.build(level, pos, state.getValue(HORIZONTAL_AXIS))) {
+            level.destroyBlock(pos, true);
+        }
+    }
+
+    @Override
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighbour, LevelAccessor level, BlockPos pos, BlockPos neighbourPos) {
+        if (level instanceof Level real && !real.isClientSide() && !real.getBlockTicks().hasScheduledTick(pos, this)) {
+            real.scheduleTick(pos, this, 1);
+        }
+        return state;
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean moving) {
+        super.onRemove(state, level, pos, newState, moving);
+        if (!level.isClientSide() && !newState.is(this)) {
+            TurbineStructure.clearAway(level, pos, state.getValue(HORIZONTAL_AXIS));
+        }
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        return InteractionResult.PASS;
+    }
+
+    @Override
+    public PushReaction getPistonPushReaction(BlockState state) {
+        return PushReaction.BLOCK;
     }
 
     @Override
