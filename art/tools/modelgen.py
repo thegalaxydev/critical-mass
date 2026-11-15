@@ -3,6 +3,7 @@ import math
 DIRS = ["north", "south", "east", "west", "up", "down"]
 VEC = {"north": (0, 0, -1), "south": (0, 0, 1), "east": (1, 0, 0), "west": (-1, 0, 0), "up": (0, 1, 0), "down": (0, -1, 0)}
 AXIS_OF = {"north": "z", "south": "z", "east": "x", "west": "x", "up": "y", "down": "y"}
+EDGE = {"north": ("from", 2, 0), "south": ("to", 2, 16), "west": ("from", 0, 0), "east": ("to", 0, 16), "down": ("from", 1, 0), "up": ("to", 1, 16)}
 
 
 def face_dims(frm, to, d):
@@ -21,7 +22,7 @@ class Region:
 
 
 class Model:
-    def __init__(self, name, atlas_name=None, render_type=None, ambient=True, share=None):
+    def __init__(self, name, atlas_name=None, render_type=None, ambient=True, share=None, cull=False):
         self.name = name
         self.atlas = share.atlas if share else (atlas_name or name)
         self.elements = []
@@ -29,6 +30,7 @@ class Model:
         self.regions = share.regions if share else {}
         self.render_type = render_type
         self.ambient = ambient
+        self.cull = cull
         self.atlas_size = None
         self.extra_textures = {}
 
@@ -128,6 +130,9 @@ class Model:
                     face = {"uv": [round(u0, 4), round(v0, 4), round(u1, 4), round(v1, 4)], "texture": "#0"}
                     if f.get("rotation"):
                         face["rotation"] = f["rotation"]
+                end, axis, at = EDGE[d]
+                if self.cull and not el.get("rotation") and el[end][axis] == at:
+                    face["cullface"] = d
                 faces[d] = face
             e = {"from": el["from"], "to": el["to"], "faces": faces}
             if el.get("rotation"):

@@ -136,7 +136,7 @@ def concrete():
 
 
 def shield_glass():
-    m = Model("shielded_glass", render_type="minecraft:translucent")
+    m = Model("shielded_glass", render_type="minecraft:translucent", cull=True)
     f = C("face", ("glass", 3), ("lead", 2), [("bars", "v", 5, 10, 5, "lead", False, 1, 1, 14), ("bars", "h", 5, 10, 5, "lead", False, 1, 1, 14), ("alpha", 170)], outline=False)
     cube_faces(m, {d: f for d in ALL6})
     return m
