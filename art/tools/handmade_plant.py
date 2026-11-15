@@ -146,8 +146,6 @@ def region(img, x0, y0, w, h, ramp, base=3):
 
 
 PLANT = {
-    "heat_exchanger": heat_exchanger,
-    "condenser": condenser,
     "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,
 }

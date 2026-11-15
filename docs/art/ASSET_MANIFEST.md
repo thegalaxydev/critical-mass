@@ -132,8 +132,8 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - `coolant_channel`: inventory = item model coolant_channel (parent: block model); placed = blockstate coolant_channel (raw); rotated pillar (axis)
 - `reactor_service_port`: inventory = item model reactor_service_port (body with both doors shut); placed = blockstate reactor_service_port (facing), with the two doors drawn by the renderer; the hatch turns open and shut by rotation on its top face
 - `primary_coolant_port`: inventory = item model primary_coolant_port (parent: block model); placed = blockstate primary_coolant_port (raw); mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar
-- `heat_exchanger`: inventory = item model heat_exchanger (parent: block model); placed = blockstate heat_exchanger (horizontal)
-- `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (horizontal)
+- `heat_exchanger`: inventory = item model heat_exchanger (parent: block model); placed = blockstate heat_exchanger (an upright barrel that stacks into a column; the primary side crosses the stack), with a pipe stub on each barrel side that has a pipe
+- `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (a barrel lying along its facing that joins into a row; the cooling water crosses the row), with a pipe stub on each barrel side that has a pipe
 - `cooling_tower_packing`: inventory = item model cooling_tower_packing (parent: block model); placed = blockstate cooling_tower_packing (simple)
 - `radiator_panel`: inventory = item model radiator_panel (parent: block model); placed = blockstate radiator_panel (horizontal)
 - `relief_valve`: inventory = item model relief_valve (body with a stub each side); placed = blockstate relief_valve (body by facing, plus a flanged pipe stub on each side that has a pipe); venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting

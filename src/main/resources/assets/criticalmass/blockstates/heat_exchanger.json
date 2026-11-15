@@ -1,19 +1,44 @@
 {
- "variants": {
-  "facing=north": {
-   "model": "criticalmass:block/heat_exchanger"
+ "multipart": [
+  {
+   "apply": {
+    "model": "criticalmass:block/heat_exchanger"
+   }
   },
-  "facing=east": {
-   "model": "criticalmass:block/heat_exchanger",
-   "y": 90
+  {
+   "when": {
+    "north": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub"
+   }
   },
-  "facing=south": {
-   "model": "criticalmass:block/heat_exchanger",
-   "y": 180
+  {
+   "when": {
+    "east": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 90
+   }
   },
-  "facing=west": {
-   "model": "criticalmass:block/heat_exchanger",
-   "y": 270
+  {
+   "when": {
+    "south": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 270
+   }
   }
- }
+ ]
 }

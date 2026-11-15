@@ -174,6 +174,17 @@ public final class CoolantCircuit {
                 continue;
             }
             BlockEntity be = level.getBlockEntity(next);
+            if (be instanceof HeatExchangerBlockEntity exchanger) {
+                List<BlockPos> route = exchanger.route(back);
+                if (route == null) {
+                    return w.fail("criticalmass.circuit.wrong_face", next);
+                }
+                for (BlockPos through : route) {
+                    w.hops.add(new Hop(through, downstream ? back : d));
+                }
+                cur = route.get(route.size() - 1);
+                continue;
+            }
             if (be instanceof ThermalNode node && !(be instanceof ReactorControllerBlockEntity)) {
                 Direction exit = node.passThroughExit(back);
                 if (exit == null) {

@@ -120,6 +120,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 - **Bigger core:** fuel columns next to each other give more power each, and need coolant channels beside every one of them. Check the hottest fuel column, not the average.
 - **More rods:** put drives in separate banks so you can move a few at a time.
+- **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
 - **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose.
@@ -137,8 +138,8 @@ It clears and paves a 75 by 71 block site and builds the station on it, bound an
 
 | Building | What is in it |
 | --- | --- |
-| Containment | A round Shielding Concrete building under a dome. The vessel stands in the middle with a service gantry round its head, two rod drives on top turned by one train of Cogwheels, and a polar crane above. The primary loop runs round the east side: pump, Heat Exchanger and an isolation valve. The Pressurizer stands at the vessel's corner and the emergency injection line on its west side, held off by a lever. An airlock door leads south to the access corridor |
-| Turbine hall | Steam comes through the wall at deck level, past a Relief Valve and the main steam stop valve, into the back of the turbine. The shaft runs east through a Stressometer, a Speedometer and the generator casing to a clutch and a Mechanical Press as the load. The exhaust drops through the deck to the Condenser in the basement, with the feedwater tank and the feed pump beside it |
+| Containment | A round Shielding Concrete building under a dome. The vessel stands in the middle with a service gantry round its head, two rod drives on top turned by one train of Cogwheels, and a polar crane above. The primary loop runs round the east side: pump, a steam generator of three stacked Heat Exchangers, and an isolation valve. The Pressurizer stands at the vessel's corner and the emergency injection line on its west side, held off by a lever. An airlock door leads south to the access corridor |
+| Turbine hall | Steam comes through the wall at deck level, past a Relief Valve and the main steam stop valve, into the back of the turbine. The shaft runs east through a Stressometer, a Speedometer and the generator casing to a clutch and a Mechanical Press as the load. The exhaust drops through the deck to a row of two Condensers in the basement, with the feedwater tank and the feed pump beside it |
 | Cooling tower | Four Packing blocks under an Encased Fan, inside a concrete shell with a water basin. The make-up line stands beside the fill. The circulating water pump is in the turbine hall basement |
 | Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, and seven Reactor Alloy Dashboards: turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, and primary and feed flow |
 | Service building | Entrance lobby, change room with Protective Suits, and the way through to the access corridor |

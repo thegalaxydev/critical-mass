@@ -1,19 +1,39 @@
 {
- "variants": {
-  "facing=north": {
-   "model": "criticalmass:block/condenser"
+ "multipart": [
+  {
+   "when": {
+    "facing": "north|south"
+   },
+   "apply": {
+    "model": "criticalmass:block/condenser"
+   }
   },
-  "facing=east": {
-   "model": "criticalmass:block/condenser",
-   "y": 90
+  {
+   "when": {
+    "facing": "east|west"
+   },
+   "apply": {
+    "model": "criticalmass:block/condenser",
+    "y": 90
+   }
   },
-  "facing=south": {
-   "model": "criticalmass:block/condenser",
-   "y": 180
+  {
+   "when": {
+    "up": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "x": 270
+   }
   },
-  "facing=west": {
-   "model": "criticalmass:block/condenser",
-   "y": 270
+  {
+   "when": {
+    "down": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "x": 90
+   }
   }
- }
+ ]
 }

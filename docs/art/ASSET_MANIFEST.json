@@ -903,33 +903,7 @@
       32,
       32
      ],
-     "generated_source": "heat_exchanger-v1.png",
-     "uv_regions": {
-      "primary": [
-       0,
-       0,
-       16,
-       16
-      ],
-      "secondary": [
-       16,
-       0,
-       16,
-       16
-      ],
-      "shell": [
-       0,
-       16,
-       16,
-       16
-      ],
-      "top": [
-       16,
-       16,
-       16,
-       16
-      ]
-     }
+     "generated_source": "heat_exchanger-v1.png"
     }
    ],
    "block_models": [
@@ -975,33 +949,7 @@
       32,
       32
      ],
-     "generated_source": "condenser-v1.png",
-     "uv_regions": {
-      "front": [
-       0,
-       0,
-       16,
-       16
-      ],
-      "back": [
-       16,
-       0,
-       16,
-       16
-      ],
-      "side": [
-       0,
-       16,
-       16,
-       16
-      ],
-      "top": [
-       16,
-       16,
-       16,
-       16
-      ]
-     }
+     "generated_source": "condenser-v1.png"
     }
    ],
    "block_models": [

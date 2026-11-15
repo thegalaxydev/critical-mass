@@ -25,7 +25,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
 | Reactor Controller, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
-| Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
+| Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
+| Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
@@ -46,7 +47,7 @@ This table is the current state and overrides anything further down. Only the ro
 `art/tools/handmade.py` draws these from Create textures (MIT) plus pixels the script places, replacing the earlier generated versions. They are placeholders, not the author's art:
 - `reactor_controller`, `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
-- Plant machines (`art/tools/handmade_plant.py`): `heat_exchanger` and `condenser` on Create's copper casing with colour-coded port flanges, a tube-bundle side and a fin-grille side; `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
+- Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
@@ -150,24 +151,6 @@ Atlas for a boiler heating plate (thin slab under a boiler): top face is a coppe
 - Used by: `textures/block/circulation_pump.png` and the pump's body, wheel and item models
 - Source: modelled and painted by the author in Blockbench, saved as `art/blockbench/mechanical_pump.bbmodel`. `art/tools/pump_model.py` splits its "pipe" and "flywheel" groups into the game models. The flywheel started from `art/tools/flywheel_bbmodel.py` and the pipe faces from the Reinforced Pipe flange.
 - Date: 2026-11-12
-
-## condenser
-
-- Used by: `textures/block/condenser.png`
-- Raw output: `art/generated/condenser-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: condenser, 32x32 game pixels.
-Atlas for a steam condenser block: sides with horizontal copper cooling-coil fins, front face with a large iron exhaust-steam intake opening above a small blue feedwater outlet, back face with blue and red cooling-water flanges, top with an iron grille grid.
-
-```
 
 ## control_rod_drive
 
@@ -289,23 +272,14 @@ Atlas for a fuel assembly workbench: dark wooden worktop with a steel tray holdi
 - Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/channel_model.py` then exports the models.
 - Date: 2026-11-15
 
-## heat_exchanger
+## heat_exchanger and condenser
 
-- Used by: `textures/block/heat_exchanger.png`
-- Raw output: `art/generated/heat_exchanger-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: heat exchanger, 32x32 game pixels.
-Atlas for a shell-and-tube heat exchanger block: dark steel shell sides with copper bands and bolts, end caps with a round iron manhole ring, a primary face with two copper flanges (red and blue collars, black bores), and a secondary face with a blue feedwater flange and a pale steam flange.
-
-```
+- Used by: `textures/block/heat_exchanger.png`, `textures/block/condenser.png` and the two blocks' models
+- Source: `art/blockbench/heat_exchanger.bbmodel` and `condenser.bbmodel`, each one group called `body`: a barrel with a flange at each end. The exchanger's barrel stands upright, so a stack of them reads as one column of bolted sections. The condenser's barrel lies along its facing, so a row of them reads as one long shell. Where a pipe joins the barrel's side, the blockstate adds the Reinforced Pipe's own flanged stub, the same model the Relief Valve uses.
+- Texture: `art/tools/exchanger_texture.py` paints flat ramps with two plain hoops. The Heat Exchanger is copper from `docs/art/palette.json` with flanges of the author's Steel Block. The Condenser is the Steel Block's tones with copper flanges.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/exchanger_model.py` then exports the models and blockstates.
+- Date: 2026-11-15
 
 ## instrumentation_panel
 

@@ -60,7 +60,7 @@ public final class CMBlocks {
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
-    public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f));
+    public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f).noOcclusion());
@@ -68,7 +68,7 @@ public final class CMBlocks {
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));
     public static final DeferredBlock<SteamTurbineStructuralBlock> STEAM_TURBINE_STRUCTURE = BLOCKS.register("steam_turbine_structure",
             () -> new SteamTurbineStructuralBlock(metal(4.0f).noOcclusion().noLootTable()));
-    public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f));
+    public static final DeferredBlock<CondenserBlock> CONDENSER = register("condenser", CondenserBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CoolingTowerBlock> COOLING_TOWER_PACKING = register("cooling_tower_packing", CoolingTowerBlock::new, metal(3.0f).noOcclusion().isViewBlocking((s, l, p) -> false).isSuffocating((s, l, p) -> false));
     public static final DeferredBlock<RadiatorBlock> RADIATOR_PANEL = register("radiator_panel", RadiatorBlock::new, metal(2.5f).noOcclusion());
     public static final DeferredBlock<ReliefValveBlock> RELIEF_VALVE = register("relief_valve", ReliefValveBlock::new, metal(3.0f).noOcclusion());

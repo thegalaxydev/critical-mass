@@ -54,19 +54,19 @@ ECCS_PORT, ECCS_PUMP, ECCS_TANK = (-2, 2, -1), (-3, 2, -1), (-4, 2, -1)
 ECCS_COG, ECCS_CLUTCH, ECCS_MOTOR, ECCS_LEVER = (-3, 3, -1), (-4, 3, -1), (-5, 3, -1), (-4, 4, -1)
 
 PRIMARY_PUMP = (2, 3, 4)
-EXCHANGER = (6, 3, 0)
-PRIMARY_VALVE = (6, 3, -2)
-PRIMARY = ([(0, 3, 3), (0, 3, 4), (1, 3, 4)] + [(x, 3, 4) for x in range(3, 7)] + [(6, 3, 3), (6, 3, 2), (6, 3, 1), (6, 3, -1), (6, 3, -3), (6, 3, -4)]
+EXCHANGERS = [(6, 3, 0), (6, 4, 0), (6, 5, 0)]
+PRIMARY_VALVE = (6, 4, -2)
+PRIMARY = ([(0, 3, 3), (0, 3, 4), (1, 3, 4)] + [(x, 3, 4) for x in range(3, 7)] + [(6, 3, 3), (6, 3, 2), (6, 3, 1), (6, 5, -1), (6, 5, -2), (6, 3, -2), (6, 3, -3), (6, 3, -4)]
            + [(x, 3, -4) for x in range(5, -1, -1)] + [(0, 3, -3)])
 
 TURBINE = (22, 8, 0)
 RELIEF = (15, 8, 0)
 STEAM_VALVE = (17, 8, 0)
-CONDENSER = (24, 3, 0)
+CONDENSERS = [(24, 3, 0), (25, 3, 0)]
 FEED_TANK = [(28, y, 0) for y in (1, 2, 3)]
 FEED_PUMP = (26, 1, 2)
-STEAM = ([(6, y, 0) for y in range(4, 9)] + [(x, 8, 0) for x in range(7, 15)] + [(16, 8, 0), (18, 8, 0), (19, 8, 0), (20, 8, 0)]
-         + [(22, 6, 0), (22, 5, 0), (22, 4, 0), (22, 3, 0), (23, 3, 0)] + [(25, 3, 0), (26, 3, 0), (27, 3, 0)]
+STEAM = ([(6, y, 0) for y in range(6, 9)] + [(x, 8, 0) for x in range(7, 15)] + [(16, 8, 0), (18, 8, 0), (19, 8, 0), (20, 8, 0)]
+         + [(22, 6, 0), (22, 5, 0), (22, 4, 0), (22, 3, 0), (23, 3, 0)] + [(26, 3, 0), (27, 3, 0)]
          + [(28, 1, 1), (28, 1, 2), (27, 1, 2)] + [(x, 1, 2) for x in range(25, 6, -1)] + [(7, 1, 1), (7, 1, 0), (6, 1, 0), (6, 2, 0)])
 
 TOWER = (24, -22)
@@ -76,7 +76,7 @@ TOWER_FAN = (TOWER[0], 6, TOWER[1])
 COOLING_PUMP = (26, 2, -5)
 MAKEUP_PIPE, MAKEUP_PUMP, MAKEUP_TANK = (23, 3, TOWER[1]), (22, 3, TOWER[1]), (21, 3, TOWER[1])
 MAKEUP_COG, MAKEUP_MOTOR = (22, 4, TOWER[1]), (21, 4, TOWER[1])
-COOLING = ([(24, 2, z) for z in range(0, TOWER[1] + 1, -1)] + [(24, 3, TOWER[1] + 2), (24, 4, TOWER[1] + 2), (24, 5, TOWER[1] + 2), (24, 5, TOWER[1] + 1)]
+COOLING = ([(25, 2, 0), (25, 2, -1)] + [(24, 2, z) for z in range(-1, TOWER[1] + 1, -1)] + [(24, 3, TOWER[1] + 2), (24, 4, TOWER[1] + 2), (24, 5, TOWER[1] + 2), (24, 5, TOWER[1] + 1)]
            + [(25, 2, TOWER[1]), (26, 2, TOWER[1])] + [(26, 2, z) for z in range(TOWER[1] + 1, -5)]
            + [(26, 2, -4), (26, 3, -4), (26, 4, -4), (25, 4, -4), (24, 4, -4), (24, 4, -3), (24, 4, -2), (24, 4, -1), (24, 4, 0)])
 PIPES = PRIMARY + STEAM + COOLING
@@ -312,9 +312,10 @@ def vessel():
 
 def primary():
     machine(PRIMARY_PUMP, "criticalmass:circulation_pump[facing=east,axis_along_first=true]", True)
-    machine(EXCHANGER, "criticalmass:heat_exchanger[facing=north]", True)
-    machine(PRIMARY_VALVE, "criticalmass:reinforced_valve[facing=up,axis_along_first=true]", True)
-    machine((5, 3, -2), "create:creative_motor[facing=east]")
+    for pos in EXCHANGERS:
+        machine(pos, "criticalmass:heat_exchanger[facing=north]", True)
+    machine(PRIMARY_VALVE, "criticalmass:reinforced_valve[facing=north,axis_along_first=true]", True)
+    machine((5, 4, -2), "create:creative_motor[facing=east]")
     post((8, 1, 0), 12, "Steam", "Generator")
 
 
@@ -409,7 +410,7 @@ def hall():
                 attach((x, 5, z), LANTERN)
     put(45, 4, 1, LAMP)
     put(45, 4, 5, LAMP)
-    post((25, 1, 0), 0, "Condenser")
+    post((24, 1, 1), 0, "Condenser")
     post((29, 1, 1), 0, "Feedwater", "Tank")
     post((27, 1, -5), 12, "Circulating", "Water Pump")
     post((27, 1, 3), 0, "Feedwater", "Pump")
@@ -419,7 +420,8 @@ def turbine():
     machine(RELIEF, "criticalmass:relief_valve[facing=up]", True)
     machine(STEAM_VALVE, "criticalmass:reinforced_valve[facing=north,axis_along_first=false]", True)
     machine((17, 9, 0), "create:creative_motor[facing=down]{ScrollValue:-16}")
-    machine(CONDENSER, "criticalmass:condenser[facing=east]", True)
+    for pos in CONDENSERS:
+        machine(pos, "criticalmass:condenser[facing=east]", True)
     for p in FEED_TANK:
         machine(p, "create:fluid_tank", True)
     machine(FEED_PUMP, "criticalmass:circulation_pump[facing=west,axis_along_first=true]", True)
@@ -830,13 +832,13 @@ def summon_props(origin):
 def start(w):
     (sx0, sy0), (sx1, sy1), sz = SCREENS
     cmds = [merge(w, CONTROLLER, "Coolant", "criticalmass:primary_coolant", 8000, 8000 * 80.0),
-            merge(w, EXCHANGER, "Secondary", "minecraft:water", 1000, 1000 * 80.0),
             merge(w, TURBINE, "Coolant", "minecraft:water", 1000, 1000 * 80.0),
-            merge(w, CONDENSER, "Primary", "minecraft:water", 1000, 1000 * 80.0),
-            merge(w, CONDENSER, "Secondary", "minecraft:water", 1000, 0),
             tank(w, ECCS_TANK, "criticalmass:primary_coolant", 4000),
             "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*MAKEUP_TANK),
             tank(w, FEED_TANK[0], "minecraft:water", 6000, 6000 * 80.0)]
+    cmds += [merge(w, p, "Secondary", "minecraft:water", 1000, 1000 * 80.0) for p in EXCHANGERS]
+    for p in CONDENSERS:
+        cmds += [merge(w, p, "Primary", "minecraft:water", 1000, 1000 * 80.0), merge(w, p, "Secondary", "minecraft:water", 1000, 0)]
     cmds += [merge(w, p, "Buffer", "minecraft:water", 4000, 0) for p in RACKS]
     cmds += [merge(w, p, "Buffer", "minecraft:water", 500, 0) for p in FILL]
     for x, parts in sorted(DESKS.items()):
@@ -845,8 +847,8 @@ def start(w):
     cmds += bind(w, (sx1, sy1, sz), CONTROLLER, "Reactor") + bind(w, (sx1, sy1, sz), TURBINE, "Turbine")
     cmds += [setblock(w, SCREEN_MOTOR, "create:creative_motor[facing=north]"),
              "criticalmass fuel %s fill" % w(*CONTROLLER),
-             setblock(w, (5, 3, -2), AIR),
-             setblock(w, (7, 3, -2), "create:copper_valve_handle[facing=east]"),
+             setblock(w, (5, 4, -2), AIR),
+             setblock(w, (7, 4, -2), "create:copper_valve_handle[facing=east]"),
              setblock(w, (17, 9, 0), AIR),
              setblock(w, (17, 9, 0), "create:copper_valve_handle[facing=up]"),
              setblock(w, (PRIMARY_PUMP[0], 2, PRIMARY_PUMP[2]), "create:creative_motor[facing=up]"),
