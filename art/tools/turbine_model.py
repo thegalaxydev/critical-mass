@@ -18,7 +18,7 @@ CORNERS = {
     "east": ((1, 1, 1), (1, 0, 1), (1, 0, 0), (1, 1, 0)),
 }
 DISPLAY = {
-    "gui": {"rotation": [30, 225, 0], "translation": [0, 0, 0], "scale": [0.25, 0.25, 0.25]},
+    "gui": {"rotation": [30, 45, 0], "translation": [0, 0, 0], "scale": [0.25, 0.25, 0.25]},
     "ground": {"rotation": [0, 0, 0], "translation": [0, 3, 0], "scale": [0.12, 0.12, 0.12]},
     "fixed": {"rotation": [0, 90, 0], "translation": [0, 0, 0], "scale": [0.25, 0.25, 0.25]},
     "thirdperson_righthand": {"rotation": [75, 45, 0], "translation": [0, 2.5, 0], "scale": [0.16, 0.16, 0.16]},
