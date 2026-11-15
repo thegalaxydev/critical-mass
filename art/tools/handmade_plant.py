@@ -145,37 +145,9 @@ def region(img, x0, y0, w, h, ramp, base=3):
     bevel(img, x0, y0, x0 + w - 1, y0 + h - 1, ramp, base)
 
 
-def relief_valve(jar):
-    img = blank(32, 32)
-    region(img, 0, 0, 10, 10, COPPER)
-    opening(img, 1, 1, 8, IRON)
-    for x, y in ((1, 1), (8, 1), (1, 8), (8, 8)):
-        put(img, x, y, IRON[4])
-    region(img, 10, 0, 10, 10, COPPER)
-    for x, y in ((11, 1), (18, 1), (11, 8), (18, 8)):
-        put(img, x, y, IRON[4])
-    region(img, 20, 0, 4, 10, COPPER, 2)
-    region(img, 14, 10, 10, 4, COPPER, 2)
-    region(img, 24, 0, 8, 8, BRASS)
-    rect(img, 26, 2, 29, 5, BRASS[2])
-    put(img, 27, 3, BRASS[5])
-    region(img, 0, 10, 6, 8, BRASS)
-    region(img, 6, 10, 8, 6, BRASS)
-    for x in range(24, 32):
-        for y in range(10, 14):
-            put(img, x, y, IRON[5] if (y + (x // 2)) % 2 == 0 else IRON[2])
-    rect(img, 0, 18, 3, 21, IRON[3])
-    put(img, 4, 18, HOLE)
-    put(img, 5, 18, HOLE)
-    put(img, 4, 19, HOLE)
-    put(img, 5, 19, HOLE)
-    return img
-
-
 PLANT = {
     "heat_exchanger": heat_exchanger,
     "condenser": condenser,
     "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,
-    "relief_valve": relief_valve,
 }

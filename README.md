@@ -159,7 +159,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - It also trips if nothing is attached to its shaft.
 - **Power out:** the turbine's shaft is the plant's output. Put Create machinery straight on it and the governor follows whatever load is there. A Clutch on the shaft drops the load, and dropping all of it at once trips the turbine. The mod makes no electricity of its own; an addon such as Create Crafts & Additions can turn the shaft into Forge Energy.
 - **Valves:** a Reinforced Valve or Create's Fluid Valve fits inline in any loop. The plain valve leaks under pressure like a plain pipe. Turning the shaft forwards opens it and backwards closes it; a Valve Handle on the shaft is the usual way to work it. On Create's valve a handle left at its default 45 degrees needs two turns, so set it to 90 degrees or more for one. While it is closed nothing circulates in that loop.
-- **Relief Valve:** fits inline. It senses the loop's peak pressure, vents through its front from 8 bar down to 6 bar, and gives a redstone signal while venting. Vented water and heat are logged.
+- **Relief Valve:** fits inline, and grows a flanged stub on each side a pipe joins. It senses the loop's peak pressure, vents through its front from 8 bar down to 6 bar, and gives a redstone signal while venting. Vented water and heat are logged.
 - **Rupture:** any steam buffer above 12 bar ruptures and loses its contents (logged).
 - **Condenser:** steam side front/back, cooling water top/bottom. It condenses only while cooling water flows.
 - **Cooling loop:** condenser cooling side, then Cooling Tower Packing and/or Radiators, then back.

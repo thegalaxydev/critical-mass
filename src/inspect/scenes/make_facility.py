@@ -450,7 +450,6 @@ def turbine():
     sign((33, 7, 1), "south", "Load Clutch")
     sign((17, 7, 1), "south", "Main Steam", "Stop Valve")
     put(17, 7, 0, STEEL)
-    put(15, 7, 0, STEEL)
     put(20, 7, 0, STEEL)
 
 

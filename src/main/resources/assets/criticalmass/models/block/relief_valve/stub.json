@@ -1,0 +1,135 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/reinforced_pipe",
+  "particle": "criticalmass:block/reinforced_pipe"
+ },
+ "elements": [
+  {
+   "name": "stub_tube",
+   "from": [
+    4,
+    4,
+    0
+   ],
+   "to": [
+    12,
+    12,
+    4
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      0,
+      0,
+      4,
+      2
+     ],
+     "texture": "#0",
+     "rotation": 90
+    },
+    "west": {
+     "uv": [
+      0,
+      2,
+      4,
+      0
+     ],
+     "texture": "#0",
+     "rotation": 90
+    },
+    "up": {
+     "uv": [
+      0,
+      2,
+      4,
+      0
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      4,
+      2
+     ],
+     "texture": "#0",
+     "rotation": 180
+    }
+   }
+  },
+  {
+   "name": "stub_rim",
+   "from": [
+    3,
+    3,
+    0
+   ],
+   "to": [
+    13,
+    13,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      11,
+      11,
+      16,
+      16
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      10.5,
+      11,
+      9.5,
+      16
+     ],
+     "texture": "#0",
+     "rotation": 270
+    },
+    "down": {
+     "uv": [
+      9.5,
+      16,
+      10.5,
+      11
+     ],
+     "texture": "#0",
+     "rotation": 270
+    }
+   }
+  }
+ ]
+}

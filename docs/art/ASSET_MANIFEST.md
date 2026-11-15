@@ -23,7 +23,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 | `criticalmass:condenser` | `block/condenser.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:cooling_tower_packing` | `block/cooling_tower_packing.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:radiator_panel` | `block/radiator_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
-| `criticalmass:relief_valve` | `block/relief_valve.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
+| `criticalmass:relief_valve` | `block/relief_valve.png` 32x32 | hand-made | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:steam_bypass_valve` | `block/steam_bypass_valve.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:boiler_heating_plate` | `block/boiler_heating_plate.png` 32x32 | generated | integrated | iso: yes, in_game: yes |  |
 | `criticalmass:shielding_concrete` | `block/shielding_concrete.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -134,7 +134,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - `condenser`: inventory = item model condenser (parent: block model); placed = blockstate condenser (horizontal)
 - `cooling_tower_packing`: inventory = item model cooling_tower_packing (parent: block model); placed = blockstate cooling_tower_packing (simple)
 - `radiator_panel`: inventory = item model radiator_panel (parent: block model); placed = blockstate radiator_panel (horizontal)
-- `relief_valve`: inventory = item model relief_valve (parent: block model); placed = blockstate relief_valve (facing); venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting
+- `relief_valve`: inventory = item model relief_valve (body with a stub each side); placed = blockstate relief_valve (body by facing, plus a flanged pipe stub on each side that has a pipe); venting=true|false; inline on pipe (faces off the vent axis), vents through its front at 8 bar until 6 bar, redstone output while venting
 - `steam_bypass_valve`: inventory = item model steam_bypass_valve (parent: block model); placed = blockstate steam_bypass_valve (horizontal)
 - `boiler_heating_plate`: inventory = item model boiler_heating_plate (parent: block model); placed = blockstate boiler_heating_plate (horizontal)
 - `shielding_concrete`: inventory = item model shielding_concrete (parent: block model); placed = blockstate shielding_concrete (simple)

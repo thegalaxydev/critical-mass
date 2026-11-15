@@ -7,7 +7,9 @@ import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
@@ -30,6 +32,15 @@ public final class NodeBlocks {
         BlockPos at = pos.relative(face);
         BlockState s = level.getBlockState(at);
         return PipeCoolant.isPipe(s) && PipeCoolant.open(level, at, s, face.getOpposite());
+    }
+
+    public static boolean piped(LevelAccessor level, BlockPos pos, Direction face) {
+        BlockPos at = pos.relative(face);
+        BlockState state = level.getBlockState(at);
+        if (PipeCoolant.isPipe(state)) {
+            return PipeCoolant.open(level, at, state, face.getOpposite());
+        }
+        return level instanceof Level real && real.getCapability(Capabilities.FluidHandler.BLOCK, at, face.getOpposite()) != null;
     }
 
     @Nullable

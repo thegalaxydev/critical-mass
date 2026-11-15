@@ -18,6 +18,7 @@ public class ReliefValveBlockEntity extends SingleBufferNodeBlockEntity {
     private double circuitPressure;
     private CoolantBuffer worst;
     private int circuitTicks;
+    private boolean pipesChecked;
 
     public ReliefValveBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state, CMThermal.RELIEF_CAPACITY);
@@ -50,6 +51,13 @@ public class ReliefValveBlockEntity extends SingleBufferNodeBlockEntity {
 
     @Override
     protected void serverTick() {
+        if (!pipesChecked && level.hasChunksAt(worldPosition.offset(-1, -1, -1), worldPosition.offset(1, 1, 1))) {
+            pipesChecked = true;
+            BlockState joined = ReliefValveBlock.withPipes(level, worldPosition, getBlockState());
+            if (joined != getBlockState()) {
+                level.setBlock(worldPosition, joined, Block.UPDATE_ALL);
+            }
+        }
         if (circuitTicks > 0) {
             circuitTicks--;
         } else {

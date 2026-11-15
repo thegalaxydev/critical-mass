@@ -1,27 +1,113 @@
 {
- "variants": {
-  "facing=north": {
-   "model": "criticalmass:block/relief_valve"
+ "multipart": [
+  {
+   "when": {
+    "facing": "up"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body"
+   }
   },
-  "facing=south": {
-   "model": "criticalmass:block/relief_valve",
-   "y": 180
+  {
+   "when": {
+    "facing": "down"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body",
+    "x": 180
+   }
   },
-  "facing=east": {
-   "model": "criticalmass:block/relief_valve",
-   "y": 90
+  {
+   "when": {
+    "facing": "north"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body",
+    "x": 90
+   }
   },
-  "facing=west": {
-   "model": "criticalmass:block/relief_valve",
-   "y": 270
+  {
+   "when": {
+    "facing": "south"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body",
+    "x": 90,
+    "y": 180
+   }
   },
-  "facing=up": {
-   "model": "criticalmass:block/relief_valve",
-   "x": 270
+  {
+   "when": {
+    "facing": "east"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body",
+    "x": 90,
+    "y": 90
+   }
   },
-  "facing=down": {
-   "model": "criticalmass:block/relief_valve",
-   "x": 90
+  {
+   "when": {
+    "facing": "west"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/body",
+    "x": 90,
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "north": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub"
+   }
+  },
+  {
+   "when": {
+    "east": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "south": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "west": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "up": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "x": 270
+   }
+  },
+  {
+   "when": {
+    "down": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/relief_valve/stub",
+    "x": 90
+   }
   }
- }
+ ]
 }

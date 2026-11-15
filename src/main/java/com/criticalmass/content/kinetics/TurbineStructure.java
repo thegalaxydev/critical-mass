@@ -1,6 +1,6 @@
 package com.criticalmass.content.kinetics;
 
-import com.criticalmass.content.thermal.PipeCoolant;
+import com.criticalmass.content.thermal.NodeBlocks;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import java.util.ArrayList;
@@ -20,7 +20,6 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import org.jetbrains.annotations.Nullable;
 
 public final class TurbineStructure {
@@ -121,12 +120,7 @@ public final class TurbineStructure {
     }
 
     public static boolean piped(LevelAccessor level, BlockPos port, Direction face) {
-        BlockPos at = port.relative(face);
-        BlockState state = level.getBlockState(at);
-        if (PipeCoolant.isPipe(state)) {
-            return PipeCoolant.open(level, at, state, face.getOpposite());
-        }
-        return level instanceof Level real && real.getCapability(Capabilities.FluidHandler.BLOCK, at, face.getOpposite()) != null;
+        return NodeBlocks.piped(level, port, face);
     }
 
     public static boolean hasDuct(BlockGetter level, BlockPos master, Direction face) {

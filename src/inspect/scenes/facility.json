@@ -452,7 +452,6 @@
     "/fill 316 -56 278 323 -56 278 criticalmass:steel_block",
     "/fill 325 -56 278 332 -56 278 criticalmass:steel_block",
     "/fill 328 -54 299 330 -54 301 criticalmass:steel_block",
-    "/setblock 315 -54 300 criticalmass:steel_block",
     "/setblock 317 -54 300 criticalmass:steel_block",
     "/setblock 320 -54 300 criticalmass:steel_block",
     "/fill 324 -54 300 326 -54 300 criticalmass:steel_block",

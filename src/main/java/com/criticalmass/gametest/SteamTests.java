@@ -3,6 +3,7 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.FacingBlock;
+import com.criticalmass.content.ReliefValveBlock;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
@@ -403,6 +404,40 @@ public final class SteamTests {
                 })
                 .thenIdle(3)
                 .thenExecute(() -> h.assertTrue(!v.venting() && v.status().endsWith("closed"), "Valve should reseat below the reseat pressure"))
+                .thenSucceed();
+    }
+
+    private static String stubs(GameTestHelper h, BlockPos valve) {
+        StringBuilder out = new StringBuilder();
+        for (Direction d : Direction.values()) {
+            if (h.getBlockState(valve).getValue(ReliefValveBlock.PIPED.get(d))) {
+                out.append(d.getSerializedName().charAt(0));
+            }
+        }
+        return out.toString();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void reliefValveShowsAStubOnlyWhereAPipeJoins(GameTestHelper h) {
+        BlockPos pos = new BlockPos(3, 3, 3);
+        BlockPos late = new BlockPos(3, 3, 6);
+        h.setBlock(pos, CMBlocks.RELIEF_VALVE.get().defaultBlockState().setValue(FacingBlock.FACING, Direction.UP));
+        h.assertTrue(stubs(h, pos).isEmpty(), "A valve with no pipes should show no stubs: " + stubs(h, pos));
+        TestVessels.pipes(h, List.of(pos.west(), pos.west(2)));
+        h.assertTrue(stubs(h, pos).equals("w"), "A pipe on the west should bring out the west stub only: " + stubs(h, pos));
+        TestVessels.pipes(h, List.of(pos.east(), pos.east(2)));
+        h.assertTrue(stubs(h, pos).equals("we"), "A second pipe on the east should bring out both: " + stubs(h, pos));
+        TestVessels.pipes(h, List.of(pos.above(), pos.above(2)));
+        h.assertTrue(stubs(h, pos).equals("we"), "A pipe over the vent does not join the valve: " + stubs(h, pos));
+        ReliefValveBlockEntity valve = h.getBlockEntity(pos);
+        h.assertTrue(valve.passThroughExit(Direction.WEST) == Direction.EAST && valve.passThroughExit(Direction.UP) == null, "Coolant should still pass straight through the sides and not the vent");
+        h.setBlock(pos.west(), Blocks.AIR);
+        h.assertTrue(stubs(h, pos).equals("e"), "Taking the west pipe away should put its stub away: " + stubs(h, pos));
+        TestVessels.pipes(h, List.of(late.north(), late.south()));
+        h.setBlock(late, CMBlocks.RELIEF_VALVE.get().defaultBlockState().setValue(FacingBlock.FACING, Direction.EAST));
+        h.startSequence()
+                .thenIdle(3)
+                .thenExecute(() -> h.assertTrue(stubs(h, late).equals("ns"), "A valve set between pipes that were already there should find them: " + stubs(h, late)))
                 .thenSucceed();
     }
 
