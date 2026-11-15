@@ -145,9 +145,9 @@ def main():
         f.write(base64.b64decode(project["textures"][0]["source"].split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
     base = {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": textures}
-    housing = dict(base, elements=[element(c, scale) for c in still])
+    housing = dict(base, render_type="minecraft:cutout", elements=[element(c, scale) for c in still])
     panes = dict(base, render_type="minecraft:translucent", elements=[element(c, scale) for c in glass])
-    rotor = dict(base, elements=[element(upright(c), scale) for c in moving])
+    rotor = dict(base, render_type="minecraft:cutout", elements=[element(upright(c), scale) for c in moving])
     whole = dict(base, render_type="minecraft:translucent", elements=[element(c, scale) for c in still + moving + glass], display=DISPLAY)
     write(os.path.join(ASSETS, "models", "block", NAME + ".json"), housing)
     write(os.path.join(ASSETS, "models", "block", NAME + "_glass.json"), panes)

@@ -769,9 +769,10 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 
 ## steam_turbine
 
-- Used by: `textures/block/steam_turbine.png` and the turbine's block, rotor and item models
-- Source: modelled by the author in Blockbench, saved as `art/blockbench/steam_turbine.bbmodel`. The texture is a placeholder that marks out each UV island and is kept as `art/blockbench/steam_turbine.png`; `art/blockbench/steam_turbine_uv_guide.png` names the islands for whoever paints the final one. `art/tools/turbine_model.py` exports the model and texture into the game: the casing, stator rings and back plate become the block model, and the shaft and discs become the rotor, turned to stand upright the way a spinning part is loaded.
-- Date: 2026-11-14
+- Used by: `textures/block/steam_turbine.png` and the turbine's block, glass, exhaust, rotor and item models
+- Source: modelled by the author in Blockbench, saved as `art/blockbench/steam_turbine.bbmodel`. `art/tools/turbine_texture.py` paints the texture from the author's hand-made textures: the casing plates are the Steel Block, the back plate is the Reactor Vessel Casing with a pipe socket set into it, the dark inside faces, shaft and fixed vanes use the navy tones of the vessel casing's inset and the Reinforced Pipe, and the window frames and panes use the Shielded Glass tones. The tool checks that every tone it uses is still present in those four textures. The layout follows Create's casings and fan: bevelled plates with corner bolts, a flanged rim, and a solid hub with a ring of blades. Create Simulated's parts were looked at for style only and none of their pixels are used, because that art is all rights reserved. The two exhaust duct islands are the author's own painting and the tool keeps them as they are.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/turbine_model.py` then exports the model and texture into the game. `art/blockbench/steam_turbine_uv_guide.png` names the islands.
+- Date: 2026-11-15
 
 ## Overhaul blocks (not generated)
 

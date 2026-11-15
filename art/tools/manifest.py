@@ -78,7 +78,7 @@ REFS = {
 
 ISSUES = {
     "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
-    "steam_turbine": ["Takes up three blocks each way, less the four back corners. The texture is a placeholder."],
+    "steam_turbine": ["Takes up three blocks each way, less the four back corners."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
     "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],
     "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],
