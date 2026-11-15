@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -182,12 +183,14 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.rod_drive")));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rod_bank", ChatFormatting.GRAY, String.valueOf((char) ('A' + bank))));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rod_position", ChatFormatting.GRAY, Math.round(insertion * 100), Math.round(target * 100)));
-        String state = failSafe ? "criticalmass.rod.fail_safe" : moving ? "criticalmass.rod.moving" : "criticalmass.rod.holding";
-        tooltip.add(ThermalTooltips.line(state, failSafe ? ChatFormatting.RED : moving ? ChatFormatting.AQUA : ChatFormatting.GRAY));
+        ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        if (failSafe) {
+            ThermalTooltips.status(tooltip, "criticalmass.rod.fail_safe", ChatFormatting.RED);
+        }
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.insertion", String.valueOf((char) ('A' + bank)));
+        MutableComponent position = ThermalTooltips.reading("criticalmass.unit.percent", ChatFormatting.AQUA, Math.round(insertion * 100));
+        ThermalTooltips.value(tooltip, moving ? position.append(ThermalTooltips.aside("criticalmass.goggles.aside.target", Math.round(target * 100))) : position);
         return true;
     }
 }

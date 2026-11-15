@@ -55,7 +55,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Fuel cooling:** each coolant column beside a fuel column carries 0.25 HU/t per block for every degree the fuel is above the coolant, at 64 mB/t of flow or more, and less in proportion below that. Nothing moves without flow. A fuel column with no coolant column beside it is not cooled at all. A hot spot is flagged at 800 °C and the fuel melts at 1,800 °C.
 - **Xenon:** fission makes iodine, which decays into xenon, which absorbs neutrons. At steady full power xenon costs 2,500 pcm. After a shutdown the iodine keeps decaying, so xenon climbs to about one and a half times that around 8 minutes later, then fades over the next hour. A core without enough spare reactivity cannot restart until it has.
 - **Decay heat:** fission products give 7% of the power the fuel was making, halving every minute after shutdown.
-- **Readings:** goggles on the controller show neutron power, reactivity, period, xenon and boron. The same readings are Display Link sources, with a neutronics summary for a Display Board.
+- **Readings:** goggles show little, the way Create's own do: a block's state and one or two readings. On the controller that is its state, neutron power, fuel temperature and coolant. Reactivity, period, xenon and boron are on the Plant Screen and dashboard gauges, and are Display Link sources, with a neutronics summary for a Display Board.
 - **Boron:** the reactivity term is modelled, but nothing in the world adds or removes boron yet. Operators with permission can set it with `/criticalmass boron <controller> <ppm>`.
 - **Jump to power:** `/criticalmass steady <controller> <fraction> [coolant °C]` puts a reactor at that power with matching fuel temperatures and xenon, optionally sets the coolant temperature, and sets the rods to the position that holds it.
 - If the vessel breaks while running, the reactor trips. It stays tripped until it is reset with the rods commanded in.
@@ -135,8 +135,9 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Turbine by signal:** a full signal at the Steam Turbine shuts its steam off and resets an overspeed trip. Weaker signals limit the governor.
 - **Pumps and valves** are switched with Create's own parts: a clutch or gearshift and a lever on the pump shaft, a Valve Handle or powered shaft on a Reinforced Valve.
 - **Primary pressure:** vessel coolant boils at 350 °C unless it is pressurized. Coolant hotter than its boiling point flashes to steam and is lost, a quarter of the excess each tick, and the boiling alarm is raised.
-- **Pressurizer:** touching the vessel, it raises the primary pressure with heaters, and every bar adds 2 °C to the boiling point (100 bar gives 548 °C, the 150 bar maximum 648 °C).
+- **Pressurizer:** a vessel two blocks tall, so it needs the block above it free. Touching the reactor vessel, it raises the primary pressure with heaters, and every bar adds 2 °C to the boiling point (100 bar gives 548 °C, the 150 bar maximum 648 °C).
   - Set the pressure on its value box. The heaters need a lit Blaze Burner directly under the Pressurizer: a kindled burner raises 0.25 bar per tick and a seething one twice that. Pressure leaks 0.02 bar per tick, so holding it means keeping the burner fed.
+  - It reads nothing until a gauge is fitted: use a Dashboard Gauge on one of its sides. The dial then shows the pressure, and goggles give the figure and the setpoint. A wrench takes the gauge off again, and breaking the Pressurizer drops it.
   - With the burner out the pressure falls back and hot coolant starts to boil, so a plant running above 350 °C depends on that burner.
   - A redstone signal switches the heaters off. A comparator reads the pressure.
 - **Breach:** a casing block at zero integrity breaches the vessel, which then leaks coolant.
@@ -174,7 +175,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Airflow** sets how hard each fill block works. A tower open to the sky gets 25% plus 5% per extra fill block, up to 75%. An Encased Fan on top adds 100% at 64 RPM and a little more above that, and needs no open sky. It has to blow the air up, out of the tower; one blowing down into the fill adds nothing, so reverse its rotation. The hot pipe may also come down onto the top block, with the sky or the fan above that pipe.
   - Rejected heat evaporates water (1 mB per 2,000 HU), so the loop slowly loses water. Pipe make-up water into the side of the bottom fill block with a Mechanical Pump. The stack only takes water while it has room, so the pump can be left running. The same line fills a new loop, or use buckets on the fill.
   - If the cooled water leaves by a side pipe instead of from underneath, put the make-up pipe on a different fill block, or the loop may follow it.
-  - The top fill block shows the tower's airflow and total heat rejection in goggles. A tower without a fan shows a vapour plume while it works.
+  - Goggles on the tower show whether it is cooling and how much heat it rejects. A tower without a fan shows a vapour plume while it works.
   - The air leaving the top is as hot as the water. Above 50 °C it scalds anything standing in the fan's air stream, or just above a tower with no fan, and it hurts more the hotter the water is.
 - **Fluid Tanks in a loop:** a Create Fluid Tank of any size can sit inline in a loop as a surge tank, for example for feedwater, and the water in it keeps its temperature.
   - It needs the loop's two pipes on it. With more pipes on it, the loop leaves by the first one it finds, checking north, east, south, then west, so set make-up pumps directly against the tank.

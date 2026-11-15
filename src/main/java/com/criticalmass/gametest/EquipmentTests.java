@@ -1,5 +1,7 @@
 package com.criticalmass.gametest;
 
+import com.criticalmass.content.control.DashPart;
+import com.criticalmass.content.control.DashPartItem;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
@@ -375,5 +377,31 @@ public final class EquipmentTests {
                     h.assertTrue(!c.flashing() && Math.abs(c.coolant().temperature() - 450) < 1, "Pressurized coolant at 450 C should stay liquid: " + c.coolant().temperature());
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void pressurizerStandsTwoBlocksTallAndReadsOnlyWithAGauge(GameTestHelper h) {
+        BlockPos pos = new BlockPos(3, 2, 3);
+        h.setBlock(pos, CMBlocks.PRESSURIZER.get());
+        h.assertBlockPresent(CMBlocks.PRESSURIZER_TOP.get(), pos.above());
+        PressurizerBlockEntity p = h.getBlockEntity(pos);
+        List<Component> blind = new ArrayList<>();
+        p.addToGoggleTooltip(blind, false);
+        h.assertTrue(blind.size() == 2, "Without a gauge the goggles should show only its name and that no gauge is fitted, lines: " + blind.size());
+        h.assertTrue(!p.fitGauge(Direction.UP) && p.fitGauge(Direction.EAST) && !p.fitGauge(Direction.WEST), "One gauge fits, on a side");
+        List<Component> read = new ArrayList<>();
+        p.addToGoggleTooltip(read, false);
+        h.assertTrue(read.size() > 2, "With a gauge fitted the goggles should give the readings, lines: " + read.size());
+        ItemStack gauge = p.takeGauge();
+        h.assertTrue(gauge.getItem() instanceof DashPartItem part && part.type == DashPart.Type.GAUGE && p.gaugeFace() == null, "Taking the gauge off should give the gauge back");
+        h.setBlock(pos.above(), Blocks.AIR);
+        h.assertBlockPresent(Blocks.AIR, pos);
+        h.setBlock(pos, CMBlocks.PRESSURIZER.get());
+        h.setBlock(pos, Blocks.AIR);
+        h.assertBlockPresent(Blocks.AIR, pos.above());
+        h.setBlock(pos.above(), Blocks.STONE);
+        h.setBlock(pos, CMBlocks.PRESSURIZER.get());
+        h.assertBlockPresent(Blocks.STONE, pos.above());
+        h.succeed();
     }
 }

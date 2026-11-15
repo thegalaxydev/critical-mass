@@ -216,9 +216,9 @@ public final class Corium {
 
         @Override
         public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-            tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.corium")));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.temperature", temperature() > CMThermal.CORIUM_SOLID_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GRAY, ThermalTooltips.number(temperature())));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.corium_decay", ChatFormatting.GOLD, ThermalTooltips.number(decay)));
+            ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.temperature");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.celsius", temperature() > CMThermal.CORIUM_SOLID_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(temperature())));
             return true;
         }
     }

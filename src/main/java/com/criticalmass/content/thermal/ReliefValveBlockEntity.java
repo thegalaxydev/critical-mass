@@ -2,11 +2,8 @@ package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.ReliefValveBlock;
-import java.util.List;
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
@@ -90,11 +87,5 @@ public class ReliefValveBlockEntity extends SingleBufferNodeBlockEntity {
         if (next != venting) {
             level.setBlock(worldPosition, getBlockState().setValue(ReliefValveBlock.VENTING, next), Block.UPDATE_ALL);
         }
-    }
-
-    @Override
-    protected void details(List<Component> tooltip) {
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.relief_setpoint", ChatFormatting.GRAY, ThermalTooltips.number(CMThermal.RELIEF_PRESSURE), ThermalTooltips.number(CMThermal.RESEAT_PRESSURE)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.vented", ChatFormatting.GRAY, sinks.ventedVolume, ThermalTooltips.number(sinks.ventedHeat)));
     }
 }

@@ -102,10 +102,10 @@ public class ReinforcedValveBlockEntity extends KineticBlockEntity implements Th
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+        ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
         boolean open = ReinforcedValveBlock.isOpen(getBlockState());
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        tooltip.add(ThermalTooltips.line(open ? "criticalmass.valve.open" : "criticalmass.valve.closed", open ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, open ? "criticalmass.valve.open" : "criticalmass.valve.closed", open ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         ThermalTooltips.coolant(tooltip, coolant);
         return true;
     }

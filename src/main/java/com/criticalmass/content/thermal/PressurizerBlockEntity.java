@@ -1,5 +1,7 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.control.DashPart;
+import com.criticalmass.registry.CMItems;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -14,6 +16,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,6 +31,8 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
     private boolean linked;
     private String status = "criticalmass.pressurizer.no_vessel";
     private int syncCooldown;
+    @Nullable
+    private Direction gaugeFace;
 
     public PressurizerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -39,6 +45,39 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         setpoint.value = 100;
         setpoint.withFormatter(v -> v + " bar");
         behaviours.add(setpoint);
+    }
+
+    @Nullable
+    public Direction gaugeFace() {
+        return gaugeFace;
+    }
+
+    public boolean fitGauge(Direction face) {
+        if (gaugeFace != null || !face.getAxis().isHorizontal()) {
+            return false;
+        }
+        gaugeFace = face;
+        setChanged();
+        sendData();
+        return true;
+    }
+
+    public ItemStack takeGauge() {
+        if (gaugeFace == null) {
+            return ItemStack.EMPTY;
+        }
+        gaugeFace = null;
+        setChanged();
+        sendData();
+        return new ItemStack(CMItems.DASHBOARD_PARTS.get(DashPart.Type.GAUGE).get());
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (level != null && !level.isClientSide && gaugeFace != null) {
+            Block.popResource(level, worldPosition, takeGauge());
+        }
     }
 
     public double pressure() {
@@ -136,6 +175,9 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         tag.putBoolean("Heating", heating);
         tag.putBoolean("Linked", linked);
         tag.putString("Status", status);
+        if (gaugeFace != null) {
+            tag.putString("GaugeFace", gaugeFace.getSerializedName());
+        }
     }
 
     @Override
@@ -145,21 +187,30 @@ public class PressurizerBlockEntity extends SmartBlockEntity implements IHaveGog
         heating = tag.getBoolean("Heating");
         linked = tag.getBoolean("Linked");
         status = tag.getString("Status");
+        gaugeFace = tag.contains("GaugeFace") ? Direction.byName(tag.getString("GaugeFace")) : null;
+        if (gaugeFace != null && !gaugeFace.getAxis().isHorizontal()) {
+            gaugeFace = null;
+        }
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.pressurizer")));
-        tooltip.add(ThermalTooltips.line(status, status.endsWith("holding") || status.endsWith("heating") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.pressurizer_pressure", ChatFormatting.AQUA, ThermalTooltips.number(pressure), setpoint()));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.pressurizer_boiling", ChatFormatting.GOLD, ThermalTooltips.number(boilingPoint(pressure))));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        if (gaugeFace == null) {
+            ThermalTooltips.status(tooltip, "criticalmass.pressurizer.no_gauge", ChatFormatting.GOLD);
+            return true;
+        }
+        ThermalTooltips.status(tooltip, status, status.endsWith("holding") || status.endsWith("heating") ? ChatFormatting.GREEN : ChatFormatting.GOLD);
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.pressure");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.bar", ChatFormatting.AQUA, ThermalTooltips.number(pressure))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.setpoint", setpoint())));
         return true;
     }
 
     static class SetpointBox extends ValueBoxTransform.Sided {
         @Override
         protected Vec3 getSouthLocation() {
-            return VecHelper.voxelSpace(8, 8, 16.05);
+            return VecHelper.voxelSpace(8, 5, 14.05);
         }
 
         @Override

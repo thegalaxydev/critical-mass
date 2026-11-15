@@ -18,17 +18,57 @@ public final class ThermalTooltips {
         return Component.literal("     ").append(Component.translatable(key, args).withStyle(color));
     }
 
+    public static String count(long value) {
+        return String.format(Locale.ROOT, "%,d", value);
+    }
+
+    public static void title(List<Component> tooltip, Component name) {
+        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.title", name)));
+    }
+
+    public static void status(List<Component> tooltip, String key, ChatFormatting color, Object... args) {
+        if (!key.isEmpty()) {
+            tooltip.add(line(key, color, args));
+        }
+    }
+
+    public static void label(List<Component> tooltip, String key, Object... args) {
+        tooltip.add(Component.literal("    ").append(Component.translatable(key, args).withStyle(ChatFormatting.GRAY)));
+    }
+
+    public static void value(List<Component> tooltip, Component value) {
+        tooltip.add(Component.literal("     ").append(value));
+    }
+
+    public static MutableComponent reading(String key, ChatFormatting color, Object... args) {
+        return Component.translatable(key, args).withStyle(color);
+    }
+
+    public static MutableComponent aside(String key, Object... args) {
+        return Component.literal(" ").append(Component.translatable(key, args)).withStyle(ChatFormatting.DARK_GRAY);
+    }
+
+    public static void kinetic(List<Component> tooltip, boolean hadStats) {
+        if (hadStats) {
+            tooltip.add(Component.empty());
+        }
+    }
+
     public static void coolant(List<Component> tooltip, CoolantBuffer coolant) {
+        coolant(tooltip, coolant.amount() == 0 ? "criticalmass.goggles.label.coolant" : "criticalmass.goggles.title", coolant);
+    }
+
+    public static void coolant(List<Component> tooltip, String label, CoolantBuffer coolant) {
         if (coolant.amount() == 0) {
-            tooltip.add(line("criticalmass.goggles.coolant_empty", ChatFormatting.GRAY, number(coolant.capacity())));
+            label(tooltip, label);
+            value(tooltip, reading("criticalmass.goggles.empty", ChatFormatting.DARK_GRAY));
             return;
         }
-        tooltip.add(line("criticalmass.goggles.coolant", ChatFormatting.GRAY, coolant.fluid().getHoverName(), number(coolant.amount()), number(coolant.capacity())));
-        tooltip.add(line("criticalmass.goggles.temperature", ChatFormatting.GOLD, number(coolant.temperature())));
-        tooltip.add(line("criticalmass.goggles.heat", ChatFormatting.GRAY, number(coolant.heat())));
-        if (coolant.steamMedium() && coolant.quality() > 0) {
-            ChatFormatting c = coolant.pressure() >= CMThermal.RELIEF_PRESSURE ? ChatFormatting.RED : ChatFormatting.AQUA;
-            tooltip.add(line("criticalmass.goggles.steam", c, Math.round(coolant.quality() * 100), number(coolant.pressure())));
-        }
+        label(tooltip, label, coolant.fluid().getHoverName());
+        boolean steam = coolant.steamMedium() && coolant.quality() > 0;
+        MutableComponent state = steam
+                ? reading("criticalmass.unit.bar", coolant.pressure() >= CMThermal.RELIEF_PRESSURE ? ChatFormatting.RED : ChatFormatting.AQUA, number(coolant.pressure()))
+                : reading("criticalmass.unit.celsius", ChatFormatting.GOLD, number(coolant.temperature()));
+        value(tooltip, reading("criticalmass.unit.millibuckets", ChatFormatting.GOLD, count(coolant.amount())).append(aside("criticalmass.goggles.aside.at")).append(Component.literal(" ")).append(state));
     }
 }

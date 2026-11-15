@@ -3080,7 +3080,8 @@
     "/setblock 301 -55 300 create:cogwheel[axis=y]",
     "/setblock 301 -55 301 create:cogwheel[axis=y]",
     "/setblock 301 -54 300 create:creative_motor[facing=down]",
-    "/setblock 300 -55 300 create:copper_valve_handle[facing=up]"
+    "/setblock 300 -55 300 create:copper_valve_handle[facing=up]",
+    "/data merge block 303 -58 298 {GaugeFace:\"east\"}"
    ],
    "wait": 200
   },

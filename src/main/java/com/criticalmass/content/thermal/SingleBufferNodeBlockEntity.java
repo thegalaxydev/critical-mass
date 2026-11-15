@@ -133,10 +133,8 @@ public abstract class SingleBufferNodeBlockEntity extends SmartBlockEntity imple
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        if (!status.isEmpty()) {
-            tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.GOLD));
-        }
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, status, status.endsWith(".ok") ? net.minecraft.ChatFormatting.GREEN : status.endsWith(".closed") ? net.minecraft.ChatFormatting.GRAY : net.minecraft.ChatFormatting.GOLD);
         ThermalTooltips.coolant(tooltip, buffer);
         details(tooltip);
         return true;

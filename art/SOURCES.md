@@ -30,7 +30,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
-| Reactor Viewport and its cracked stages, Centrifuge, Pressurizer, Corium | Script | `art/tools/plant_blocks.py` |
+| Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
+| Reactor Viewport and its cracked stages, Centrifuge, Corium | Script | `art/tools/plant_blocks.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
@@ -530,6 +531,16 @@ A small heaped pile of bright yellow concentrate powder (stylised, game-like) on
 
 ```
 
+## pressurizer
+
+- Used by: `textures/block/pressurizer.png` and the models `block/pressurizer.json`, `pressurizer_top.json` and `pressurizer_item.json`
+- Source: `art/blockbench/pressurizer.bbmodel`, in two groups: `base` is the foot flange and the lower barrel with its heater band, `top` is the upper barrel, the shoulder flange, the cap and the nozzle. The vessel stands two blocks tall, so the exporter writes `top` as its own block model, lowered one block.
+- Texture: `art/tools/pressurizer_texture.py` paints a barrel in the Reactor Vessel Casing's navy with one copper heater band, flanges and cap in the author's Steel Block tones and a brass nozzle.
+- The dial a player fits on its side is not part of this art: it is the Dashboard Gauge, drawn by the same code as on a dashboard.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/pressurizer_model.py` then exports the models and blockstates.
+- Date: 2026-11-15
+
 ## primary_coolant_port
 
 - Used by: `textures/block/primary_coolant_port.png`
@@ -676,7 +687,7 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 
 ## Overhaul blocks (script-painted)
 
-- Used by: `textures/block/reactor_viewport*.png`, `plant_screen.png`, `pressurizer.png`, `corium.png`, `corium_hot.png`, `textures/item/plant_linker.png`
+- Used by: `textures/block/reactor_viewport*.png`, `plant_screen.png`, `corium.png`, `corium_hot.png`, `textures/item/plant_linker.png`
 - Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The cracked viewports use the casing crack overlays.
 
 ## Plant Screen frame

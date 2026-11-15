@@ -193,10 +193,11 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.pump")));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.flow", flow > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(flow)));
-        tooltip.add(ThermalTooltips.line(status, flow > 0 ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, status, flow > 0 ? ChatFormatting.GREEN : ChatFormatting.GOLD);
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.flow");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.flow", flow > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(flow)));
         return true;
     }
 }

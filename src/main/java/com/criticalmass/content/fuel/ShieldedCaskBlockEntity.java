@@ -2,6 +2,7 @@ package com.criticalmass.content.fuel;
 
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
+import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -156,19 +157,15 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         int n = 0;
         for (ItemStack s : slots) {
             if (!s.isEmpty()) {
                 n++;
             }
         }
-        tooltip.add(Component.literal("     ").append(Component.translatable("criticalmass.goggles.cask_contents", n, slots.size()).withStyle(ChatFormatting.GRAY)));
-        for (ItemStack s : slots) {
-            if (!s.isEmpty()) {
-                tooltip.add(Component.literal("       ").append(s.getHoverName().copy().withStyle(ChatFormatting.DARK_GRAY)));
-            }
-        }
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.assemblies");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.of", n > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY, n, slots.size()));
         return true;
     }
 

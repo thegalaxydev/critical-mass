@@ -389,26 +389,16 @@ public class CoolingTowerBlockEntity extends KineticBlockEntity implements Buffe
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        List<CoolingTowerBlockEntity> stack = stack();
-        CoolingTowerBlockEntity top = stack.get(stack.size() - 1);
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         String shown = stackStatus();
         double rejecting = 0;
-        long evaporated = 0;
-        for (CoolingTowerBlockEntity t : stack) {
+        for (CoolingTowerBlockEntity t : stack()) {
             rejecting += t.lastRejected;
-            evaporated += t.sinks.evaporatedVolume;
         }
-        if (!shown.isEmpty()) {
-            tooltip.add(ThermalTooltips.line(shown, shown.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
-        }
+        ThermalTooltips.status(tooltip, shown, shown.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD);
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.rejected");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.heat_rate", rejecting > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(rejecting)));
         ThermalTooltips.coolant(tooltip, stackCoolant());
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rejecting", rejecting > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(rejecting)));
-        if (top.towerFill > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_airflow", top.towerAirflow > 0 ? ChatFormatting.AQUA : ChatFormatting.RED, Math.round(top.towerAirflow * 100)));
-        }
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.tower_stack", ChatFormatting.GRAY, stack.size(), CMThermal.TOWER_MAX_PACKING));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.evaporated", ChatFormatting.GRAY, evaporated));
         return true;
     }
 }

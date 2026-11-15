@@ -509,18 +509,16 @@ public class ScreenBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.screen")));
-        tooltip.add(powered ? ThermalTooltips.line("criticalmass.screen.powered", ChatFormatting.GREEN) : ThermalTooltips.line("criticalmass.screen.unpowered", ChatFormatting.GOLD));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         ScreenBlockEntity main = level == null ? null : controllerOf(level, worldPosition);
-        if (main != null) {
-            tooltip.add(ThermalTooltips.line("criticalmass.screen.size", ChatFormatting.GRAY, main.width, main.height, main.height * LINES_PER_BLOCK, main.width * CHARACTERS_PER_BLOCK));
-            if (main.reactor == null) {
-                tooltip.add(ThermalTooltips.line("criticalmass.screen.unlinked", ChatFormatting.DARK_GRAY, BOARD_WIDTH, BOARD_HEIGHT));
-            } else if (main.bigEnough()) {
-                tooltip.add(ThermalTooltips.line("criticalmass.screen.linked", ChatFormatting.GREEN, main.reactor.getX(), main.reactor.getY(), main.reactor.getZ()));
-            } else {
-                tooltip.add(ThermalTooltips.line("criticalmass.screen.too_small", ChatFormatting.GOLD, BOARD_WIDTH, BOARD_HEIGHT));
-            }
+        if (!powered) {
+            ThermalTooltips.status(tooltip, "criticalmass.screen.unpowered", ChatFormatting.GOLD);
+        } else if (main == null || main.reactor == null) {
+            ThermalTooltips.status(tooltip, "criticalmass.screen.unlinked", ChatFormatting.GRAY);
+        } else if (main.bigEnough()) {
+            ThermalTooltips.status(tooltip, "criticalmass.screen.linked", ChatFormatting.GREEN, main.reactor.getX(), main.reactor.getY(), main.reactor.getZ());
+        } else {
+            ThermalTooltips.status(tooltip, "criticalmass.screen.too_small", ChatFormatting.GOLD, BOARD_WIDTH, BOARD_HEIGHT);
         }
         return true;
     }

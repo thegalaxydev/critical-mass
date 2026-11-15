@@ -859,6 +859,7 @@ def start(w):
     cmds += [setblock(w, pos, "create:cogwheel[axis=y]") for pos in DRIVE_COGS]
     cmds += [setblock(w, DRIVE_MOTOR, "create:creative_motor[facing=down]")]
     cmds += [setblock(w, (SERVICE[0], SERVICE[1] + 1, SERVICE[2]), "create:copper_valve_handle[facing=up]")]
+    cmds += ["data merge block %s {GaugeFace:\"east\"}" % w(*PRESSURIZER)]
     return cmds
 
 

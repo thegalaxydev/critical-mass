@@ -228,18 +228,12 @@ public class SpentFuelRackBlockEntity extends SingleBufferNodeBlockEntity implem
 
     @Override
     protected void details(List<Component> tooltip) {
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rack_contents", ChatFormatting.GRAY, count(), slots.size()));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rack_decay", lastDecay > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY, ThermalTooltips.number(lastDecay)));
-        if (buffer.amount() == 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.rack_dry_temp", rackTemperature() > CMThermal.RACK_DRY_DAMAGE_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD,
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.assemblies");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.of", count() > 0 ? ChatFormatting.GOLD : ChatFormatting.GRAY, count(), slots.size()));
+        if (buffer.amount() == 0 && count() > 0) {
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.rack_temperature");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.celsius", rackTemperature() > CMThermal.RACK_DRY_DAMAGE_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD,
                     ThermalTooltips.number(rackTemperature())));
-        }
-        for (ItemStack s : slots) {
-            FuelState st = FuelAssemblyItem.state(s);
-            if (st != null) {
-                tooltip.add(Component.literal("       ").append(s.getHoverName().copy().withStyle(ChatFormatting.DARK_GRAY))
-                        .append(Component.literal(" " + Math.round(st.coolingProgress() * 100) + "%").withStyle(st.cooled() ? ChatFormatting.AQUA : ChatFormatting.GOLD)));
-            }
         }
     }
 

@@ -229,12 +229,11 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.exchanger_primary", ChatFormatting.GRAY));
-        ThermalTooltips.coolant(tooltip, primary);
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.exchanger_secondary", ChatFormatting.GRAY));
-        ThermalTooltips.coolant(tooltip, secondary);
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.exchange_rate", lastExchange != 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastExchange)));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.exchange");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.heat_rate", lastExchange != 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastExchange)));
+        ThermalTooltips.coolant(tooltip, "criticalmass.goggles.label.primary", primary);
+        ThermalTooltips.coolant(tooltip, "criticalmass.goggles.label.secondary", secondary);
         return true;
     }
 }

@@ -85,7 +85,8 @@ public class RadiatorBlockEntity extends SingleBufferNodeBlockEntity {
 
     @Override
     protected void details(List<Component> tooltip) {
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rejecting", lastRejected > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastRejected)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.radiator_faces", ChatFormatting.GRAY, openFaces, ThermalTooltips.number(bonus)));
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.rejected");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.heat_rate", lastRejected > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastRejected))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.open_sides", openFaces)));
     }
 }

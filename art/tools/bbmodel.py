@@ -100,13 +100,14 @@ def borrowed(ref, prefix):
     return elements, textures
 
 
-def preview(ref, path, views=((225, 25), (135, 25), (45, 25), (180, 80)), size=360):
+def preview(ref, path, views=((225, 25), (135, 25), (45, 25), (180, 80)), size=360, tall=False):
     iso._cache.clear()
     with zipfile.ZipFile(create_jar()) as jar:
         for value in iso.load_model(ref).get("textures", {}).values():
             if value.startswith("create:"):
                 iso._cache[value] = Image.open(io.BytesIO(jar.read("assets/create/textures/%s.png" % value.split(":", 1)[1]))).convert("RGBA")
-    shots = [iso.render(ref, size, yaw, pitch) for yaw, pitch in views]
+    target = [(ref, lambda c: (c[0], c[1] - 8, c[2]))] if tall else ref
+    shots = [iso.render(target, size, yaw, pitch, scale=size * 4 / 46.0 if tall else None) for yaw, pitch in views]
     sheet = Image.new("RGBA", (size * len(shots), size), (88, 110, 74, 255))
     for i, shot in enumerate(shots):
         sheet.alpha_composite(shot, (size * i, 0))

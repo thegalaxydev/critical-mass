@@ -1,0 +1,309 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/pressurizer",
+  "particle": "criticalmass:block/pressurizer"
+ },
+ "elements": [
+  {
+   "name": "upper_barrel",
+   "from": [
+    2,
+    0,
+    2
+   ],
+   "to": [
+    14,
+    9,
+    14
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      0,
+      12,
+      4.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      6,
+      0,
+      12,
+      4.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      6,
+      0,
+      12,
+      4.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      6,
+      0,
+      12,
+      4.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "head_flange",
+   "from": [
+    1,
+    9,
+    1
+   ],
+   "to": [
+    15,
+    10,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      4.5,
+      13,
+      5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      6,
+      4.5,
+      13,
+      5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      6,
+      4.5,
+      13,
+      5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      6,
+      4.5,
+      13,
+      5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      9,
+      8,
+      16,
+      15
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      9,
+      8,
+      16,
+      15
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "shoulder",
+   "from": [
+    3,
+    10,
+    3
+   ],
+   "to": [
+    13,
+    13,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      8,
+      5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      8,
+      5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      8,
+      5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      8,
+      5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0,
+      9.5,
+      5,
+      14.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "cap",
+   "from": [
+    5,
+    13,
+    5
+   ],
+   "to": [
+    11,
+    15,
+    11
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      5,
+      8,
+      8,
+      9
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      5,
+      8,
+      8,
+      9
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      5,
+      8,
+      8,
+      9
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      5,
+      8,
+      8,
+      9
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      5,
+      9,
+      8,
+      12
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "relief_nozzle",
+   "from": [
+    7,
+    15,
+    7
+   ],
+   "to": [
+    9,
+    16,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      13,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      13,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      13,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      13,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      13,
+      1,
+      14,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

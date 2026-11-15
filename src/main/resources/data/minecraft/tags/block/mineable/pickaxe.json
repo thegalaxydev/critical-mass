@@ -30,6 +30,7 @@
     "criticalmass:open_waste_canister",
     "criticalmass:reactor_viewport",
     "criticalmass:pressurizer",
+    "criticalmass:pressurizer_top",
     "criticalmass:corium",
     "criticalmass:ruined_channel",
     "criticalmass:plant_screen",

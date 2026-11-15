@@ -315,16 +315,13 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.turbine")));
-        tooltip.add(ThermalTooltips.line(status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, status, status.endsWith(".ok") ? ChatFormatting.GREEN : ChatFormatting.GOLD);
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.rotor");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.rpm", Math.abs(overspeed) > CMThermal.OVERSPEED_TRIP * 0.5 ? ChatFormatting.RED : ChatFormatting.AQUA,
+                ThermalTooltips.number(ratedSpeed() * (1 + overspeed))).append(ThermalTooltips.aside("criticalmass.goggles.aside.rated", ratedSpeed())));
         ThermalTooltips.coolant(tooltip, coolant);
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.admission", ChatFormatting.GRAY, Math.round(admission * 100)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.rotor", Math.abs(overspeed) > CMThermal.OVERSPEED_TRIP * 0.5 ? ChatFormatting.RED : ChatFormatting.GRAY,
-                ThermalTooltips.number(ratedSpeed() * (1 + overspeed)), ratedSpeed()));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.shaft_load", ChatFormatting.GRAY, ThermalTooltips.number(shaftLoad)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.heat_rate", ChatFormatting.GOLD, ThermalTooltips.number(heatRate)));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.capacity", appliedCapacity > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(appliedCapacity)));
         return true;
     }
 }

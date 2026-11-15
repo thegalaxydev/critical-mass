@@ -251,7 +251,7 @@ BLOCKS = {
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
     "ruined_channel": {"lang": "Ruined Fuel Channel", "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "centrifuge": {"lang": "Centrifuge", "texture": centrifuge_texture, "models": centrifuge_models, "state": simple_state, "item": "centrifuge_item"},
-    "pressurizer": {"lang": "Pressurizer", "texture": pressurizer_texture, "model": lambda n: cube(n, SIDES), "state": simple_state},
+    "pressurizer": {"lang": "Pressurizer"},
     "reactor_viewport": {
         "lang": "Reactor Viewport",
         "textures": viewport_textures,
@@ -373,12 +373,14 @@ def main():
             d["texture"]().save(os.path.join(OUT, name + ".png"))
         for tex_name, tex in (d["textures"]() if d.get("textures") else {}).items():
             tex.save(os.path.join(OUT, tex_name + ".png"))
+        entries["block.criticalmass." + name] = d["lang"]
+        if not d.get("state"):
+            continue
         for model_name, model in (d["models"]() if d.get("models") else {name: d["model"](name)}).items():
             write(os.path.join(ASSETS, "models", "block", model_name + ".json"), model)
         write(os.path.join(ASSETS, "blockstates", name + ".json"), d["state"](name))
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": M + "block/" + d.get("item", name)})
         write(os.path.join(DATA, "criticalmass", "loot_table", "blocks", name + ".json"), loot(name))
-        entries["block.criticalmass." + name] = d["lang"]
     linker_item()
     uranium_items()
     screen_blocks.write_all(write, ASSETS, DATA, OUT)

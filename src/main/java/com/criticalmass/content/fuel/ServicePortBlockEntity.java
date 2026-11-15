@@ -222,11 +222,11 @@ public class ServicePortBlockEntity extends KineticBlockEntity implements IHaveG
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        boolean ok = status.endsWith("ready");
-        tooltip.add(ThermalTooltips.line(status, ok ? ChatFormatting.GREEN : ChatFormatting.GOLD));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, status, status.endsWith("ready") ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         if (!output.isEmpty()) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.port_output", ChatFormatting.GRAY, output.getHoverName()));
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.waiting");
+            ThermalTooltips.value(tooltip, output.getHoverName().copy().withStyle(ChatFormatting.GOLD));
         }
         return true;
     }

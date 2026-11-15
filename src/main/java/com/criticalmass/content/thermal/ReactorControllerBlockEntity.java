@@ -1,7 +1,6 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.client.VesselHighlighter;
-import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.radiation.ContaminationData;
@@ -1167,68 +1166,40 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        tooltip.add(Component.literal("    ").append(Component.translatable("criticalmass.goggles.controller")));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         boolean running = status.endsWith("running") || status.endsWith("starting");
         boolean healthy = running || status.endsWith("cold") || status.endsWith("cooling_down") || status.endsWith("unfueled") || status.endsWith("source_range");
-        tooltip.add(ThermalTooltips.line(status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED));
+        ThermalTooltips.status(tooltip, status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED);
         if (status.endsWith("tripped") && !tripReason.isEmpty()) {
-            tooltip.add(ThermalTooltips.line("criticalmass.reactor.trip." + tripReason, ChatFormatting.RED));
+            ThermalTooltips.status(tooltip, "criticalmass.reactor.trip." + tripReason, ChatFormatting.RED);
         }
         if (sizeError != null) {
-            tooltip.add(ThermalTooltips.line(sizeError, ChatFormatting.RED, dims[0], dims[1], dims[2]));
-        } else if (dims[0] > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.vessel", ChatFormatting.GRAY, dims[0], dims[1], dims[2], fuelColumns, controlColumns, coolantColumns));
+            ThermalTooltips.status(tooltip, sizeError, ChatFormatting.RED, dims[0], dims[1], dims[2]);
         }
         if (!problemPos.isEmpty()) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.problems", ChatFormatting.RED, problemPos.size()));
+            ThermalTooltips.status(tooltip, "criticalmass.goggles.problems", ChatFormatting.RED, problemPos.size());
             for (int i = 0; i < Math.min(3, problemPos.size()); i++) {
                 BlockPos p = problemPos.get(i);
-                tooltip.add(Component.literal("       " + p.getX() + " " + p.getY() + " " + p.getZ() + ": ").withStyle(ChatFormatting.DARK_GRAY)
+                tooltip.add(Component.literal("      " + p.getX() + " " + p.getY() + " " + p.getZ() + ": ").withStyle(ChatFormatting.DARK_GRAY)
                         .append(Component.translatable(problemReason.get(i)).withStyle(ChatFormatting.GOLD)));
             }
         }
         for (String m : missing) {
-            tooltip.add(ThermalTooltips.line(m, ChatFormatting.GOLD));
+            ThermalTooltips.status(tooltip, m, ChatFormatting.GOLD);
         }
         if (!warningPos.isEmpty()) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.warnings", ChatFormatting.GOLD, warningPos.size()));
-            for (int i = 0; i < Math.min(4, warningPos.size()); i++) {
+            ThermalTooltips.status(tooltip, "criticalmass.goggles.warnings", ChatFormatting.GOLD, warningPos.size());
+            for (int i = 0; i < Math.min(2, warningPos.size()); i++) {
                 BlockPos p = warningPos.get(i);
-                tooltip.add(Component.literal("       " + p.getX() + " " + p.getZ() + ": ").withStyle(ChatFormatting.DARK_GRAY)
+                tooltip.add(Component.literal("      " + p.getX() + " " + p.getZ() + ": ").withStyle(ChatFormatting.DARK_GRAY)
                         .append(Component.translatable(warningReason.get(i)).withStyle(ChatFormatting.GOLD)));
             }
         }
-        if (clientDrives > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.drive_insertion", ChatFormatting.GRAY, clientDrives, Math.round(clientDriveInsertion * 100)));
-        } else {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.insertion", ChatFormatting.GRAY, Math.round(insertion() * 100)));
-        }
-        if (clientResidual > 0.05) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.residual", ChatFormatting.GOLD, ThermalTooltips.number(clientResidual)));
-        }
-        if (fuelColumns > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.fuel_loaded", clientActive > 0 ? ChatFormatting.GRAY : ChatFormatting.GOLD, clientAssemblies, fuelColumns, clientActive));
-            if (clientAssemblies > 0) {
-                tooltip.add(ThermalTooltips.line("criticalmass.goggles.fuel_burnup", clientCondition < 0.5 ? ChatFormatting.RED : ChatFormatting.GRAY,
-                        Math.round(clientBurnup * 100), Math.round(clientCondition * 100)));
-            }
-            String state = clientReactivity > CMThermal.CRITICAL_BAND ? "supercritical" : clientReactivity < -CMThermal.CRITICAL_BAND ? "subcritical" : "critical";
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.neutron." + state, clientReactivity > CMThermal.CRITICAL_BAND ? ChatFormatting.GOLD : ChatFormatting.GRAY,
-                    PlantDisplaySources.number(clientNeutron * 100), Math.round(clientReactivity * 1.0e5)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.period", clientStartupRate > 1 / (2 * CMThermal.PERIOD_TRIP_SECONDS) ? ChatFormatting.RED : ChatFormatting.GRAY,
-                    Math.abs(clientStartupRate) < 1e-3 ? "\u221e" : PlantDisplaySources.number(1 / clientStartupRate)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.poisons", ChatFormatting.GRAY, Math.round(clientXenon * 100), Math.round(boron)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.reaction", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientFission)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.extracted", ChatFormatting.GRAY, ThermalTooltips.number(clientExtracted)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.core_temp", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.comparator", ChatFormatting.DARK_GRAY, comparatorFor(clientMaxTemp)));
-            if (clientHotSpots > 0) {
-                tooltip.add(ThermalTooltips.line("criticalmass.goggles.hot_spots", ChatFormatting.RED, clientHotSpots));
-            }
-        }
-        if (clientDamaged > 0) {
-            tooltip.add(ThermalTooltips.line("criticalmass.goggles.integrity", clientLowestIntegrity < CMThermal.DAMAGED_THRESHOLD ? ChatFormatting.RED : ChatFormatting.GOLD,
-                    Math.round(clientLowestIntegrity * 100), clientDamaged));
+        if (fuelColumns > 0 && sizeError == null) {
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.power");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.percent", clientFission > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(clientNeutron * 100)));
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.fuel_temperature");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.celsius", clientMaxTemp >= CMThermal.HOT_SPOT_TEMPERATURE ? ChatFormatting.RED : ChatFormatting.GOLD, ThermalTooltips.number(clientMaxTemp)));
         }
         ThermalTooltips.coolant(tooltip, coolant);
         return true;

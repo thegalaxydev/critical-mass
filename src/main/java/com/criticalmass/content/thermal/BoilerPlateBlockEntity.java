@@ -101,7 +101,8 @@ public class BoilerPlateBlockEntity extends SingleBufferNodeBlockEntity {
 
     @Override
     protected void details(List<Component> tooltip) {
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.boiler_level", heatLevel > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, heatLevel));
-        tooltip.add(ThermalTooltips.line("criticalmass.goggles.boiler_draw", ChatFormatting.GRAY, ThermalTooltips.number(lastDrawn)));
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.boiler");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.heat_rate", heatLevel > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastDrawn))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.heat_level", heatLevel)));
     }
 }

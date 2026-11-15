@@ -411,7 +411,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     public void readout(List<Component> tooltip, int aimed) {
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         if (aimed >= 0 && aimed < SLOTS) {
             if (parts[aimed] == null) {
                 tooltip.add(ThermalTooltips.line("criticalmass.dashboard.empty_half", ChatFormatting.DARK_GRAY));

@@ -190,13 +190,12 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        super.addToGoggleTooltip(tooltip, isPlayerSneaking);
-        tooltip.add(Component.literal("    ").append(getBlockState().getBlock().getName()));
-        tooltip.add(ThermalTooltips.line(status, status.endsWith("running") ? ChatFormatting.GREEN : ChatFormatting.GOLD, (int) MIN_RPM));
-        tooltip.add(ThermalTooltips.line("criticalmass.centrifuge.contents", ChatFormatting.GRAY, items.getStackInSlot(INPUT).getCount(), items.getStackInSlot(ENRICHED).getCount(),
-                items.getStackInSlot(DEPLETED).getCount()));
+        ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
+        ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, status, status.endsWith("running") ? ChatFormatting.GREEN : ChatFormatting.GOLD, (int) MIN_RPM);
         if (status.endsWith("running")) {
-            tooltip.add(ThermalTooltips.line("criticalmass.centrifuge.progress", ChatFormatting.AQUA, Math.round(progress() * 100)));
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.progress");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.percent", ChatFormatting.AQUA, Math.round(progress() * 100)));
         }
         return true;
     }

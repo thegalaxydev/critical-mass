@@ -5,6 +5,7 @@ import com.criticalmass.content.thermal.ReinforcedValveBlock;
 import com.criticalmass.content.fuel.CentrifugeBlock;
 import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlock;
+import com.criticalmass.content.thermal.PressurizerTopBlock;
 import net.minecraft.core.Direction;
 import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.SignalInterfaceBlock;
@@ -62,7 +63,9 @@ public final class CMBlocks {
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());
-    public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f));
+    public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f).noOcclusion());
+    public static final DeferredBlock<PressurizerTopBlock> PRESSURIZER_TOP = BLOCKS.register("pressurizer_top",
+            () -> new PressurizerTopBlock(metal(5.0f).noOcclusion().noLootTable()));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));

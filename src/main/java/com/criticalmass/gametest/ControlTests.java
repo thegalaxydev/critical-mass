@@ -1,5 +1,8 @@
 package com.criticalmass.gametest;
 
+import java.util.ArrayList;
+import java.util.List;
+import net.minecraft.network.chat.Component;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
@@ -160,5 +163,21 @@ public final class ControlTests {
                     h.assertTrue(c.core().coriumMass() == 0 && c.damagedBlocks() == 0, "A cooled shutdown should leave the core undamaged");
                 })
                 .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void gogglesGiveAStateAndAFewReadings(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 6000 * (300 - CMThermal.AMBIENT) * CMThermal.HEAT_CAPACITY);
+        h.runAfterDelay(20, () -> {
+            List<Component> lines = new ArrayList<>();
+            c.addToGoggleTooltip(lines, false);
+            List<String> text = lines.stream().map(line -> line.getString().trim()).toList();
+            h.assertTrue(text.size() <= 8, "A sound reactor should read in eight lines or fewer: " + text);
+            h.assertTrue(text.get(0).endsWith(":") && text.contains("Fuel Temperature:") && text.get(text.size() - 1).endsWith("at 300 \u00b0C"),
+                    "The readout should be a title, then labels over values, ending with the coolant: " + text);
+            h.succeed();
+        });
     }
 }
