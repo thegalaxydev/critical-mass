@@ -39,8 +39,7 @@ if __name__ == "__main__":
     if which == "rest":
         names = ["reactor_controller", "fuel_channel", "control_channel", "coolant_channel", "reactor_service_port", "primary_coolant_port_inlet", "primary_coolant_port_outlet",
                  "heat_exchanger", "condenser", "cooling_tower_packing", "radiator_panel", "relief_valve", "boiler_heating_plate",
-                 "shielding_concrete", "shielded_glass", "shielded_hatch", "spent_fuel_rack", "shielded_cask", "reactor_signal_interface",
-                 "docking_service_connector", "docking_service_connector_connected"]
+                 "shielding_concrete", "shielded_glass", "shielded_hatch", "spent_fuel_rack", "shielded_cask", "reactor_signal_interface"]
         for n in names:
             E.append((n, iso.render(["criticalmass:block/" + n], 200, 45)))
         E.append(("control_rod_drive", iso.render(["criticalmass:block/control_rod_drive", ("criticalmass:block/control_rod_drive_pinion", lambda c: (c[0], 16 - c[2], c[1]))], 200, 45)))

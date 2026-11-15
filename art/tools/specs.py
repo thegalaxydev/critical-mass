@@ -179,7 +179,6 @@ BLOCK_DEFS.update({
         "item": "block", "lang": "Spent Fuel Rack"},
     "shielded_cask": {"state": ("simple",), "item": "block", "lang": "Shielded Cask"},
     "reactor_signal_interface": {"state": ("horizontal", "reactor_signal_interface"), "item": "block", "lang": "Reactor Signal Interface"},
-    "docking_service_connector": {"state": ("raw", _facing_prop({"false": "docking_service_connector", "true": "docking_service_connector_connected"}, "connected")), "item": "docking_service_connector", "lang": "Docking Service Connector"},
 })
 
 EXTRA_MODELS = {
@@ -265,7 +264,6 @@ DESCRIPTIONS.update({
     "spent_fuel_rack": "Atlas for a spent fuel storage rack: iron lattice frame with vertical bars and transparent gaps between them (keep gaps magenta), horizontal braces; top view grid.",
     "shielded_cask": "Atlas for a shielded transport cask: dark lead-grey cylinder side with a black-and-yellow hazard band and bolts, steel lid with a ring of bolts, iron lifting lugs.",
     "reactor_signal_interface": "Front face of the reactor signal interface in iron casing: recessed steel panel with four brass-rimmed jack sockets (black holes) and small unlit red and amber indicator pips.",
-    "docking_service_connector": "Atlas for a docking service connector: iron face with a brass clamping collar ring around a copper service socket, small yellow alignment arrow marks at each edge, one face with an amber status lamp and one with a green status lamp, iron sides with a brass band, brass clamp jaws.",
     "control_rod_drive": "Atlas for a control rod drive: iron base plate with bolts, brass drive housing with dark side windows, a red emergency latch lever on the front, a back face with an iron shaft socket ring and black hole, and an iron toothed rack.",
     "control_rod_drive_pinion": "Atlas for the rotating pinion gear of the control rod drive: small iron toothed gear seen face-on and its toothed edge strip.",
 })

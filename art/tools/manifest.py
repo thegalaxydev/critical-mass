@@ -58,7 +58,6 @@ KINETIC = {
 
 STATE_NOTES = {
     "primary_coolant_port": "mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar",
-    "docking_service_connector": "connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)",
     "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
     "relief_valve": "venting=true|false; inline on pipe (faces off the vent axis), with north|south|east|west|up|down=true bringing out a flanged pipe stub on each side that has a pipe; vents through its front at 8 bar until 6 bar, redstone output while venting",
     "shielded_hatch": "vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates",
@@ -110,7 +109,6 @@ ART = {
     "shielded_cask": "script",
     "plant_screen": "script",
     "reactor_signal_interface": "script",
-    "docking_service_connector": "script",
     "uranium_ore": "script",
     "deepslate_uranium_ore": "script",
     "plant_linker": "script",
@@ -136,7 +134,7 @@ ART = {
     "relief_valve": "script, approved",
     "reactor_alloy_dashboard": "not recorded"
 }
-GONE = {"alarm_siren", "contaminated_filter", "emergency_coolant_tank", "fuel_assembly_bench", "instrumentation_panel", "repair_kit", "shielding_plate", "steam_bypass_valve"}
+GONE = {"alarm_siren", "docking_service_connector", "contaminated_filter", "emergency_coolant_tank", "fuel_assembly_bench", "instrumentation_panel", "repair_kit", "shielding_plate", "steam_bypass_valve"}
 ART_LEGEND = "The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is."
 
 
@@ -149,7 +147,6 @@ REFS = {
     "circulation_pump": ["create:block/pump", "create:block/pipes", "create:block/gearbox"],
     "steam_turbine": ["create:block/engine", "aeronautics:block/propeller_bearing", "create:block/axis"],
     "control_rod_drive": ["aeronautics:block/gyroscopic_propeller_bearing", "create:block/gearbox"],
-    "docking_service_connector": ["simulated:block/dock", "simulated:block/dock_powered"],
     "relief_valve": ["create:block/fluid_pipe", "create:block/fluid_valve"],
     "heat_exchanger": ["create:block/fluid_tank_top", "create:block/pipes"],
     "primary_coolant_port": ["create:block/pipes"],
@@ -159,7 +156,6 @@ ISSUES = {
     "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
     "steam_turbine": ["Takes up three blocks each way, less the four back corners."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
-    "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],
     "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],
     "crushed_uranium": ["Create already ships create:crushed_raw_uranium (enabled by uranium tags); this addon item may be redundant. Needs a design decision."],
     "survey_meter": ["Item has no behaviour yet (measurement is task tsk-073)."],

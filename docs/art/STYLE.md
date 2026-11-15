@@ -9,7 +9,7 @@
   - Primary loop: red collar = outlet / hot, blue collar = inlet / cold.
   - Steam: red-collared inlet, pale-collared exhaust.
   - Flow direction: brass double chevrons on the pump housing, pointing to the outlet.
-- Warning stripes only on hazard-bearing objects (hatch, cask, waste canister, suit trim). Lamps are drawn unlit unless a real blockstate lights them (siren `powered=true`, docking `connected=true`).
+- Warning stripes only on hazard-bearing objects (hatch, cask, waste canister, suit trim). Lamps are drawn unlit unless a real blockstate lights them (a block state such as `powered=true`).
 - No baked directional scene lighting, no text, low noise, discrete pixels.
 
 ## Pipeline (reproducible; scripts in `art/tools/`)

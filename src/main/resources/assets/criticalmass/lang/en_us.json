@@ -35,7 +35,6 @@
   "criticalmass.signal_interface.function.alarm": "Gives a redstone signal while any alarm is active",
   "criticalmass.signal_interface.no_reactor": "This Signal Interface is not part of a reactor vessel",
   "criticalmass.subtitle.alarm": "Reactor alarm sounds",
-  "block.criticalmass.docking_service_connector": "Docking Service Connector",
   "item.criticalmass.fuel_assembly": "Fresh Fuel Assembly",
   "item.criticalmass.survey_meter": "Survey Meter",
   "item.criticalmass.protective_hood": "Protective Hood",

@@ -6,7 +6,6 @@
     "criticalmass:control_channel",
     "criticalmass:control_rod_drive",
     "criticalmass:coolant_channel",
-    "criticalmass:docking_service_connector",
     "criticalmass:fuel_channel",
     "criticalmass:heat_exchanger",
     "criticalmass:primary_coolant_port",

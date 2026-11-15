@@ -11,7 +11,7 @@ LOG = os.path.join(os.path.dirname(HERE), "art", "queue_log.txt")
 BLOCKS = ["coolant_channel", "reactor_service_port", "primary_coolant_port", "heat_exchanger", "condenser",
           "cooling_tower_packing", "radiator_panel", "relief_valve", "boiler_heating_plate",
           "shielding_concrete", "shielded_glass", "shielded_hatch", "spent_fuel_rack", "shielded_cask",
-          "reactor_signal_interface", "docking_service_connector", "control_rod_drive", "control_rod_drive_pinion"]
+          "reactor_signal_interface", "control_rod_drive", "control_rod_drive_pinion"]
 ITEMS = ["raw_uranium", "crushed_uranium", "uranium_concentrate", "ceramic_fuel_pellet", "fuel_cladding", "reactor_alloy_ingot",
          "reactor_alloy_sheet"]
 FLUIDS = ["primary_coolant", "steam", "contaminated_coolant"]

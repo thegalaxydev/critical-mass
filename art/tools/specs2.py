@@ -170,22 +170,6 @@ def signal_interface():
 
 
 
-def docking():
-    a = Model("docking_service_connector", atlas_name="docking_service_connector")
-    b = Model("docking_service_connector_connected", share=a)
-    for m, lamp_key, col in ((a, "lamp_amber", "amber"), (b, "lamp_green", "green")):
-        face = C("face_" + col, ("iron", 3), ("brass", 2), [("ring", 8, 8, 6.5, "brass", ("steel", 2)), ("hole", 6, 6, 9, 9, "copper"),
-                                                            ("px", [(8, 2), (7, 3), (9, 3)], "hazard", 3), ("px", [(8, 13), (7, 12), (9, 12)], "hazard", 3), ("px", [(2, 8), (3, 7), (3, 9)], "hazard", 3), ("px", [(13, 8), (12, 7), (12, 9)], "hazard", 3),
-                                                            ("lamps", 1, [13], [col], True)])
-        cube_faces(m, {"north": face, "south": CASE, "east": C("side", ("iron", 3), ("iron", 2), [("rect", 0, 2, 15, 3, "brass", 3)]), "west": C("side", ("iron", 3), ("iron", 2), [("rect", 0, 2, 15, 3, "brass", 3)]),
-                       "up": C("side", ("iron", 3), ("iron", 2), [("rect", 0, 2, 15, 3, "brass", 3)]), "down": C("side", ("iron", 3), ("iron", 2), [("rect", 0, 2, 15, 3, "brass", 3)])})
-        if m is b:
-            clamp = C("clamp", ("brass", 4), None, [], outline=False)
-            for (x0, x1) in ((1, 3), (13, 15)):
-                m.box([x0, 6, -1], [x1, 10, 0], {"north": clamp, "east": C("clamp_e", ("brass", 3), None, [], outline=False), "west": C("clamp_e", ("brass", 3), None, [], outline=False), "up": C("clamp_t", ("brass", 3), None, [], outline=False), "down": C("clamp_t", ("brass", 3), None, [], outline=False)}, name="clamp")
-    return a, b
-
-
 def rod_drive():
     m = Model("control_rod_drive")
     base_s = C("base_side", ("iron", 3), ("iron", 1), [])
@@ -226,8 +210,6 @@ def build_rest():
     models["shielded_hatch"] = hatch()
     models["shielded_cask"] = cask()
     models["reactor_signal_interface"] = signal_interface()
-    d0, d1 = docking()
-    models[d0.name], models[d1.name] = d0, d1
     models["control_rod_drive"] = rod_drive()
     models["control_rod_drive_pinion"] = rod_drive_pinion()
     return models

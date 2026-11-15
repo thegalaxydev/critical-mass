@@ -83,8 +83,7 @@ def main(which):
             for y in (225, 45, 135, 315):
                 faces.append(("%s %d" % (n, y), iso.render(block_refs(n), 150, y)))
         grid(faces, "functional_faces.png", 4, "Functional faces: four views each (shafts, ports, fronts)")
-        states = [("port inlet", ["criticalmass:block/primary_coolant_port_inlet"]), ("port outlet", ["criticalmass:block/primary_coolant_port_outlet"]),
-                  ("dock free", ["criticalmass:block/docking_service_connector"]), ("dock connected", ["criticalmass:block/docking_service_connector_connected"])]
+        states = [("port inlet", ["criticalmass:block/primary_coolant_port_inlet"]), ("port outlet", ["criticalmass:block/primary_coolant_port_outlet"])]
         grid([(l, iso.render(r, 160, 45)) for l, r in states], "block_states.png", 6, "Block states (shape and colour both change)")
     if which in ("all", "items"):
         items_native()

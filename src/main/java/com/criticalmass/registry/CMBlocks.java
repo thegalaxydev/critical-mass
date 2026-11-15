@@ -12,7 +12,6 @@ import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.thermal.ChannelBlocks;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.CoolantPortBlock;
-import com.criticalmass.content.DockingConnectorBlock;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.PipeConnectableBlocks;
 import com.criticalmass.content.ReliefValveBlock;
@@ -85,7 +84,6 @@ public final class CMBlocks {
     public static final DeferredBlock<ScreenBlock> PLANT_SCREEN = register("plant_screen", ScreenBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<DashboardBlock> REACTOR_ALLOY_DASHBOARD = register("reactor_alloy_dashboard", DashboardBlock::new, metal(2.5f).noOcclusion());
     public static final DeferredBlock<SignalInterfaceBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", SignalInterfaceBlock::new, metal(4.0f));
-    public static final DeferredBlock<DockingConnectorBlock> DOCKING_SERVICE_CONNECTOR = register("docking_service_connector", DockingConnectorBlock::new, metal(4.0f));
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));

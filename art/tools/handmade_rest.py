@@ -321,35 +321,10 @@ def instrument_panel(jar):
     return img
 
 
-def docking(jar):
-    img = Image.open(os.path.join(OUT, "docking_service_connector.png")).convert("RGBA")
-
-    def face(connected):
-        def paint(w, h):
-            out = casing(BRASS, STEEL)(w, h)
-            opening(out, 4, 4, 8, GREEN if connected else AMBER, IRON)
-            for y in (6, 7, 8, 9):
-                put(out, 2, y, IRON[4] if connected else IRON[2])
-                put(out, 13, y, IRON[4] if connected else IRON[2])
-            return out
-        return paint
-    spec = {"models": ["docking_service_connector", "docking_service_connector_connected"], "faces": {
-        ("clamp", "north"): plate(IRON, 4),
-        ("clamp", "east"): plate(IRON, 3),
-        ("clamp", "up"): plate(IRON, 4),
-    }}
-    img = apply("docking_service_connector", 32, spec, img)
-    img.paste(face(False)(16, 16), (0, 0))
-    img.paste(face(True)(16, 16), (0, 16))
-    img.paste(casing(BRASS, STEEL)(16, 16), (16, 0))
-    return img
-
-
 REST = {
     "fuel_channel": fuel_channel,
     "control_channel": control_channel,
     "coolant_channel": coolant_channel,
     "spent_fuel_rack": spent_rack,
     "shielded_cask": cask,
-    "docking_service_connector": docking,
 }

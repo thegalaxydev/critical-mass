@@ -159,7 +159,6 @@ shapeless("dashboard_switch", ["minecraft:lever", "#c:plates/brass"], "dashboard
 shapeless("dashboard_lever", ["create:analog_lever", "#c:plates/brass"], "dashboard_lever")
 shapeless("dashboard_gauge", ["create:electron_tube", "#c:glass_panes", "#c:plates/brass"], "dashboard_gauge")
 shapeless("dashboard_alarm", ["dashboard_button", "minecraft:redstone_lamp", "minecraft:note_block"], "dashboard_alarm")
-shaped("docking_service_connector", ["C", "P", "M"], {"C": "create:brass_casing", "P": "create:fluid_pipe", "M": "create:precision_mechanism"}, "docking_service_connector")
 shapeless("reactor_service_port", ["reactor_vessel_casing", "create:brass_casing", "minecraft:iron_trapdoor"], "reactor_service_port")
 shapeless("primary_coolant_port", ["reactor_vessel_casing", "create:fluid_pipe", "#c:plates/copper"], "primary_coolant_port")
 shaped("circulation_pump", [" B ", "BPB", " B "], {"B": "#c:ingots/brass", "P": "reinforced_pipe"}, "circulation_pump")

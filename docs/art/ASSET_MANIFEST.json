@@ -2184,7 +2184,7 @@
     "simulated:block/dock",
     "simulated:block/dock_powered"
    ],
-   "generation": "script",
+   "generation": "removed",
    "integration": "integrated",
    "verification": {
     "iso": true,

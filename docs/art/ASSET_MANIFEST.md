@@ -34,7 +34,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:spent_fuel_rack` | `block/spent_fuel_rack.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:shielded_cask` | `block/shielded_cask.png` 32x32 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:reactor_signal_interface` | `block/reactor_signal_interface.png` 16x16 | script | integrated | iso: yes, in_game: yes, installation: yes |  |
-| `criticalmass:docking_service_connector` | `block/docking_service_connector.png` 32x32 | script | integrated | iso: yes, in_game: yes | Connected state exists only as a blockstate; docking behaviour is not implemented. |
+| `criticalmass:docking_service_connector` | `block/docking_service_connector.png` 32x32 | removed | integrated | iso: yes, in_game: yes | Connected state exists only as a blockstate; docking behaviour is not implemented. |
 
 ## Items (25)
 
@@ -145,7 +145,6 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - `spent_fuel_rack`: inventory = item model spent_fuel_rack (parent: block model); placed = blockstate spent_fuel_rack (multipart: shell plus one assembly model per stored assembly, fill=0..4)
 - `shielded_cask`: inventory = item model shielded_cask (parent: block model); placed = blockstate shielded_cask (simple)
 - `reactor_signal_interface`: inventory = item model reactor_signal_interface (parent: block model); placed = blockstate reactor_signal_interface (horizontal)
-- `docking_service_connector`: inventory = item model docking_service_connector (parent: block model); placed = blockstate docking_service_connector (raw); connected=true model (green lamp, clamp jaws) exists, but nothing sets the state yet: docking mechanics are not implemented (reachable only by command or debug stick)
 
 ## Equipment
 
