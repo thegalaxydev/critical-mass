@@ -81,6 +81,10 @@ public class CriticalMassClient {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
+                .factory(SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))
+                .skipVanillaRender(be -> false)
+                .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CENTRIFUGE.get())
                 .factory(SingleAxisRotatingVisual.of(CMPartialModels.CENTRIFUGE_ROTOR))
                 .skipVanillaRender(be -> true)

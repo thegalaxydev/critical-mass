@@ -3,8 +3,6 @@
  "textures": {
   "0": "criticalmass:block/control_rod_drive",
   "cog1_2": "create:block/cogwheel",
-  "shaft1": "create:block/axis_top",
-  "shaft0": "create:block/axis",
   "particle": "criticalmass:block/control_rod_drive"
  },
  "elements": [
@@ -24,36 +22,36 @@
     "north": {
      "uv": [
       0,
-      13,
       8,
-      14
+      8,
+      9
      ],
      "texture": "#0"
     },
     "east": {
      "uv": [
       0,
-      13,
       8,
-      14
+      8,
+      9
      ],
      "texture": "#0"
     },
     "south": {
      "uv": [
       0,
-      13,
       8,
-      14
+      8,
+      9
      ],
      "texture": "#0"
     },
     "west": {
      "uv": [
       0,
-      13,
       8,
-      14
+      8,
+      9
      ],
      "texture": "#0"
     },
@@ -78,102 +76,171 @@
    }
   },
   {
-   "name": "gear_case",
+   "name": "lower_case",
+   "from": [
+    3,
+    2,
+    3
+   ],
+   "to": [
+    13,
+    6,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      11,
+      5,
+      13
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      11,
+      5,
+      13
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      11,
+      5,
+      13
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      11,
+      5,
+      13
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      5,
+      9,
+      10,
+      14
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "upper_case",
+   "from": [
+    3,
+    10,
+    3
+   ],
+   "to": [
+    13,
+    14,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      9,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      9,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      9,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      9,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      5,
+      9,
+      10,
+      14
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "cap_plate",
    "from": [
     2,
-    2,
+    14,
     2
    ],
    "to": [
     14,
-    12,
+    15,
     14
    ],
    "faces": {
     "north": {
      "uv": [
-      0,
       8,
       6,
-      13
-     ],
-     "texture": "#0"
-    },
-    "east": {
-     "uv": [
-      6,
-      8,
-      12,
-      13
-     ],
-     "texture": "#0"
-    },
-    "south": {
-     "uv": [
-      0,
-      8,
-      6,
-      13
-     ],
-     "texture": "#0"
-    },
-    "west": {
-     "uv": [
-      6,
-      8,
-      12,
-      13
-     ],
-     "texture": "#0"
-    }
-   }
-  },
-  {
-   "name": "deck",
-   "from": [
-    1,
-    12,
-    1
-   ],
-   "to": [
-    15,
-    13,
-    15
-   ],
-   "faces": {
-    "north": {
-     "uv": [
-      8,
-      7,
-      15,
-      7.5
+      14,
+      6.5
      ],
      "texture": "#0"
     },
     "east": {
      "uv": [
       8,
-      7,
-      15,
-      7.5
+      6,
+      14,
+      6.5
      ],
      "texture": "#0"
     },
     "south": {
      "uv": [
       8,
-      7,
-      15,
-      7.5
+      6,
+      14,
+      6.5
      ],
      "texture": "#0"
     },
     "west": {
      "uv": [
       8,
-      7,
-      15,
-      7.5
+      6,
+      14,
+      6.5
      ],
      "texture": "#0"
     },
@@ -181,8 +248,8 @@
      "uv": [
       8,
       0,
-      15,
-      7
+      14,
+      6
      ],
      "texture": "#0"
     },
@@ -190,8 +257,8 @@
      "uv": [
       8,
       0,
-      15,
-      7
+      14,
+      6
      ],
      "texture": "#0"
     }
@@ -201,57 +268,57 @@
    "name": "rod_sleeve",
    "from": [
     6,
-    13,
+    15,
     6
    ],
    "to": [
     10,
-    18,
+    17,
     10
    ],
    "faces": {
     "north": {
      "uv": [
-      12,
-      8,
       14,
-      10.5
+      0,
+      16,
+      1
      ],
      "texture": "#0"
     },
     "east": {
      "uv": [
-      12,
-      8,
       14,
-      10.5
+      0,
+      16,
+      1
      ],
      "texture": "#0"
     },
     "south": {
      "uv": [
-      12,
-      8,
       14,
-      10.5
+      0,
+      16,
+      1
      ],
      "texture": "#0"
     },
     "west": {
      "uv": [
-      12,
-      8,
       14,
-      10.5
+      0,
+      16,
+      1
      ],
      "texture": "#0"
     },
     "up": {
      "uv": [
       14,
-      8,
+      1,
       16,
-      10
+      3
      ],
      "texture": "#0"
     }
@@ -261,12 +328,12 @@
    "name": "Gear",
    "from": [
     -1,
-    13.5,
+    6.5,
     6.5
    ],
    "to": [
     17,
-    16.5,
+    9.5,
     9.5
    ],
    "faces": {
@@ -330,12 +397,12 @@
    "name": "Gear2",
    "from": [
     -1,
-    13.5,
+    6.5,
     6.5
    ],
    "to": [
     17,
-    16.5,
+    9.5,
     9.5
    ],
    "neoforge_data": {
@@ -346,7 +413,7 @@
     "axis": "y",
     "origin": [
      8,
-     15,
+     8,
      8
     ]
    },
@@ -411,12 +478,12 @@
    "name": "Gear3",
    "from": [
     -1,
-    13.5,
+    6.5,
     6.5
    ],
    "to": [
     17,
-    16.5,
+    9.5,
     9.5
    ],
    "neoforge_data": {
@@ -427,7 +494,7 @@
     "axis": "y",
     "origin": [
      8,
-     15,
+     8,
      8
     ]
    },
@@ -492,12 +559,12 @@
    "name": "Gear4",
    "from": [
     6.5,
-    13.5,
+    6.5,
     -1
    ],
    "to": [
     9.5,
-    16.5,
+    9.5,
     17
    ],
    "faces": {
@@ -563,12 +630,12 @@
    "name": "GearCaseInner",
    "from": [
     2,
-    13.55,
+    6.55,
     2
    ],
    "to": [
     14,
-    16.45,
+    9.45,
     14
    ],
    "faces": {
@@ -632,12 +699,12 @@
    "name": "GearCaseOuter",
    "from": [
     4,
-    13,
+    6,
     4
    ],
    "to": [
     12,
-    17,
+    10,
     12
    ],
    "faces": {
@@ -694,152 +761,6 @@
       4
      ],
      "texture": "#cog1_2"
-    }
-   }
-  },
-  {
-   "name": "Axis",
-   "from": [
-    6,
-    6,
-    8
-   ],
-   "to": [
-    10,
-    10,
-    16
-   ],
-   "faces": {
-    "north": {
-     "uv": [
-      6,
-      6,
-      10,
-      10
-     ],
-     "rotation": 180,
-     "texture": "#shaft1"
-    },
-    "east": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "rotation": 270,
-     "texture": "#shaft0"
-    },
-    "south": {
-     "uv": [
-      6,
-      6,
-      10,
-      10
-     ],
-     "texture": "#shaft1"
-    },
-    "west": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "rotation": 90,
-     "texture": "#shaft0"
-    },
-    "up": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "rotation": 180,
-     "texture": "#shaft0"
-    },
-    "down": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "texture": "#shaft0"
-    }
-   }
-  },
-  {
-   "name": "Axis_turned",
-   "from": [
-    6,
-    6,
-    0
-   ],
-   "to": [
-    10,
-    10,
-    8
-   ],
-   "faces": {
-    "south": {
-     "uv": [
-      6,
-      6,
-      10,
-      10
-     ],
-     "rotation": 180,
-     "texture": "#shaft1"
-    },
-    "west": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "rotation": 270,
-     "texture": "#shaft0"
-    },
-    "north": {
-     "uv": [
-      6,
-      6,
-      10,
-      10
-     ],
-     "texture": "#shaft1"
-    },
-    "east": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "rotation": 90,
-     "texture": "#shaft0"
-    },
-    "up": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "texture": "#shaft0"
-    },
-    "down": {
-     "uv": [
-      6,
-      0,
-      10,
-      8
-     ],
-     "texture": "#shaft0",
-     "rotation": 180
     }
    }
   }

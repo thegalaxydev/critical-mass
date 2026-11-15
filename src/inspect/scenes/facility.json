@@ -3068,9 +3068,11 @@
     "/setblock 326 -60 295 create:creative_motor[facing=up]",
     "/setblock 324 -60 278 create:creative_motor[facing=up]{ScrollValue:24}",
     "/setblock 300 -55 299 criticalmass:control_rod_drive[facing=south]",
-    "/setblock 300 -55 298 create:creative_motor[facing=south]",
     "/setblock 300 -55 301 criticalmass:control_rod_drive[facing=north]",
-    "/setblock 300 -55 302 create:creative_motor[facing=north]"
+    "/setblock 301 -55 299 create:cogwheel[axis=y]",
+    "/setblock 301 -55 300 create:cogwheel[axis=y]",
+    "/setblock 301 -55 301 create:cogwheel[axis=y]",
+    "/setblock 301 -54 300 create:creative_motor[facing=down]"
    ],
    "wait": 200
   },

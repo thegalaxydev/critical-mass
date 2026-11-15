@@ -46,7 +46,9 @@ INLET = (0, 3, -2)
 CORE = ["frf", "cfc", "frf"]
 KIND = {"f": "fuel_channel", "r": "control_channel", "c": "coolant_channel"}
 VIEWPORTS = [(2, y, z) for z in (-1, 1) for y in (2, 3, 4)] + [(0, 2, 2), (0, 4, 2)]
-DRIVES = [((0, 6, -1), "south", (0, 6, -2)), ((0, 6, 1), "north", (0, 6, 2))]
+DRIVES = [((0, 6, -1), "south"), ((0, 6, 1), "north")]
+DRIVE_COGS = [(1, 6, -1), (1, 6, 0), (1, 6, 1)]
+DRIVE_MOTOR = (1, 7, 0)
 PRESSURIZER = (3, 3, -2)
 ECCS_PORT, ECCS_PUMP, ECCS_TANK = (-2, 2, -1), (-3, 2, -1), (-4, 2, -1)
 ECCS_COG, ECCS_CLUTCH, ECCS_MOTOR, ECCS_LEVER = (-3, 3, -1), (-4, 3, -1), (-5, 3, -1), (-4, 4, -1)
@@ -851,9 +853,9 @@ def start(w):
              setblock(w, (FEED_PUMP[0], 2, FEED_PUMP[2]), "create:creative_motor[facing=down]"),
              setblock(w, (COOLING_PUMP[0], 1, COOLING_PUMP[2]), "create:creative_motor[facing=up]"),
              setblock(w, TOWER_MOTOR, "create:creative_motor[facing=up]{ScrollValue:24}")]
-    for pos, facing, motor in DRIVES:
-        cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]" % facing),
-                 setblock(w, motor, "create:creative_motor[facing=%s]" % facing)]
+    cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]" % facing) for pos, facing in DRIVES]
+    cmds += [setblock(w, pos, "create:cogwheel[axis=y]") for pos in DRIVE_COGS]
+    cmds += [setblock(w, DRIVE_MOTOR, "create:creative_motor[facing=down]")]
     return cmds
 
 

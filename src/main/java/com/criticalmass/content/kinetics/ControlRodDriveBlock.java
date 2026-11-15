@@ -8,19 +8,19 @@ import net.minecraft.world.phys.BlockHitResult;
 import com.criticalmass.content.CMShapes;
 import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
+import com.simibubi.create.content.kinetics.simpleRelays.ICogWheel;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<ControlRodDriveBlockEntity> {
-    private static final VoxelShape NORTH = Shapes.or(box(0, 0, 0, 16, 2, 16), box(2, 2, 2, 14, 12, 14), box(0, 12, 0, 16, 16, 16));
+public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<ControlRodDriveBlockEntity>, ICogWheel {
+    private static final VoxelShape NORTH = Shapes.or(box(0, 0, 0, 16, 2, 16), box(3, 2, 3, 13, 6, 13), box(0, 6, 0, 16, 10, 16), box(3, 10, 3, 13, 14, 13), box(2, 14, 2, 14, 15, 14), box(6, 15, 6, 10, 16, 10));
 
     public ControlRodDriveBlock(Properties properties) {
         super(properties);
@@ -28,12 +28,7 @@ public class ControlRodDriveBlock extends HorizontalKineticBlock implements IBE<
 
     @Override
     public Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(HORIZONTAL_FACING).getAxis();
-    }
-
-    @Override
-    public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
-        return face.getAxis() == state.getValue(HORIZONTAL_FACING).getAxis();
+        return Direction.Axis.Y;
     }
 
     @Override

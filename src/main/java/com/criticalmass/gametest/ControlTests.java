@@ -36,8 +36,9 @@ public final class ControlTests {
 
     private static ControlRodDriveBlockEntity drive(GameTestHelper h, BlockPos pos) {
         h.setBlock(pos, CMBlocks.CONTROL_ROD_DRIVE.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
-        h.setBlock(pos.east(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
-        CreativeMotorBlockEntity motor = h.getBlockEntity(pos.east());
+        h.setBlock(pos.east(), AllBlocks.COGWHEEL.getDefaultState());
+        h.setBlock(pos.east().above(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+        CreativeMotorBlockEntity motor = h.getBlockEntity(pos.east().above());
         motor.generatedSpeed.setValue(64);
         return h.getBlockEntity(pos);
     }

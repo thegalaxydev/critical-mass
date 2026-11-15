@@ -109,14 +109,14 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 
 - **role**: consumer
 - **impact su**: 1.0 per RPM (CMStress.CONTROL_ROD_DRIVE_IMPACT, provisional)
-- **block class**: HorizontalKineticBlock (blockstate 'facing'; front = latch lever, faces the player when placed)
-- **shaft faces**: back face only (hasShaftTowards: face == facing.getOpposite())
-- **axis**: facing axis
-- **placement**: 4 horizontal facings
-- **rotating**: Create's shaft_half on both ends of the axis, turning with the network, and Create's cogwheel_shaftless lying on the deck, turning one turn for each block the rod travels
-- **stationary**: base plate, brass housing, red latch, rack (drawn at the stored full-insertion position; rod movement is not implemented)
-- **direction**: the shaft ends follow network speed and direction 1:1; the cogwheel and the rod follow the rod's travel
-- **renderer**: Flywheel OrientedRotatingVisual (UP to input side); fallback BER InputSideRotorRenderer
+- **block class**: HorizontalKineticBlock that is also a Create cogwheel (blockstate 'facing' only turns the case)
+- **shaft faces**: none; it is a cogwheel on a vertical axis and meshes with Cogwheels and other drives beside it
+- **axis**: vertical
+- **placement**: 4 horizontal facings, which only turn the case
+- **rotating**: Create's cogwheel_shaftless between the gear case halves, turning with the network; it meshes with Cogwheels and other drives beside it
+- **stationary**: bolted base, the two halves of the gear case, cap plate and brass rod sleeve; the threaded rod rises through the sleeve as it withdraws
+- **direction**: the cogwheel follows network speed and direction 1:1; the rod follows its own travel
+- **renderer**: Flywheel SingleAxisRotatingVisual of Create's shaftless cogwheel; the block entity renderer draws the rod and, without Flywheel, the cogwheel
 - **partials**: none of our own
 
 ## Inventory icon vs placed appearance
@@ -128,7 +128,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 - `reactor_controller`: inventory = item model reactor_controller (parent: block model); placed = blockstate reactor_controller (horizontal)
 - `fuel_channel`: inventory = item model fuel_channel (parent: block model); placed = blockstate fuel_channel (raw); rotated pillar (axis)
 - `control_channel`: inventory = item model control_channel (parent: block model); placed = blockstate control_channel (raw); rotated pillar (axis)
-- `control_rod_drive`: inventory = item model control_rod_drive (body with Create's cogwheel and shaft ends); placed = blockstate control_rod_drive (horizontal)
+- `control_rod_drive`: inventory = item model control_rod_drive (body with Create's cogwheel); placed = blockstate control_rod_drive (horizontal)
 - `coolant_channel`: inventory = item model coolant_channel (parent: block model); placed = blockstate coolant_channel (raw); rotated pillar (axis)
 - `reactor_service_port`: inventory = item model reactor_service_port (parent: block model); placed = blockstate reactor_service_port (facing)
 - `primary_coolant_port`: inventory = item model primary_coolant_port (parent: block model); placed = blockstate primary_coolant_port (raw); mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar

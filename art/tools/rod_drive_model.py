@@ -4,7 +4,6 @@ import sys
 import bbmodel
 
 NAME = "control_rod_drive"
-COG_LIFT = 7
 
 
 def main():
@@ -15,11 +14,9 @@ def main():
     block = os.path.join(bbmodel.ASSETS, "models", "block")
     bbmodel.write(os.path.join(block, NAME + ".json"), bbmodel.model(body, textures, particle))
     cog, cog_textures = bbmodel.borrowed("create:block/cogwheel_shaftless", "cog")
-    shaft, shaft_textures = bbmodel.borrowed("create:block/shaft_half", "shaft")
-    shown = body + [bbmodel.lifted(e, COG_LIFT) for e in cog] + shaft + [bbmodel.turned(e) for e in shaft]
+    shown = body + cog
     both = dict(textures)
     both.update(cog_textures)
-    both.update(shaft_textures)
     bbmodel.write(os.path.join(block, NAME + "_item.json"), bbmodel.model(shown, both, particle))
     bbmodel.write(os.path.join(bbmodel.ASSETS, "models", "item", NAME + ".json"), {"parent": "criticalmass:block/" + NAME + "_item"})
     print(len(body), "body cubes,", len(shown), "in the item model")

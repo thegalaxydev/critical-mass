@@ -47,8 +47,9 @@ public final class OperationTests {
     private static ControlRodDriveBlockEntity drive(GameTestHelper h, BlockPos pos, int rpm) {
         h.setBlock(pos, CMBlocks.CONTROL_ROD_DRIVE.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.WEST));
         if (rpm != 0) {
-            h.setBlock(pos.east(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
-            CreativeMotorBlockEntity motor = h.getBlockEntity(pos.east());
+            h.setBlock(pos.east(), AllBlocks.COGWHEEL.getDefaultState());
+            h.setBlock(pos.east().above(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.DOWN));
+            CreativeMotorBlockEntity motor = h.getBlockEntity(pos.east().above());
             motor.generatedSpeed.setValue(rpm);
         }
         return h.getBlockEntity(pos);
@@ -392,21 +393,22 @@ public final class OperationTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 100)
-    public static void oneShaftRunsARowOfRodDrives(GameTestHelper h) {
+    public static void rodDrivesTurnByTheirCogwheels(GameTestHelper h) {
         BlockPos first = new BlockPos(5, 2, 3);
         ControlRodDriveBlockEntity near = drive(h, first, 32);
         h.setBlock(first.west(), CMBlocks.CONTROL_ROD_DRIVE.get().defaultBlockState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
         ControlRodDriveBlockEntity far = h.getBlockEntity(first.west());
-        h.setBlock(first.west(2), AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.X));
+        h.setBlock(first.west(2), AllBlocks.COGWHEEL.getDefaultState());
         h.setBlock(first.north(), AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, Direction.Axis.Z));
         h.startSequence()
                 .thenIdle(20)
                 .thenExecute(() -> {
                     KineticBlockEntity beyond = h.getBlockEntity(first.west(2));
                     KineticBlockEntity beside = h.getBlockEntity(first.north());
-                    h.assertTrue(Math.abs(near.getSpeed()) == 32 && Math.abs(far.getSpeed()) == 32, "The shaft should turn both drives: " + near.getSpeed() + " and " + far.getSpeed());
-                    h.assertTrue(Math.abs(beyond.getSpeed()) == 32, "Rotation should come out of the far end of the row: " + beyond.getSpeed());
-                    h.assertTrue(beside.getSpeed() == 0, "A drive has no shaft on its sides: " + beside.getSpeed());
+                    h.assertTrue(Math.abs(near.getSpeed()) == 32, "A cogwheel beside a drive should turn it: " + near.getSpeed());
+                    h.assertTrue(far.getSpeed() == -near.getSpeed(), "Two drives side by side should mesh and turn opposite ways: " + near.getSpeed() + " and " + far.getSpeed());
+                    h.assertTrue(beyond.getSpeed() == near.getSpeed(), "Rotation should carry on through the row to the next cogwheel: " + beyond.getSpeed());
+                    h.assertTrue(beside.getSpeed() == 0, "A drive takes no shaft: " + beside.getSpeed());
                 })
                 .thenSucceed();
     }

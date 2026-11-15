@@ -45,14 +45,14 @@ KINETIC = {
     },
     "control_rod_drive": {
         "role": "consumer", "impact_su": "1.0 per RPM (CMStress.CONTROL_ROD_DRIVE_IMPACT, provisional)",
-        "block_class": "HorizontalKineticBlock (blockstate 'facing'; front = latch lever, faces the player when placed)",
-        "shaft_faces": "back face only (hasShaftTowards: face == facing.getOpposite())",
-        "axis": "facing axis",
-        "placement": "4 horizontal facings",
-        "rotating": "Create's shaft_half on both ends of the axis, turning with the network, and Create's cogwheel_shaftless lying on the deck, turning one turn for each block the rod travels",
-        "stationary": "base plate, brass housing, red latch, rack (drawn at the stored full-insertion position; rod movement is not implemented)",
-        "direction": "the shaft ends follow network speed and direction 1:1; the cogwheel and the rod follow the rod's travel",
-        "renderer": "Flywheel OrientedRotatingVisual (UP to input side); fallback BER InputSideRotorRenderer",
+        "block_class": "HorizontalKineticBlock that is also a Create cogwheel (blockstate 'facing' only turns the case)",
+        "shaft_faces": "none; it is a cogwheel on a vertical axis and meshes with Cogwheels and other drives beside it",
+        "axis": "vertical",
+        "placement": "4 horizontal facings, which only turn the case",
+        "rotating": "Create's cogwheel_shaftless between the gear case halves, turning with the network; it meshes with Cogwheels and other drives beside it",
+        "stationary": "bolted base, the two halves of the gear case, cap plate and brass rod sleeve; the threaded rod rises through the sleeve as it withdraws",
+        "direction": "the cogwheel follows network speed and direction 1:1; the rod follows its own travel",
+        "renderer": "Flywheel SingleAxisRotatingVisual of Create's shaftless cogwheel; the block entity renderer draws the rod and, without Flywheel, the cogwheel",
     },
 }
 

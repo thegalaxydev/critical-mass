@@ -26,7 +26,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Reactor Controller, Reactor Service Port, Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Heat Exchanger, Condenser, Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
 | Fuel, Control and Coolant Channel, Spent Fuel Rack, Shielded Cask, Docking Service Connector | Script | `art/tools/handmade_rest.py` |
-| Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the shaft and cogwheel are Create's own models |
+| Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
 | Reactor Viewport and its cracked stages, the rod and glow channel variants, Centrifuge, Pressurizer, Ruined Fuel Channel, Corium | Script | `art/tools/plant_blocks.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
@@ -188,8 +188,8 @@ Reactor control-rod channel column. Side: dark steel frame with a recessed windo
 ## control_rod_drive
 
 - Used by: `textures/block/control_rod_drive.png`, `textures/block/control_rod_shaft.png` and the drive's block and item models
-- Source: `art/blockbench/control_rod_drive.bbmodel`, one group called `body`: a bolted base, a gear case, a bearing deck and a brass rod sleeve. `art/tools/rod_drive_texture.py` paints the sheet. The base and deck are the author's Steel Block, the gear case is the author's Reactor Vessel Casing cut to size with a brass bearing ring on the shaft faces and a brass-framed inspection window on the sides, and the sleeve is brass. The same tool repaints the rod as a threaded spindle in the Steel Block's tones and keeps its brass cap.
-- Moving parts: none of our own. The shaft ends and the cogwheel on the deck are Create's own `shaft_half` and `cogwheel_shaftless` models, drawn by the renderer. The item model includes copies of them so the icon shows the whole drive.
+- Source: `art/blockbench/control_rod_drive.bbmodel`, one group called `body`: a bolted base, the two halves of a gear case with room for a cogwheel between them, a cap plate and a brass rod sleeve. `art/tools/rod_drive_texture.py` paints the sheet. The base and cap plate are the author's Steel Block, the gear case halves are the author's Reactor Vessel Casing cut to size with a brass plate above and an inspection slit below, and the sleeve is brass. The same tool repaints the rod as a threaded spindle in the Steel Block's tones and keeps its brass cap.
+- Moving parts: none of our own. The cogwheel between the case halves is Create's own `cogwheel_shaftless` model, at the height of any Cogwheel placed beside it, and it is how the drive takes rotation. The item model includes a copy of it so the icon shows the whole drive.
 - Status: script-painted placeholder, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/rod_drive_model.py` then exports the models.
 - Date: 2026-11-15
