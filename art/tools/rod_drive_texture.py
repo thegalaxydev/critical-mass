@@ -3,7 +3,7 @@ import sys
 
 from PIL import Image
 
-from plant_style import BLOCK, BRASS, GLASS, RED, Sheet, nine, ramp, source
+from plant_style import BLOCK, BRASS, GLASS, Sheet, nine, panel, ramp, source
 
 OUT = os.path.join(BLOCK, "control_rod_drive.png")
 ROD = os.path.join(BLOCK, "control_rod_shaft.png")
@@ -30,19 +30,9 @@ def paint():
     sheet.paste("base_side", steel.crop((0, 0, 16, 2)))
     for x in range(12):
         sheet.put("cap_side", x, 0, tone[1] if x in (0, 11) else tone[4] if x % 3 else tone[5])
-    sheet.paste("case_end", nine(casing, 10, 10))
-    sheet.paste("case_upper", nine(casing, 10, 4, 1))
-    sheet.fill("case_upper", 4, 1, 5, 2, BRASS[2])
-    sheet.put("case_upper", 4, 1, BRASS[4])
-    sheet.put("case_upper", 5, 2, BRASS[1])
-    sheet.put("case_upper", 2, 1, BRASS[3])
-    sheet.put("case_upper", 7, 1, BRASS[3])
-    sheet.paste("case_lower", nine(casing, 10, 4, 1))
-    sheet.fill("case_lower", 2, 1, 5, 1, GLASS[0])
-    sheet.put("case_lower", 2, 1, GLASS[2])
-    sheet.put("case_lower", 3, 1, GLASS[1])
-    sheet.put("case_lower", 7, 2, RED[1])
-    sheet.put("case_lower", 7, 1, RED[2])
+    sheet.paste("case_end", panel(casing, 10, 10))
+    sheet.paste("case_upper", panel(casing, 10, 4))
+    sheet.paste("case_lower", panel(casing, 10, 4))
     for y in range(2):
         for x, c in enumerate((BRASS[1], BRASS[3], BRASS[2], BRASS[0])):
             sheet.put("sleeve_side", x, y, BRASS[4] if y == 0 and x == 1 else c)

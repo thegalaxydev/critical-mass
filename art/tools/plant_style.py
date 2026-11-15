@@ -35,6 +35,27 @@ def nine(img, w, h, border=2):
     return out
 
 
+def panel(casing, w, h):
+    light, dark, corner = casing.getpixel((0, 1)), casing.getpixel((15, 1)), casing.getpixel((0, 0))
+    shadow, fill = casing.getpixel((4, 2)), casing.getpixel((4, 4))
+    out = Image.new("RGBA", (w, h))
+    for y in range(h):
+        for x in range(w):
+            edge_x, edge_y = x in (0, w - 1), y in (0, h - 1)
+            if edge_x and edge_y:
+                c = corner
+            elif x == w - 1 or y == h - 1:
+                c = dark
+            elif x == 0 or y == 0:
+                c = light
+            elif x == 1 or y == 1:
+                c = shadow
+            else:
+                c = fill
+            out.putpixel((x, y), c)
+    return out
+
+
 class Sheet:
     def __init__(self, size, islands):
         self.img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
