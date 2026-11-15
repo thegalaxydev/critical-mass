@@ -180,6 +180,9 @@ public final class TurbineStructure {
             double half = WINDOW[part.along() + 1];
             shape = Shapes.join(shape, box(facing, 2, 8 - half, z[0], 14, 8 + half, z[1]), BooleanOp.ONLY_FIRST);
         }
+        if (part.along() == 0 && part.across() == 0 && part.rise() == -1) {
+            shape = Shapes.or(shape, box(facing, 4, 0, 4, 12, y[0], 12));
+        }
         return shape;
     }
 

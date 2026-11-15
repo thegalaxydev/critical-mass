@@ -137,21 +137,28 @@ def element(cube, scale):
 def main():
     project = json.load(open(SOURCE, encoding="utf-8"))
     scale = 16.0 / project["textures"][0].get("uv_width", project["resolution"]["width"])
-    still = [c for c in project["elements"] if not c["name"].startswith(("rotor", "shaft"))]
     moving = [c for c in project["elements"] if c["name"].startswith(("rotor", "shaft"))]
+    glass = [c for c in project["elements"] if c["name"].startswith("window_glass")]
+    still = [c for c in project["elements"] if c not in moving and c not in glass]
     with open(os.path.join(ASSETS, "textures", "block", NAME + ".png"), "wb") as f:
         f.write(base64.b64decode(project["textures"][0]["source"].split(",", 1)[1]))
     textures = {"0": TEXTURE, "particle": TEXTURE}
-    housing = {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": textures, "elements": [element(c, scale) for c in still]}
-    rotor = {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": textures, "elements": [element(upright(c), scale) for c in moving]}
-    whole = {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": textures, "elements": [element(c, scale) for c in still + moving], "display": DISPLAY}
+    base = {"parent": "minecraft:block/block", "ambientocclusion": False, "textures": textures}
+    housing = dict(base, elements=[element(c, scale) for c in still])
+    panes = dict(base, render_type="minecraft:translucent", elements=[element(c, scale) for c in glass])
+    rotor = dict(base, elements=[element(upright(c), scale) for c in moving])
+    whole = dict(base, render_type="minecraft:translucent", elements=[element(c, scale) for c in still + moving + glass], display=DISPLAY)
     write(os.path.join(ASSETS, "models", "block", NAME + ".json"), housing)
+    write(os.path.join(ASSETS, "models", "block", NAME + "_glass.json"), panes)
     write(os.path.join(ASSETS, "models", "block", NAME + "_rotor.json"), rotor)
     write(os.path.join(ASSETS, "models", "item", NAME + ".json"), whole)
     turns = {"west": 0, "north": 90, "east": 180, "south": 270}
-    variants = {"facing=" + f: ({"model": TEXTURE, "y": y} if y else {"model": TEXTURE}) for f, y in turns.items()}
-    write(os.path.join(ASSETS, "blockstates", NAME + ".json"), {"variants": variants})
-    print(len(still), "fixed cubes,", len(moving), "rotor cubes")
+    parts = []
+    for f, y in turns.items():
+        for model in (TEXTURE, TEXTURE + "_glass"):
+            parts.append({"when": {"facing": f}, "apply": {"model": model, "y": y} if y else {"model": model}})
+    write(os.path.join(ASSETS, "blockstates", NAME + ".json"), {"multipart": parts})
+    print(len(still), "fixed cubes,", len(glass), "glass panes,", len(moving), "rotor cubes")
 
 
 if __name__ == "__main__":

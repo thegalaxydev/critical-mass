@@ -1,19 +1,74 @@
 {
- "variants": {
-  "facing=west": {
-   "model": "criticalmass:block/steam_turbine"
+ "multipart": [
+  {
+   "when": {
+    "facing": "west"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine"
+   }
   },
-  "facing=north": {
-   "model": "criticalmass:block/steam_turbine",
-   "y": 90
+  {
+   "when": {
+    "facing": "west"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_glass"
+   }
   },
-  "facing=east": {
-   "model": "criticalmass:block/steam_turbine",
-   "y": 180
+  {
+   "when": {
+    "facing": "north"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine",
+    "y": 90
+   }
   },
-  "facing=south": {
-   "model": "criticalmass:block/steam_turbine",
-   "y": 270
+  {
+   "when": {
+    "facing": "north"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_glass",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "facing": "east"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "east"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_glass",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "south"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "facing": "south"
+   },
+   "apply": {
+    "model": "criticalmass:block/steam_turbine_glass",
+    "y": 270
+   }
   }
- }
+ ]
 }

@@ -1,0 +1,215 @@
+{
+ "parent": "minecraft:block/block",
+ "ambientocclusion": false,
+ "textures": {
+  "0": "criticalmass:block/steam_turbine",
+  "particle": "criticalmass:block/steam_turbine"
+ },
+ "render_type": "minecraft:translucent",
+ "elements": [
+  {
+   "name": "window_glass_front_south",
+   "from": [
+    -14,
+    3,
+    25.3137
+   ],
+   "to": [
+    -2,
+    13,
+    25.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.75,
+      7.375,
+      12.25,
+      8.625
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      10.75,
+      7.375,
+      12.25,
+      8.625
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "window_glass_front_north",
+   "from": [
+    -14,
+    3,
+    -9.3137
+   ],
+   "to": [
+    -2,
+    13,
+    -9.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.75,
+      7.375,
+      12.25,
+      8.625
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      10.75,
+      7.375,
+      12.25,
+      8.625
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "window_glass_middle_south",
+   "from": [
+    2,
+    4.6569,
+    21.3137
+   ],
+   "to": [
+    14,
+    11.3431,
+    21.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      13,
+      7.375,
+      14.5,
+      8.25
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      13,
+      7.375,
+      14.5,
+      8.25
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "window_glass_middle_north",
+   "from": [
+    2,
+    4.6569,
+    -5.3137
+   ],
+   "to": [
+    14,
+    11.3431,
+    -5.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      13,
+      7.375,
+      14.5,
+      8.25
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      13,
+      7.375,
+      14.5,
+      8.25
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "window_glass_back_south",
+   "from": [
+    18,
+    6.3137,
+    17.3137
+   ],
+   "to": [
+    30,
+    9.6863,
+    17.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.75,
+      9.875,
+      12.25,
+      10.25
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      10.75,
+      9.875,
+      12.25,
+      10.25
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "window_glass_back_north",
+   "from": [
+    18,
+    6.3137,
+    -1.3137
+   ],
+   "to": [
+    30,
+    9.6863,
+    -1.3137
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10.75,
+      9.875,
+      12.25,
+      10.25
+     ],
+     "texture": "#0",
+     "rotation": 180
+    },
+    "south": {
+     "uv": [
+      10.75,
+      9.875,
+      12.25,
+      10.25
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}
