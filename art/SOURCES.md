@@ -31,7 +31,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
 | Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
-| Reactor Viewport and its cracked stages, Centrifuge, Corium | Script | `art/tools/plant_blocks.py` |
+| Centrifuge | Script | `art/tools/centrifuge_texture.py` |
+| Reactor Viewport and its cracked stages, Corium | Script | `art/tools/plant_blocks.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
@@ -716,10 +717,19 @@ Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recess
 - Used by: `sounds/alarm.ogg`, played by a desk with an unacknowledged Dashboard Alarm.
 - Source: synthesised by `art/tools/alarm_sound.py`: two alternating horn tones built from sine harmonics, two seconds long so it repeats cleanly.
 
-## centrifuge, enriched_uranium and depleted_uranium
+## centrifuge
 
-- Used by: `textures/block/centrifuge.png`, `textures/item/enriched_uranium.png`, `textures/item/depleted_uranium.png`
-- Source: drawn by `art/tools/plant_blocks.py`. The two item textures are recolours of `uranium_concentrate.png`.
+- Used by: `textures/block/centrifuge.png` and the models `block/centrifuge.json`, `centrifuge_rotor.json` and `centrifuge_item.json`
+- Source: `art/blockbench/centrifuge.bbmodel`, in two groups. `frame` is the part that stands still: a plate top and bottom with a post at each corner, so stacked centrifuges read as one cascade column. `rotor` is the part the shaft turns: an eight-sided drum between two square flanges on short necks. The drum is four slabs, two of them turned 45 degrees, and each slab shows only its two end faces.
+- Texture: `art/tools/centrifuge_texture.py` paints the frame from the author's Steel Block, with a brass ring round the shaft socket in each plate, and the rotor in Create's brass tones with two plain hoops.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/centrifuge_model.py` then exports the models and the blockstate.
+- Date: 2026-11-15
+
+## enriched_uranium and depleted_uranium
+
+- Used by: `textures/item/enriched_uranium.png`, `textures/item/depleted_uranium.png`
+- Source: drawn by `art/tools/plant_blocks.py` as recolours of `uranium_concentrate.png`.
 - Date: 2026-11-12
 
 ## reinforced_valve, reinforced_valve_open and reinforced_valve_closed

@@ -465,5 +465,8 @@
   "criticalmass.unit.flow": "%s mB/t",
   "criticalmass.unit.percent": "%s%%",
   "criticalmass.unit.rpm": "%s RPM",
-  "criticalmass.unit.of": "%s / %s"
+  "criticalmass.unit.of": "%s / %s",
+  "criticalmass.goggles.label.cascade": "Cascade:",
+  "criticalmass.goggles.cascade_stages": "%s stages",
+  "criticalmass.goggles.aside.yield": "%s Enriched Uranium from %s Concentrate"
 }

@@ -126,54 +126,6 @@ CLEAR = (0, 0, 0, 0)
 
 
 
-def centrifuge_texture():
-    def frame(w, h):
-        img = plate(IRON, 3)(w, h)
-        rect(img, 0, 0, 15, 1, IRON[4])
-        rect(img, 0, 14, 15, 15, IRON[1])
-        for x in (2, 13):
-            put(img, x, 7, IRON[5])
-            put(img, x, 8, IRON[1])
-        rect(img, 5, 6, 10, 9, BRASS[2])
-        rect(img, 6, 7, 9, 8, BRASS[4])
-        return img
-
-    def cap(w, h):
-        img = plate(IRON, 3)(w, h)
-        bevel(img, 4, 4, 11, 11, STEEL, 3)
-        rect(img, 6, 6, 9, 9, IRON[1])
-        for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-            put(img, x, y, IRON[5])
-        return img
-
-    def drum(w, h):
-        img = plate(STEEL, 3)(w, h)
-        for x in range(0, 16, 4):
-            rect(img, x, 0, x, 15, STEEL[4])
-            rect(img, x + 3, 0, x + 3, 15, STEEL[1])
-        rect(img, 0, 3, 15, 4, BRASS[3])
-        rect(img, 0, 11, 15, 12, BRASS[2])
-        for x in (1, 6, 11):
-            put(img, x, 7, GREEN[4])
-            put(img, x + 1, 7, GREEN[2])
-        return img
-    return atlas({"a": frame, "b": cap, "c": cap, "d": drum})
-
-
-def centrifuge_models():
-    name = "centrifuge"
-    tex = {"0": M + "block/" + name, "particle": M + "block/" + name}
-
-    def box(lo, hi, quad, caps=None):
-        return {"from": lo, "to": hi, "faces": {d: {"uv": QUADS[caps if caps and d in ("up", "down") else quad], "texture": "#0"} for d in ("north", "south", "east", "west", "up", "down")}}
-    base = [box([0, 0, 0], [16, 3, 16], "a", caps="b"), box([0, 13, 0], [16, 16, 16], "a", caps="b")]
-    base += [box([x, 3, z], [x + 2, 13, z + 2], "a") for x in (0, 14) for z in (0, 14)]
-    rotor = [box([3, 3, 3], [13, 13, 13], "d", caps="b"), box([2.5, 5, 2.5], [13.5, 6, 13.5], "a"), box([2.5, 10, 2.5], [13.5, 11, 13.5], "a")]
-    return {name: {"parent": "minecraft:block/block", "textures": tex, "elements": base},
-            "centrifuge_rotor": {"textures": tex, "elements": rotor},
-            "centrifuge_item": {"parent": "minecraft:block/block", "textures": tex, "elements": base + rotor}}
-
-
 def uranium_items():
     import colorsys
     src = Image.open(os.path.join(ITEM_OUT, "uranium_concentrate.png")).convert("RGBA")
@@ -250,7 +202,7 @@ BLOCKS = {
     "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
                "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
     "ruined_channel": {"lang": "Ruined Fuel Channel", "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
-    "centrifuge": {"lang": "Centrifuge", "texture": centrifuge_texture, "models": centrifuge_models, "state": simple_state, "item": "centrifuge_item"},
+    "centrifuge": {"lang": "Centrifuge"},
     "pressurizer": {"lang": "Pressurizer"},
     "reactor_viewport": {
         "lang": "Reactor Viewport",
@@ -263,15 +215,10 @@ BLOCKS = {
 LANG = {
     "criticalmass.reactor.status.blocked_flow": "Start blocked: get coolant flowing through the vessel first",
     "criticalmass.reactor.status.blocked_coolant": "Start blocked: fill the vessel at least half full of coolant",
-    "criticalmass.goggles.corium": "Corium",
-    "criticalmass.goggles.corium_decay": "Decay heat: %s HU/t",
-    "criticalmass.goggles.tower_rejecting": "Whole tower: %s HU/t",
     "criticalmass.circuit.tank_end": "Stopped: a Fluid Tank in the loop needs a second pipe to carry on from",
-    "criticalmass.goggles.tower_airflow": "Airflow: %s%%",
     "block.criticalmass.reinforced_pipe": "Reinforced Pipe",
     "block.criticalmass.radiator_panel": "Radiator",
     "criticalmass.radiator.covered": "All four sides covered",
-    "criticalmass.goggles.radiator_faces": "%s of 4 sides open, airflow x%s",
     "block.criticalmass.reinforced_valve": "Reinforced Valve",
     "criticalmass.valve.open": "Open",
     "criticalmass.valve.closed": "Closed: no coolant passes",
@@ -281,11 +228,6 @@ LANG = {
     "criticalmass.centrifuge.slow": "Too slow: needs %s RPM",
     "criticalmass.centrifuge.full": "Output full",
     "criticalmass.centrifuge.running": "Enriching",
-    "criticalmass.centrifuge.contents": "Concentrate %s, enriched %s, depleted %s",
-    "criticalmass.centrifuge.progress": "Batch %s%% done",
-    "criticalmass.goggles.pressurizer": "Pressurizer",
-    "criticalmass.goggles.pressurizer_pressure": "Primary pressure: %s bar (set to %s)",
-    "criticalmass.goggles.pressurizer_boiling": "Coolant boils at %s \u00b0C",
     "criticalmass.pressurizer.setpoint": "Pressure setpoint",
     "criticalmass.pressurizer.no_vessel": "Not touching a reactor vessel",
     "criticalmass.pressurizer.off": "Heaters off: redstone signal",
@@ -294,11 +236,10 @@ LANG = {
     "criticalmass.pressurizer.no_heat": "Pressure falling: heaters need a lit Blaze Burner underneath",
     "criticalmass.alarm.pressure": "Vessel coolant boiling: pressure too low for its temperature",
     "item.criticalmass.plant_linker": "Plant Linker",
-    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a control panel to link it",
+    "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a Plant Screen to link it",
     "criticalmass.linker.tooltip_stored": "Remembers the block at %s %s %s (sneak-use in the air to clear)",
     "criticalmass.linker.stored": "Remembered %s at %s %s %s",
     "criticalmass.linker.bound": "Linked to %s at %s %s %s",
-    "criticalmass.linker.refused": "This panel cannot use the remembered block",
     "criticalmass.linker.nothing_stored": "Use the linker on a machine first",
     "criticalmass.linker.cleared": "Linker cleared",
     "criticalmass.channel.temperature": "Temperature",
@@ -336,7 +277,6 @@ LANG = {
     "criticalmass.alarm.low_coolant.short": "LEVEL",
     "criticalmass.alarm.casing.short": "SHELL",
     "criticalmass.alarm.pressure.short": "BOIL",
-    "criticalmass.goggles.rod_bank": "Rod bank %s (use with an empty hand to change)",
     "criticalmass.rod.bank_set": "Rod bank %s",
 }
 

@@ -180,8 +180,9 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Fluid Tanks in a loop:** a Create Fluid Tank of any size can sit inline in a loop as a surge tank, for example for feedwater, and the water in it keeps its temperature.
   - It needs the loop's two pipes on it. With more pipes on it, the loop leaves by the first one it finds, checking north, east, south, then west, so set make-up pumps directly against the tank.
   - Water that a Create pump adds arrives cold, and water it takes out takes its share of the heat.
-- **Enrichment:** a Centrifuge turns 2 Uranium Concentrate into 1 Enriched Uranium and 1 Depleted Uranium.
+- **Enrichment:** a Centrifuge turns 2 Uranium Concentrate into 1 Enriched Uranium and 1 Depleted Uranium. It is an open steel frame with a brass drum that spins on the shaft.
   - It takes its shaft from above or below, so centrifuges stack on one shaft. It costs 8 SU per RPM.
+  - A stack is a cascade. Each centrifuge in it gets more Enriched Uranium from the same Concentrate for every other stage in the stack, up to four stages: 1.25 from a batch in two stages, 1.5 in three and 1.75 in four, with that much less Depleted Uranium. Part items carry over to the next batch. Each stage still has its own contents, so feed and empty each one.
   - It only works at 96 RPM or more. A batch takes 10 seconds at 128 RPM and 5 seconds at 256 RPM.
   - Put concentrate in by hand, funnel or hopper. Take the products out with an empty hand, a funnel or a hopper.
 - **Pellets:** compact 1 Enriched Uranium in a heated basin into a Ceramic Fuel Pellet.

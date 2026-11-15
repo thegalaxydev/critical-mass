@@ -143,7 +143,7 @@ It clears and paves a 75 by 71 block site and builds the station on it, bound an
 | Cooling tower | Four Packing blocks under an Encased Fan, inside a concrete shell with a water basin. The make-up line stands beside the fill. The circulating water pump is in the turbine hall basement |
 | Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, and seven Reactor Alloy Dashboards: turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, and primary and feed flow |
 | Service building | Entrance lobby, change room with Protective Suits, and the way through to the access corridor |
-| Fuel building | Spent fuel pool with racks, dry casks, a Centrifuge, and a waste vault under Shielded Hatches |
+| Fuel building | Spent fuel pool with racks, dry casks, a cascade of three Centrifuges, and a waste vault under Shielded Hatches |
 
 The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted.
 

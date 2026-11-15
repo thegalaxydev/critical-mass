@@ -185,4 +185,28 @@ public final class ProductionTests {
     private static IItemHandler hand(GameTestHelper h, BlockPos pos) {
         return h.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, h.absolutePos(pos), null);
     }
+
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void stackedCentrifugesEnrichMoreFromTheSameFeed(GameTestHelper h) {
+        BlockPos bottom = new BlockPos(2, 2, 2);
+        h.setBlock(bottom.below(), AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        for (int i = 0; i < 5; i++) {
+            h.setBlock(bottom.above(i), CMBlocks.CENTRIFUGE.get());
+        }
+        CreativeMotorBlockEntity motor = h.getBlockEntity(bottom.below());
+        motor.generatedSpeed.setValue(256);
+        CentrifugeBlockEntity centrifuge = h.getBlockEntity(bottom);
+        centrifuge.insert(new ItemStack(CMItems.URANIUM_CONCENTRATE.get(), 8));
+        h.startSequence()
+                .thenIdle(470)
+                .thenExecute(() -> {
+                    CentrifugeBlockEntity top = h.getBlockEntity(bottom.above(4));
+                    h.assertTrue(centrifuge.stages() == CentrifugeBlockEntity.CASCADE_MAX && top.stages() == CentrifugeBlockEntity.CASCADE_MAX, "A cascade should count four stages at most: " + centrifuge.stages());
+                    h.assertTrue(top.getSpeed() != 0, "Every stage should turn on the one shaft");
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.ENRICHED).getCount() == 7 && centrifuge.held(CentrifugeBlockEntity.DEPLETED).getCount() == 1,
+                            "Four batches in a four stage cascade should give 7 enriched and 1 depleted: " + centrifuge.held(CentrifugeBlockEntity.ENRICHED) + " " + centrifuge.held(CentrifugeBlockEntity.DEPLETED));
+                    h.assertTrue(centrifuge.held(CentrifugeBlockEntity.INPUT).isEmpty(), "All eight concentrate should be used");
+                })
+                .thenSucceed();
+    }
 }

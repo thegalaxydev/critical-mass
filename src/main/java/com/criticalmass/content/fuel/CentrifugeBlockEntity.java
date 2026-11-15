@@ -6,11 +6,13 @@ import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Containers;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,7 +26,10 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
     public static final float MIN_RPM = 96;
     public static final int BATCH = 2;
     public static final int WORK = 25600;
+    public static final int CASCADE_MAX = 4;
+    public static final double STAGE_GAIN = 0.25;
     private static final int SYNC_TICKS = 10;
+    private static final int STAGE_TICKS = 20;
     private final ItemStackHandler items = new ItemStackHandler(3) {
         @Override
         protected void onContentsChanged(int slot) {
@@ -69,6 +74,10 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
     };
     private int progress;
     private int syncIn;
+    private int stageIn;
+    private int stages = 1;
+    private double enrichedCarry;
+    private double depletedCarry;
     private String status = "criticalmass.centrifuge.idle";
 
     public CentrifugeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -89,6 +98,33 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
 
     public double progress() {
         return progress / (double) WORK;
+    }
+
+    public int stages() {
+        return stages;
+    }
+
+    public double enrichedPerBatch() {
+        return 1 + STAGE_GAIN * (stages - 1);
+    }
+
+    private int countStages() {
+        int n = 1;
+        for (Direction d : new Direction[]{Direction.UP, Direction.DOWN}) {
+            BlockPos p = worldPosition.relative(d);
+            while (n < CASCADE_MAX && level.getBlockState(p).is(getBlockState().getBlock())) {
+                n++;
+                p = p.relative(d);
+            }
+        }
+        return n;
+    }
+
+    private void produce(int slot, double carry, Item item) {
+        int whole = (int) Math.floor(carry + 1.0e-9);
+        if (whole > 0) {
+            add(slot, new ItemStack(item, whole));
+        }
     }
 
     public ItemStack insert(ItemStack stack) {
@@ -113,7 +149,7 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
     }
 
     private boolean room() {
-        return items.getStackInSlot(ENRICHED).getCount() < items.getSlotLimit(ENRICHED) && items.getStackInSlot(DEPLETED).getCount() < items.getSlotLimit(DEPLETED);
+        return items.getStackInSlot(ENRICHED).getCount() + BATCH <= items.getSlotLimit(ENRICHED) && items.getStackInSlot(DEPLETED).getCount() + BATCH <= items.getSlotLimit(DEPLETED);
     }
 
     private void add(int slot, ItemStack made) {
@@ -135,6 +171,12 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
         float speed = Math.abs(getSpeed());
         String now;
         boolean finished = false;
+        if (stageIn-- <= 0) {
+            stageIn = STAGE_TICKS;
+            int counted = countStages();
+            finished = counted != stages;
+            stages = counted;
+        }
         if (items.getStackInSlot(INPUT).getCount() < BATCH) {
             progress = 0;
             now = "criticalmass.centrifuge.idle";
@@ -148,8 +190,12 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
             if (progress >= WORK) {
                 progress = 0;
                 items.extractItem(INPUT, BATCH, false);
-                add(ENRICHED, new ItemStack(CMItems.ENRICHED_URANIUM.get()));
-                add(DEPLETED, new ItemStack(CMItems.DEPLETED_URANIUM.get()));
+                enrichedCarry += enrichedPerBatch();
+                depletedCarry += BATCH - enrichedPerBatch();
+                produce(ENRICHED, enrichedCarry, CMItems.ENRICHED_URANIUM.get());
+                produce(DEPLETED, depletedCarry, CMItems.DEPLETED_URANIUM.get());
+                enrichedCarry -= Math.floor(enrichedCarry + 1.0e-9);
+                depletedCarry -= Math.floor(depletedCarry + 1.0e-9);
                 finished = true;
             }
         }
@@ -178,6 +224,9 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
         tag.put("Items", items.serializeNBT(registries));
         tag.putInt("Progress", progress);
         tag.putString("Status", status);
+        tag.putInt("Stages", stages);
+        tag.putDouble("EnrichedCarry", enrichedCarry);
+        tag.putDouble("DepletedCarry", depletedCarry);
     }
 
     @Override
@@ -186,6 +235,9 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
         items.deserializeNBT(registries, tag.getCompound("Items"));
         progress = tag.getInt("Progress");
         status = tag.contains("Status") ? tag.getString("Status") : "criticalmass.centrifuge.idle";
+        stages = Math.max(1, tag.getInt("Stages"));
+        enrichedCarry = tag.getDouble("EnrichedCarry");
+        depletedCarry = tag.getDouble("DepletedCarry");
     }
 
     @Override
@@ -196,6 +248,11 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
         if (status.endsWith("running")) {
             ThermalTooltips.label(tooltip, "criticalmass.goggles.label.progress");
             ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.percent", ChatFormatting.AQUA, Math.round(progress() * 100)));
+        }
+        if (stages > 1) {
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.cascade");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.goggles.cascade_stages", ChatFormatting.AQUA, stages)
+                    .append(ThermalTooltips.aside("criticalmass.goggles.aside.yield", ThermalTooltips.number(enrichedPerBatch()), BATCH)));
         }
         return true;
     }

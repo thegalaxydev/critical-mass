@@ -651,8 +651,9 @@ def fuel_building():
     for x in (1, 3, 5):
         machine((x, 1, 20), "criticalmass:shielded_cask")
     sign((3, 2, 18), "south", "Dry Cask", "Storage")
-    machine((8, 1, 25), "criticalmass:centrifuge")
-    machine((8, 2, 25), "create:creative_motor[facing=down]{ScrollValue:128}")
+    for y in (1, 2, 3):
+        machine((8, y, 25), "criticalmass:centrifuge")
+    machine((8, 4, 25), "create:creative_motor[facing=down]{ScrollValue:128}")
     machine((7, 1, 25), "criticalmass:open_waste_canister")
     put(9, 1, 25, STEEL)
     put(9, 1, 26, STEEL)

@@ -40,7 +40,8 @@ def load(name):
         out = parts.setdefault(groups[node["uuid"]], [])
         for child in node["children"]:
             cube = cubes[child]
-            assert not any(cube.get("rotation") or [0, 0, 0]), cube["name"]
+            turn = [(axis, angle) for axis, angle in zip("xyz", cube.get("rotation") or [0, 0, 0]) if angle]
+            assert len(turn) <= 1 and all(abs(angle) in (22.5, 45) for _, angle in turn), cube["name"]
             faces = {}
             for d, face in cube["faces"].items():
                 if face.get("texture") is None:
@@ -49,7 +50,10 @@ def load(name):
                 if face.get("rotation"):
                     g["rotation"] = face["rotation"]
                 faces[d] = g
-            out.append({"name": cube["name"], "from": [tidy(v) for v in cube["from"]], "to": [tidy(v) for v in cube["to"]], "faces": faces})
+            element = {"name": cube["name"], "from": [tidy(v) for v in cube["from"]], "to": [tidy(v) for v in cube["to"]], "faces": faces}
+            if turn:
+                element["rotation"] = {"angle": turn[0][1], "axis": turn[0][0], "origin": [tidy(v) for v in cube.get("origin", [8, 8, 8])]}
+            out.append(element)
     textures = {str(i): "criticalmass:block/" + n for i, n in enumerate(names)}
     return parts, textures
 

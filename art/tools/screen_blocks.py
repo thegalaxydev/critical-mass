@@ -106,12 +106,9 @@ def write_all(write, assets, data, out, fresh=False):
 
 LANG = {
     "block.criticalmass.plant_screen": "Plant Screen",
-    "criticalmass.goggles.screen": "Plant Screen",
-    "criticalmass.screen.powered": "Powered by its cogwheel",
     "criticalmass.screen.unpowered": "No power: mesh a turning cogwheel with any screen of the wall",
-    "criticalmass.screen.size": "Screen wall %s by %s: %s lines of %s characters",
-    "criticalmass.screen.unlinked": "Shows Display Link text. Link a Reactor Controller with a Plant Linker for the reactor display, which needs a wall %s wide and %s high",
-    "criticalmass.screen.linked": "Reactor display for the controller at %s %s %s",
+    "criticalmass.screen.unlinked": "Not linked: showing Display Link text",
+    "criticalmass.screen.linked": "Showing the reactor at %s %s %s",
     "criticalmass.screen.too_small": "Linked, but the reactor display needs a wall %s wide and %s high",
     "criticalmass.screen.link.too_small": "Linked, but this wall is %s by %s. The reactor display needs %s by %s",
     "criticalmass.screen.link.refused": "A screen wall links to a Reactor Controller or a Steam Turbine",
