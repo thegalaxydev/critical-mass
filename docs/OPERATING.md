@@ -20,7 +20,7 @@ Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce t
 2. **Fuel.** Put Fuel Assemblies in through the Service Port, one per fuel column.
 3. **Rods.** A Control Rod Drive on the top face above each control column, with a shaft to its back.
 4. **Primary loop.** Outlet port, pipe, Circulation Pump, Heat Exchanger (front and back), pipe, inlet port. Fill the vessel with primary coolant by bucket or through a port.
-5. **Steam loop.** Heat Exchanger bottom to top, pipe to the Steam Turbine bottom, turbine top to the Condenser, a Create Fluid Tank for feedwater, pump, back to the exchanger bottom. Fill the tank with water. Put a Relief Valve on the hot side.
+5. **Steam loop.** Heat Exchanger bottom to top, pipe into the back of the Steam Turbine, a pipe from under or over the turbine to the Condenser, a Create Fluid Tank for feedwater, pump, back to the exchanger bottom. Fill the tank with water. Put a Relief Valve on the hot side.
 6. **Cooling loop.** Condenser cooling side to a tower: two or more Packing blocks standing on a pipe, the hot pipe coming into the side of the top block, and an Encased Fan on top if you want more than natural draft. The pipe under the fill runs to the pump and back to the condenser. The fill has a shaft through it, so a fan facing up can be driven from underneath; the cooled water then leaves by a pipe on the bottom block's side. Fill the loop with water through the make-up line, or with buckets on the fill.
    - **Size it for the core.** Nearly all of the core's heat ends up in the tower. Five fuel columns at full power make 750 HU/t, which takes four Packing blocks under a fan at 128 RPM. A tower that is too small shows as steam that never condenses and a relief valve that starts venting after a few minutes.
    - **Make-up water.** At that rate the tower evaporates about 370 mB a minute. Pipe water into the side of the bottom Packing block with a Mechanical Pump and leave it running: the fill only takes what it has room for.
@@ -126,21 +126,30 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 ## The reference plant
 
-`src/inspect/scenes/make_reactor_datapack.py <world>/datapacks/criticalmass_reactor_demo` writes a datapack. In that world, stand on open flat ground and run:
+`src/inspect/scenes/make_facility.py <world>/datapacks/criticalmass_facility` writes a datapack that builds a whole generating station. In that world, stand on open flat ground with about 80 blocks clear to the south-east and run:
 
 ```
 /reload
-/function criticalmass_demo:reactor/build
+/function criticalmass_facility:facility/build
 ```
 
-It clears a 24×16 area south-east of you and builds a complete, bound plant: vessel with viewports and two rod drives, pressurizer, all three loops with a real tower, a turbine with a Mechanical Press on its shaft, a control room, and a shielded fuel bay. Creative motors stand in for outside power. The plant is left shut down with its pumps running and its rods in, ready for you to start with the RODS OUT button on the desk.
+It clears and paves a 75 by 71 block site and builds the station on it, bound and labelled. Creative motors stand in for outside power. The station is left shut down with its pumps running and its rods in, ready to start from the control room with the RODS OUT button.
 
-The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted. The tower has four Packing blocks under an Encased Fan, driven by a motor underneath through the fill's shaft. The cooled water leaves by the side of the bottom block, and a creative tank pumps make-up water through a pipe into the side of the block above it. An emergency injection line stands on the vessel's west side: a tank of coolant, a pump and a clutch held off by a lever. A Centrifuge on a creative motor stands in the fuel bay. The control room is a nine by five wall of Plant Screens linked to the reactor and the turbine, so it shows the reactor display. A creative motor turns a shaft through the wall behind the screens to power them. In front of the screens stands a run of five Reactor Alloy Dashboards: SCRAM and reset buttons, rods in and out, a Dashboard Alarm and heat output, coolant temperature and pressure, and turbine trip and reset. Every part is bound straight to its machine and labelled.
+| Building | What is in it |
+| --- | --- |
+| Containment | A round Shielding Concrete building under a dome. The vessel stands in the middle with a service gantry round its head, two rod drives on top and a polar crane above. The primary loop runs round the east side: pump, Heat Exchanger and an isolation valve. The Pressurizer stands at the vessel's corner and the emergency injection line on its west side, held off by a lever. An airlock door leads south to the access corridor |
+| Turbine hall | Steam comes through the wall at deck level, past a Relief Valve and the main steam stop valve, into the back of the turbine. The shaft runs east through a Stressometer, a Speedometer and the generator casing to a clutch and a Mechanical Press as the load. The exhaust drops through the deck to the Condenser in the basement, with the feedwater tank and the feed pump beside it |
+| Cooling tower | Four Packing blocks under an Encased Fan, inside a concrete shell with a water basin. The make-up line stands beside the fill. The circulating water pump is in the turbine hall basement |
+| Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, and seven Reactor Alloy Dashboards: turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, and primary and feed flow |
+| Service building | Entrance lobby, change room with Protective Suits, and the way through to the access corridor |
+| Fuel building | Spent fuel pool with racks, dry casks, a Centrifuge, and a waste vault under Shielded Hatches |
+
+The core is five fuel columns, each beside a coolant channel and a control rod, making 750 HU/t at 100% neutron power. With no boron it goes critical from cold with the rods between 55% and 60% inserted.
 
 To skip the start-up, run:
 
 ```
-/function criticalmass_demo:reactor/run
+/function criticalmass_facility:facility/run
 ```
 
 That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons hold it.

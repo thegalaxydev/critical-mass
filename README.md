@@ -78,7 +78,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Create pumps:** coolant ports and the coolant machines accept Create pipes on their pipe faces, so a mechanical pump can fill or drain them. Coolant keeps its heat when a Create pump moves it between two of these machines.
 - **Pump:** moves 2 mB/t per RPM, up to 256 mB/t, and stops when its shaft stops. Stress is 4 SU per RPM while circulating, a quarter of that while idle, and stops rising past 128 RPM.
 - **Heat Exchanger:** the primary circuit enters and leaves through its front and back, the secondary through its top and bottom. The two never mix. Heat crosses from the hotter side only while both sides are flowing.
-- **Steam Turbine:** takes coolant through its bottom and top. It draws heat from that coolant and supplies 4 SU per HU/t at a fixed 16 RPM. (It runs on hot water or coolant until steam exists.)
+- **Steam Turbine:** fills a three-block cube and is placed like Create's Large Water Wheel, with the big end facing you. Steam goes in through the back, the exhaust leaves through the bottom or the top, whichever has a pipe, and the shaft comes out of the front. It draws heat from that coolant and supplies 4 SU per HU/t at a fixed 16 RPM. (It runs on hot water or coolant until steam exists.)
 
 **Operation and safety.**
 - **States:** the controller shows Cold, Starting, Running, Tripped (with the cause), Cooling Down, Damaged or Breached. State and residual heat survive saving.
