@@ -214,7 +214,7 @@ public final class TurbineStructure {
             shape = Shapes.join(shape, box(facing, 2, 8 - half, z[0], 14, 8 + half, z[1]), BooleanOp.ONLY_FIRST);
         }
         if (duct) {
-            shape = Shapes.or(shape, part.rise() < 0 ? box(facing, 4, 0, 4, 12, y[0], 12) : box(facing, 4, y[1], 4, 12, 16, 12));
+            shape = Shapes.or(shape, part.rise() < 0 ? box(facing, 3, 0, 3, 13, y[0], 13) : box(facing, 3, y[1], 3, 13, 16, 13));
         }
         return shape;
     }
