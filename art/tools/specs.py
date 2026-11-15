@@ -52,37 +52,6 @@ def pump_rotor():
     return m
 
 
-def turbine():
-    m = Model("steam_turbine", render_type="minecraft:cutout")
-    end = ("end_plate", "socket", {"mat": "iron", "ring": "brass", "hole": 4, "clear": True})
-    ev = ("end_edge_v", "edge", {"mat": "iron", "base": 3})
-    eh = ("end_edge_h", "edge", {"mat": "iron", "base": 3})
-    for x0, x1, outer in ((0, 2, "west"), (14, 16, "east")):
-        inner = "east" if outer == "west" else "west"
-        m.box([x0, 1, 1], [x1, 15, 15], {outer: end, inner: ("end_inner", "plate", {"mat": "iron", "base": 2}), "north": ev, "south": ev, "up": eh, "down": eh}, name="end_plate")
-    drum = ("drum_side", "plate", {"mat": "steel", "rivets": True, "seam": "v"})
-    drum_top = ("drum_top", "plate", {"mat": "steel", "rivets": True})
-    inner = ("drum_inner", "plate", {"mat": "steel", "base": 1, "frame": 0, "outline": False})
-    m.box([2, 2, 2], [7, 14, 14], {"north": drum, "south": drum, "up": drum_top, "down": drum_top, "east": inner}, name="drum_a")
-    m.box([9, 2, 2], [14, 14, 14], {"north": drum, "south": drum, "up": drum_top, "down": drum_top, "west": inner}, name="drum_b")
-    sl = ("window", "slots", {"mat": "steel", "bar_mat": "brass"})
-    m.box([7, 2, 2], [9, 14, 14], {"north": sl, "south": sl, "up": sl, "down": sl}, name="window")
-    pe = ("port_edge", "edge", {"mat": "copper", "base": 3})
-    m.box([5, 14, 5], [11, 16, 11], {"up": ("steam_inlet", "flange", {"collar": "red", "hole": 2}), "north": pe, "south": pe, "east": pe, "west": pe}, name="steam_inlet")
-    pe2 = ("port_edge_out", "edge", {"mat": "iron", "base": 3})
-    m.box([5, 0, 5], [11, 2, 11], {"down": ("exhaust", "flange", {"mat": "iron", "collar": "steam", "hole": 2}), "north": pe2, "south": pe2, "east": pe2, "west": pe2}, name="exhaust")
-    return m
-
-
-def turbine_rotor():
-    m = Model("steam_turbine_rotor", render_type="minecraft:cutout")
-    shaft_y(m)
-    disc = ("blade_disc", "blade_disc", {"mat": "brass", "blade": "iron"})
-    de = ("disc_edge", "edge", {"mat": "iron", "base": 4})
-    m.box([4, 7, 4], [12, 9, 12], {"up": disc, "down": disc, "north": de, "south": de, "east": de, "west": de}, name="disc")
-    return m
-
-
 def instrument_panel():
     m = Model("instrumentation_panel")
     ev = ("panel_edge_v", "edge", {"mat": "brass", "base": 3})
@@ -97,8 +66,8 @@ SLICE_MODELS = {
     "circulation_pump": None,
     "circulation_pump_vertical": None,
     "circulation_pump_rotor": pump_rotor,
-    "steam_turbine": turbine,
-    "steam_turbine_rotor": turbine_rotor,
+    "steam_turbine": None,
+    "steam_turbine_rotor": None,
 }
 
 

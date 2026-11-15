@@ -38,8 +38,8 @@ KINETIC = {
         "shaft_faces": "both end plates on the axis",
         "axis": "horizontal X or Z",
         "placement": "axis follows player look; prefers adjoining shafts",
-        "rotating": "steam_turbine_rotor partial: Create shaft plus bladed disc visible through the slotted window",
-        "stationary": "end plates, riveted drum, slotted window band, steam inlet (top) and exhaust (bottom) flanges",
+        "rotating": "steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front",
+        "stationary": "three stepped octagonal casing rings, five stator rings and the back plate",
         "direction": "rotor follows network speed and direction 1:1",
         "renderer": "Flywheel visual SingleAxisRotatingVisual.of(STEAM_TURBINE_ROTOR); fallback BER AxialRotorRenderer",
     },
@@ -78,7 +78,7 @@ REFS = {
 
 ISSUES = {
     "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
-    "steam_turbine": ["Single block; the spec describes a 3 to 7 block multiblock."],
+    "steam_turbine": ["Still one block in function: the model is three blocks long and over two wide, so it overlaps its neighbours. The texture is a placeholder."],
     "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
     "docking_service_connector": ["Connected state exists only as a blockstate; docking behaviour is not implemented."],
     "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],

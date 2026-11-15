@@ -150,27 +150,6 @@ def apply(name, size, spec, base=None):
     return img
 
 
-def turbine(jar):
-    spec = {"models": ["steam_turbine"], "faces": {
-        ("end_plate", "east"): socket(IRON),
-        ("end_plate", "west"): socket(IRON),
-        ("end_plate", "north"): plate(IRON, 3),
-        ("end_plate", "up"): plate(IRON, 4),
-        ("drum_a", "north"): ribs(STEEL),
-        ("drum_a", "up"): ribs(STEEL),
-        ("drum_a", "east"): casing(IRON, STEEL),
-        ("steam_inlet", "up"): port(IRON, RED),
-        ("steam_inlet", "north"): collar_ring(RED),
-        ("exhaust", "down"): port(IRON, PALE),
-        ("exhaust", "north"): collar_ring(PALE),
-    }}
-    img = apply("steam_turbine", 32, spec)
-    for y in range(14, 26):
-        for x in (19, 20):
-            put(img, x, y, STEEL[0] if x == 19 else STEEL[1])
-    return img
-
-
 def rod_drive(jar):
     spec = {"models": ["control_rod_drive"], "faces": {
         ("base", "up"): casing(IRON, STEEL),
@@ -382,7 +361,6 @@ def docking(jar):
 
 
 REST = {
-    "steam_turbine": turbine,
     "control_rod_drive": rod_drive,
     "fuel_channel": fuel_channel,
     "control_channel": control_channel,

@@ -10,7 +10,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 |---|---|---|---|---|---|
 | `criticalmass:reactor_vessel_casing` | `block/reactor_vessel_casing.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up. |
 | `criticalmass:circulation_pump` | `block/circulation_pump.png` 64x64<br>`block/circulation_pump_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes, stops_when_overstressed: yes |  |
-| `criticalmass:steam_turbine` | `block/steam_turbine.png` 32x32<br>`block/steam_turbine_rotor.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Single block; the spec describes a 3 to 7 block multiblock. |
+| `criticalmass:steam_turbine` | `block/steam_turbine.png` 128x128 | placeholder | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes, rotation_with_network: yes, rotation_on_tilted_body: yes | Still one block in function: the model is three blocks long and over two wide, so it overlaps its neighbours. The texture is a placeholder. |
 | `criticalmass:instrumentation_panel` | `block/instrumentation_panel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes, moving_body: yes | Needles and lamps are static artwork, drawn at rest/unlit: there is no controller link or telemetry yet. |
 | `criticalmass:reactor_controller` | `block/reactor_controller.png` 16x16 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
 | `criticalmass:fuel_channel` | `block/fuel_channel.png` 32x32 | generated | integrated | iso: yes, in_game: yes, installation: yes |  |
@@ -97,8 +97,8 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2, Sable
 - **shaft faces**: both end plates on the axis
 - **axis**: horizontal X or Z
 - **placement**: axis follows player look; prefers adjoining shafts
-- **rotating**: steam_turbine_rotor partial: Create shaft plus bladed disc visible through the slotted window
-- **stationary**: end plates, riveted drum, slotted window band, steam inlet (top) and exhaust (bottom) flanges
+- **rotating**: steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front
+- **stationary**: three stepped octagonal casing rings, five stator rings and the back plate
 - **direction**: rotor follows network speed and direction 1:1
 - **renderer**: Flywheel visual SingleAxisRotatingVisual.of(STEAM_TURBINE_ROTOR); fallback BER AxialRotorRenderer
 - **partials**: steam_turbine_rotor
