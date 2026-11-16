@@ -1,0 +1,33 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/reactor_signal_interface",
+  "particle": "criticalmass:block/reactor_vessel_casing"
+ },
+ "elements": [
+  {
+   "name": "lens",
+   "from": [
+    6,
+    8,
+    1.5
+   ],
+   "to": [
+    10,
+    12,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      6,
+      2,
+      8,
+      4
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

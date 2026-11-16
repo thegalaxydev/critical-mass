@@ -128,6 +128,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Taking parts off:** sneak-use a wrench on a part, or break the desk while aiming at a part to take only that part.
   - **With Create: Loconautics installed:** its Gauge Button, Switch and Lever are hidden and their recipes switched off, because ours do the same job. Its dashboards and its Locomotive Gauge stay. Using one of our parts on an empty Loconautics dashboard turns that desk into ours in the same colour, and dye recolours our desks to any Loconautics colour. A desk recoloured this way drops the matching Loconautics dashboard. Without Loconautics those desks show in reactor alloy.
   - **Reactor Signal Interface:** for redstone instead of direct binding. Set it in the vessel wall and use a wrench on it to pick its job.
+    - Its face shows the job and the signal. A brass tab sits in one of six places along a track, in the order the wrench steps through, and the red lens lights while the interface takes or gives a signal.
     - SCRAM, reset, rods in and rods out each act once on a redstone pulse. A rod pulse moves every bank 0.5%.
     - Alarm gives a redstone signal while any alarm is active: send it through a Redstone Link to a Steam Whistle on plant steam, a bell or note blocks.
     - Readings only is the setting it starts on, for Display Links.

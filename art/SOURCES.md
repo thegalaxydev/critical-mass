@@ -24,7 +24,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Steam Turbine | Author's model, script texture | `art/tools/turbine_texture.py`, painted from the author's textures at the author's request |
 | Relief Valve | Script, approved 2026-11-15 | `art/tools/relief_valve_texture.py` |
 | Reactor Controller | Script | `art/tools/controller_texture.py` |
-| Reactor Signal Interface, Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
+| Reactor Signal Interface | Script | `art/tools/signal_interface_texture.py` |
+| Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
@@ -48,7 +49,7 @@ This table is the current state and overrides anything further down. Only the ro
 ## Script-painted block textures (2026-10-19)
 
 `art/tools/handmade.py` draws these from Create textures (MIT) plus pixels the script places, replacing the earlier generated versions. They are placeholders, not the author's art:
-- `reactor_signal_interface`, `primary_coolant_port` (fronts and nozzle): the same casing frame with a brass-bezel monitor, a red crystal indicator, and copper flanges with blue (inlet) and red (outlet) collars.
+- `primary_coolant_port` (fronts and nozzle): the casing frame with copper flanges and blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
@@ -587,21 +588,12 @@ Atlas with two front faces of the primary coolant port in iron casing: a copper 
 
 ## reactor_signal_interface
 
-- Used by: `textures/block/reactor_signal_interface.png`
-- Raw output: `art/generated/reactor_signal_interface-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: reactor signal interface, 16x16 game pixels.
-Front face of the reactor signal interface in iron casing: recessed steel panel with four brass-rimmed jack sockets (black holes) and small unlit red and amber indicator pips.
-
-```
+- Used by: `textures/block/reactor_signal_interface.png` and the models `block/reactor_signal_interface.json`, its `_lens`, `_lens_lit` and six `_tab_` models, and `reactor_signal_interface_item.json`
+- Source: `art/blockbench/reactor_signal_interface.bbmodel`. The group `body` is the same casing block with a well in its front as the Reactor Controller, with a brass bezel on the plate and a dark track under it. `lens` and `lens_lit` are the signal lens off and on, in the same place, so show one at a time in Blockbench. `tab` is the slider tab in its first place; the exporter makes the other five places by sliding it two pixels at a time.
+- Texture: `art/tools/signal_interface_texture.py` paints the plate and the well from the Reactor Vessel Casing's own tones, the bezel and tab in Create's brass tones, and the lens from the red in `docs/art/palette.json`. The sides, top, bottom, back and front frame use the casing texture itself.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/signal_interface_model.py` then exports the models and the blockstate.
+- Date: 2026-11-15
 
 ## casing_crack_1, casing_crack_2 and casing_crack_3 (the author's own)
 

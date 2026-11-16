@@ -138,22 +138,6 @@ def service_port(jar):
     return img
 
 
-def signal_interface(jar):
-    img = casing_frame(jar)
-    bevel(img, 3, 3, 12, 12, BRASS, 3)
-    rect(img, 4, 4, 11, 11, STEEL[1])
-    for x in range(4, 12):
-        put(img, x, 4, STEEL[0])
-    crystal = {(7, 5): 4, (8, 5): 3, (6, 6): 4, (7, 6): 3, (8, 6): 3, (9, 6): 2, (6, 7): 3, (7, 7): 3, (8, 7): 2, (9, 7): 1,
-               (6, 8): 2, (7, 8): 2, (8, 8): 1, (9, 8): 1, (7, 9): 1, (8, 9): 0}
-    for (x, y), i in crystal.items():
-        put(img, x, y, RED[i])
-    for y in (10, 11):
-        put(img, 5, y, BRASS[2])
-        put(img, 10, y, BRASS[2])
-    return img
-
-
 def port_face(img, ox, oy, collar, jar_frame):
     frame = jar_frame.copy()
     rect(frame, 3, 3, 12, 12, COPPER[3])
@@ -202,7 +186,6 @@ def shielded_hatch(jar):
 
 
 TEXTURES = {
-    "reactor_signal_interface": signal_interface,
     "primary_coolant_port": coolant_port,
     "shielded_hatch": shielded_hatch,
 }

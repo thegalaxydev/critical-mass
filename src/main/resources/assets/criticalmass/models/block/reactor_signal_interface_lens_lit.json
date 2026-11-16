@@ -1,0 +1,39 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/reactor_signal_interface",
+  "particle": "criticalmass:block/reactor_vessel_casing"
+ },
+ "elements": [
+  {
+   "name": "lens_lit",
+   "from": [
+    6,
+    8,
+    1.5
+   ],
+   "to": [
+    10,
+    12,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      2,
+      10,
+      4
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false,
+   "neoforge_data": {
+    "block_light": 15,
+    "sky_light": 15,
+    "ambient_occlusion": false
+   }
+  }
+ ]
+}
