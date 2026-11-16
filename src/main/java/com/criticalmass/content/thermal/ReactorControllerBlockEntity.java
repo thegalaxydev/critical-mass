@@ -752,6 +752,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 status = "criticalmass.reactor.status.frozen";
                 sendData();
             }
+            showStatus();
             return;
         }
         int newSignal = level.getBestNeighborSignal(worldPosition);
@@ -872,6 +873,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             status = newStatus;
             syncPending = true;
         }
+        showStatus();
         if (liveSync-- <= 0) {
             liveSync = 20;
             syncPending = true;
@@ -883,6 +885,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             syncCooldown = 10;
             setChanged();
             sendData();
+        }
+    }
+
+    private void showStatus() {
+        ReactorControllerBlock.Display display = ReactorControllerBlock.Display.of(status);
+        if (getBlockState().getValue(ReactorControllerBlock.STATUS) != display) {
+            level.setBlock(worldPosition, getBlockState().setValue(ReactorControllerBlock.STATUS, display), 2);
         }
     }
 

@@ -10,6 +10,7 @@ import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.content.thermal.ReactorControllerBlock;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
@@ -94,6 +95,10 @@ public final class ControlTests {
                 .thenSucceed();
     }
 
+    private static ReactorControllerBlock.Display face(GameTestHelper h) {
+        return h.getBlockState(TestVessels.CONTROLLER).getValue(ReactorControllerBlock.STATUS);
+    }
+
     private static double cooledColumn(ReactorControllerBlockEntity c) {
         for (com.criticalmass.content.thermal.ReactorCore.FuelColumn f : c.core().columns()) {
             if (f.dx() == 2 && f.dz() == 0) {
@@ -139,6 +144,7 @@ public final class ControlTests {
                 .thenIdle(900)
                 .thenExecute(() -> {
                     h.assertTrue(c.isReacting() && !c.isTripped(), "The reactor should hold power without tripping: " + c.status() + " " + c.tripReason());
+                    h.assertTrue(face(h) == ReactorControllerBlock.Display.RUNNING, "The controller's face should show a running reactor: " + face(h));
                     h.assertTrue(c.core().lastOutput() > 0.05 * c.core().ratedOutput() && c.core().neutronPower() < CMThermal.HIGH_FLUX_TRIP, "The core should be making heat: " + c.core().lastOutput());
                     h.assertTrue(Math.abs(c.core().reactivity()) < 2e-3, "A core holding power should sit near critical: " + c.core().reactivity());
                     h.assertTrue(c.core().maxTemperature() > c.coolant().temperature() + 5, "Fuel at power should run hotter than its coolant: " + c.core().maxTemperature() + " over " + c.coolant().temperature());
@@ -150,6 +156,7 @@ public final class ControlTests {
                 .thenIdle(60)
                 .thenExecute(() -> {
                     h.assertTrue(!c.isReacting() && c.isTripped() && a.insertion() == 1 && b.insertion() == 1, "SCRAM should stop the reaction and insert the rods");
+                    h.assertTrue(face(h) == ReactorControllerBlock.Display.TRIPPED, "The controller's face should show the trip: " + face(h));
                     h.assertTrue(c.core().neutronPower() < 0.1 && c.core().reactivity() < -0.05 && c.core().residualPower() > 0, "Fission should collapse while decay heat remains: " + c.core().neutronPower());
                     CirculationPumpBlockEntity pump = h.getBlockEntity(TestVessels.PUMP);
                     h.assertTrue(pump.flow() > 0, "Cooling should keep running after the trip: " + pump.status());
@@ -177,6 +184,19 @@ public final class ControlTests {
             h.assertTrue(text.size() <= 8, "A sound reactor should read in eight lines or fewer: " + text);
             h.assertTrue(text.get(0).endsWith(":") && text.contains("Fuel Temperature:") && text.get(text.size() - 1).endsWith("at 300 \u00b0C"),
                     "The readout should be a title, then labels over values, ending with the coolant: " + text);
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void controllerFaceIsDarkWithoutAVesselAndLitOnStandby(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        BlockPos lone = new BlockPos(7, 2, 7);
+        h.setBlock(lone, CMBlocks.REACTOR_CONTROLLER.get());
+        h.runAfterDelay(40, () -> {
+            h.assertTrue(face(h) == ReactorControllerBlock.Display.STANDBY, "A sound reactor that is shut down should show standby: " + face(h));
+            ReactorControllerBlock.Display alone = h.getBlockState(lone).getValue(ReactorControllerBlock.STATUS);
+            h.assertTrue(alone == ReactorControllerBlock.Display.OFF, "A controller with no vessel should stay dark: " + alone);
             h.succeed();
         });
     }

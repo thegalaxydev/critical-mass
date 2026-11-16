@@ -106,27 +106,6 @@ def rivet(img, x, y):
     put(img, x + 1, y + 1, IRON[1])
 
 
-def controller(jar):
-    img = casing_frame(jar)
-    bevel(img, 3, 3, 12, 12, BRASS, 3)
-    rect(img, 4, 4, 11, 9, SCREEN[0])
-    for x in range(4, 12):
-        put(img, x, 4, (6, 12, 9))
-    for x in range(4, 12):
-        put(img, x, 9, SCREEN[1])
-    trace = [7, 7, 6, 6, 5, 6, 7, 6]
-    for i, y in enumerate(trace):
-        put(img, 4 + i, y, GREEN[3])
-        if y < 8:
-            put(img, 4 + i, y + 1, SCREEN[2])
-    put(img, 11, 6, GREEN[4])
-    for i, ramp in enumerate((GREEN, AMBER, RED)):
-        x = 5 + i * 2
-        put(img, x, 11, ramp[3])
-        put(img, x + 1, 11, ramp[1])
-    return img
-
-
 def disc(img, cx, cy, r, color_at):
     for y in range(int(cy - r - 1), int(cy + r + 2)):
         for x in range(int(cx - r - 1), int(cx + r + 2)):
@@ -223,7 +202,6 @@ def shielded_hatch(jar):
 
 
 TEXTURES = {
-    "reactor_controller": controller,
     "reactor_signal_interface": signal_interface,
     "primary_coolant_port": coolant_port,
     "shielded_hatch": shielded_hatch,

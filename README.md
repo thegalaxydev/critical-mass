@@ -83,6 +83,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 
 **Operation and safety.**
 - **States:** the controller shows Cold, Starting, Running, Tripped (with the cause), Cooling Down, Damaged or Breached. State and residual heat survive saving.
+  - Its face shows the state from across the room. The screen is dark while there is no sound vessel. A shut down reactor shows an amber line and the amber lamp, a starting or running one a green trace and the green lamp, and a tripped, damaged or breached one a red line and the red lamp.
 - **Rod drives:**
   - A Control Rod Drive on the top face above a control column moves that column's rods; its redstone signal withdraws them.
   - Rods move at a rate set by shaft speed, up to 0.02 per tick, and the drive uses stress only while moving.

@@ -1,18 +1,63 @@
 {
  "variants": {
-  "facing=north": {
+  "facing=north,status=off": {
    "model": "criticalmass:block/reactor_controller"
   },
-  "facing=east": {
+  "facing=north,status=standby": {
+   "model": "criticalmass:block/reactor_controller_standby"
+  },
+  "facing=north,status=running": {
+   "model": "criticalmass:block/reactor_controller_running"
+  },
+  "facing=north,status=tripped": {
+   "model": "criticalmass:block/reactor_controller_tripped"
+  },
+  "facing=east,status=off": {
    "model": "criticalmass:block/reactor_controller",
    "y": 90
   },
-  "facing=south": {
+  "facing=east,status=standby": {
+   "model": "criticalmass:block/reactor_controller_standby",
+   "y": 90
+  },
+  "facing=east,status=running": {
+   "model": "criticalmass:block/reactor_controller_running",
+   "y": 90
+  },
+  "facing=east,status=tripped": {
+   "model": "criticalmass:block/reactor_controller_tripped",
+   "y": 90
+  },
+  "facing=south,status=off": {
    "model": "criticalmass:block/reactor_controller",
    "y": 180
   },
-  "facing=west": {
+  "facing=south,status=standby": {
+   "model": "criticalmass:block/reactor_controller_standby",
+   "y": 180
+  },
+  "facing=south,status=running": {
+   "model": "criticalmass:block/reactor_controller_running",
+   "y": 180
+  },
+  "facing=south,status=tripped": {
+   "model": "criticalmass:block/reactor_controller_tripped",
+   "y": 180
+  },
+  "facing=west,status=off": {
    "model": "criticalmass:block/reactor_controller",
+   "y": 270
+  },
+  "facing=west,status=standby": {
+   "model": "criticalmass:block/reactor_controller_standby",
+   "y": 270
+  },
+  "facing=west,status=running": {
+   "model": "criticalmass:block/reactor_controller_running",
+   "y": 270
+  },
+  "facing=west,status=tripped": {
+   "model": "criticalmass:block/reactor_controller_tripped",
    "y": 270
   }
  }
