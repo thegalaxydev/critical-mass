@@ -134,14 +134,16 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 /function criticalmass_facility:facility/build
 ```
 
-It clears and paves a 75 by 71 block site and builds the station on it, bound and labelled. Creative motors stand in for outside power. The station is left shut down with its pumps running and its rods in, ready to start from the control room with the RODS OUT button.
+It clears and paves a 75 by 71 block site and builds the station on it, bound, wired and labelled. The station is left shut down on grid power: the grid breaker and the station supply breaker are closed, the 6 kV station bus is live, and Electric Motors turn the pumps, the tower fan and the rod drives. The rods are in and the generator breaker is open, ready to start from the control room with the RODS OUT button.
 
 | Building | What is in it |
 | --- | --- |
 | Containment | A round Shielding Concrete building under a dome. The vessel stands in the middle with a service gantry round its head, two rod drives on top turned by one train of Cogwheels, and a polar crane above. The primary loop runs round the east side: pump, a steam generator of three stacked Heat Exchangers, and an isolation valve. The Pressurizer stands at the vessel's corner and the emergency injection line on its west side, held off by a lever. An airlock door leads south to the access corridor |
-| Turbine hall | Steam comes through the wall at deck level, past a Relief Valve and the main steam stop valve, into the back of the turbine. The shaft runs east through a Stressometer, a Speedometer and the generator casing to a clutch and a Mechanical Press as the load. The exhaust drops through the deck to a row of two Condensers in the basement, with the feedwater tank and the feed pump beside it |
+| Turbine hall | Steam comes through the wall at deck level, past a Relief Valve and the main steam stop valve, into the back of the turbine, which is set to 64 RPM. The shaft runs east through a Stressometer and a Speedometer to the Generator. Power Cable runs from the generator to the generator breaker and the 20 kV unit bus on the deck, and out through a bushing in the east wall. The exhaust drops through the deck to a row of two Condensers in the basement, with the feedwater tank and the feed pump beside it |
+| Switchyard | Outside the east wall. The main Transformer, 220 / 20 kV, the grid breaker and the Grid Connection stand in a line, joined by Transmission Line. The unit Transformer, 20 / 6 kV, takes the plant's own supply off the 20 kV side and sends it back through the wall |
+| Station service | In the turbine hall basement. The station supply breaker feeds the 6 kV station bus. Power Wire runs from the bus along insulators under the deck to the feed and circulating pump motors, through the north wall to the tower fan and make-up pump, and through a containment penetration to the primary pump and the rod drive motor. A standby generator with its own transformer and breaker stands in the south-east corner, turning and ready, with its breaker open |
 | Cooling tower | Four Packing blocks under an Encased Fan, inside a concrete shell with a water basin. The make-up line stands beside the fill. The circulating water pump is in the turbine hall basement |
-| Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, and seven Reactor Alloy Dashboards: turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, and primary and feed flow |
+| Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, with a three by three wall each side for the generator and the Grid Connection. Eleven Reactor Alloy Dashboards: the synchroscope and frequency, generator breaker open and close, turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, primary and feed flow, generator lower and raise, and generator and grid power |
 | Service building | Entrance lobby, change room with Protective Suits, and the way through to the access corridor |
 | Fuel building | Spent fuel pool with racks, dry casks, a cascade of three Centrifuges, and a waste vault under Shielded Hatches |
 
@@ -153,4 +155,11 @@ To skip the start-up, run:
 /function criticalmass_facility:facility/run
 ```
 
-That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons hold it.
+That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons hold it. Thirty-five seconds later, once the turbine is up to speed, the generator breaker closes and the generator takes load.
+
+The station is small. The generator is set to 10% of its rating, 3.3 MW, which is about what its turbine can give, and the plant's own motors use about 1.8 MW of that, so the grid gets the rest. Before the generator is on, the Grid Connection shows that 1.8 MW drawn from the grid.
+
+Things to try from here:
+- Open the generator breaker from the control room, trim the generator with RAISE and LOWER, and close it again as the synchroscope passes zero.
+- Open the grid breaker in the switchyard with the generator on. The generator carries the plant by itself, off the grid. Closed again, it goes back on the grid unloaded.
+- Open the station supply breaker. The station bus goes dead, the pumps stop, the rod drives lose power and drop the rods, and the reactor trips on loss of flow. Close the standby breaker to bring the bus back.

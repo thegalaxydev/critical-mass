@@ -1,7 +1,10 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
+import com.criticalmass.content.power.WireLinks;
+import com.criticalmass.content.power.WireType;
 import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.radiation.Radiation;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
@@ -56,6 +59,13 @@ public final class LedgerCommand {
                                 .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), DoubleArgumentType.getDouble(ctx, "coolant")))))))
                 .then(Commands.literal("generator").then(Commands.argument("generator", BlockPosArgument.blockPos()).then(Commands.argument("load", DoubleArgumentType.doubleArg(0, 1))
                         .executes(ctx -> generator(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "generator"), DoubleArgumentType.getDouble(ctx, "load"))))))
+                .then(Commands.literal("wire").then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("fromTerminal", IntegerArgumentType.integer(0, 1))
+                        .then(Commands.argument("to", BlockPosArgument.blockPos()).then(Commands.argument("toTerminal", IntegerArgumentType.integer(0, 1)).then(Commands.argument("kind", StringArgumentType.word())
+                                .executes(ctx -> wire(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "from"), IntegerArgumentType.getInteger(ctx, "fromTerminal"),
+                                        BlockPosArgument.getLoadedBlockPos(ctx, "to"), IntegerArgumentType.getInteger(ctx, "toTerminal"), StringArgumentType.getString(ctx, "kind")))))))))
+                .then(Commands.literal("breaker").then(Commands.argument("breaker", BlockPosArgument.blockPos())
+                        .then(Commands.literal("close").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), true)))
+                        .then(Commands.literal("open").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), false)))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -271,5 +281,40 @@ public final class LedgerCommand {
         g.setLoad(load);
         source.sendSuccess(() -> Component.translatable("criticalmass.command.generator", Math.round(g.load() * 100)), true);
         return 1;
+    }
+
+    private static int wire(CommandSourceStack source, BlockPos from, int fromTerminal, BlockPos to, int toTerminal, String kind) {
+        WireType type = switch (kind) {
+            case "wire" -> WireType.COPPER;
+            case "cable" -> WireType.CABLE;
+            case "line" -> WireType.LINE;
+            default -> null;
+        };
+        if (type == null) {
+            source.sendFailure(Component.translatable("criticalmass.command.wire_kind"));
+            return 0;
+        }
+        String problem = WireLinks.connect(source.getLevel(), from, fromTerminal, to, toTerminal, type);
+        if (!problem.isEmpty()) {
+            source.sendFailure(Component.translatable(problem));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.translatable("criticalmass.wire.joined"), false);
+        return 1;
+    }
+
+    private static int breaker(CommandSourceStack source, BlockPos pos, boolean close) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof BreakerBlockEntity b)) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_breaker"));
+            return 0;
+        }
+        String result = close ? b.close() : b.open();
+        boolean done = b.closed() == close;
+        if (done) {
+            source.sendSuccess(() -> Component.translatable(result), true);
+        } else {
+            source.sendFailure(Component.translatable(result));
+        }
+        return done ? 1 : 0;
     }
 }

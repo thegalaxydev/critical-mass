@@ -27,6 +27,8 @@ public final class Power {
     public static final int OVERLOAD_TICKS = 20;
     public static final int LOCKOUT_TICKS = 100;
     public static final int MAX_BUS = 8;
+    public static final double SHAFT_SHARE = 0.9;
+    public static final int SHED_TICKS = 10;
     public static final double GRID_KV = 220.0;
     public static final double GENERATOR_KV = 20.0;
     public static final double MOTOR_KV = 6.0;

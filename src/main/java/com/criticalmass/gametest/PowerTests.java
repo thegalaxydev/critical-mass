@@ -542,4 +542,48 @@ public final class PowerTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aGeneratorShedsLoadWhenItsShaftSagsAndStaysOnTheGrid(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos driverPos = new BlockPos(0, 2, 3);
+        BlockPos generatorPos = new BlockPos(1, 2, 3);
+        BlockPos breakerPos = new BlockPos(3, 4, 5);
+        BlockPos stepUp = new BlockPos(5, 2, 0);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        transformer(h, stepUp, MAIN);
+        motor(h, driverPos, (int) Power.SYNC_RPM, 0);
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, WireType.COPPER, startup, TransformerBlockEntity.LOW, driverPos, 0);
+        wire(h, WireType.LINE, gridPos, 0, stepUp, TransformerBlockEntity.HIGH);
+        wire(h, stepUp, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, generatorPos, 0, breakerPos, BreakerBlockEntity.LOAD);
+        GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    g.setPhase(0);
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "The generator should go on the grid");
+                })
+                .thenIdle(10)
+                .thenExecute(() -> g.setLoad(1.0))
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(g.synced() && near(g.outputSu(), Power.MOTOR_RATED_SU * Power.SHAFT_SHARE), "Asked for more than its shaft has, a generator should take nine tenths of it: " + g.outputSu());
+                    press(h, generatorPos.east());
+                    press(h, generatorPos.east(2));
+                })
+                .thenIdle(80)
+                .thenExecute(() -> {
+                    double left = (Power.MOTOR_RATED_SU - pressLoad(2, (int) Power.SYNC_RPM)) * Power.SHAFT_SHARE;
+                    h.assertTrue(breaker.closed() && g.synced(), "A sagging shaft should not trip the generator off the grid: " + breaker.tripReason());
+                    h.assertTrue(near(g.outputSu(), left) && !g.isOverStressed(), "It should shed load to what the shaft has left: " + g.outputSu() + " for " + left);
+                })
+                .thenSucceed();
+    }
 }

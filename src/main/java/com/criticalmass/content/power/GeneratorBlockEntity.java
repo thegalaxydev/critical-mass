@@ -47,6 +47,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private int shortTicks;
     private int lockout;
     private int tripIn;
+    private int shedIn;
     private int sectionCount = 1;
     private String status = "criticalmass.generator.stopped";
     private int updateCooldown;
@@ -299,7 +300,20 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         if (lockout > 0) {
             lockout--;
         }
-        boolean running = speed > 0 && !isOverStressed() && lockout <= 0;
+        boolean carrying = false;
+        for (GeneratorBlockEntity part : parts) {
+            carrying |= part.appliedPower > 0;
+        }
+        if (isOverStressed() && carrying) {
+            apply(0, parts);
+            shedIn = Power.SHED_TICKS;
+            updateCooldown = Power.SHED_TICKS;
+        }
+        if (shedIn > 0) {
+            shedIn--;
+            speed = Math.abs(getTheoreticalSpeed());
+        }
+        boolean running = speed > 0 && (shedIn > 0 || !isOverStressed()) && lockout <= 0;
         double base = Power.GRID_HZ * speed / Power.SYNC_RPM;
         PowerNetwork.Island around = island();
         boolean grid = !around.grids.isEmpty();
@@ -360,9 +374,9 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         syncPermit = false;
         if (updateCooldown-- <= 0 || was != synced || wasOnline != online) {
             updateCooldown = UPDATE_TICKS;
-            double room = running ? headroom(parts) * 0.98 : 0;
+            double room = running ? headroom(parts) * Power.SHAFT_SHARE : 0;
             shortTicks = online && !onGrid && wanted > room + 1.0 ? shortTicks + UPDATE_TICKS : 0;
-            apply(online ? Math.min(wanted, room) : 0, parts);
+            apply(online && shedIn <= 0 ? Math.min(wanted, room) : 0, parts);
             if (shortTicks >= Power.OVERLOAD_TICKS) {
                 shortTicks = 0;
                 if (!PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.overload")) {

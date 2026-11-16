@@ -81,11 +81,49 @@ COOLING = ([(25, 2, 0), (25, 2, -1)] + [(24, 2, z) for z in range(-1, TOWER[1] +
            + [(26, 2, -4), (26, 3, -4), (26, 4, -4), (25, 4, -4), (24, 4, -4), (24, 4, -3), (24, 4, -2), (24, 4, -1), (24, 4, 0)])
 PIPES = PRIMARY + STEAM + COOLING
 
+GENERATORS = [(28, 8, 0)]
+GEN_BREAKER = (33, 7, -3)
+BUS20 = [(36, 7, -3), (37, 7, -3), (38, 7, -3)]
+IN20, OUT20 = (44, 7, -3), (46, 7, -3)
+MAIN_T = (47, 1, -3)
+GRID_BREAKER = (49, 1, -3)
+GRID = (51, 1, -3)
+UNIT_T = (48, 1, -6)
+OUT6, IN6 = (46, 3, -6), (44, 3, -6)
+STATION_BREAKER = (43, 1, -5)
+BUS6 = [(39, 1, -5), (40, 1, -5), (41, 1, -5)]
+STANDBY_ENGINE, STANDBY_GEN, STANDBY_T, STANDBY_BREAKER = (43, 1, 7), (42, 1, 7), (40, 1, 7), (38, 1, 7)
+C_STANDBY, C1, C2, C3, C4 = (36, 5, 2), (37, 5, -4), (30, 5, -3), (21, 5, 4), (26, 5, 1)
+W_IN, P_IN, P_HIGH = (14, 4, 5), (9, 4, 5), (9, 9, -4)
+T_IN, T_OUT, T_FLOOR = (23, 4, -8), (23, 4, -10), (23, 1, -20)
+PRIMARY_MOTOR = (PRIMARY_PUMP[0], 2, PRIMARY_PUMP[2])
+FEED_MOTOR = (FEED_PUMP[0], 2, FEED_PUMP[2])
+COOLING_MOTOR = (COOLING_PUMP[0], 1, COOLING_PUMP[2])
+INSULATORS = [(IN20, "west"), (OUT20, "east"), (OUT6, "east"), (IN6, "west"), (C_STANDBY, "down"), (C1, "down"), (C2, "down"), (C3, "down"), (C4, "down"),
+              (W_IN, "east"), (P_IN, "west"), (P_HIGH, "west"), (T_IN, "south"), (T_OUT, "north"), (T_FLOOR, "up")]
+BUSHINGS = [(45, 7, -3), (45, 3, -6), (13, 4, 5), (23, 4, -9)]
+HIGH, LOW, LINE, LOAD = 0, 1, 0, 1
+WIRES = [
+    ("cable", GENERATORS[-1], 0, GEN_BREAKER, LINE), ("cable", GEN_BREAKER, LOAD, BUS20[0], 0), ("cable", BUS20[2], 0, IN20, 0), ("cable", IN20, 0, OUT20, 0),
+    ("cable", OUT20, 0, MAIN_T, LOW), ("line", MAIN_T, HIGH, GRID_BREAKER, LOAD), ("line", GRID_BREAKER, LINE, GRID, 0),
+    ("cable", OUT20, 0, UNIT_T, HIGH), ("cable", UNIT_T, LOW, OUT6, 0), ("cable", OUT6, 0, IN6, 0), ("cable", IN6, 0, STATION_BREAKER, LINE), ("cable", STATION_BREAKER, LOAD, BUS6[2], 0),
+    ("cable", STANDBY_GEN, 0, STANDBY_T, HIGH), ("cable", STANDBY_T, LOW, STANDBY_BREAKER, LINE), ("cable", STANDBY_BREAKER, LOAD, C_STANDBY, 0), ("cable", C_STANDBY, 0, BUS6[0], 0),
+    ("wire", BUS6[1], 0, C1, 0), ("wire", C1, 0, C2, 0), ("wire", C2, 0, COOLING_MOTOR, 0), ("wire", C2, 0, C4, 0), ("wire", C4, 0, FEED_MOTOR, 0), ("wire", C2, 0, C3, 0),
+    ("wire", C3, 0, W_IN, 0), ("wire", W_IN, 0, P_IN, 0), ("wire", P_IN, 0, PRIMARY_MOTOR, 0), ("wire", P_IN, 0, P_HIGH, 0), ("wire", P_HIGH, 0, DRIVE_MOTOR, 0),
+    ("wire", C1, 0, T_IN, 0), ("wire", T_IN, 0, T_OUT, 0), ("wire", T_OUT, 0, T_FLOOR, 0), ("wire", T_FLOOR, 0, TOWER_MOTOR, 0), ("wire", T_FLOOR, 0, MAKEUP_MOTOR, 0),
+]
+RUN_LOAD = 0.1
+SYNC_AFTER = 700
+
 SCREENS = ((23, 9), (31, 13), 19)
+SIDE_SCREENS = [((19, 10), (21, 12), GENERATORS[0]), ((33, 10), (35, 12), GRID)]
+SIDE_COG = (22, 11, 19)
 SCREEN_COG = (32, 11, 19)
 SCREEN_MOTOR = (32, 11, 20)
 DESK_Y, DESK_Z = 7, 15
 DESKS = {
+    22: [("sync", "gauge", GEN_BREAKER, 0, 4, "SYNC ANGLE"), ("hertz", "gauge", GENERATORS[0], 1, 4, "FREQUENCY")],
+    23: [("gen_open", "button", GEN_BREAKER, 1, 1, "GEN OPEN"), ("gen_close", "button", GEN_BREAKER, 0, 2, "GEN CLOSE")],
     24: [("turbine_reset", "button", TURBINE, 1, 7, "TURBINE RESET"), ("trip", "button", TURBINE, 0, 1, "TURBINE TRIP")],
     25: [("speed", "gauge", TURBINE, 6, 4, "TURBINE SPEED"), ("shaft", "gauge", TURBINE, 5, 4, "TURBINE POWER")],
     26: [("pressure", "gauge", CONTROLLER, 2, 4, "PRESSURE"), ("coolant", "gauge", CONTROLLER, 1, 4, "COOLANT")],
@@ -93,6 +131,8 @@ DESKS = {
     28: [("rod_out", "button", CONTROLLER, 3, 2, "RODS OUT"), ("rod_in", "button", CONTROLLER, 2, 4, "RODS IN")],
     29: [("reset", "button", CONTROLLER, 1, 7, "RESET"), ("scram", "button", CONTROLLER, 0, 0, "SCRAM")],
     30: [("primary_flow", "gauge", PRIMARY_PUMP, 0, 4, "PRIMARY FLOW"), ("feed_flow", "gauge", FEED_PUMP, 0, 4, "FEED FLOW")],
+    31: [("lower", "button", GENERATORS[0], 1, 4, "LOWER"), ("raise", "button", GENERATORS[0], 0, 2, "RAISE")],
+    32: [("megawatts", "gauge", GENERATORS[0], 0, 4, "GENERATOR MW"), ("grid", "gauge", GRID, 0, 4, "GRID MW")],
 }
 RACKS = [(x, -1, z) for x in (-8, -6) for z in (21, 23)]
 RUN_POWER = 0.7
@@ -381,10 +421,6 @@ def hall():
                 for y in (1, 2, 3):
                     machine((x + dx, y, z + dz), "create:fluid_tank")
     post((36, 1, 3), 8, "Demineralised", "Water")
-    box(16, 1, 8, 19, 2, 8, IRON)
-    for x in range(16, 20):
-        attach((x, 2, 7), "minecraft:lever[face=wall,facing=north,powered=%s]" % ("true" if x % 2 == 0 else "false"))
-    post((20, 1, 7), 8, "Pump", "Switchgear")
     for x in range(39, 44):
         for z in range(2, 7):
             if x in (39, 43) or z in (2, 6):
@@ -432,26 +468,12 @@ def turbine():
     machine((25, 8, 0), "create:stressometer[facing=south,axis_along_first=true]")
     put(26, 7, 0, STEEL)
     machine((26, 8, 0), "create:speedometer[facing=south,axis_along_first=true]")
-    for x in range(27, 32):
-        for y in (7, 8, 9):
-            for z in (-1, 0, 1):
-                end = x in (27, 31)
-                glass = not end and y == 8 and z != 0
-                put(x, y, z, IRON if end else (SG if glass else STEEL))
-        machine((x, 8, 0), "create:shaft[axis=x]")
-    put(29, 10, 0, "create:copper_casing")
-    put(32, 7, 0, STEEL)
-    machine((32, 8, 0), "create:shaft[axis=x]")
-    put(33, 7, 0, STEEL)
-    machine((33, 8, 0), "create:clutch[axis=x]")
-    attach((33, 9, 0), "minecraft:lever[face=floor,facing=north,powered=false]")
-    put(34, 7, 0, STEEL)
-    machine((34, 8, 0), "create:shaft[axis=x]")
-    put(35, 7, 0, IRON)
-    machine((35, 8, 0), "create:mechanical_press[facing=west]")
-    sign((29, 9, 2), "south", "Generator")
-    sign((35, 7, 1), "south", "Shaft Load")
-    sign((33, 7, 1), "south", "Load Clutch")
+    put(27, 7, 0, STEEL)
+    machine((27, 8, 0), "create:shaft[axis=x]")
+    for pos in GENERATORS:
+        put(pos[0], 7, pos[2], IRON)
+        machine(pos, "criticalmass:generator[axis=x]")
+    sign((28, 7, 1), "south", "Generator", "20 kV 50 Hz")
     sign((17, 7, 1), "south", "Main Steam", "Stop Valve")
     put(17, 7, 0, STEEL)
     put(20, 7, 0, STEEL)
@@ -487,7 +509,7 @@ def tower():
     machine(MAKEUP_PUMP, "create:mechanical_pump[facing=east]", True)
     machine(MAKEUP_TANK, "create:creative_fluid_tank", True)
     machine(MAKEUP_COG, "create:cogwheel[axis=x]")
-    machine(MAKEUP_MOTOR, "create:creative_motor[facing=east]")
+    machine(MAKEUP_MOTOR, "criticalmass:electric_motor[facing=east]{ScrollValue:16}")
     box(21, 1, cz, 22, 2, cz, STEEL)
     for z in (-12, -16):
         put(24, 1, z, STEEL)
@@ -608,11 +630,16 @@ def control_room():
         for y in range(sy0, sy1 + 1):
             machine((x, y, sz), "criticalmass:plant_screen[facing=north]")
     machine(SCREEN_COG, "create:cogwheel[axis=z]")
+    machine(SIDE_COG, "create:cogwheel[axis=z]")
+    for (x0, y0), (x1, y1), _ in SIDE_SCREENS:
+        for x in range(x0, x1 + 1):
+            for y in range(y0, y1 + 1):
+                machine((x, y, sz), "criticalmass:plant_screen[facing=north]")
     for x in sorted(DESKS):
         machine((x, DESK_Y, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower()))
     for x in (25, 27, 29):
         put(x, 7, 13, "create:gray_seat")
-    for x in range(23, 32):
+    for x in range(22, 33):
         put(x, 6, 14, CLEAN)
         put(x, 6, 13, CLEAN)
     box(20, 7, 18, 21, 7, 19, IRON)
@@ -688,15 +715,47 @@ def fuel_building():
 
 
 def switchyard():
-    box(47, 0, -7, 51, 0, 0, "minecraft:gravel")
-    walls(47, 1, -7, 51, 1, 0, BARS)
-    carve(47, 1, -4, 47, 1, -4)
-    for z in (-6, -3):
-        box(48, 1, z, 49, 2, z + 1, IRON)
-        box(50, 1, z, 50, 2, z + 1, BARS)
-        for x, dz in ((48, 0), (49, 0), (48, 1)):
-            put(x, 3, z + dz, "minecraft:lightning_rod[facing=up]")
-    post((46, 1, -1), 12, "Main", "Transformers")
+    box(46, 0, -8, 51, 0, 1, "minecraft:gravel")
+    box(46, 1, -8, 51, 1, -8, BARS)
+    box(46, 1, 1, 51, 1, 1, BARS)
+    carve(48, 1, 1, 48, 1, 1)
+    for z in (-5, -1):
+        box(51, 1, z, 51, 5, z, STEEL)
+        put(51, 6, z, "minecraft:lightning_rod[facing=up]")
+    box(51, 5, -4, 51, 5, -2, GIRDER_Z)
+    machine(MAIN_T, "criticalmass:transformer[facing=north]{ScrollValue:0}")
+    machine(GRID_BREAKER, "criticalmass:circuit_breaker[facing=north,closed=false]")
+    machine(GRID, "criticalmass:grid_connection")
+    machine(UNIT_T, "criticalmass:transformer[facing=north]{ScrollValue:2}")
+    post((47, 1, -1), 8, "Main", "Transformer", "220 / 20 kV")
+    post((49, 1, -1), 8, "Grid", "Breaker")
+    post((50, 1, -5), 0, "220 kV", "Grid")
+    post((48, 1, -7), 0, "Unit", "Transformer", "20 / 6 kV")
+
+
+def electrics():
+    for pos in BUSHINGS:
+        put(pos[0], pos[1], pos[2], IRON)
+    machine(GEN_BREAKER, "criticalmass:circuit_breaker[facing=south,closed=false]")
+    for pos in BUS20:
+        machine(pos, "criticalmass:bus_bar[axis=x]")
+    post((33, 7, -2), 0, "Generator", "Breaker")
+    post((37, 7, -2), 0, "20 kV", "Unit Bus")
+    machine(STATION_BREAKER, "criticalmass:circuit_breaker[facing=west,closed=false]")
+    for pos in BUS6:
+        machine(pos, "criticalmass:bus_bar[axis=x]")
+    post((40, 1, -4), 0, "6 kV", "Station Bus")
+    post((43, 1, -4), 0, "Station", "Supply", "Breaker")
+    machine(STANDBY_ENGINE, "create:creative_motor[facing=west]{ScrollValue:64}")
+    machine(STANDBY_GEN, "criticalmass:generator[axis=x]")
+    machine(STANDBY_T, "criticalmass:transformer[facing=north]{ScrollValue:2}")
+    machine(STANDBY_BREAKER, "criticalmass:circuit_breaker[facing=north,closed=false]")
+    post((42, 1, 6), 8, "Standby", "Generator")
+    post((38, 1, 6), 8, "Standby", "Breaker")
+    for pos, facing in INSULATORS:
+        assert pos not in PIPES and pos not in machines, "insulator in the way at %s" % (pos,)
+        attach(pos, "criticalmass:insulator[facing=%s]" % facing)
+    sign((14, 5, 5), "east", "Containment", "Penetration")
 
 
 def stack():
@@ -737,6 +796,7 @@ def design():
     vessel()
     primary()
     turbine()
+    electrics()
     turbine_ports()
     for dx in (-1, 0, 1):
         for dy in (-1, 0, 1):
@@ -818,7 +878,7 @@ def place(w):
             else:
                 cmds.append("fill %s %s %s" % (w(x, y, z), w(xx, yy, zz), b))
     cmds += [setblock(w, pos, b) for pos, b in machines.items()]
-    cmds.append(setblock(w, TURBINE, "criticalmass:steam_turbine[facing=east]"))
+    cmds.append(setblock(w, TURBINE, "criticalmass:steam_turbine[facing=east]{ScrollValue:64}"))
     cmds += [setblock(w, p, PIPE) for p in PIPES]
     cmds += [setblock(w, p, AIR) for p in PIPES]
     cmds += [setblock(w, p, PIPE) for p in PIPES]
@@ -846,22 +906,34 @@ def start(w):
         for slot, (_, kind, target, mode, color, label) in enumerate(parts):
             cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(x, DESK_Y, DESK_Z), slot, kind, w(*target), mode, color, label))
     cmds += bind(w, (sx1, sy1, sz), CONTROLLER, "Reactor") + bind(w, (sx1, sy1, sz), TURBINE, "Turbine")
+    for _, (x1, y1), target in SIDE_SCREENS:
+        cmds += bind(w, (x1, y1, sz), target, "Reactor")
     cmds += [setblock(w, SCREEN_MOTOR, "create:creative_motor[facing=north]"),
              "criticalmass fuel %s fill" % w(*CONTROLLER),
              setblock(w, (5, 4, -2), AIR),
              setblock(w, (7, 4, -2), "create:copper_valve_handle[facing=east]"),
              setblock(w, (17, 9, 0), AIR),
              setblock(w, (17, 9, 0), "create:copper_valve_handle[facing=up]"),
-             setblock(w, (PRIMARY_PUMP[0], 2, PRIMARY_PUMP[2]), "create:creative_motor[facing=up]"),
-             setblock(w, (FEED_PUMP[0], 2, FEED_PUMP[2]), "create:creative_motor[facing=down]"),
-             setblock(w, (COOLING_PUMP[0], 1, COOLING_PUMP[2]), "create:creative_motor[facing=up]"),
-             setblock(w, TOWER_MOTOR, "create:creative_motor[facing=up]{ScrollValue:24}")]
+             setblock(w, PRIMARY_MOTOR, "criticalmass:electric_motor[facing=up]{ScrollValue:16}"),
+             setblock(w, FEED_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:16}"),
+             setblock(w, COOLING_MOTOR, "criticalmass:electric_motor[facing=up]{ScrollValue:16}"),
+             setblock(w, TOWER_MOTOR, "criticalmass:electric_motor[facing=up]{ScrollValue:24}")]
     cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]" % facing) for pos, facing in DRIVES]
     cmds += [setblock(w, pos, "create:cogwheel[axis=y]") for pos in DRIVE_COGS]
-    cmds += [setblock(w, DRIVE_MOTOR, "create:creative_motor[facing=down]")]
+    cmds += [setblock(w, DRIVE_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:16}")]
     cmds += [setblock(w, (SERVICE[0], SERVICE[1] + 1, SERVICE[2]), "create:copper_valve_handle[facing=up]")]
     cmds += ["data merge block %s {GaugeFace:\"east\"}" % w(*PRESSURIZER)]
+    cmds += ["criticalmass wire %s %d %s %d %s" % (w(*a), ta, w(*b), tb, kind) for kind, a, ta, b, tb in WIRES]
+    cmds += ["criticalmass breaker %s close" % w(*GRID_BREAKER), "criticalmass breaker %s close" % w(*STATION_BREAKER)]
     return cmds
+
+
+def sync(w):
+    return ["criticalmass breaker %s close" % w(*GEN_BREAKER)]
+
+
+def load(w):
+    return ["criticalmass generator %s %.2f" % (w(*GENERATORS[0]), RUN_LOAD)]
 
 
 def run(w):
@@ -876,8 +948,9 @@ def write(root):
     w = relative
     placed = place(w) + ["summon %s ~%.1f ~%.1f ~%.1f %s" % (kind, pos[0], pos[1] - 1, pos[2], nbt) for pos, kind, nbt in props]
     placed += ["schedule function %s:facility/start 100t replace" % NS]
-    started = start(w) + ["tellraw @a {\"text\":\"Station built: fuelled, pumps running, rods in. Start it from the control room with the RODS OUT button and watch the period, or run the facility/run function to jump to power.\",\"color\":\"green\"}"]
-    running = run(w) + ["tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. Hold it steady with the rod buttons in the control room.\",\"color\":\"green\"}"]
+    started = start(w) + ["tellraw @a {\"text\":\"Station built: fuelled, on grid power with its pumps running, rods in. Start it from the control room with the RODS OUT button and watch the period, or run the facility/run function to jump to power.\",\"color\":\"green\"}"]
+    running = run(w) + ["schedule function %s:facility/sync %dt replace" % (NS, SYNC_AFTER),
+                        "tellraw @a {\"text\":\"Reactor set to power with equilibrium xenon. The generator goes on the grid in %d seconds and takes load. Hold the reactor steady with the rod buttons in the control room.\",\"color\":\"green\"}" % (SYNC_AFTER // 20)]
     (x0, z0), (x1, z1) = AREA
     marker = "@e[type=minecraft:marker,tag=%s,limit=1]" % TAG
     span = "~%d ~%d ~%d ~%d" % (x0, z0, x1, z1)
@@ -893,6 +966,10 @@ def write(root):
         "start_here": started + ["forceload remove %s" % span],
         "run": ["execute as %s at @s run function %s:facility/run_here" % (marker, NS)],
         "run_here": running,
+        "sync": ["execute as %s at @s run function %s:facility/sync_here" % (marker, NS)],
+        "sync_here": sync(w) + ["schedule function %s:facility/load 40t replace" % NS],
+        "load": ["execute as %s at @s run function %s:facility/load_here" % (marker, NS)],
+        "load_here": load(w),
     }
     for name, cmds in files.items():
         with open(os.path.join(folder, name + ".mcfunction"), "w", newline="\n") as f:

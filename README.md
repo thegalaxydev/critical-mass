@@ -216,7 +216,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Generator:** a block with a shaft through it. Sections in a line on one shaft are one machine, up to 8 sections.
   - Each section is rated 8,192 SU, which is 32.8 MW (1 SU is 4 kW).
   - It makes 50 Hz at 64 RPM, so set the turbine's rated speed to 64. Its terminals are at 20 kV.
-  - Its load on the shaft is its load setting times its rating, limited to what the shaft has to spare. The sections share it evenly.
+  - Its load on the shaft is its load setting times its rating, limited to nine tenths of what the shaft has to spare. The sections share it evenly. If the shaft sags under it, it sheds load at once and takes it up again, so a weak turbine lowers its output and does not stall.
   - Off the grid it carries whatever is wired to it: see Off the grid below.
 - **Voltages:** the plant works at three. Generators make 20 kV, the grid is 220 kV and motors take 6 kV. Transformers join them.
   - Everything is built for its own voltage and stands 10% more. Above that it is lost: see Faults below.
@@ -265,7 +265,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Hold the delivered power within 5% of the order for 20 seconds to meet it. An order not met within 2 minutes is missed.
   - A comparator reads how far through the hold the plant is, and goggles show the order and the tally of orders met and missed.
 - **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, a bus's voltage, frequency and load, and a transformer's low-side voltage, what it carries and its oil temperature.
-- **Jump to load:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting.
+- **Commands:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting. `/criticalmass breaker <breaker> close` or `open` works a breaker with the same checks as by hand. `/criticalmass wire <from> <terminal> <to> <terminal> <wire, cable or line>` strings a wire; a breaker's terminals are 0 for line and 1 for load, a transformer's are 0 for high and 1 for low, and everything else has terminal 0.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).
 - **Dose rate:** in mSv/min. A player receives, from every source within 48 blocks, its strength times the shielding transmission divided by (1 + distance²).

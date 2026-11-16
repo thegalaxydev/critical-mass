@@ -12,7 +12,14 @@ VIEWS = {
     "aerial_nw": ((-30, 36, -50), (16, 4, -6), True),
     "aerial_sw": ((-34, 30, 48), (10, 4, 6), True),
     "entrance": ((36, 1, 44), (32, 6, 10), False),
-    "switchyard": ((56, 3, 6), (47, 4, -4), False),
+    "switchyard": ((55, 3, 5), (48, 3, -4), False),
+    "switchyard_wall": ((50, 2, -11), (46, 4, -3), False),
+    "generator": ((31, 7, 4), (29, 8, -1), False),
+    "unit_bus": ((34, 7, 2), (37, 8, -4), False),
+    "station_bus": ((38, 1, -1), (41, 2, -6), False),
+    "standby": ((40, 1, 3), (41, 2, 8), False),
+    "penetration": ((6, 1, 9), (7, 4, 4), False),
+    "side_screens": ((27, 7, 12), (27, 11, 19), False),
     "tower_outside": ((47, 2, -33), (24, 13, -22), False),
     "tower_inside": ((27, 1, -15), (24, 9, -24), False),
     "containment": ((0, 1, 9), (0, 4, 0), False),
@@ -62,7 +69,8 @@ def scene(names, run=True, night=False, away=False):
     if not run:
         steps += shots(names, "cold")
     if run:
-        steps += [{"cmds": ["/" + c for c in m.run(w)], "wait": 900}, {"cmds": ["/criticalmass ledger"], "wait": 5}]
+        steps += [{"cmds": ["/" + c for c in m.run(w)], "wait": m.SYNC_AFTER}, {"cmds": ["/" + c for c in m.sync(w)], "wait": 40},
+                  {"cmds": ["/" + c for c in m.load(w)], "wait": 300}, {"cmds": ["/criticalmass ledger"], "wait": 5}]
         steps += shots(names, "run")
         steps += [{"cmds": ["/criticalmass ledger"], "wait": 5}]
     if night:

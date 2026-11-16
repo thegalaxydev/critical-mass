@@ -579,5 +579,7 @@
   "criticalmass.channel.voltage.short": "VOLTS",
   "criticalmass.screen.no_target": "NOTHING TO SHOW",
   "criticalmass.grid.ordering": "Order open",
-  "criticalmass.screen.readings": "READINGS"
+  "criticalmass.screen.readings": "READINGS",
+  "criticalmass.command.wire_kind": "Wires are wire, cable and line",
+  "criticalmass.command.no_breaker": "No Circuit Breaker at that position"
 }
