@@ -28,7 +28,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
-| Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
+| Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
 | Shielded Cask | Script | `art/tools/cask_texture.py` |
@@ -52,7 +52,7 @@ This table is the current state and overrides anything further down. Only the ro
 `art/tools/handmade.py` draws these from Create textures (MIT) plus pixels the script places, replacing the earlier generated versions. They are placeholders, not the author's art:
 - `primary_coolant_port` (fronts and nozzle): the casing frame with copper flanges and blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
-- Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
+- Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel.
 - Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
@@ -135,21 +135,12 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
 
 ## boiler_heating_plate
 
-- Used by: `textures/block/boiler_heating_plate.png`
-- Raw output: `art/generated/boiler_heating_plate-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: boiler heating plate, 32x32 game pixels.
-Atlas for a boiler heating plate (thin slab under a boiler): top face is a copper heating grille of parallel bars inside an iron frame (the heat-transfer face), dark steel sides with a copper strip, front/back faces with a copper connection port and black bore.
-
-```
+- Used by: `textures/block/boiler_heating_plate.png` and the models `block/boiler_heating_plate.json`, `boiler_heating_plate_warm.json` and `boiler_heating_plate_hot.json`
+- Source: `art/blockbench/boiler_heating_plate.bbmodel`. The group `body` is a steel base with a post at each corner, a copper plate on top that touches the tank above, and a flanged pipe socket on the two ends. Each of the groups `coil_cold`, `coil_warm` and `coil_hot` holds the same coil of three tube rows joined by two bends, painted for one heat level, so show one group at a time in Blockbench. The hot coil is exported at full brightness.
+- Texture: `art/tools/boiler_plate_texture.py` paints the plate and coil from the copper tones in `docs/art/palette.json` and the sockets in the author's Steel Block tones. The base and posts use the Steel Block texture itself.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/boiler_plate_model.py` then exports the three models and the blockstate.
+- Date: 2026-11-16
 
 ## circulation_pump
 

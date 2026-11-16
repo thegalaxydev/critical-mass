@@ -377,6 +377,7 @@ public final class SteamTests {
                 .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(p.heatLevel() == 2, "250 C coolant should give boiler heat level 2: " + p.heatLevel());
+                    h.assertTrue(h.getBlockState(plate).getValue(com.criticalmass.content.thermal.BoilerPlateBlock.HEAT) == 2, "The plate's coil should show its heat level: " + h.getBlockState(plate));
                     FluidTankBlockEntity tank = h.getBlockEntity(plate.above());
                     FluidTankBlockEntity ctrl = tank.getControllerBE();
                     h.assertTrue(p.sinks().boilerHeat > 0, "Working boiler should draw heat: " + p.status() + " engines " + ctrl.boiler.attachedEngines + " whistles " + ctrl.boiler.attachedWhistles + " water " + ctrl.boiler.waterSupply + " active " + ctrl.boiler.isActive());

@@ -11,6 +11,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,6 +57,10 @@ public class BoilerPlateBlockEntity extends SingleBufferNodeBlockEntity {
         boolean enabled = !level.hasNeighborSignal(worldPosition);
         if (enabled && buffer.amount() > 0) {
             target = t >= CMThermal.BOILER_LEVEL_TWO_TEMPERATURE ? 2 : t >= CMThermal.BOILER_LEVEL_ONE_TEMPERATURE ? 1 : 0;
+        }
+        BlockState state = getBlockState();
+        if (state.getValue(BoilerPlateBlock.HEAT) != target) {
+            level.setBlock(worldPosition, state.setValue(BoilerPlateBlock.HEAT, target), Block.UPDATE_CLIENTS);
         }
         FluidTankBlockEntity boiler = boiler();
         if (target != heatLevel) {

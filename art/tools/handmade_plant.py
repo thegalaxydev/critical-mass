@@ -87,45 +87,6 @@ def condenser(jar):
 
 
 
-def boiler_plate(jar):
-    top = jar.tex("copper_casing")
-    rect(top, 3, 3, 12, 12, STEEL[1])
-    coil = set()
-    for x in (4, 6, 8, 10):
-        for y in range(4, 12):
-            coil.add((x, y))
-    for x in range(4, 7):
-        coil.add((x, 11))
-    for x in range(6, 9):
-        coil.add((x, 4))
-    for x in range(8, 11):
-        coil.add((x, 11))
-    for x, y in coil:
-        put(top, x, y, COPPER[5])
-    for x, y in coil:
-        if (x + 1, y) not in coil and x + 1 <= 12:
-            put(top, x + 1, y, COPPER[2])
-    bottom = blank(16, 16)
-    bevel(bottom, 0, 0, 15, 15, IRON, 3)
-    rect(bottom, 2, 2, 13, 13, STEEL[4])
-    strip_front = blank(16, 6)
-    strip_side = blank(16, 6)
-    for strip in (strip_front, strip_side):
-        for x in range(16):
-            for y in range(6):
-                put(strip, x, y, IRON[4] if y == 0 else IRON[1] if y == 5 else STEEL[3])
-    opening(strip_front, 5, 0, 6, RED)
-    for x in range(2, 14):
-        put(strip_side, x, 2, COPPER[4])
-        put(strip_side, x, 3, COPPER[2])
-    img = blank(32, 32)
-    img.paste(top, (0, 0))
-    img.paste(bottom, (16, 0))
-    img.paste(strip_front, (0, 16))
-    img.paste(strip_side, (16, 16))
-    return img
-
-
 def cooling_tower(jar):
     base = jar.tex("andesite_casing")
     side = base.copy()
@@ -146,6 +107,5 @@ def region(img, x0, y0, w, h, ramp, base=3):
 
 
 PLANT = {
-    "boiler_heating_plate": boiler_plate,
     "cooling_tower_packing": cooling_tower,
 }

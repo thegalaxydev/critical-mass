@@ -1,18 +1,48 @@
 {
  "variants": {
-  "facing=north": {
+  "facing=north,heat=0": {
    "model": "criticalmass:block/boiler_heating_plate"
   },
-  "facing=east": {
+  "facing=north,heat=1": {
+   "model": "criticalmass:block/boiler_heating_plate_warm"
+  },
+  "facing=north,heat=2": {
+   "model": "criticalmass:block/boiler_heating_plate_hot"
+  },
+  "facing=east,heat=0": {
    "model": "criticalmass:block/boiler_heating_plate",
    "y": 90
   },
-  "facing=south": {
+  "facing=east,heat=1": {
+   "model": "criticalmass:block/boiler_heating_plate_warm",
+   "y": 90
+  },
+  "facing=east,heat=2": {
+   "model": "criticalmass:block/boiler_heating_plate_hot",
+   "y": 90
+  },
+  "facing=south,heat=0": {
    "model": "criticalmass:block/boiler_heating_plate",
    "y": 180
   },
-  "facing=west": {
+  "facing=south,heat=1": {
+   "model": "criticalmass:block/boiler_heating_plate_warm",
+   "y": 180
+  },
+  "facing=south,heat=2": {
+   "model": "criticalmass:block/boiler_heating_plate_hot",
+   "y": 180
+  },
+  "facing=west,heat=0": {
    "model": "criticalmass:block/boiler_heating_plate",
+   "y": 270
+  },
+  "facing=west,heat=1": {
+   "model": "criticalmass:block/boiler_heating_plate_warm",
+   "y": 270
+  },
+  "facing=west,heat=2": {
+   "model": "criticalmass:block/boiler_heating_plate_hot",
    "y": 270
   }
  }

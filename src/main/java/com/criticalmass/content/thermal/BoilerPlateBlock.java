@@ -14,11 +14,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class BoilerPlateBlock extends HorizontalBlock implements IBE<BoilerPlateBlockEntity>, PipeConnectable {
+    public static final IntegerProperty HEAT = IntegerProperty.create("heat", 0, 2);
+
     public BoilerPlateBlock(Properties properties) {
-        super(properties, Block.box(0, 0, 0, 16, 6, 16), false);
+        super(properties);
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        super.createBlockStateDefinition(builder);
+        builder.add(HEAT);
     }
 
     @Override

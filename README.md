@@ -183,6 +183,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - If the cooled water leaves by a side pipe instead of from underneath, put the make-up pipe on a different fill block, or the loop may follow it.
   - Goggles on the tower show whether it is cooling and how much heat it rejects. A tower without a fan shows a vapour plume while it works.
   - The air leaving the top is as hot as the water. Above 50 °C it scalds anything standing in the fan's air stream, or just above a tower with no fan, and it hurts more the hotter the water is.
+- **Boiler Heating Plate:** a full block that goes under a Create Fluid Tank used as a boiler: a copper plate on a steel frame with a coil of tubes under it. Run hot coolant through it by the sockets on its two ends. Coolant at 120 °C heats the boiler like a kindled Blaze Burner and at 200 °C like a seething one, and the coil shows it: dull when cold, bright copper when heating, glowing at full heat. A redstone signal turns the plate off.
 - **Fluid Tanks in a loop:** a Create Fluid Tank of any size can sit inline in a loop as a surge tank, for example for feedwater, and the water in it keeps its temperature.
   - It needs the loop's two pipes on it. With more pipes on it, the loop leaves by the first one it finds, checking north, east, south, then west, so set make-up pumps directly against the tank.
   - Water that a Create pump adds arrives cold, and water it takes out takes its share of the heat.
