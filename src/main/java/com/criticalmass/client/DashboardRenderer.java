@@ -3,12 +3,15 @@ package com.criticalmass.client;
 import com.criticalmass.content.control.DashPart;
 import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.DashboardBlockEntity;
+import com.criticalmass.content.control.PartPanelBlock;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import com.simibubi.create.foundation.blockEntity.renderer.SafeBlockEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 
 public class DashboardRenderer extends SafeBlockEntityRenderer<DashboardBlockEntity> {
     private static final float PX = 1 / 16f;
@@ -29,12 +32,34 @@ public class DashboardRenderer extends SafeBlockEntityRenderer<DashboardBlockEnt
         long time = be.getLevel() == null ? 0 : be.getLevel().getGameTime();
         ms.pushPose();
         ms.translate(0.5, 0, 0.5);
-        ms.mulPose(Axis.YP.rotationDegrees(180 - state.getValue(DashboardBlock.FACING).toYRot()));
+        ms.mulPose(Axis.YP.rotationDegrees(180 - state.getValue(HorizontalDirectionalBlock.FACING).toYRot()));
         ms.translate(-0.5, 0, -0.5);
+        if (be.panel()) {
+            AttachFace face = state.getValue(PartPanelBlock.FACE);
+            if (face == AttachFace.WALL) {
+                ms.translate(0, 0, 1);
+                ms.mulPose(Axis.XP.rotationDegrees(-90));
+            } else if (face == AttachFace.CEILING) {
+                ms.translate(0, 1, 1);
+                ms.mulPose(Axis.XP.rotationDegrees(180));
+            }
+            for (int slot = 0; slot < be.slots(); slot++) {
+                DashPart part = be.part(slot);
+                if (part == null) {
+                    continue;
+                }
+                ms.pushPose();
+                ms.translate(PartPanelBlock.cellX(slot, be.centered()), 0, PartPanelBlock.cellZ(slot, be.centered()));
+                DashPartDraw.draw(part, be.animation(slot, partialTicks), lit(part, time), ms, buffer, light, state);
+                ms.popPose();
+            }
+            ms.popPose();
+            return;
+        }
         ms.translate(0, BOARD_Y, 1);
         ms.mulPose(Axis.XP.rotationDegrees(TILT));
         ms.translate(0, -BOARD_Y, -1);
-        for (int slot = 0; slot < DashboardBlockEntity.SLOTS; slot++) {
+        for (int slot = 0; slot < be.slots(); slot++) {
             DashPart part = be.part(slot);
             if (part == null) {
                 continue;

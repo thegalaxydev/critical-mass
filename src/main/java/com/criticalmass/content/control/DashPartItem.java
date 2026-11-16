@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 
 public class DashPartItem extends Item {
     public final DashPart.Type type;
@@ -43,8 +44,12 @@ public class DashPartItem extends Item {
             DashboardBlock.fit(level, pos, desk, DashboardBlock.slotAt(level.getBlockState(pos), pos, context.getClickLocation()), type, context.getItemInHand(), player);
             return InteractionResult.SUCCESS;
         }
-        if (player == null || !player.isShiftKeyDown() || level.getBlockState(pos).getBlock() instanceof DashboardBlock) {
+        Block clicked = level.getBlockState(pos).getBlock();
+        if (clicked instanceof DashboardBlock || clicked instanceof PartPanelBlock) {
             return InteractionResult.PASS;
+        }
+        if (player == null || !player.isShiftKeyDown()) {
+            return PartPanelBlock.mount(context, type);
         }
         if (!DashPart.accepts(type, level, pos)) {
             if (!level.isClientSide) {

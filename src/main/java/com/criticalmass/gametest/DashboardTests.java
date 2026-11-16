@@ -5,6 +5,7 @@ import com.criticalmass.content.control.DashPart;
 import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.DashboardBlockEntity;
 import com.criticalmass.content.control.LoconauticsCompat;
+import com.criticalmass.content.control.PartPanelBlock;
 import com.criticalmass.content.control.PlantAlarms;
 import com.criticalmass.content.control.SignalInterfaceBlock;
 import com.criticalmass.content.HorizontalBlock;
@@ -30,6 +31,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,6 +41,7 @@ import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.AttachFace;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -428,5 +431,72 @@ public final class DashboardTests {
                 .thenIdle(25)
                 .thenExecute(() -> h.assertTrue(signal(h, alarm, Direction.EAST) == 0, "The alarm interface should drop its signal once the alarm clears"))
                 .thenSucceed();
+    }
+
+    private static InteractionResult mount(GameTestHelper h, Player player, DashPart.Type type, BlockPos support, Direction face, double x, double y, double z) {
+        ItemStack stack = new ItemStack(CMItems.DASHBOARD_PARTS.get(type).get());
+        player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+        BlockPos at = h.absolutePos(support);
+        return stack.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, stack, new BlockHitResult(new Vec3(at.getX() + x, at.getY() + y, at.getZ() + z), face, at, false)));
+    }
+
+    @GameTest(template = EMPTY)
+    public static void partsMountOnAnySurfaceUpToFourToABlock(GameTestHelper h) {
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setYRot(0);
+        BlockPos floor = new BlockPos(1, 1, 1);
+        h.setBlock(floor, Blocks.STONE);
+        mount(h, player, DashPart.Type.BUTTON, floor, Direction.UP, 0.2, 1, 0.2);
+        BlockPos onFloor = floor.above();
+        h.assertTrue(h.getBlockState(onFloor).is(CMBlocks.PART_PANEL.get()), "A part used on a floor should mount there: " + h.getBlockState(onFloor));
+        DashboardBlockEntity panel = h.getBlockEntity(onFloor);
+        h.assertTrue(!panel.centered() && panel.slots() == 4 && !panel.empty(), "A part placed off centre should take one of four places");
+        mount(h, player, DashPart.Type.SWITCH, floor, Direction.UP, 0.8, 1, 0.8);
+        mount(h, player, DashPart.Type.LEVER, floor, Direction.UP, 0.8, 1, 0.8);
+        mount(h, player, DashPart.Type.GAUGE, floor, Direction.UP, 0.8, 1, 0.8);
+        int fitted = 0;
+        for (int slot = 0; slot < panel.slots(); slot++) {
+            fitted += panel.part(slot) == null ? 0 : 1;
+        }
+        h.assertTrue(fitted == 4, "Four parts should share one block: " + fitted);
+        h.assertTrue(mount(h, player, DashPart.Type.ALARM, floor, Direction.UP, 0.5, 1, 0.5) == InteractionResult.FAIL, "A fifth part should be refused");
+
+        BlockPos pad = new BlockPos(4, 1, 1);
+        h.setBlock(pad, Blocks.STONE);
+        mount(h, player, DashPart.Type.GAUGE, pad, Direction.UP, 0.5, 1, 0.5);
+        DashboardBlockEntity single = h.getBlockEntity(pad.above());
+        h.assertTrue(single.centered() && single.part(0) != null, "A part placed on the middle of a face should sit centred");
+        Vec3 middle = Vec3.atLowerCornerOf(h.absolutePos(pad.above())).add(0.5, 0.05, 0.5);
+        single.remove(single.slotAt(middle));
+        h.assertTrue(single.empty(), "Taking the only part should leave nothing behind");
+
+        BlockPos wall = new BlockPos(1, 2, 4);
+        h.setBlock(wall, Blocks.STONE);
+        mount(h, player, DashPart.Type.LEVER, wall, Direction.NORTH, 0.3, 0.3, 0);
+        BlockPos onWall = wall.north();
+        BlockState hung = h.getBlockState(onWall);
+        h.assertTrue(hung.is(CMBlocks.PART_PANEL.get()) && hung.getValue(PartPanelBlock.FACE) == AttachFace.WALL && hung.getValue(PartPanelBlock.FACING) == Direction.NORTH,
+                "A part used on a wall should hang on it facing out: " + hung);
+        var bounds = hung.getShape(h.getLevel(), h.absolutePos(onWall)).bounds();
+        h.assertTrue(Math.abs(bounds.maxZ - 1) < 1e-6 && bounds.minZ > 0.75 && bounds.getXsize() < 0.5 && bounds.getYsize() < 0.5, "A wall part's outline should be one small box against the wall: " + bounds);
+
+        for (AttachFace face : AttachFace.values()) {
+            for (Direction facing : Direction.Plane.HORIZONTAL) {
+                BlockState state = CMBlocks.PART_PANEL.get().defaultBlockState().setValue(PartPanelBlock.FACE, face).setValue(PartPanelBlock.FACING, facing);
+                for (int slot = 0; slot < PartPanelBlock.SLOTS; slot++) {
+                    Vec3 local = new Vec3(PartPanelBlock.cellX(slot, false) + 0.25, 0.05, PartPanelBlock.cellZ(slot, false) + 0.25);
+                    Vec3 in = PartPanelBlock.toBlock(state, local);
+                    h.assertTrue(PartPanelBlock.slotAt(state, BlockPos.ZERO, in, false) == slot && PartPanelBlock.toLocal(state, in).distanceTo(local) < 1e-6,
+                            "Each place should be found again from a point in it: " + state + " " + slot);
+                    h.assertTrue(in.x > 0 && in.x < 1 && in.y > -1e-6 && in.y < 1 + 1e-6 && in.z > 0 && in.z < 1, "Parts should stay inside their block: " + state + " " + in);
+                }
+            }
+        }
+
+        h.setBlock(wall, Blocks.AIR);
+        h.runAfterDelay(5, () -> {
+            h.assertTrue(h.getBlockState(onWall).isAir(), "Parts should come off when the block behind them goes");
+            h.succeed();
+        });
     }
 }

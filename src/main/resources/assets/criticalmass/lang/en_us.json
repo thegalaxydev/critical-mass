@@ -383,7 +383,7 @@
   "criticalmass.dashboard.connected_missing": "The block it was connected to at %s %s %s is gone",
   "criticalmass.dashboard.no_alarm": "No alarm",
   "criticalmass.dashboard.empty": "No parts fitted",
-  "criticalmass.dashboard.empty_half": "Nothing fitted on this half",
+  "criticalmass.dashboard.empty_half": "Nothing fitted here",
   "criticalmass.dashboard.no_modes": "This part has only one setting",
   "criticalmass.dashboard.adopt_refused": "Take the Loconautics parts off this dashboard first",
   "criticalmass.dashboard.press.pulse": "Sends a one second pulse",
@@ -409,11 +409,11 @@
   "criticalmass.dashboard.item.refused": "This part cannot use that block",
   "criticalmass.dashboard.item.cleared": "Binding cleared",
   "criticalmass.dashboard.item.tooltip_bound": "Bound to the block at %s %s %s (sneak-use in the air to clear)",
-  "criticalmass.dashboard.item.tooltip.button": "Sneak-use on a Reactor Controller, a Steam Turbine or a receiving Redstone Link, then fit it to a Dashboard",
-  "criticalmass.dashboard.item.tooltip.switch": "Sneak-use on a receiving Redstone Link, then fit it to a Dashboard",
-  "criticalmass.dashboard.item.tooltip.lever": "Sneak-use on a receiving Redstone Link, then fit it to a Dashboard",
-  "criticalmass.dashboard.item.tooltip.gauge": "Sneak-use on a plant machine to read it, then fit it to a Dashboard",
-  "criticalmass.dashboard.item.tooltip.alarm": "Sneak-use on a Reactor Controller, then fit it to a Dashboard",
+  "criticalmass.dashboard.item.tooltip.button": "Sneak-use on a Reactor Controller, a Steam Turbine or a receiving Redstone Link, then fit it to a Dashboard or any surface",
+  "criticalmass.dashboard.item.tooltip.switch": "Sneak-use on a receiving Redstone Link, then fit it to a Dashboard or any surface",
+  "criticalmass.dashboard.item.tooltip.lever": "Sneak-use on a receiving Redstone Link, then fit it to a Dashboard or any surface",
+  "criticalmass.dashboard.item.tooltip.gauge": "Sneak-use on a plant machine to read it, then fit it to a Dashboard or any surface",
+  "criticalmass.dashboard.item.tooltip.alarm": "Sneak-use on a Reactor Controller, then fit it to a Dashboard or any surface",
   "criticalmass.dashboard.credit": "Model and textures from Create: Loconautics, used with permission",
   "criticalmass.dashboard.gui.body": "Body",
   "criticalmass.dashboard.gui.bezel": "Bezel",
@@ -471,5 +471,6 @@
   "criticalmass.signal_interface.job": "Job",
   "criticalmass.signal_interface.job_row": "Select",
   "criticalmass.rod.bank": "Rod Bank",
-  "criticalmass.rod.bank_row": "Bank"
+  "criticalmass.rod.bank_row": "Bank",
+  "block.criticalmass.part_panel": "Dashboard Parts"
 }

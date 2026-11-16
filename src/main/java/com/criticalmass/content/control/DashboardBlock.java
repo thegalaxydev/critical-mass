@@ -280,6 +280,10 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
             }
             return ItemInteractionResult.sidedSuccess(level.isClientSide);
         }
+        return linkPart(stack, level, pos, player, be, slot);
+    }
+
+    public static ItemInteractionResult linkPart(ItemStack stack, Level level, BlockPos pos, Player player, DashboardBlockEntity be, int slot) {
         if (stack.getItem() instanceof PlantLinkerItem && be.part(slot) != null) {
             if (!level.isClientSide) {
                 BlockPos stored = stack.get(CMComponents.LINK_TARGET.get());
@@ -300,8 +304,11 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         DashboardBlockEntity be = getBlockEntity(level, pos);
-        int slot = slotAt(state, pos, hit.getLocation());
-        DashPart part = be == null ? null : be.part(slot);
+        return be == null ? InteractionResult.PASS : usePart(level, pos, player, be, slotAt(state, pos, hit.getLocation()), depthAt(state, pos, hit.getLocation()));
+    }
+
+    public static InteractionResult usePart(Level level, BlockPos pos, Player player, DashboardBlockEntity be, int slot, double depth) {
+        DashPart part = be.part(slot);
         if (part == null) {
             return InteractionResult.PASS;
         }
@@ -312,7 +319,7 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
             return InteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!level.isClientSide) {
-            String result = be.use(slot, depthAt(state, pos, hit.getLocation()));
+            String result = be.use(slot, depth);
             if (part.type == DashPart.Type.GAUGE && !part.readout.isEmpty()) {
                 tell(player, Component.translatable("criticalmass.dashboard.readout", Component.translatable(be.modeKey(part)), part.readout));
             } else if (!result.isEmpty()) {

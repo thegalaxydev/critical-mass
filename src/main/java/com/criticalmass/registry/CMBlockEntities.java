@@ -73,7 +73,7 @@ public final class CMBlockEntities {
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
     public static final Supplier<BlockEntityType<DashboardBlockEntity>> DASHBOARD = BLOCK_ENTITIES.register("dashboard",
-            () -> BlockEntityType.Builder.of((pos, state) -> new DashboardBlockEntity(CMBlockEntities.DASHBOARD.get(), pos, state), CMBlocks.REACTOR_ALLOY_DASHBOARD.get()).build(null));
+            () -> BlockEntityType.Builder.of((pos, state) -> new DashboardBlockEntity(CMBlockEntities.DASHBOARD.get(), pos, state), CMBlocks.REACTOR_ALLOY_DASHBOARD.get(), CMBlocks.PART_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
             () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
     public static final Supplier<BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE = BLOCK_ENTITIES.register("centrifuge",

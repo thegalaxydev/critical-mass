@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
@@ -37,16 +38,57 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     private static final int READ_TICKS = 5;
     private static final int ALARM_SOUND_TICKS = 40;
     private static final Map<GlobalPos, long[]> BIDS = new HashMap<>();
-    private final DashPart[] parts = new DashPart[SLOTS];
-    private final LerpedFloat[] animation = new LerpedFloat[SLOTS];
+    private final DashPart[] parts;
+    private final LerpedFloat[] animation;
+    private final boolean panel;
+    private boolean centered;
     private boolean powered;
     private int readIn;
 
     public DashboardBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
-        for (int i = 0; i < SLOTS; i++) {
+        panel = state.getBlock() instanceof PartPanelBlock;
+        parts = new DashPart[panel ? PartPanelBlock.SLOTS : SLOTS];
+        animation = new LerpedFloat[parts.length];
+        for (int i = 0; i < parts.length; i++) {
             animation[i] = LerpedFloat.linear().startWithValue(0);
         }
+    }
+
+    public int slots() {
+        return parts.length;
+    }
+
+    public boolean panel() {
+        return panel;
+    }
+
+    public boolean centered() {
+        return centered;
+    }
+
+    public void setCentered(boolean value) {
+        if (centered != value) {
+            centered = value;
+            changed();
+        }
+    }
+
+    public boolean empty() {
+        for (DashPart part : parts) {
+            if (part != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public int slotAt(Vec3 hit) {
+        return panel ? PartPanelBlock.slotAt(getBlockState(), worldPosition, hit, centered) : DashboardBlock.slotAt(getBlockState(), worldPosition, hit);
+    }
+
+    public double depthAt(Vec3 hit) {
+        return panel ? PartPanelBlock.depthAt(getBlockState(), worldPosition, hit, slotAt(hit), centered) : DashboardBlock.depthAt(getBlockState(), worldPosition, hit);
     }
 
     @Override
@@ -55,7 +97,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Nullable
     public DashPart part(int slot) {
-        return slot < 0 || slot >= SLOTS ? null : parts[slot];
+        return slot < 0 || slot >= parts.length ? null : parts[slot];
     }
 
     public float animation(int slot, float partialTicks) {
@@ -75,7 +117,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     public boolean install(int slot, DashPart part) {
-        if (slot < 0 || slot >= SLOTS || parts[slot] != null) {
+        if (slot < 0 || slot >= parts.length || parts[slot] != null) {
             return false;
         }
         parts[slot] = part;
@@ -100,7 +142,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         if (level == null) {
             return;
         }
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < parts.length; i++) {
             ItemStack stack = remove(i);
             if (!stack.isEmpty()) {
                 Block.popResource(level, worldPosition, stack);
@@ -315,7 +357,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         }
         long now = level.getGameTime();
         if (level.isClientSide) {
-            for (int i = 0; i < SLOTS; i++) {
+            for (int i = 0; i < parts.length; i++) {
                 DashPart part = parts[i];
                 animation[i].chase(part == null ? 0 : part.animationTarget(now), part != null && part.type == DashPart.Type.BUTTON ? 0.6 : 0.3, LerpedFloat.Chaser.EXP);
                 animation[i].tickChaser();
@@ -398,32 +440,34 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     @Override
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < parts.length; i++) {
             if (parts[i] != null) {
                 tag.put("Part" + i, parts[i].save());
             }
         }
         tag.putBoolean("Powered", powered);
+        tag.putBoolean("Centered", centered);
     }
 
     @Override
     protected void read(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(tag, registries, clientPacket);
-        for (int i = 0; i < SLOTS; i++) {
+        for (int i = 0; i < parts.length; i++) {
             parts[i] = tag.contains("Part" + i) ? DashPart.load(tag.getCompound("Part" + i)) : null;
         }
         powered = tag.getBoolean("Powered");
+        centered = tag.getBoolean("Centered");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
-        readout(tooltip, level != null && level.isClientSide ? DashboardAim.slot(worldPosition, getBlockState()) : -1);
+        readout(tooltip, level != null && level.isClientSide ? DashboardAim.slot(this) : -1);
         return true;
     }
 
     public void readout(List<Component> tooltip, int aimed) {
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
-        if (aimed >= 0 && aimed < SLOTS) {
+        if (aimed >= 0 && aimed < parts.length) {
             if (parts[aimed] == null) {
                 tooltip.add(ThermalTooltips.line("criticalmass.dashboard.empty_half", ChatFormatting.DARK_GRAY));
             } else {

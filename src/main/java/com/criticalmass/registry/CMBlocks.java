@@ -8,6 +8,7 @@ import com.criticalmass.content.thermal.PressurizerBlock;
 import com.criticalmass.content.thermal.PressurizerTopBlock;
 import net.minecraft.core.Direction;
 import com.criticalmass.content.control.DashboardBlock;
+import com.criticalmass.content.control.PartPanelBlock;
 import com.criticalmass.content.control.SignalInterfaceBlock;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.thermal.ChannelBlocks;
@@ -86,6 +87,8 @@ public final class CMBlocks {
     public static final DeferredBlock<SealedWasteCanisterBlock> SEALED_WASTE_CANISTER = BLOCKS.register("sealed_waste_canister", () -> new SealedWasteCanisterBlock(metal(3.0f).noOcclusion()));
     public static final DeferredBlock<ScreenBlock> PLANT_SCREEN = register("plant_screen", ScreenBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<DashboardBlock> REACTOR_ALLOY_DASHBOARD = register("reactor_alloy_dashboard", DashboardBlock::new, metal(2.5f).noOcclusion());
+    public static final DeferredBlock<PartPanelBlock> PART_PANEL = BLOCKS.register("part_panel",
+            () -> new PartPanelBlock(metal(1.0f).noOcclusion().noCollission().dynamicShape().noLootTable()));
     public static final DeferredBlock<SignalInterfaceBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", SignalInterfaceBlock::new, metal(4.0f));
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
