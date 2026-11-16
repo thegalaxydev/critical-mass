@@ -199,6 +199,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Assembly:** a sequenced assembly of 4 loops of deploy cladding, deploy pellet, deploy pellet, press.
   - It runs on any Create belt or depot, with Deployers for the cladding and pellets and a Mechanical Press for the last step of each loop.
   - The item's tooltip shows the next step. Progress is stored on the item, so an interrupted assembly carries on after a reload.
+- **Spent Fuel Rack:** an open steel tub with four cells. Use an assembly on it to stand it in a cell and an empty hand to lift the last one out; funnels and Mechanical Arms can do both. Fill it with a bucket or a pipe. The water shows at its real level, so a rack that is running dry can be seen: its fuel then heats up and wears. Racks set side by side read as one pool grid, and a comparator reads how full a rack is.
 - **Damaged fuel:** once cooled (in the spent fuel rack), a damaged assembly becomes a Sealed Waste Canister that keeps its lifecycle record. It is a sequenced assembly: deploy an Open Waste Canister onto the assembly, deploy a Sealing Gasket, then press it shut. The deployer leaves hot assemblies alone, and the half-sealed canister is as radioactive as the bare assembly. Canisters go in a Shielded Cask.
 - **Fire and despawn:** assemblies and canisters resist fire and never despawn.
 - **Placing canisters:** a Sealed Waste Canister can be placed as a block. It stays a radiation source where it stands, and breaking it (with a pickaxe) drops the canister with its record intact.

@@ -88,6 +88,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ControlRodDriveRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.COOLING_TOWER.get(), PackingRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.DASHBOARD.get(), DashboardRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.SPENT_FUEL_RACK.get(), RackRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {

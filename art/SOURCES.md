@@ -30,7 +30,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
-| Spent Fuel Rack, Shielded Cask | Script | `art/tools/handmade_rest.py` |
+| Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
+| Shielded Cask | Script | `art/tools/handmade_rest.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
 | Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
 | Centrifuge | Script | `art/tools/centrifuge_texture.py` |
@@ -52,7 +53,7 @@ This table is the current state and overrides anything further down. Only the ro
 - `primary_coolant_port` (fronts and nozzle): the casing frame with copper flanges and blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `spent_fuel_rack` (solid iron sides, open top with four black wells and the brass-capped assembly used by the 1 to 4 fill models), `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -585,6 +586,16 @@ Atlas with two front faces of the primary coolant port in iron casing: a copper 
 - Status: script-painted placeholder, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/service_port_model.py` then exports the models and the blockstate.
 - Date: 2026-11-15
+
+## spent_fuel_rack
+
+- Used by: `textures/block/spent_fuel_rack.png` and the models `block/spent_fuel_rack.json`, its four `_assembly_` models and `spent_fuel_rack_item.json`
+- Source: `art/blockbench/spent_fuel_rack.bbmodel`, in two groups. `body` is an open-topped tub: a steel base, a post at each corner, a side panel set in a pixel between them, and a top rim with a cross that makes four cells. `assembly` is one fuel assembly standing in the first cell; the exporter stands a copy in each of the other three.
+- Texture: `art/tools/rack_texture.py` paints the side panels from the Reactor Vessel Casing's own tones, the assembly in the author's Steel Block tones with a cap in Create's brass tones. The base, posts and rim use the Steel Block texture itself.
+- The water in the tub is not part of the model: `RackRenderer` draws the stored fluid at its real level.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/rack_model.py` then exports the models and the blockstate.
+- Date: 2026-11-16
 
 ## reactor_signal_interface
 

@@ -226,35 +226,6 @@ def edge_band(top, body):
     return paint
 
 
-def spent_rack(jar):
-    img = Image.new("RGBA", (32, 32))
-    bevel(img, 0, 0, 15, 15, IRON, 3)
-    bevel(img, 1, 1, 14, 14, IRON, 2, raised=False)
-    rect(img, 2, 2, 13, 13, IRON[3])
-    for y in (5, 10):
-        for x in range(2, 14):
-            put(img, x, y, IRON[4])
-            put(img, x, y + 1, IRON[2])
-    for x, y in ((2, 2), (13, 2), (2, 13), (13, 13)):
-        put(img, x, y, IRON[5])
-    for x in range(0, 16):
-        put(img, x, 15, IRON[1])
-    bevel(img, 16, 0, 31, 15, IRON, 2)
-    rect(img, 18, 2, 29, 13, IRON[1])
-    rect(img, 0, 16, 3, 19, IRON[5])
-    rect(img, 4, 16, 7, 19, IRON[4])
-    rect(img, 8, 16, 11, 19, WELL)
-    cap = [[ROD[0], CAP[1], CAP[1], ROD[0]], [CAP[1], CAP[2], CAP[1], CAP[0]], [CAP[1], CAP[1], CAP[0], CAP[0]], [ROD[0], CAP[0], CAP[0], ROD[0]]]
-    for y, row in enumerate(cap):
-        for x, c in enumerate(row):
-            put(img, 16 + x, 16 + y, c)
-    body = [[CAP[0]] * 4, [CAP[2], CAP[1], CAP[1], CAP[0]]] + [[ROD[1], ROD[3], ROD[2], ROD[1]] if y % 4 else [ROD[0]] * 4 for y in range(2, 11)] + [[CAP[1], CAP[1], CAP[1], CAP[0]], [CAP[0]] * 4]
-    for y, row in enumerate(body):
-        for x, c in enumerate(row):
-            put(img, 20 + x, 16 + y, c)
-    return img
-
-
 def cask(jar):
     def body(w, h):
         img = tile(w, h)
@@ -322,6 +293,5 @@ def instrument_panel(jar):
 
 
 REST = {
-    "spent_fuel_rack": spent_rack,
     "shielded_cask": cask,
 }
