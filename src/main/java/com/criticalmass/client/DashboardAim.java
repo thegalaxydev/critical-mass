@@ -9,6 +9,10 @@ public final class DashboardAim {
     private DashboardAim() {
     }
 
+    public static boolean holdingLever() {
+        return LeverHold.active();
+    }
+
     public static int slot(DashboardBlockEntity be) {
         HitResult hit = Minecraft.getInstance().hitResult;
         if (hit instanceof BlockHitResult block && block.getType() == HitResult.Type.BLOCK && block.getBlockPos().equals(be.getBlockPos())) {

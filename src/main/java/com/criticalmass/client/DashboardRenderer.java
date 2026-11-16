@@ -22,6 +22,10 @@ public class DashboardRenderer extends SafeBlockEntityRenderer<DashboardBlockEnt
     public DashboardRenderer(BlockEntityRendererProvider.Context context) {
     }
 
+    private static float quiver(DashboardBlockEntity be, int slot, DashPart part, float time) {
+        return part.type == DashPart.Type.GAUGE ? DashPartDraw.quiver(time * 0.16f, slot * 1.7f + be.getBlockPos().hashCode() % 32 * 0.19f, part.fraction) : 0;
+    }
+
     public static boolean lit(DashPart part, long gameTime) {
         return part.type == DashPart.Type.ALARM && part.alarming() && (!part.sounding() || gameTime / FLASH_TICKS % 2 == 0);
     }
@@ -50,7 +54,7 @@ public class DashboardRenderer extends SafeBlockEntityRenderer<DashboardBlockEnt
                 }
                 ms.pushPose();
                 ms.translate(PartPanelBlock.cellX(slot, be.centered()), 0, PartPanelBlock.cellZ(slot, be.centered()));
-                DashPartDraw.draw(part, be.animation(slot, partialTicks), lit(part, time), ms, buffer, light, state);
+                DashPartDraw.draw(part, be.animation(slot, partialTicks), lit(part, time), be.bulbGlow(slot, partialTicks), be.glassAngle(slot), quiver(be, slot, part, time + partialTicks), ms, buffer, light, state);
                 ms.popPose();
             }
             ms.popPose();
@@ -66,7 +70,7 @@ public class DashboardRenderer extends SafeBlockEntityRenderer<DashboardBlockEnt
             }
             ms.pushPose();
             ms.translate(slot * 8 * PX, BOARD_Y, (float) DashboardBlock.CELL_FRONT);
-            DashPartDraw.draw(part, be.animation(slot, partialTicks), lit(part, time), ms, buffer, light, state);
+            DashPartDraw.draw(part, be.animation(slot, partialTicks), lit(part, time), be.bulbGlow(slot, partialTicks), be.glassAngle(slot), quiver(be, slot, part, time + partialTicks), ms, buffer, light, state);
             ms.popPose();
         }
         ms.popPose();

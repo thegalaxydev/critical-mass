@@ -499,4 +499,85 @@ public final class DashboardTests {
             h.succeed();
         });
     }
+
+    @GameTest(template = EMPTY)
+    public static void glassCoverStopsAPartBeingUsedUntilItIsLifted(GameTestHelper h) {
+        BlockPos pos = new BlockPos(2, 2, 2);
+        DashboardBlockEntity desk = desk(h, pos);
+        DashPart button = fit(h, desk, 0, DashPart.Type.BUTTON, null);
+        button.look(button.body, button.color, button.style, DashPart.PLATE | DashPart.LIGHT | DashPart.GLASS, button.face);
+        DashPart lever = fit(h, desk, 1, DashPart.Type.LEVER, null);
+        lever.look(lever.body, lever.color, lever.style, DashPart.PLATE | DashPart.LIGHT | DashPart.GLASS, lever.face);
+        h.assertTrue(button.glass() && button.light() && lever.light() && !lever.glass(), "Buttons and switches take a glass cover, levers only a light");
+        Player player = h.makeMockPlayer(GameType.CREATIVE);
+        BlockPos at = h.absolutePos(pos);
+        long start = h.getLevel().getGameTime();
+        h.assertTrue(DashboardBlock.usePart(h.getLevel(), at, player, desk, 0, 0.5) == InteractionResult.CONSUME && !button.pressed(start), "A covered button should not press");
+        player.setShiftKeyDown(true);
+        DashboardBlock.usePart(h.getLevel(), at, player, desk, 0, 0.5);
+        h.assertTrue(button.glassOpen, "Sneak-use should lift the cover");
+        DashboardBlock.usePart(h.getLevel(), at, player, desk, 0, 0.5);
+        h.assertTrue(button.glassOpen, "A second sneak-use in the same moment should not drop it again");
+        player.setShiftKeyDown(false);
+        DashboardBlock.usePart(h.getLevel(), at, player, desk, 0, 0.5);
+        h.assertTrue(button.pressed(h.getLevel().getGameTime()) && button.lightLevel(h.getLevel().getGameTime()) == 1, "With the cover up the button should press and light");
+        desk.setLever(1, 5);
+        h.assertTrue(Math.abs(lever.lightLevel(start) - 5 / 15f) < 1e-6, "A lever's light should follow its strength: " + lever.lightLevel(start));
+        DashPart copy = DashPart.load(button.save());
+        h.assertTrue(copy.glass() && copy.glassOpen && copy.light(), "The cover and light should be saved with the part");
+        player.setShiftKeyDown(true);
+        h.runAfterDelay(10, () -> {
+            DashboardBlock.usePart(h.getLevel(), at, player, desk, 0, 0.5);
+            h.assertTrue(!button.glassOpen, "Sneak-use again should drop the cover");
+            h.succeed();
+        });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void partsKeepTheirLabelAndSettingsWhenTakenAndRefitted(GameTestHelper h) {
+        BlockPos pos = new BlockPos(2, 2, 2);
+        DashboardBlockEntity desk = desk(h, pos);
+        BlockPos at = h.absolutePos(pos);
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        DashPart button = fit(h, desk, 0, DashPart.Type.BUTTON, null);
+        button.look(2, 3, 0, DashPart.PLATE | DashPart.GLASS, button.face);
+        button.inverted = true;
+        ItemStack tag = new ItemStack(Items.NAME_TAG);
+        tag.set(net.minecraft.core.component.DataComponents.CUSTOM_NAME, Component.literal("&cTrip"));
+        DashboardBlock.linkPart(tag, h.getLevel(), at, player, desk, 0);
+        h.assertTrue(button.label.equals("&cTrip") && button.labelText().getString().equals("Trip"), "A name tag should label the part, with colour codes read out of the text: " + button.label);
+        h.assertTrue(tag.getCount() == 1, "The name tag should not be used up");
+        List<Component> lines = new ArrayList<>();
+        desk.readout(lines, 0);
+        h.assertTrue(lines.stream().anyMatch(line -> line.getString().contains("Trip")) && lines.stream().anyMatch(line -> line.getString().contains("Output inverted")),
+                "Goggles should show the label and that the output is inverted: " + lines.stream().map(Component::getString).toList());
+        ItemStack copy = button.asConfiguredStack();
+        ItemStack taken = desk.remove(0);
+        h.assertTrue(taken.getHoverName().getString().equals("&cTrip"), "A part taken off should keep its label as its name: " + taken.getHoverName().getString());
+        DashboardBlock.fit(h.getLevel(), at, desk, 1, DashPart.Type.BUTTON, copy, player);
+        DashPart again = desk.part(1);
+        h.assertTrue(again.body == 2 && again.color == 3 && again.glass() && again.inverted && again.label.equals("&cTrip"), "A copied part should come back with its look, cover, inversion and label");
+
+        BlockPos linkA = new BlockPos(4, 2, 1);
+        BlockPos linkB = new BlockPos(4, 2, 3);
+        for (BlockPos link : List.of(linkA, linkB)) {
+            h.setBlock(link.below(), Blocks.STONE);
+            h.setBlock(link, AllBlocks.REDSTONE_LINK.getDefaultState().setValue(RedstoneLinkBlock.RECEIVER, true));
+        }
+        DashPart lever = fit(h, desk, 0, DashPart.Type.LEVER, linkA);
+        ItemStack spare = new ItemStack(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER).get());
+        spare.set(CMComponents.LINK_TARGET.get(), h.absolutePos(linkB));
+        DashboardBlock.linkPart(spare, h.getLevel(), at, player, desk, 0);
+        h.assertTrue(h.absolutePos(linkB).equals(lever.target) && spare.getCount() == 1, "A bound spare of the same kind should re-bind the fitted part without being used up: " + lever.target);
+
+        BlockPos wet = new BlockPos(1, 1, 4);
+        h.setBlock(wet, Blocks.STONE);
+        h.setBlock(wet.above(), Blocks.WATER);
+        mount(h, player, DashPart.Type.SWITCH, wet, Direction.UP, 0.2, 1, 0.2);
+        BlockState soaked = h.getBlockState(wet.above());
+        h.assertTrue(soaked.is(CMBlocks.PART_PANEL.get()) && soaked.getValue(PartPanelBlock.WATERLOGGED), "Parts placed in water should sit in it: " + soaked);
+        var slim = soaked.getShape(h.getLevel(), h.absolutePos(wet.above())).bounds();
+        h.assertTrue(Math.abs(slim.getXsize() - 4 / 16.0) < 1e-6 || Math.abs(slim.getZsize() - 4 / 16.0) < 1e-6, "A switch's outline should be the slim box: " + slim);
+        h.succeed();
+    }
 }

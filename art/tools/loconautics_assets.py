@@ -10,8 +10,9 @@ SOURCE = "assets/loconautics/"
 DESK = "reactor_alloy_dashboard"
 SHAPES = ("single", "start", "middle", "end")
 PARTS = ("back", "body", "big_body", "slim_body", "plate", "slim_plate", "face", "button_cap", "button_big_cap", "lever_handle", "lever_knob", "lever_ball_base",
-         "lever_ball_handle", "lever_ball_knob", "switch_paddle", "needle_default", "needle_classic", "needle_vertical", "needle_linear")
-SHEETS = ("gauge_atlas", "button_atlas", "big_button_atlas", "lever_atlas", "switch_atlas", "body_atlas", "big_body_atlas", "slim_body_atlas", "plate_atlas", "slim_plate_atlas")
+         "lever_ball_handle", "lever_ball_knob", "switch_paddle", "needle_default", "needle_classic", "needle_vertical", "needle_linear", "bulb", "lever_bulb", "switch_bulb",
+         "glass_body", "glass_slim")
+SHEETS = ("gauge_atlas", "button_atlas", "big_button_atlas", "lever_atlas", "switch_atlas", "body_atlas", "big_body_atlas", "slim_body_atlas", "plate_atlas", "slim_plate_atlas", "glass")
 ITEMS = {"gauge_button": "dashboard_button", "gauge_lever": "dashboard_lever", "gauge_switch": "dashboard_switch", "locomotive_gauge": "dashboard_gauge"}
 FRESH = "fresh" in sys.argv[1:]
 

@@ -12,8 +12,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.ItemInteractionResult;
@@ -22,14 +20,19 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FaceAttachedHorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.AttachFace;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -38,18 +41,19 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
-public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock implements IBE<DashboardBlockEntity>, IWrenchable {
+public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock implements IBE<DashboardBlockEntity>, IWrenchable, SimpleWaterloggedBlock {
     public static final MapCodec<PartPanelBlock> CODEC = simpleCodec(PartPanelBlock::new);
     public static final int SLOTS = 4;
     public static final double CELL = 0.5;
     private static final double CENTER_REACH = 0.18;
-    private static final double[] PART = {1 / 16.0, 0, 1 / 16.0, 7 / 16.0, 3 / 16.0, 7 / 16.0};
+    public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    private static final double[][] PART = {{1 / 16.0, 0, 1 / 16.0, 7 / 16.0, 2 / 16.0, 7 / 16.0}, {2 / 16.0, 0, 1 / 16.0, 6 / 16.0, 2 / 16.0, 7 / 16.0}, {1 / 16.0, 0, 1 / 16.0, 7 / 16.0, 3 / 16.0, 7 / 16.0}};
     private static final double[] PLATE = {0, 0, 0, 1, 1 / 16.0, 1};
     private static final Map<Integer, VoxelShape> SHAPES = new ConcurrentHashMap<>();
 
     public PartPanelBlock(Properties properties) {
         super(properties);
-        registerDefaultState(defaultBlockState().setValue(FACE, AttachFace.FLOOR).setValue(FACING, Direction.NORTH));
+        registerDefaultState(defaultBlockState().setValue(FACE, AttachFace.FLOOR).setValue(FACING, Direction.NORTH).setValue(WATERLOGGED, false));
     }
 
     @Override
@@ -59,7 +63,28 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(FACE, FACING);
+        builder.add(FACE, FACING, WATERLOGGED);
+    }
+
+    @Override
+    protected FluidState getFluidState(BlockState state) {
+        return state.getValue(WATERLOGGED) ? Fluids.WATER.getSource(false) : super.getFluidState(state);
+    }
+
+    @Override
+    protected BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos pos, BlockPos neighborPos) {
+        if (state.getValue(WATERLOGGED)) {
+            level.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
+        }
+        return super.updateShape(state, direction, neighborState, level, pos, neighborPos);
+    }
+
+    private static int kind(DashPart part) {
+        return switch (part.type) {
+            case LEVER, SWITCH -> 1;
+            case ALARM -> 2;
+            default -> 0;
+        };
     }
 
     private static float turn(BlockState state) {
@@ -122,13 +147,14 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
         return Math.round(Math.max(0, Math.min(1, v)) * 1024) / 1024.0;
     }
 
-    private static VoxelShape shape(BlockState state, int mask, boolean centered) {
-        int key = state.getValue(FACE).ordinal() | state.getValue(FACING).get2DDataValue() << 2 | mask << 4 | (centered ? 1 << 8 : 0);
+    private static VoxelShape shape(BlockState state, int kinds, boolean centered) {
+        int key = state.getValue(FACE).ordinal() | state.getValue(FACING).get2DDataValue() << 2 | kinds << 4 | (centered ? 1 << 12 : 0);
         return SHAPES.computeIfAbsent(key, k -> {
             VoxelShape out = Shapes.empty();
             for (int slot = 0; slot < SLOTS; slot++) {
-                if ((mask & 1 << slot) != 0) {
-                    out = Shapes.or(out, box(state, PART, cellX(slot, centered), cellZ(slot, centered)));
+                int kind = kinds >> slot * 2 & 3;
+                if (kind != 0) {
+                    out = Shapes.or(out, box(state, PART[kind - 1], cellX(slot, centered), cellZ(slot, centered)));
                 }
             }
             return out.isEmpty() ? box(state, PLATE, 0, 0) : out;
@@ -138,13 +164,13 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
     @Override
     protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (level.getBlockEntity(pos) instanceof DashboardBlockEntity be) {
-            int mask = 0;
+            int kinds = 0;
             for (int slot = 0; slot < SLOTS; slot++) {
                 if (be.part(slot) != null) {
-                    mask |= 1 << slot;
+                    kinds |= kind(be.part(slot)) + 1 << slot * 2;
                 }
             }
-            return shape(state, mask, be.centered());
+            return shape(state, kinds, be.centered());
         }
         return shape(state, 0, false);
     }
@@ -182,7 +208,8 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
             return InteractionResult.SUCCESS;
         }
         Direction toward = player == null ? Direction.NORTH : player.getDirection().getOpposite();
-        BlockState state = block.defaultBlockState().setValue(FACE, attach(face)).setValue(FACING, face.getAxis().isHorizontal() ? face : toward);
+        BlockState state = block.defaultBlockState().setValue(FACE, attach(face)).setValue(FACING, face.getAxis().isHorizontal() ? face : toward)
+                .setValue(WATERLOGGED, level.getFluidState(pos).getType() == Fluids.WATER);
         level.setBlock(pos, state, Block.UPDATE_ALL);
         if (!(level.getBlockEntity(pos) instanceof DashboardBlockEntity be)) {
             return InteractionResult.FAIL;
@@ -196,12 +223,11 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
 
     private static boolean add(Level level, BlockPos pos, BlockState state, DashboardBlockEntity be, Vec3 click, DashPart.Type type, ItemStack stack, @Nullable Player player) {
         int slot = slotAt(state, pos, click, false);
-        if (be.centered() || be.part(slot) != null) {
+        if (be.part(slot) != null) {
             slot = -1;
             for (int i = 0; i < SLOTS && slot < 0; i++) {
-                int candidate = be.centered() ? (i + 1) % SLOTS : i;
-                if (be.part(candidate) == null) {
-                    slot = candidate;
+                if (be.part(i) == null) {
+                    slot = i;
                 }
             }
         }
@@ -228,7 +254,7 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
         if (AllItems.WRENCH.isIn(stack)) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
-        if (stack.getItem() instanceof DashPartItem item) {
+        if (stack.getItem() instanceof DashPartItem item && !DashboardBlock.spare(stack, be.part(be.slotAt(hit.getLocation())))) {
             if (!level.isClientSide && !add(level, pos, state, be, hit.getLocation(), item.type, stack, player)) {
                 return ItemInteractionResult.FAIL;
             }
@@ -279,7 +305,7 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
             if (player != null && !player.isCreative()) {
                 player.getInventory().placeItemBackInInventory(stack);
             }
-            level.playSound(null, pos, SoundEvents.COPPER_BREAK, SoundSource.BLOCKS, 0.5f, 1.3f);
+            IWrenchable.playRemoveSound(level, pos);
             clearIfEmpty(level, pos, be);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
@@ -309,7 +335,7 @@ public class PartPanelBlock extends FaceAttachedHorizontalDirectionalBlock imple
         if (target instanceof BlockHitResult hit && level.getBlockEntity(pos) instanceof DashboardBlockEntity be) {
             DashPart part = be.part(be.slotAt(hit.getLocation()));
             if (part != null) {
-                return player != null && player.isShiftKeyDown() ? part.asStack() : new ItemStack(part.asStack().getItem());
+                return player != null && player.isShiftKeyDown() ? part.asConfiguredStack() : new ItemStack(part.asStack().getItem());
             }
         }
         return ItemStack.EMPTY;

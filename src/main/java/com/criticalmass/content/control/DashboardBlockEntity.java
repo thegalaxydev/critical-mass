@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import net.createmod.catnip.animation.LerpedFloat;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
@@ -36,10 +37,16 @@ import org.jetbrains.annotations.Nullable;
 public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public static final int SLOTS = 2;
     private static final int READ_TICKS = 5;
+    private static final int GLASS_REPEAT_TICKS = 5;
     private static final int ALARM_SOUND_TICKS = 40;
     private static final Map<GlobalPos, long[]> BIDS = new HashMap<>();
     private final DashPart[] parts;
     private final LerpedFloat[] animation;
+    private final LerpedFloat[] bulbs;
+    private final boolean[] lidOpen;
+    private final boolean[] lidSeen;
+    private final long[] lidStart;
+    private final long[] lastGlassUse;
     private final boolean panel;
     private boolean centered;
     private boolean powered;
@@ -50,8 +57,15 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         panel = state.getBlock() instanceof PartPanelBlock;
         parts = new DashPart[panel ? PartPanelBlock.SLOTS : SLOTS];
         animation = new LerpedFloat[parts.length];
+        bulbs = new LerpedFloat[parts.length];
+        lidOpen = new boolean[parts.length];
+        lidSeen = new boolean[parts.length];
+        lidStart = new long[parts.length];
+        lastGlassUse = new long[parts.length];
         for (int i = 0; i < parts.length; i++) {
             animation[i] = LerpedFloat.linear().startWithValue(0);
+            bulbs[i] = LerpedFloat.linear().startWithValue(0);
+            lastGlassUse[i] = Long.MIN_VALUE;
         }
     }
 
@@ -104,6 +118,41 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         return animation[slot].getValue(partialTicks);
     }
 
+    public float bulbGlow(int slot, float partialTicks) {
+        return bulbs[slot].getValue(partialTicks);
+    }
+
+    public float glassAngle(int slot) {
+        DashPart part = part(slot);
+        boolean open = part != null && part.glassOpen;
+        long now = Util.getMillis();
+        if (!lidSeen[slot]) {
+            lidSeen[slot] = true;
+            lidOpen[slot] = open;
+            lidStart[slot] = now - 100000L;
+        } else if (lidOpen[slot] != open) {
+            lidOpen[slot] = open;
+            lidStart[slot] = now;
+        }
+        return DashGlassLid.angle(open, (now - lidStart[slot]) / 1000f);
+    }
+
+    public void toggleGlass(int slot) {
+        DashPart part = part(slot);
+        if (part == null || level == null || !part.glass()) {
+            return;
+        }
+        long now = level.getGameTime();
+        long last = lastGlassUse[slot];
+        lastGlassUse[slot] = now;
+        if (last != Long.MIN_VALUE && now - last <= GLASS_REPEAT_TICKS) {
+            return;
+        }
+        part.glassOpen = !part.glassOpen;
+        level.playSound(null, worldPosition, part.glassOpen ? SoundEvents.IRON_TRAPDOOR_OPEN : SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.5f, 1.4f);
+        changed();
+    }
+
     private void changed() {
         setChanged();
         sendData();
@@ -133,6 +182,8 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         }
         release(part);
         parts[slot] = null;
+        lidSeen[slot] = false;
+        lastGlassUse[slot] = Long.MIN_VALUE;
         changed();
         outputChanged();
         return part.asStack();
@@ -171,6 +222,19 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             BIDS.remove(GlobalPos.of(level.dimension(), part.target));
             link.setSignal(0);
         }
+    }
+
+    public void relabel(int slot, String label) {
+        DashPart part = part(slot);
+        if (part != null) {
+            part.label = label.length() > DashPart.LABEL_LENGTH ? label.substring(0, DashPart.LABEL_LENGTH) : label;
+            changed();
+        }
+    }
+
+    @Override
+    public void writeSafe(CompoundTag tag, HolderLookup.Provider registries) {
+        write(tag, registries, false);
     }
 
     public boolean edit(int slot, int body, int color, int style, int options, int face, int mode, boolean inverted, String label) {
@@ -361,6 +425,8 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
                 DashPart part = parts[i];
                 animation[i].chase(part == null ? 0 : part.animationTarget(now), part != null && part.type == DashPart.Type.BUTTON ? 0.6 : 0.3, LerpedFloat.Chaser.EXP);
                 animation[i].tickChaser();
+                bulbs[i].chase(part == null ? 0 : part.lightLevel(now), 0.7, LerpedFloat.Chaser.EXP);
+                bulbs[i].tickChaser();
             }
             return;
         }
@@ -461,6 +527,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
+        if (level != null && level.isClientSide && DashboardAim.holdingLever()) {
+            return false;
+        }
         readout(tooltip, level != null && level.isClientSide ? DashboardAim.slot(this) : -1);
         return true;
     }
@@ -488,10 +557,13 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     private void describe(List<Component> tooltip, DashPart part) {
-        Component name = part.label.isEmpty() ? Component.translatable("criticalmass.dashboard.part." + part.type.key) : Component.literal(part.label);
+        Component name = part.label.isEmpty() ? Component.translatable("criticalmass.dashboard.part." + part.type.key) : part.labelText();
         boolean plain = part.type == DashPart.Type.SWITCH || part.type == DashPart.Type.LEVER || part.target == null;
         tooltip.add(plain ? Component.literal("     ").append(name).withStyle(ChatFormatting.WHITE)
                 : ThermalTooltips.line("criticalmass.dashboard.part_function", ChatFormatting.WHITE, name, Component.translatable(modeKey(part))));
+        if (part.inverted && part.controls()) {
+            tooltip.add(ThermalTooltips.line("criticalmass.dashboard.inverted", ChatFormatting.GOLD));
+        }
         BlockPos at = part.target;
         if (at == null) {
             tooltip.add(ThermalTooltips.line("criticalmass.dashboard.unbound", ChatFormatting.GOLD));

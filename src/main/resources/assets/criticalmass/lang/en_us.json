@@ -472,5 +472,14 @@
   "criticalmass.signal_interface.job_row": "Select",
   "criticalmass.rod.bank": "Rod Bank",
   "criticalmass.rod.bank_row": "Bank",
-  "block.criticalmass.part_panel": "Dashboard Parts"
+  "block.criticalmass.part_panel": "Dashboard Parts",
+  "criticalmass.dashboard.gui.light": "Indicator light",
+  "criticalmass.dashboard.gui.glass": "Glass cover",
+  "criticalmass.dashboard.gui.light.desc": "Lights with the part's output",
+  "criticalmass.dashboard.gui.glass.desc": "Sneak-use the part to lift or shut the cover",
+  "criticalmass.dashboard.gui.plate.desc": "Decorative backplate",
+  "criticalmass.dashboard.gui.invert.on": "Inverted: on sends off and off sends on",
+  "criticalmass.dashboard.gui.invert.off": "Normal",
+  "criticalmass.dashboard.inverted": "Output inverted",
+  "criticalmass.dashboard.labelled": "Labelled: %s"
 }

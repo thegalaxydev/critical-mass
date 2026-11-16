@@ -132,8 +132,9 @@ public class DashPartScreen extends AbstractSimiScreen {
             invert.withCallback(() -> {
                 preview.inverted = !preview.inverted;
                 invert.green = preview.inverted;
+                tip(invert, "invert", preview.inverted ? "invert.on" : "invert.off");
             });
-            invert.setToolTip(Component.translatable(KEY + "invert"));
+            tip(invert, "invert", preview.inverted ? "invert.on" : "invert.off");
             addRenderableWidget(invert);
             toggleX += 22;
         }
@@ -144,9 +145,32 @@ public class DashPartScreen extends AbstractSimiScreen {
                 preview.options ^= DashPart.PLATE;
                 plate.green = (preview.options & DashPart.PLATE) != 0;
             });
-            plate.setToolTip(Component.translatable(KEY + "plate"));
+            tip(plate, "plate", "plate.desc");
             addRenderableWidget(plate);
+            toggleX += 22;
         }
+        toggleX = option(toggleX, DashPart.LIGHT, AllIcons.I_FX_FIELD_ON, "light");
+        option(toggleX, DashPart.GLASS, AllIcons.I_CONFIG_LOCKED, "glass");
+    }
+
+    private static void tip(IconButton button, String title, String detail) {
+        button.setToolTip(Component.translatable(KEY + title));
+        button.getToolTip().add(Component.translatable(KEY + detail).withStyle(ChatFormatting.GRAY));
+    }
+
+    private int option(int x, int flag, AllIcons icon, String key) {
+        if ((DashPart.optionMask(preview.type) & flag) == 0) {
+            return x;
+        }
+        IconButton button = new IconButton(x, guiTop + TOGGLE_Y, icon);
+        button.green = (preview.options & flag) != 0;
+        button.withCallback(() -> {
+            preview.options ^= flag;
+            button.green = (preview.options & flag) != 0;
+        });
+        tip(button, key, key + ".desc");
+        addRenderableWidget(button);
+        return x + 22;
     }
 
     private float animation() {

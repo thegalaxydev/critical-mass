@@ -32,6 +32,7 @@ import com.mojang.logging.LogUtils;
 import java.util.List;
 import java.util.Map;
 import com.criticalmass.content.control.DashLeverSet;
+import com.criticalmass.content.control.DashOpenSettings;
 import com.criticalmass.content.control.DashPartEdit;
 import com.simibubi.create.api.boiler.BoilerHeater;
 import net.minecraft.resources.ResourceLocation;
@@ -98,6 +99,7 @@ public class CriticalMass {
         modEventBus.addListener(CriticalMass::registerCapabilities);
         modEventBus.addListener(DashPartEdit::register);
         modEventBus.addListener(DashLeverSet::register);
+        modEventBus.addListener(DashOpenSettings::register);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);

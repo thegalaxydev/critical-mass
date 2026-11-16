@@ -18,7 +18,7 @@ public final class CMPartialModels {
     public static final PartialModel SERVICE_PORT_DOOR_EAST = block("reactor_service_port_door_east");
     public static final Map<String, PartialModel> DASH = pieces("dashboard_part/", "back", "body", "big_body", "slim_body", "plate", "slim_plate", "face", "button_cap", "button_big_cap",
             "lever_handle", "lever_knob", "lever_ball_base", "lever_ball_handle", "lever_ball_knob", "switch_paddle", "needle_default", "needle_classic", "needle_vertical",
-            "needle_linear", "alarm_lamp", "alarm_cage");
+            "needle_linear", "alarm_lamp", "alarm_cage", "bulb", "lever_bulb", "switch_bulb", "glass_body", "glass_slim");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_RIM = facings("reinforced_pipe/rim/");
     public static final Map<Direction, PartialModel> REINFORCED_PIPE_DRAIN = facings("reinforced_pipe/drain/");
 

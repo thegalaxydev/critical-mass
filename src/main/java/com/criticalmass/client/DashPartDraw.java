@@ -1,6 +1,7 @@
 package com.criticalmass.client;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.control.DashGlassLid;
 import com.criticalmass.content.control.DashPart;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -12,6 +13,7 @@ import net.createmod.catnip.render.SpriteShifter;
 import net.createmod.catnip.render.SuperByteBuffer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import com.simibubi.create.foundation.render.RenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.util.Mth;
@@ -29,6 +31,8 @@ public final class DashPartDraw {
     private static final SpriteShiftEntry ALARM = sheet("alarm_atlas");
     private static final SpriteShiftEntry ALARM_LIT = SpriteShifter.get(CriticalMass.asResource("block/dashboard_part/alarm_atlas"), CriticalMass.asResource("block/dashboard_part/alarm_atlas_lit"));
     private static final float SHEET = 64f;
+    private static final float BULB_LIT = 0.125f;
+    private static final float QUIVER = 1.0f;
     private static final int PALETTE_ROW = 5;
     private static final int BODY_STRIDE = 14;
     private static final int ALLOY_ROW = 24;
@@ -104,6 +108,48 @@ public final class DashPartDraw {
     }
 
     public static void draw(DashPart part, float animation, boolean lit, PoseStack ms, MultiBufferSource buffers, int light, BlockState state) {
+        draw(part, animation, lit, 0, 0, 0, ms, buffers, light, state);
+    }
+
+    private static void bulb(String name, float output, PoseStack ms, MultiBufferSource buffers, int light, BlockState state) {
+        float glow = output <= 0.01f ? 0 : 0.2f + 0.55f * output;
+        boolean on = glow > BULB_LIT;
+        piece(name, state, on ? LightTexture.FULL_BRIGHT : light).renderInto(ms, buffers.getBuffer(RenderType.translucent()));
+        if (on) {
+            int level = Mth.clamp((int) (200 * Mth.clamp(1 - 2 * (glow - 0.75f) * (glow - 0.75f), -1, 1)), 0, 255);
+            piece(name, state, LightTexture.FULL_BRIGHT).color(level, level, level, 255).renderInto(ms, buffers.getBuffer(RenderTypes.additive()));
+        }
+    }
+
+    public static float quiver(float time, float phase, float reading) {
+        if (reading <= 0.01f) {
+            return 0;
+        }
+        float sway = (Mth.sin(time + phase) * 0.6f + Mth.sin(time * 2.7f + phase * 1.3f) * 0.4f) * QUIVER * Math.min(1, reading);
+        float cycle = Mth.frac(time * 0.45f + phase);
+        if (reading < 0.97f || cycle > 0.22f) {
+            return sway;
+        }
+        float kick = 1 - cycle / 0.22f;
+        return sway - kick * kick * QUIVER * 2.5f;
+    }
+
+    public static void draw(DashPart part, float animation, boolean lit, float glow, float lid, float quiver, PoseStack ms, MultiBufferSource buffers, int light, BlockState state) {
+        body(part, animation, lit, quiver, ms, buffers, light, state);
+        if (part.light() && part.type != DashPart.Type.ALARM) {
+            bulb(part.type == DashPart.Type.LEVER ? "lever_bulb" : part.type == DashPart.Type.SWITCH ? "switch_bulb" : "bulb", glow, ms, buffers, light, state);
+        }
+        if (part.glass()) {
+            ms.pushPose();
+            ms.translate(DashGlassLid.PIVOT_X, DashGlassLid.PIVOT_Y, DashGlassLid.PIVOT_Z);
+            ms.mulPose(Axis.XP.rotationDegrees(lid));
+            ms.translate(-DashGlassLid.PIVOT_X, -DashGlassLid.PIVOT_Y, -DashGlassLid.PIVOT_Z);
+            piece(part.type == DashPart.Type.SWITCH ? "glass_slim" : "glass_body", state, light).renderInto(ms, buffers.getBuffer(RenderType.translucent()));
+            ms.popPose();
+        }
+    }
+
+    private static void body(DashPart part, float animation, boolean lit, float quiver, PoseStack ms, MultiBufferSource buffers, int light, BlockState state) {
         VertexConsumer vc = buffers.getBuffer(RenderType.cutout());
         switch (part.type) {
             case BUTTON -> {
@@ -160,7 +206,7 @@ public final class DashPartDraw {
                     ms.translate(0, 0, travel * needle.slide / 16f);
                 } else {
                     ms.translate(needle.pivotX, 0, needle.pivotZ);
-                    ms.mulPose(Axis.YP.rotationDegrees((travel - 0.5f) * needle.sweep));
+                    ms.mulPose(Axis.YP.rotationDegrees((travel - 0.5f) * needle.sweep + quiver));
                     ms.translate(-needle.pivotX, 0, -needle.pivotZ);
                 }
                 shifted(piece(needle.model, state, light), GAUGE, (part.color % needle.perBand - AUTHORED_NEEDLE % needle.perBand) * needle.strideU,

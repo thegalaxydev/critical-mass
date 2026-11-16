@@ -9,9 +9,15 @@ import com.simibubi.create.content.redstone.link.RedstoneLinkBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -25,7 +31,10 @@ public final class DashPart {
     public static final int COLORS = 35;
     public static final int NEEDLE_COLORS = 8;
     public static final int FACES = 36;
+    public static final String CONFIG = "DashPart";
     public static final int PLATE = 1;
+    public static final int LIGHT = 2;
+    public static final int GLASS = 4;
     public static final int LABEL_LENGTH = 32;
     public static final int BIG = 1;
     private static final int DEFAULT_FACE = 9;
@@ -69,6 +78,7 @@ public final class DashPart {
     public int options = PLATE;
     public int face = DEFAULT_FACE;
     public boolean inverted;
+    public boolean glassOpen;
     public String label = "";
 
     public DashPart(Type type) {
@@ -114,11 +124,34 @@ public final class DashPart {
         return (options & PLATE) != 0 && !big();
     }
 
+    public static int optionMask(Type type) {
+        return switch (type) {
+            case BUTTON, SWITCH -> PLATE | LIGHT | GLASS;
+            case LEVER, GAUGE -> PLATE | LIGHT;
+            case ALARM -> PLATE;
+        };
+    }
+
+    public boolean light() {
+        return (options & LIGHT) != 0 && !big();
+    }
+
+    public boolean glass() {
+        return (options & GLASS) != 0 && !big();
+    }
+
+    public float lightLevel(long gameTime) {
+        return type == Type.GAUGE ? fraction : signal(gameTime) / (float) MAX_LEVEL;
+    }
+
     public void look(int body, int color, int style, int options, int face) {
         this.body = Math.floorMod(body, BODIES);
         this.color = Math.floorMod(color, colors(type));
         this.style = Math.floorMod(style, styles(type));
-        this.options = options & PLATE;
+        this.options = options & optionMask(type);
+        if (!glass()) {
+            glassOpen = false;
+        }
         this.face = Math.floorMod(face, FACES);
     }
 
@@ -237,7 +270,63 @@ public final class DashPart {
         if (target != null) {
             stack.set(CMComponents.LINK_TARGET.get(), target);
         }
+        if (!label.isEmpty()) {
+            stack.set(DataComponents.CUSTOM_NAME, Component.literal(label));
+        }
         return stack;
+    }
+
+    public ItemStack asConfiguredStack() {
+        ItemStack stack = asStack();
+        CompoundTag look = new CompoundTag();
+        look.putInt("Body", body);
+        look.putInt("Color", color);
+        look.putInt("Style", style);
+        look.putInt("Options", options);
+        look.putInt("Face", face);
+        look.putInt("Mode", mode);
+        look.putBoolean("Inverted", inverted);
+        look.putBoolean("GlassOpen", glassOpen);
+        CompoundTag data = new CompoundTag();
+        data.put(CONFIG, look);
+        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(data));
+        return stack;
+    }
+
+    public void configure(ItemStack stack) {
+        CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+        if (data == null || !data.contains(CONFIG)) {
+            return;
+        }
+        CompoundTag look = data.copyTag().getCompound(CONFIG);
+        look(look.getInt("Body"), look.getInt("Color"), look.getInt("Style"), look.getInt("Options"), look.getInt("Face"));
+        mode = Math.max(0, look.getInt("Mode"));
+        inverted = look.getBoolean("Inverted");
+        glassOpen = glass() && look.getBoolean("GlassOpen");
+    }
+
+    public Component labelText() {
+        MutableComponent out = Component.empty();
+        Style style = Style.EMPTY;
+        StringBuilder run = new StringBuilder();
+        for (int i = 0; i < label.length(); i++) {
+            char c = label.charAt(i);
+            ChatFormatting code = c == '&' && i + 1 < label.length() ? ChatFormatting.getByCode(Character.toLowerCase(label.charAt(i + 1))) : null;
+            if (code == null) {
+                run.append(c);
+                continue;
+            }
+            if (run.length() > 0) {
+                out.append(Component.literal(run.toString()).withStyle(style));
+                run.setLength(0);
+            }
+            style = code == ChatFormatting.RESET ? Style.EMPTY : style.applyLegacyFormat(code);
+            i++;
+        }
+        if (run.length() > 0) {
+            out.append(Component.literal(run.toString()).withStyle(style));
+        }
+        return out;
     }
 
     public CompoundTag save() {
@@ -260,6 +349,7 @@ public final class DashPart {
         tag.putInt("Options", options);
         tag.putInt("Face", face);
         tag.putBoolean("Inverted", inverted);
+        tag.putBoolean("GlassOpen", glassOpen);
         tag.putString("Label", label);
         return tag;
     }
@@ -280,6 +370,7 @@ public final class DashPart {
             part.look(tag.getInt("Body"), tag.getInt("Color"), tag.getInt("Style"), tag.getInt("Options"), tag.getInt("Face"));
         }
         part.inverted = tag.getBoolean("Inverted");
+        part.glassOpen = part.glass() && tag.getBoolean("GlassOpen");
         part.label = tag.getString("Label");
         return part;
     }

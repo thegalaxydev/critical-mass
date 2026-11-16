@@ -52,7 +52,10 @@ public class CriticalMassClient {
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);
         modEventBus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(CriticalMass.asResource("lever_hold"), LeverHold::render));
-        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> LeverHold.tick());
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> {
+            LeverHold.tick();
+            DashScreens.tick();
+        });
     }
 
     private void addSkinPack(AddPackFindersEvent event) {

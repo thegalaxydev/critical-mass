@@ -18,6 +18,7 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -49,6 +52,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.common.util.FakePlayer;
+import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
 public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<DashboardBlockEntity>, IWrenchable {
@@ -284,7 +288,15 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
     }
 
     public static ItemInteractionResult linkPart(ItemStack stack, Level level, BlockPos pos, Player player, DashboardBlockEntity be, int slot) {
-        if (stack.getItem() instanceof PlantLinkerItem && be.part(slot) != null) {
+        DashPart fitted = be.part(slot);
+        if (fitted != null && stack.is(Items.NAME_TAG) && stack.has(DataComponents.CUSTOM_NAME)) {
+            if (!level.isClientSide) {
+                be.relabel(slot, stack.get(DataComponents.CUSTOM_NAME).getString());
+                tell(player, Component.translatable("criticalmass.dashboard.labelled", fitted.labelText()));
+            }
+            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+        }
+        if (fitted != null && (stack.getItem() instanceof PlantLinkerItem || spare(stack, fitted))) {
             if (!level.isClientSide) {
                 BlockPos stored = stack.get(CMComponents.LINK_TARGET.get());
                 if (stored == null) {
@@ -311,6 +323,17 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         DashPart part = be.part(slot);
         if (part == null) {
             return InteractionResult.PASS;
+        }
+        if (part.glass()) {
+            if (player.isShiftKeyDown()) {
+                if (!level.isClientSide) {
+                    be.toggleGlass(slot);
+                }
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            }
+            if (!part.glassOpen) {
+                return InteractionResult.CONSUME;
+            }
         }
         if (part.type == DashPart.Type.LEVER && !(player instanceof FakePlayer)) {
             if (level.isClientSide) {
@@ -359,7 +382,7 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
             if (player != null && !player.isCreative()) {
                 player.getInventory().placeItemBackInInventory(stack);
             }
-            level.playSound(null, pos, SoundEvents.COPPER_BREAK, SoundSource.BLOCKS, 0.5f, 1.3f);
+            IWrenchable.playRemoveSound(level, pos);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -387,10 +410,14 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         if (target instanceof BlockHitResult hit && level.getBlockEntity(pos) instanceof DashboardBlockEntity be) {
             DashPart part = be.part(slotAt(state, pos, hit.getLocation()));
             if (part != null) {
-                return player != null && player.isShiftKeyDown() ? part.asStack() : new ItemStack(part.asStack().getItem());
+                return player != null && player.isShiftKeyDown() ? part.asConfiguredStack() : new ItemStack(part.asStack().getItem());
             }
         }
         return desk(state);
+    }
+
+    public static boolean spare(ItemStack stack, @Nullable DashPart fitted) {
+        return fitted != null && stack.getItem() instanceof DashPartItem item && item.type == fitted.type && stack.has(CMComponents.LINK_TARGET.get());
     }
 
     public static void fit(Level level, BlockPos pos, DashboardBlockEntity be, int slot, DashPart.Type type, ItemStack stack, @Nullable Player player) {
@@ -403,8 +430,13 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         if (name != null) {
             part.label = name.getString();
         }
+        part.configure(stack);
         be.install(slot, part);
-        level.playSound(null, pos, SoundEvents.COPPER_PLACE, SoundSource.BLOCKS, 0.6f, 1.3f);
+        SoundType sound = level.getBlockState(pos).getSoundType();
+        level.playSound(null, pos, sound.getPlaceSound(), SoundSource.BLOCKS, (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8f);
+        if (type == DashPart.Type.GAUGE && player instanceof ServerPlayer opener) {
+            PacketDistributor.sendToPlayer(opener, new DashOpenSettings(pos, slot));
+        }
         if (player == null || !player.isCreative()) {
             stack.shrink(1);
         }
