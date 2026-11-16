@@ -4,16 +4,28 @@ import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMStress;
+import com.google.common.collect.ImmutableList;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import java.util.List;
 import net.minecraft.ChatFormatting;
+import net.createmod.catnip.math.VecHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class ControlRodDriveBlockEntity extends KineticBlockEntity {
     private double insertion = 1.0;
@@ -23,6 +35,7 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
     private int reactorTripTicks;
     private int syncCooldown;
     private int bank;
+    private BankChoice bankChoice;
     private int travel;
     private double bankCommand = Double.NaN;
     private int linkTicks;
@@ -72,8 +85,21 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
 
     public void setBank(int value) {
         bank = Math.floorMod(value, CMThermal.ROD_BANKS);
+        bankChoice.value = bank;
         setChanged();
         sendData();
+    }
+
+    public ScrollValueBehaviour bankChoice() {
+        return bankChoice;
+    }
+
+    @Override
+    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        super.addBehaviours(behaviours);
+        bankChoice = new BankChoice(this);
+        bankChoice.withCallback(this::setBank);
+        behaviours.add(bankChoice);
     }
 
     public int travel() {
@@ -178,6 +204,7 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         moving = tag.getBoolean("Moving");
         failSafe = tag.getBoolean("FailSafe");
         bank = Math.floorMod(tag.getInt("Bank"), CMThermal.ROD_BANKS);
+        bankChoice.value = bank;
         travel = tag.getInt("Travel");
     }
 
@@ -188,9 +215,39 @@ public class ControlRodDriveBlockEntity extends KineticBlockEntity {
         if (failSafe) {
             ThermalTooltips.status(tooltip, "criticalmass.rod.fail_safe", ChatFormatting.RED);
         }
-        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.insertion", String.valueOf((char) ('A' + bank)));
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.insertion", letter(bank));
         MutableComponent position = ThermalTooltips.reading("criticalmass.unit.percent", ChatFormatting.AQUA, Math.round(insertion * 100));
         ThermalTooltips.value(tooltip, moving ? position.append(ThermalTooltips.aside("criticalmass.goggles.aside.target", Math.round(target * 100))) : position);
         return true;
+    }
+
+    private static String letter(int bank) {
+        return String.valueOf((char) ('A' + bank));
+    }
+
+    static class BankChoice extends ScrollValueBehaviour {
+        BankChoice(SmartBlockEntity be) {
+            super(Component.translatable("criticalmass.rod.bank"), be, new BankBox());
+            between(0, CMThermal.ROD_BANKS - 1);
+            withFormatter(ControlRodDriveBlockEntity::letter);
+        }
+
+        @Override
+        public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
+            return new ValueSettingsBoard(label, max, 1, ImmutableList.of(Component.translatable("criticalmass.rod.bank_row")),
+                    new ValueSettingsFormatter(settings -> Component.literal(letter(settings.value()))));
+        }
+    }
+
+    static class BankBox extends ValueBoxTransform.Sided {
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 12, 13.05);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            return direction.getAxis().isHorizontal();
+        }
     }
 }

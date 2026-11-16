@@ -8,6 +8,7 @@ import com.criticalmass.content.thermal.Corium;
 import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.control.DashboardBlockEntity;
 import com.criticalmass.content.control.ScreenBlockEntity;
+import com.criticalmass.content.control.SignalInterfaceBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
@@ -43,6 +44,9 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ControlRodDriveBlockEntity>> CONTROL_ROD_DRIVE = BLOCK_ENTITIES.register("control_rod_drive",
             () -> BlockEntityType.Builder.of((pos, state) -> new ControlRodDriveBlockEntity(CMBlockEntities.CONTROL_ROD_DRIVE.get(), pos, state), CMBlocks.CONTROL_ROD_DRIVE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<SignalInterfaceBlockEntity>> REACTOR_SIGNAL_INTERFACE = BLOCK_ENTITIES.register("reactor_signal_interface",
+            () -> BlockEntityType.Builder.of((pos, state) -> new SignalInterfaceBlockEntity(CMBlockEntities.REACTOR_SIGNAL_INTERFACE.get(), pos, state), CMBlocks.REACTOR_SIGNAL_INTERFACE.get()).build(null));
 
     public static final Supplier<BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReactorControllerBlockEntity(CMBlockEntities.REACTOR_CONTROLLER.get(), pos, state), CMBlocks.REACTOR_CONTROLLER.get()).build(null));

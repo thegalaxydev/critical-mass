@@ -90,7 +90,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - The drive is turned by the cogwheel round its middle. Mesh a Cogwheel beside it, or set drives side by side and they turn each other. It takes no shaft.
   - Columns without a drive follow the controller's redstone signal.
   - **Visible travel:** the rod stands up out of the drive as it withdraws, one block of rod per block of core height, and drops back in as it inserts. Inside the vessel each control channel shows how far its rod reaches.
-  - **Banks:** every drive belongs to a bank, A to D. Use an empty hand on the drive to change it (sneak to go back). A bank target set on the reactor moves every drive in that bank and overrides their redstone signals.
+  - **Banks:** every drive belongs to a bank, A to D. Hold use on the drive's upper case to pick it from Create's value board. A bank target set on the reactor moves every drive in that bank and overrides their redstone signals.
 - **Reactor Viewport:** a window that takes the place of a vessel casing block (craft casing with Shielded Glass). It cracks, welds and shields like casing. Through it, fuel channels are dark when idle, glow dim blue at low power or on decay heat, bright blue at power and orange-red when overheating, and they light their surroundings.
 - **Fail-safe:** losing shaft power, overstress or a trip releases the drive's spring latch and drives the rods fully in within 2 seconds, in any orientation.
 - **Start-up check:** rods will not withdraw, and the reactor will not start, until coolant is flowing through the vessel and the vessel is at least half full. The controller says which is missing. Pumps turn on shaft power, so a cold plant needs rotation from outside before it can make its own.
@@ -127,12 +127,12 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Goggles:** look at a part to see its label, what it does, the block it is connected to and where, and its state. A missing target shows in red.
   - **Taking parts off:** sneak-use a wrench on a part, or break the desk while aiming at a part to take only that part.
   - **With Create: Loconautics installed:** its Gauge Button, Switch and Lever are hidden and their recipes switched off, because ours do the same job. Its dashboards and its Locomotive Gauge stay. Using one of our parts on an empty Loconautics dashboard turns that desk into ours in the same colour, and dye recolours our desks to any Loconautics colour. A desk recoloured this way drops the matching Loconautics dashboard. Without Loconautics those desks show in reactor alloy.
-  - **Reactor Signal Interface:** for redstone instead of direct binding. Set it in the vessel wall and use a wrench on it to pick its job.
-    - Its face shows the job and the signal. A brass tab sits in one of six places along a track, in the order the wrench steps through, and the red lens lights while the interface takes or gives a signal.
+  - **Reactor Signal Interface:** for redstone instead of direct binding. Set it in the vessel wall and hold use on its face to pick its job from Create's value board.
+    - Its face shows the job and the signal. A brass tab sits in one of six places along a track, in the order the board lists the jobs, and the red lens lights while the interface takes or gives a signal.
     - SCRAM, reset, rods in and rods out each act once on a redstone pulse. A rod pulse moves every bank 0.5%.
     - Alarm gives a redstone signal while any alarm is active: send it through a Redstone Link to a Steam Whistle on plant steam, a bell or note blocks.
     - Readings only is the setting it starts on, for Display Links.
-    - Use it with an empty hand to see what it is set to.
+    - Look at its face to see what it is set to.
   - **Rods by signal strength:** a signal at a Control Rod Drive or the Reactor Controller sets the rods coarsely, 0 for fully in and 15 for fully out.
   - **Turbine by signal:** a full signal at the Steam Turbine shuts its steam off and resets an overspeed trip. Weaker signals limit the governor.
 - **Pumps and valves** are switched with Create's own parts: a clutch or gearshift and a lever on the pump shaft, a Valve Handle or powered shaft on a Reinforced Valve.

@@ -5,6 +5,8 @@ import java.util.List;
 import net.minecraft.network.chat.Component;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.PlantChannel;
+import com.criticalmass.content.control.SignalInterfaceBlock;
+import com.criticalmass.content.control.SignalInterfaceBlockEntity;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
@@ -15,6 +17,7 @@ import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.behaviour.display.DisplaySource;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
@@ -24,6 +27,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.SignBlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -199,5 +204,26 @@ public final class ControlTests {
             h.assertTrue(alone == ReactorControllerBlock.Display.OFF, "A controller with no vessel should stay dark: " + alone);
             h.succeed();
         });
+    }
+
+    @GameTest(template = EMPTY)
+    public static void signalInterfaceAndRodDriveAreSetFromAValueBoard(GameTestHelper h) {
+        BlockPos at = new BlockPos(2, 2, 2);
+        h.setBlock(at, CMBlocks.REACTOR_SIGNAL_INTERFACE.get());
+        SignalInterfaceBlockEntity port = h.getBlockEntity(at);
+        Player player = h.makeMockPlayer(GameType.CREATIVE);
+        port.job().setValueSettings(player, new ValueSettingsBehaviour.ValueSettings(0, SignalInterfaceBlock.Function.RESET.ordinal()), false);
+        h.assertTrue(h.getBlockState(at).getValue(SignalInterfaceBlock.FUNCTION) == SignalInterfaceBlock.Function.RESET, "Picking a job on the board should set the block: " + h.getBlockState(at));
+        h.setBlock(at, h.getBlockState(at).setValue(SignalInterfaceBlock.FUNCTION, SignalInterfaceBlock.Function.ALARM));
+        SignalInterfaceBlockEntity after = h.getBlockEntity(at);
+        h.assertTrue(after.job().get() == SignalInterfaceBlock.Function.ALARM, "The board should show the job the block has: " + after.job().get());
+        BlockPos drivePos = new BlockPos(4, 2, 2);
+        h.setBlock(drivePos, CMBlocks.CONTROL_ROD_DRIVE.get());
+        ControlRodDriveBlockEntity rod = h.getBlockEntity(drivePos);
+        rod.bankChoice().setValueSettings(player, new ValueSettingsBehaviour.ValueSettings(0, 2), false);
+        h.assertTrue(rod.bank() == 2, "Picking C on the board should put the drive in bank C: " + rod.bank());
+        rod.setBank(1);
+        h.assertTrue(rod.bankChoice().getValue() == 1 && rod.bankChoice().formatValue().equals("B"), "The board should show the bank the drive is in: " + rod.bankChoice().formatValue());
+        h.succeed();
     }
 }

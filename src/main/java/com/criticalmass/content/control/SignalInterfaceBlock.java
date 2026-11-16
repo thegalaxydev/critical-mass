@@ -4,35 +4,50 @@ import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.VesselLookup;
+import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
+import com.simibubi.create.foundation.block.IBE;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.INamedIconOptions;
+import com.simibubi.create.foundation.gui.AllIcons;
 import java.util.Locale;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class SignalInterfaceBlock extends HorizontalBlock implements IWrenchable {
-    public enum Function implements StringRepresentable {
-        READINGS, SCRAM, RESET, RODS_IN, RODS_OUT, ALARM;
+public class SignalInterfaceBlock extends HorizontalBlock implements IWrenchable, IBE<SignalInterfaceBlockEntity> {
+    public enum Function implements StringRepresentable, INamedIconOptions {
+        READINGS(AllIcons.I_MTD_SCAN), SCRAM(AllIcons.I_STOP), RESET(AllIcons.I_REFRESH), RODS_IN(AllIcons.I_PRIORITY_LOW), RODS_OUT(AllIcons.I_PRIORITY_HIGH), ALARM(AllIcons.I_SEND_ONLY);
 
         public final String key = name().toLowerCase(Locale.ROOT);
+        private final AllIcons icon;
+
+        Function(AllIcons icon) {
+            this.icon = icon;
+        }
+
+        @Override
+        public AllIcons getIcon() {
+            return icon;
+        }
+
+        @Override
+        public String getTranslationKey() {
+            return langKey();
+        }
 
         public boolean input() {
             return this != READINGS && this != ALARM;
@@ -136,31 +151,23 @@ public class SignalInterfaceBlock extends HorizontalBlock implements IWrenchable
         return state.getValue(FUNCTION) == Function.ALARM && state.getValue(POWERED) ? 15 : 0;
     }
 
-    private static void tell(@Nullable Player player, BlockState state) {
-        if (player != null) {
-            player.displayClientMessage(Component.translatable("criticalmass.signal_interface.function", Component.translatable(state.getValue(FUNCTION).langKey())), true);
-        }
-    }
-
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        Level level = context.getLevel();
-        BlockPos pos = context.getClickedPos();
-        if (!level.isClientSide) {
-            Function[] all = Function.values();
-            BlockState next = state.setValue(FUNCTION, all[(state.getValue(FUNCTION).ordinal() + 1) % all.length]).setValue(POWERED, false);
-            level.setBlock(pos, next, Block.UPDATE_ALL);
-            level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3f, 1.2f);
-            tell(context.getPlayer(), next);
-        }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+        return InteractionResult.PASS;
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (!level.isClientSide) {
-            tell(player, state);
-        }
-        return InteractionResult.sidedSuccess(level.isClientSide);
+    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        IBE.onRemove(state, level, pos, newState);
+    }
+
+    @Override
+    public Class<SignalInterfaceBlockEntity> getBlockEntityClass() {
+        return SignalInterfaceBlockEntity.class;
+    }
+
+    @Override
+    public BlockEntityType<? extends SignalInterfaceBlockEntity> getBlockEntityType() {
+        return CMBlockEntities.REACTOR_SIGNAL_INTERFACE.get();
     }
 }

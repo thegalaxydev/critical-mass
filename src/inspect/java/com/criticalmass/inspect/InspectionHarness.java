@@ -155,6 +155,9 @@ public class InspectionHarness {
         if (step.has("sneak")) {
             mc.options.keyShift.setDown(step.get("sneak").getAsBoolean());
         }
+        if (step.has("holdUse")) {
+            mc.options.keyUse.setDown(step.get("holdUse").getAsBoolean());
+        }
         if (step.has("forward")) {
             mc.options.keyUp.setDown(step.get("forward").getAsBoolean());
         }

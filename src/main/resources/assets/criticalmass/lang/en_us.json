@@ -263,7 +263,6 @@
   "criticalmass.decon.self_clean": "You are not contaminated",
   "criticalmass.decon.no_runoff": "No tank within %s blocks can take the runoff",
   "criticalmass.decon.done": "Cleaned; %s mB of runoff collected",
-  "criticalmass.rod.bank_set": "Rod bank %s",
   "block.criticalmass.reactor_viewport": "Reactor Viewport",
   "item.criticalmass.plant_linker": "Plant Linker",
   "criticalmass.linker.tooltip": "Use on a machine to remember it, then on a Plant Screen to link it",
@@ -468,5 +467,9 @@
   "criticalmass.unit.of": "%s / %s",
   "criticalmass.goggles.label.cascade": "Cascade:",
   "criticalmass.goggles.cascade_stages": "%s stages",
-  "criticalmass.goggles.aside.yield": "%s Enriched Uranium from %s Concentrate"
+  "criticalmass.goggles.aside.yield": "%s Enriched Uranium from %s Concentrate",
+  "criticalmass.signal_interface.job": "Job",
+  "criticalmass.signal_interface.job_row": "Select",
+  "criticalmass.rod.bank": "Rod Bank",
+  "criticalmass.rod.bank_row": "Bank"
 }
