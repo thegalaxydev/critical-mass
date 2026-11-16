@@ -32,7 +32,6 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private final WireLinks wires = new WireLinks();
     private static final int UPDATE_TICKS = 5;
     private static final int SYNC_TICKS = 10;
-    private static final int RESCAN_TICKS = 40;
     private static final int LOAD_STEPS = 50;
     private LoadSetting setting;
     private double appliedPower;
@@ -50,9 +49,6 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private int tripIn;
     private int sectionCount = 1;
     private String status = "criticalmass.generator.stopped";
-    private PowerNetwork.Island island;
-    private int islandVersion = -1;
-    private int rescanIn;
     private int updateCooldown;
     private int syncCooldown;
 
@@ -124,6 +120,17 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
             at = at.relative(forward);
         }
         return out;
+    }
+
+    public BlockPos wiredSection() {
+        if (level != null) {
+            for (BlockPos pos : sections(level, masterPos(level, worldPosition))) {
+                if (level.getBlockEntity(pos) instanceof GeneratorBlockEntity part && !part.wires.isEmpty()) {
+                    return pos;
+                }
+            }
+        }
+        return worldPosition;
     }
 
     public GeneratorBlockEntity master() {
@@ -220,13 +227,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     }
 
     private PowerNetwork.Island island() {
-        int version = PowerNetwork.version(level);
-        if (island == null || version != islandVersion || rescanIn-- <= 0) {
-            island = PowerNetwork.scan(level, worldPosition);
-            islandVersion = version;
-            rescanIn = RESCAN_TICKS;
-        }
-        return island;
+        return PowerNetwork.scan(level, worldPosition);
     }
 
     private double headroom(List<GeneratorBlockEntity> parts) {

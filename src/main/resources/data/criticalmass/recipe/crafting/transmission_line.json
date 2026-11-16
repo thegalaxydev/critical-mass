@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": {
+      "item": "criticalmass:power_wire"
+    },
+    "N": {
+      "item": "criticalmass:steel_nugget"
+    }
+  },
+  "pattern": [
+    "WNW",
+    "NWN",
+    "WNW"
+  ],
+  "result": {
+    "id": "criticalmass:transmission_line",
+    "count": 5
+  }
+}

@@ -22,6 +22,9 @@ public final class CMConfig {
     public static final ModConfigSpec.BooleanValue MELTDOWN;
     public static final ModConfigSpec.IntValue CORIUM_DEPTH;
     public static final ModConfigSpec.DoubleValue CORIUM_CONTAMINATION;
+    public static final ModConfigSpec.BooleanValue ELECTRICAL_FIRES;
+    public static final ModConfigSpec.BooleanValue ELECTRICAL_BLASTS_BREAK_BLOCKS;
+    public static final ModConfigSpec.BooleanValue LIVE_WORK_HURTS;
     public static final int DEFAULT_FUEL_LIFETIME = 120000;
     public static final double DEFAULT_FUEL_WEAR = 0.25;
 
@@ -37,6 +40,11 @@ public final class CMConfig {
         MELTDOWN = b.comment("Whether fuel above 1800 C melts into corium and ruins its channel").define("meltdown", true);
         CORIUM_DEPTH = b.comment("How many solid blocks hot corium can melt down through after leaving the vessel").defineInRange("coriumDepth", 3, 0, 64);
         CORIUM_CONTAMINATION = b.comment("Multiplier on the contamination released when corium breaches the vessel").defineInRange("coriumContamination", 1.0, 0.0, 100.0);
+        b.pop();
+        b.push("electrical");
+        ELECTRICAL_FIRES = b.comment("Whether electrical faults start fires").define("fires", true);
+        ELECTRICAL_BLASTS_BREAK_BLOCKS = b.comment("Whether the blast from an electrical fault breaks the blocks round it; the failed equipment is always lost").define("blastsBreakBlocks", false);
+        LIVE_WORK_HURTS = b.comment("Whether stringing or cutting a wire on a live terminal hurts the player").define("liveWorkHurts", true);
         b.pop();
         b.push("radiation");
         RADIATION_ENABLED = b.comment("Whether players receive dose and contamination").define("enabled", true);

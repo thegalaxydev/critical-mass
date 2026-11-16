@@ -18,13 +18,10 @@ import net.minecraft.world.phys.Vec3;
 
 public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode {
     private static final int SYNC_TICKS = 10;
-    private static final int RESCAN_TICKS = 40;
     private final WireLinks wires = new WireLinks();
-    private PowerNetwork.Island island;
-    private int islandVersion = -1;
-    private int rescanIn;
     private boolean live;
     private double frequency;
+    private double kilovolts;
     private double load;
     private int syncIn;
 
@@ -60,18 +57,16 @@ public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         return frequency;
     }
 
+    public double kilovolts() {
+        return kilovolts;
+    }
+
     public double loadSu() {
         return load;
     }
 
     private PowerNetwork.Island island() {
-        int version = PowerNetwork.version(level);
-        if (island == null || version != islandVersion || rescanIn-- <= 0) {
-            island = PowerNetwork.scan(level, worldPosition);
-            islandVersion = version;
-            rescanIn = RESCAN_TICKS;
-        }
-        return island;
+        return PowerNetwork.scan(level, worldPosition);
     }
 
     @Override
@@ -84,8 +79,9 @@ public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         PowerNetwork.Island around = island();
         PowerNetwork.Side side = around.side(level);
         boolean was = live;
-        live = side.live();
-        frequency = side.frequency();
+        kilovolts = around.kilovoltsAt(level, worldPosition, 0);
+        live = side.live() && kilovolts > 0;
+        frequency = live ? side.frequency() : 0;
         load = live ? around.demand(level) : 0;
         if (was != live) {
             level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
@@ -99,6 +95,7 @@ public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         super.write(tag, registries, clientPacket);
         tag.putBoolean("Live", live);
         tag.putDouble("Frequency", frequency);
+        tag.putDouble("Kilovolts", kilovolts);
         tag.putDouble("Load", load);
         tag.put("Wires", wires.save());
     }
@@ -108,6 +105,7 @@ public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
         super.read(tag, registries, clientPacket);
         live = tag.getBoolean("Live");
         frequency = tag.getDouble("Frequency");
+        kilovolts = tag.getDouble("Kilovolts");
         load = tag.getDouble("Load");
         wires.load(tag, "Wires");
     }
@@ -116,8 +114,9 @@ public class BusBarBlockEntity extends SmartBlockEntity implements IHaveGoggleIn
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         ThermalTooltips.status(tooltip, live ? "criticalmass.bus.live" : "criticalmass.bus.dead", live ? ChatFormatting.GREEN : ChatFormatting.GRAY);
-        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.frequency");
-        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.hertz", ChatFormatting.AQUA, String.format(Locale.ROOT, "%.2f", frequency)));
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.voltage");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.kilovolts", ChatFormatting.AQUA, ThermalTooltips.number(kilovolts))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.at_hertz", String.format(Locale.ROOT, "%.2f", frequency))));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.bus_load");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Power.megawatts(load))));
         return true;

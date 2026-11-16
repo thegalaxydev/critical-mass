@@ -8,7 +8,9 @@ import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.TransformerBlockEntity;
 import com.criticalmass.content.power.WireLinks;
+import com.criticalmass.content.power.WireType;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.stress.BlockStressValues;
@@ -34,13 +36,28 @@ public final class PowerTests {
     private static final BlockPos BREAKER = new BlockPos(2, 4, 2);
     private static final BlockPos GRID = new BlockPos(2, 6, 2);
     private static final BlockPos POST = new BlockPos(5, 3, 4);
+    private static final BlockPos STEP_UP = new BlockPos(5, 5, 2);
+    private static final int MAIN = 0;
+    private static final int STARTUP = 1;
+    private static final int UNIT = 2;
 
     private PowerTests() {
     }
 
-    private static void wire(GameTestHelper h, BlockPos a, int ta, BlockPos b, int tb) {
-        String problem = WireLinks.connect(h.getLevel(), h.absolutePos(a), ta, h.absolutePos(b), tb);
+    private static void wire(GameTestHelper h, WireType type, BlockPos a, int ta, BlockPos b, int tb) {
+        String problem = WireLinks.connect(h.getLevel(), h.absolutePos(a), ta, h.absolutePos(b), tb, type);
         h.assertTrue(problem.isEmpty(), "A wire should string between two terminals in reach: " + problem);
+    }
+
+    private static void wire(GameTestHelper h, BlockPos a, int ta, BlockPos b, int tb) {
+        wire(h, WireType.CABLE, a, ta, b, tb);
+    }
+
+    private static TransformerBlockEntity transformer(GameTestHelper h, BlockPos pos, int ratio) {
+        h.setBlock(pos, CMBlocks.TRANSFORMER.get());
+        TransformerBlockEntity t = h.getBlockEntity(pos);
+        t.setRatio(ratio);
+        return t;
     }
 
     private static void line(GameTestHelper h, int sections, int rpm) {
@@ -54,7 +71,9 @@ public final class PowerTests {
         h.setBlock(POST, CMBlocks.INSULATOR.get());
         wire(h, GENERATOR.east(sections - 1), 0, POST, 0);
         wire(h, POST, 0, BREAKER, BreakerBlockEntity.LOAD);
-        wire(h, BREAKER, BreakerBlockEntity.LINE, GRID, 0);
+        transformer(h, STEP_UP, MAIN);
+        wire(h, BREAKER, BreakerBlockEntity.LINE, STEP_UP, TransformerBlockEntity.LOW);
+        wire(h, WireType.LINE, STEP_UP, TransformerBlockEntity.HIGH, GRID, 0);
         CreativeMotorBlockEntity motor = h.getBlockEntity(MOTOR);
         motor.generatedSpeed.setValue(rpm);
     }
@@ -69,8 +88,8 @@ public final class PowerTests {
                 .thenIdle(20)
                 .thenExecute(() -> {
                     h.assertTrue(g.energised() && !g.synced() && Math.abs(g.frequency() - Power.GRID_HZ) < 1e-6, "A generator at its rated speed should run at 50 Hz, unsynchronised: " + g.frequency());
-                    h.assertTrue(WireLinks.connect(h.getLevel(), h.absolutePos(GENERATOR), 0, h.absolutePos(POST), 0).endsWith("wire.already")
-                            && WireLinks.connect(h.getLevel(), h.absolutePos(GENERATOR), 0, h.absolutePos(GENERATOR), 0).endsWith("wire.same"), "A wire should not double up or loop onto its own end");
+                    h.assertTrue(WireLinks.connect(h.getLevel(), h.absolutePos(GENERATOR), 0, h.absolutePos(POST), 0, WireType.CABLE).endsWith("wire.already")
+                            && WireLinks.connect(h.getLevel(), h.absolutePos(GENERATOR), 0, h.absolutePos(GENERATOR), 0, WireType.CABLE).endsWith("wire.same"), "A wire should not double up or loop onto its own end");
                     g.setPhase(90);
                     h.assertTrue(breaker.close().endsWith("refused.phase") && !breaker.closed(), "A breaker should not close across two sides that are out of phase");
                     for (int i = 0; i < 15; i++) {
@@ -209,8 +228,11 @@ public final class PowerTests {
     @GameTest(template = EMPTY, timeoutTicks = 300)
     public static void aMotorRunsOnGridPowerAndTheGridCountsWhatItDraws(GameTestHelper h) {
         BlockPos gridPos = new BlockPos(1, 2, 1);
+        BlockPos stepDown = new BlockPos(3, 2, 1);
         BlockPos motorPos = new BlockPos(1, 2, 3);
         h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        TransformerBlockEntity t = transformer(h, stepDown, STARTUP);
+        wire(h, WireType.LINE, gridPos, 0, stepDown, TransformerBlockEntity.HIGH);
         MotorBlockEntity motor = motor(h, motorPos, 16, 2);
         GridTieBlockEntity grid = h.getBlockEntity(gridPos);
         double draw = drawFor(pressLoad(2, 16));
@@ -218,13 +240,15 @@ public final class PowerTests {
                 .thenIdle(20)
                 .thenExecute(() -> {
                     h.assertTrue(!motor.live() && motor.getSpeed() == 0 && motor.status().endsWith("motor.dead"), "A motor with no wire should stand still: " + motor.status());
-                    wire(h, gridPos, 0, motorPos, 0);
+                    h.assertTrue(Math.abs(t.lowSide() - Power.MOTOR_KV) < 0.01 && Math.abs(t.highSide() - Power.GRID_KV) < 0.01, "A 220 / 6 kV transformer on the grid should give 6 kV: " + t.lowSide());
+                    wire(h, WireType.COPPER, stepDown, TransformerBlockEntity.LOW, motorPos, 0);
                 })
                 .thenIdle(50)
                 .thenExecute(() -> {
-                    h.assertTrue(motor.live() && Math.abs(motor.getSpeed()) == 16, "A motor wired to the grid should turn at its set speed: " + motor.getSpeed());
+                    h.assertTrue(motor.live() && Math.abs(motor.getSpeed()) == 16, "A motor on 6 kV should turn at its set speed: " + motor.status());
                     h.assertTrue(near(motor.demandSu(), draw), "A motor should draw what its shaft load takes, plus its losses: " + motor.demandSu() + " for " + draw);
                     h.assertTrue(near(-Power.su(grid.deliveredMw()), draw), "The grid should count what the plant draws from it: " + grid.deliveredMw());
+                    h.assertTrue(near(Power.su(t.throughMw()), draw), "The transformer should carry what the motor draws: " + t.throughMw());
                     h.setBlock(motorPos.north(), Blocks.REDSTONE_BLOCK);
                 })
                 .thenIdle(30)
@@ -236,32 +260,41 @@ public final class PowerTests {
                 .thenIdle(20)
                 .thenExecute(() -> {
                     h.assertTrue(motor.live(), "A motor should start again when the signal goes");
-                    WireLinks.cutAll(h.getLevel(), h.absolutePos(gridPos));
+                    t.setRatio(MAIN);
                 })
                 .thenIdle(20)
-                .thenExecute(() -> h.assertTrue(!motor.live() && motor.status().endsWith("motor.dead"), "Cutting its wire should stop a motor: " + motor.status()))
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(motorPos).isAir() || !h.getBlockState(motorPos).is(CMBlocks.ELECTRIC_MOTOR.get()), "A 6 kV motor given 20 kV should burn out");
+                    h.assertTrue(t.wires().count(TransformerBlockEntity.LOW) == 0, "A copper wire given 20 kV should flash over and be lost");
+                })
                 .thenSucceed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 400)
     public static void aGeneratorAloneCarriesItsBusAndItsBreakerTripsOnOverload(GameTestHelper h) {
         BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
         BlockPos driverPos = new BlockPos(0, 2, 2);
         BlockPos generatorPos = new BlockPos(1, 2, 2);
         BlockPos breakerPos = new BlockPos(1, 2, 5);
-        BlockPos busPos = new BlockPos(3, 2, 5);
+        BlockPos unit = new BlockPos(3, 2, 6);
+        BlockPos busPos = new BlockPos(4, 2, 4);
         BlockPos loadPos = new BlockPos(2, 4, 2);
         h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
         MotorBlockEntity driver = motor(h, driverPos, (int) Power.SYNC_RPM, 0);
         h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
         h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        transformer(h, unit, UNIT);
         h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         h.setBlock(busPos.east(), CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
         MotorBlockEntity load = motor(h, loadPos, (int) Power.SYNC_RPM, 1);
-        wire(h, gridPos, 0, driverPos, 0);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, WireType.COPPER, startup, TransformerBlockEntity.LOW, driverPos, 0);
         wire(h, generatorPos, 0, breakerPos, BreakerBlockEntity.LOAD);
-        wire(h, breakerPos, BreakerBlockEntity.LINE, busPos, 0);
-        wire(h, busPos.east(), 0, loadPos, 0);
+        wire(h, breakerPos, BreakerBlockEntity.LINE, unit, TransformerBlockEntity.HIGH);
+        wire(h, unit, TransformerBlockEntity.LOW, busPos, 0);
+        wire(h, WireType.COPPER, busPos.east(), 0, loadPos, 0);
         GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
         BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
         BusBarBlockEntity bus = h.getBlockEntity(busPos);
@@ -275,7 +308,8 @@ public final class PowerTests {
                 .thenIdle(60)
                 .thenExecute(() -> {
                     double draw = drawFor(pressLoad(1, (int) Power.SYNC_RPM));
-                    h.assertTrue(bus.live() && load.live() && Math.abs(load.getSpeed()) == Power.SYNC_RPM, "Two bars in a line should be one bus and feed the motor wired to the far one");
+                    h.assertTrue(bus.live() && Math.abs(bus.kilovolts() - Power.MOTOR_KV) < 0.01, "A 20 / 6 kV transformer should put 6 kV on the bus: " + bus.kilovolts());
+                    h.assertTrue(load.live() && Math.abs(load.getSpeed()) == Power.SYNC_RPM, "Two bars in a line should be one bus and feed the motor wired to the far one: " + load.status());
                     h.assertTrue(near(load.demandSu(), draw) && near(g.outputSu(), draw), "A generator alone should make what its bus draws: " + g.outputSu() + " for " + load.demandSu());
                     h.assertTrue(near(bus.loadSu(), draw) && g.status().endsWith("generator.supplying"), "The bus should read its load: " + bus.loadSu());
                     h.assertTrue(driver.demandSu() > g.outputSu(), "Turning a generator with a motor should cost more than it makes");
@@ -296,8 +330,10 @@ public final class PowerTests {
         BlockPos[] drivers = {new BlockPos(0, 2, 0), new BlockPos(0, 2, 6)};
         BlockPos[] breakers = {new BlockPos(3, 2, 0), new BlockPos(3, 2, 6)};
         BlockPos busPos = new BlockPos(5, 2, 3);
+        BlockPos unit = new BlockPos(6, 2, 5);
         BlockPos loadPos = new BlockPos(3, 4, 3);
         h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
+        transformer(h, unit, UNIT);
         for (int i = 0; i < 2; i++) {
             h.setBlock(drivers[i], AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
             h.setBlock(drivers[i].east(), CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
@@ -308,7 +344,8 @@ public final class PowerTests {
             driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
         }
         MotorBlockEntity load = motor(h, loadPos, (int) Power.SYNC_RPM, 2);
-        wire(h, busPos, 0, loadPos, 0);
+        wire(h, busPos, 0, unit, TransformerBlockEntity.HIGH);
+        wire(h, WireType.COPPER, unit, TransformerBlockEntity.LOW, loadPos, 0);
         GeneratorBlockEntity[] g = {h.getBlockEntity(drivers[0].east()), h.getBlockEntity(drivers[1].east())};
         BreakerBlockEntity[] b = {h.getBlockEntity(breakers[0]), h.getBlockEntity(breakers[1])};
         double draw = drawFor(pressLoad(2, (int) Power.SYNC_RPM));
@@ -340,6 +377,169 @@ public final class PowerTests {
                 })
                 .thenIdle(40)
                 .thenExecute(() -> h.assertTrue(!b[lead[0]].closed() && b[lead[0]].tripReason().endsWith("not_synchronised"), "Starting it again onto the live bus should trip its breaker: " + b[lead[0]].tripReason()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void equipmentOnTheWrongVoltageIsLost(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(3, 2, 3);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        BlockPos generatorPos = new BlockPos(5, 2, 5);
+        BlockPos breakerPos = new BlockPos(5, 2, 1);
+        BlockPos aloneDriver = new BlockPos(0, 4, 1);
+        BlockPos post = new BlockPos(1, 3, 1);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        motor(h, motorPos, 16, 0);
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(aloneDriver, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        h.setBlock(aloneDriver.east(), CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(post.below(), Blocks.STONE);
+        h.setBlock(post, CMBlocks.INSULATOR.get());
+        CreativeMotorBlockEntity driver = h.getBlockEntity(aloneDriver);
+        driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+        wire(h, WireType.LINE, gridPos, 0, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, aloneDriver.east(), 0, breakerPos, BreakerBlockEntity.LOAD);
+        GridTieBlockEntity grid = h.getBlockEntity(gridPos);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(breaker.close().endsWith("refused.voltage") && !breaker.closed(), "A breaker should not close 20 kV onto 220 kV");
+                    wire(h, WireType.COPPER, gridPos, 0, post, 0);
+                })
+                .thenIdle(12)
+                .thenExecute(() -> {
+                    h.assertTrue(grid.wires().count(0) == 1, "A copper wire on 220 kV should flash over and be lost: " + grid.wires().count(0));
+                    wire(h, WireType.LINE, gridPos, 0, motorPos, 0);
+                })
+                .thenIdle(12)
+                .thenExecute(() -> {
+                    h.assertTrue(!h.getBlockState(motorPos).is(CMBlocks.ELECTRIC_MOTOR.get()), "A 6 kV motor wired to 220 kV should be lost");
+                    wire(h, WireType.LINE, gridPos, 0, generatorPos, 0);
+                })
+                .thenIdle(12)
+                .thenExecute(() -> {
+                    h.assertTrue(!h.getBlockState(generatorPos).is(CMBlocks.GENERATOR.get()), "A 20 kV generator wired to 220 kV should be lost");
+                    h.assertTrue(h.getBlockState(aloneDriver.east()).is(CMBlocks.GENERATOR.get()), "The generator behind the open breaker should be safe");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void anOverloadedWireHeatsAndBurnsThrough(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos busPos = new BlockPos(5, 2, 0);
+        BlockPos[] motors = {new BlockPos(0, 2, 3), new BlockPos(0, 4, 3)};
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        TransformerBlockEntity t = transformer(h, startup, STARTUP);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, WireType.COPPER, startup, TransformerBlockEntity.LOW, busPos, 0);
+        MotorBlockEntity[] m = new MotorBlockEntity[2];
+        for (int i = 0; i < 2; i++) {
+            m[i] = motor(h, motors[i], (int) Power.SYNC_RPM, 4);
+            wire(h, busPos, 0, motors[i], 0);
+        }
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        h.startSequence()
+                .thenIdle(70)
+                .thenExecute(() -> {
+                    h.assertTrue(m[0].live() && m[1].live() && bus.live(), "Both motors should start on the bus");
+                    WireLinks.Link feed = t.wires().find(h.absolutePos(busPos), TransformerBlockEntity.LOW, 0);
+                    WireLinks.Link back = bus.wires().find(h.absolutePos(startup), 0, TransformerBlockEntity.LOW);
+                    h.assertTrue(feed != null && back != null, "The feed should still be up after three seconds");
+                    double warmth = Math.max(t.wires().heat(feed), bus.wires().heat(back));
+                    h.assertTrue(warmth > 0.15 && warmth < 1, "A copper wire carrying two motors should be heating: " + warmth);
+                })
+                .thenIdle(200)
+                .thenExecute(() -> {
+                    h.assertTrue(t.wires().count(TransformerBlockEntity.LOW) == 0 && bus.wires().count(0) == 2, "The overloaded wire should burn through and the others stay");
+                    h.assertTrue(!bus.live() && !m[0].live() && !m[1].live(), "Losing the feed should leave the bus dead");
+                })
+                .thenSucceed();
+    }
+
+    private static GeneratorBlockEntity bigUnit(GameTestHelper h, BlockPos breakerPos) {
+        BlockPos driverPos = new BlockPos(0, 2, 2);
+        h.setBlock(driverPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        for (int i = 1; i <= 4; i++) {
+            h.setBlock(driverPos.east(i), CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        }
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        wire(h, driverPos.east(), 0, breakerPos, BreakerBlockEntity.LOAD);
+        CreativeMotorBlockEntity driver = h.getBlockEntity(driverPos);
+        driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+        return h.getBlockEntity(driverPos.east());
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 800)
+    public static void anOverloadedTransformerOverheatsAndExplodes(GameTestHelper h) {
+        BlockPos breakerPos = new BlockPos(1, 4, 4);
+        BlockPos stepUp = new BlockPos(4, 4, 4);
+        BlockPos gridPos = new BlockPos(6, 4, 4);
+        GeneratorBlockEntity g = bigUnit(h, breakerPos);
+        TransformerBlockEntity t = transformer(h, stepUp, MAIN);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        wire(h, breakerPos, BreakerBlockEntity.LINE, stepUp, TransformerBlockEntity.LOW);
+        wire(h, WireType.LINE, stepUp, TransformerBlockEntity.HIGH, gridPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        double full = Power.megawatts(4 * Power.SECTION_RATED_SU);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    g.setPhase(0);
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "The unit should synchronise through its step-up transformer");
+                })
+                .thenIdle(10)
+                .thenExecute(() -> g.setLoad(1.0))
+                .thenIdle(170)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(t.throughMw() - full) < full * 0.05, "The transformer should carry the whole unit: " + t.throughMw() + " of " + full);
+                    h.assertTrue(t.heat() > 0.2 && t.heat() < 1 && t.comparator() > 0, "A transformer above its rating should heat up: " + t.heat());
+                })
+                .thenIdle(400)
+                .thenExecute(() -> {
+                    h.assertTrue(!h.getBlockState(stepUp).is(CMBlocks.TRANSFORMER.get()), "A transformer left overloaded should explode");
+                    h.assertTrue(!g.synced() && g.outputSu() == 0, "Losing the transformer should take the unit off the grid: " + g.status());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void transformersSideBySideShareTheLoad(GameTestHelper h) {
+        BlockPos breakerPos = new BlockPos(1, 4, 4);
+        BlockPos busPos = new BlockPos(3, 4, 4);
+        BlockPos[] stepUps = {new BlockPos(5, 4, 2), new BlockPos(5, 4, 6)};
+        BlockPos gridPos = new BlockPos(7, 4, 4);
+        GeneratorBlockEntity g = bigUnit(h, breakerPos);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        wire(h, breakerPos, BreakerBlockEntity.LINE, busPos, 0);
+        TransformerBlockEntity[] t = new TransformerBlockEntity[2];
+        for (int i = 0; i < 2; i++) {
+            t[i] = transformer(h, stepUps[i], MAIN);
+            wire(h, busPos, 0, stepUps[i], TransformerBlockEntity.LOW);
+            wire(h, WireType.LINE, stepUps[i], TransformerBlockEntity.HIGH, gridPos, 0);
+        }
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        GridTieBlockEntity grid = h.getBlockEntity(gridPos);
+        double full = Power.megawatts(4 * Power.SECTION_RATED_SU);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    g.setPhase(0);
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "The unit should synchronise through two transformers side by side");
+                })
+                .thenIdle(10)
+                .thenExecute(() -> g.setLoad(1.0))
+                .thenIdle(200)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(t[0].throughMw() - full / 2) < full * 0.05 && Math.abs(t[1].throughMw() - full / 2) < full * 0.05,
+                            "Two transformers side by side should each carry half: " + t[0].throughMw() + " and " + t[1].throughMw());
+                    h.assertTrue(t[0].heat() == 0 && t[1].heat() == 0 && Math.abs(grid.deliveredMw() - full) < full * 0.05, "Neither should heat, and the grid should get the whole unit: " + grid.deliveredMw());
+                })
                 .thenSucceed();
     }
 }

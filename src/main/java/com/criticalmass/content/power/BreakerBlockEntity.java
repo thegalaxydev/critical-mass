@@ -30,6 +30,8 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private boolean loadLive;
     private double lineHz;
     private double loadHz;
+    private double lineKv;
+    private double loadKv;
     private double angle;
     private int syncIn;
 
@@ -112,7 +114,12 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         PowerNetwork.Island below = PowerNetwork.scanSide(level, worldPosition, LOAD);
         PowerNetwork.Side a = above.side(level);
         PowerNetwork.Side b = below.side(level);
-        if (a.live() && b.live()) {
+        double high = above.kilovoltsAt(level, worldPosition, LINE);
+        double low = below.kilovoltsAt(level, worldPosition, LOAD);
+        if (high > 0 && low > 0 && Math.abs(high - low) > Math.max(high, low) * 0.05) {
+            return "criticalmass.breaker.refused.voltage";
+        }
+        if (a.live() && b.live() && high > 0 && low > 0) {
             if (Math.abs(a.frequency() - b.frequency()) > Power.SYNC_HZ) {
                 return "criticalmass.breaker.refused.frequency";
             }
@@ -154,13 +161,20 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
             return;
         }
         syncIn = SYNC_TICKS;
-        PowerNetwork.Side a = line();
-        PowerNetwork.Side b = closed() ? a : load();
-        lineLive = a.live();
-        loadLive = b.live();
+        PowerNetwork.Island above = PowerNetwork.scanSide(level, worldPosition, LINE);
+        PowerNetwork.Island below = closed() ? above : PowerNetwork.scanSide(level, worldPosition, LOAD);
+        PowerNetwork.Side a = above.side(level);
+        PowerNetwork.Side b = below.side(level);
+        lineKv = above.kilovoltsAt(level, worldPosition, LINE);
+        loadKv = closed() ? PowerNetwork.kilovolts(level, worldPosition, LOAD) : below.kilovoltsAt(level, worldPosition, LOAD);
+        if (closed()) {
+            lineKv = loadKv;
+        }
+        lineLive = a.live() && lineKv > 0;
+        loadLive = b.live() && loadKv > 0;
         lineHz = a.frequency();
         loadHz = b.frequency();
-        angle = a.live() && b.live() ? Power.wrap(b.phase() - a.phase()) : 0;
+        angle = lineLive && loadLive ? Power.wrap(b.phase() - a.phase()) : 0;
         sendData();
     }
 
@@ -172,6 +186,8 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         tag.putBoolean("LoadLive", loadLive);
         tag.putDouble("LineHz", lineHz);
         tag.putDouble("LoadHz", loadHz);
+        tag.putDouble("LineKv", lineKv);
+        tag.putDouble("LoadKv", loadKv);
         tag.putDouble("Angle", angle);
         tag.put("Wires", wires.save());
     }
@@ -184,12 +200,15 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         loadLive = tag.getBoolean("LoadLive");
         lineHz = tag.getDouble("LineHz");
         loadHz = tag.getDouble("LoadHz");
+        lineKv = tag.getDouble("LineKv");
+        loadKv = tag.getDouble("LoadKv");
         angle = tag.getDouble("Angle");
         wires.load(tag, "Wires");
     }
 
-    private static Component side(boolean live, double hz) {
-        return live ? ThermalTooltips.reading("criticalmass.unit.hertz", ChatFormatting.AQUA, String.format(Locale.ROOT, "%.2f", hz))
+    private static Component side(boolean live, double hz, double kv) {
+        return live ? ThermalTooltips.reading("criticalmass.unit.kilovolts", ChatFormatting.AQUA, ThermalTooltips.number(kv))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.at_hertz", String.format(Locale.ROOT, "%.2f", hz)))
                 : ThermalTooltips.reading("criticalmass.breaker.dead", ChatFormatting.GRAY);
     }
 
@@ -202,9 +221,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
             ThermalTooltips.status(tooltip, tripReason.isEmpty() ? "criticalmass.breaker.open" : tripReason, tripReason.isEmpty() ? ChatFormatting.GRAY : ChatFormatting.RED);
         }
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.line_side");
-        ThermalTooltips.value(tooltip, side(lineLive, lineHz));
+        ThermalTooltips.value(tooltip, side(lineLive, lineHz, lineKv));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.load_side");
-        ThermalTooltips.value(tooltip, side(loadLive, loadHz));
+        ThermalTooltips.value(tooltip, side(loadLive, loadHz, loadKv));
         return true;
     }
 }

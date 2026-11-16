@@ -25,7 +25,6 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     public static final int MAX_SPEED = 256;
     private static final int CHECK_TICKS = 5;
     private static final int SYNC_TICKS = 10;
-    private static final int RESCAN_TICKS = 40;
     private static final String RUNNING = "criticalmass.motor.running";
     private static final String DEAD = "criticalmass.motor.dead";
     private final WireLinks wires = new WireLinks();
@@ -33,9 +32,6 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     private boolean live;
     private double demand;
     private String status = DEAD;
-    private PowerNetwork.Island island;
-    private int islandVersion = -1;
-    private int rescanIn;
     private int checkIn;
     private int syncIn;
 
@@ -99,6 +95,11 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     }
 
     @Override
+    public double ratedKilovolts() {
+        return Power.MOTOR_KV;
+    }
+
+    @Override
     public void initialize() {
         super.initialize();
         if (!hasSource() || getGeneratedSpeed() > getTheoreticalSpeed()) {
@@ -123,13 +124,7 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     }
 
     private PowerNetwork.Island island() {
-        int version = PowerNetwork.version(level);
-        if (island == null || version != islandVersion || rescanIn-- <= 0) {
-            island = PowerNetwork.scan(level, worldPosition);
-            islandVersion = version;
-            rescanIn = RESCAN_TICKS;
-        }
-        return island;
+        return PowerNetwork.scan(level, worldPosition);
     }
 
     @Override
@@ -140,9 +135,12 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
         }
         if (checkIn-- <= 0) {
             checkIn = CHECK_TICKS;
-            PowerNetwork.Side side = island().side(level);
-            boolean inBand = side.live() && side.frequency() >= Power.SUPPLY_MIN_HZ && side.frequency() <= Power.SUPPLY_MAX_HZ;
-            String now = level.hasNeighborSignal(worldPosition) ? "criticalmass.motor.held" : !side.live() ? DEAD : inBand ? RUNNING : "criticalmass.motor.frequency";
+            PowerNetwork.Island around = island();
+            PowerNetwork.Side side = around.side(level);
+            double kilovolts = around.kilovoltsAt(level, worldPosition, 0);
+            boolean inBand = side.frequency() >= Power.SUPPLY_MIN_HZ && side.frequency() <= Power.SUPPLY_MAX_HZ;
+            String now = level.hasNeighborSignal(worldPosition) ? "criticalmass.motor.held" : !side.live() || kilovolts <= 0 ? DEAD
+                    : kilovolts < Power.MOTOR_KV * Power.UNDERVOLTAGE ? "criticalmass.motor.voltage" : inBand ? RUNNING : "criticalmass.motor.frequency";
             boolean run = now.equals(RUNNING);
             if (!now.equals(status)) {
                 status = now;

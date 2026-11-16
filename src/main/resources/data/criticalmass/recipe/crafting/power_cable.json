@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "W": {
+      "item": "criticalmass:power_wire"
+    },
+    "K": {
+      "item": "minecraft:dried_kelp"
+    }
+  },
+  "pattern": [
+    "KKK",
+    "WWW",
+    "KKK"
+  ],
+  "result": {
+    "id": "criticalmass:power_cable",
+    "count": 3
+  }
+}

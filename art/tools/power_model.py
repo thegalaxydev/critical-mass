@@ -82,6 +82,15 @@ def bus():
                                                                   "axis=x": {"model": M + "bus_bar", "x": 90, "y": 90}}})
 
 
+def transformer():
+    parts, textures = bbmodel.load("transformer")
+    bbmodel.write(os.path.join(BLOCK, "transformer.json"), bbmodel.model(parts["body"], textures, textures["0"]))
+    item("transformer", "transformer")
+    bbmodel.write(os.path.join(STATES, "transformer.json"), {"variants": {"facing=" + side: dict({"model": M + "transformer"}, **turn) for side, turn in FACING.items()}})
+    for name in ("power_cable", "transmission_line"):
+        bbmodel.write(os.path.join(ITEMS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "criticalmass:item/" + name}})
+
+
 def main():
     insulator()
     generator()
@@ -89,10 +98,11 @@ def main():
     grid()
     motor()
     bus()
-    print("exported the insulator, wire, generator, breaker, grid connection, motor and bus bar")
+    transformer()
+    print("exported the insulator, wires, generator, breaker, grid connection, motor, bus bar and transformer")
     if len(sys.argv) > 1:
         shots = []
-        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),))):
+        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),))):
             path = sys.argv[1].replace(".png", "_" + ref + ".png")
             bbmodel.preview(M + ref, path, views=views, size=260)
             with Image.open(path) as shot:

@@ -109,7 +109,7 @@ public final class DashPart {
             case FLOW, OUTPUT -> 15;
             case POWER -> 22;
             case RODS_A, RODS_B, RODS_C, RODS_D -> 32;
-            case SPEED, FREQUENCY, SYNC, DEMAND -> DEFAULT_FACE;
+            case SPEED, FREQUENCY, SYNC, DEMAND, VOLTAGE -> DEFAULT_FACE;
             case NEUTRON -> 23;
             case PERIOD -> 33;
             case REACTIVITY -> 28;

@@ -14,6 +14,7 @@ import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
+import com.criticalmass.content.power.TransformerBlockEntity;
 import com.criticalmass.content.power.InsulatorBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
@@ -66,6 +67,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new MotorBlockEntity(CMBlockEntities.ELECTRIC_MOTOR.get(), pos, state), CMBlocks.ELECTRIC_MOTOR.get()).build(null));
     public static final Supplier<BlockEntityType<BusBarBlockEntity>> BUS_BAR = BLOCK_ENTITIES.register("bus_bar",
             () -> BlockEntityType.Builder.of((pos, state) -> new BusBarBlockEntity(CMBlockEntities.BUS_BAR.get(), pos, state), CMBlocks.BUS_BAR.get()).build(null));
+    public static final Supplier<BlockEntityType<TransformerBlockEntity>> TRANSFORMER = BLOCK_ENTITIES.register("transformer",
+            () -> BlockEntityType.Builder.of((pos, state) -> new TransformerBlockEntity(CMBlockEntities.TRANSFORMER.get(), pos, state), CMBlocks.TRANSFORMER.get()).build(null));
 
     public static final Supplier<BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReactorControllerBlockEntity(CMBlockEntities.REACTOR_CONTROLLER.get(), pos, state), CMBlocks.REACTOR_CONTROLLER.get()).build(null));

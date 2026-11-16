@@ -7,7 +7,7 @@ from plant_style import BLOCK, BRASS, GLASS, Sheet, nine, ramp, source
 INSULATOR = {"base_top": (0, 0, 6, 6), "base_side": (6, 0, 6, 1), "shed_top": (6, 2, 6, 6), "shed_side": (6, 8, 6, 1), "body": (0, 6, 4, 7), "cap": (12, 0, 2, 2), "cap_side": (12, 2, 2, 2)}
 WIRE = {"all": (0, 0, 16, 16)}
 ITEM = os.path.join(os.path.dirname(BLOCK), "item")
-STRAND = [(24, 28, 36), (40, 47, 58), (66, 77, 92)]
+STRAND = [(84, 44, 30), (136, 76, 48), (190, 118, 76)]
 GENERATOR = {"barrel": (0, 0, 12, 14), "flange_side": (12, 0, 14, 1), "end": (0, 14, 14, 14), "bore": (14, 14, 4, 1), "stud": (18, 14, 2, 2)}
 BREAKER = {"door": (0, 0, 14, 14), "wall": (14, 0, 14, 1), "handle": (14, 2, 2, 2), "red": (16, 2, 2, 2), "red_lit": (18, 2, 2, 2), "green": (20, 2, 2, 2),
            "green_lit": (22, 2, 2, 2), "terminal": (0, 14, 16, 16)}
@@ -15,6 +15,10 @@ GRID = {"tank": (0, 0, 14, 11), "tank_top": (0, 11, 14, 14), "bushing": (14, 0, 
 MOTOR = {"side": (0, 0, 11, 12), "top": (12, 0, 12, 11), "front": (0, 12, 10, 10), "back": (10, 12, 10, 10), "rim": (20, 12, 12, 12), "foot": (0, 22, 10, 2),
          "box_side": (0, 24, 6, 2), "box_top": (6, 24, 6, 6)}
 BUS = {"bar": (0, 0, 4, 16), "bar_end": (4, 0, 4, 4), "post": (4, 4, 5, 4), "plate": (9, 4, 6, 6), "plate_side": (4, 10, 6, 1)}
+TRANSFORMER = {"tank_end": (0, 0, 8, 11), "tank_top": (8, 0, 14, 8), "fins": (0, 11, 12, 8), "fin_end": (12, 11, 3, 8), "lid": (0, 19, 16, 10), "lid_side": (16, 19, 16, 1),
+               "bushing": (22, 0, 2, 4), "bushing_top": (24, 0, 2, 2), "tank": (26, 0, 4, 3)}
+CABLE_TONES = [(10, 12, 16), (22, 25, 31), (44, 49, 58)]
+LINE_TONES = [(92, 99, 108), (142, 150, 160), (196, 202, 210)]
 WINDING = (5, 6, 7, 8)
 
 
@@ -46,16 +50,17 @@ def insulator(steel, tone):
     return sheet
 
 
-def wire():
-    copper = palette("copper")
+def wire(strand=None, tip=None):
+    copper = tip or palette("copper")
+    strand = strand or STRAND
     sheet = Sheet(16, WIRE)
     for y in range(16):
         for x in range(16):
             r = ((x - 6.5) ** 2 + (y - 7.5) ** 2) ** 0.5
             if 2.6 <= r < 6.4:
-                band = STRAND[0] if r < 3.3 or r >= 5.7 else STRAND[2] if 4.1 <= r < 4.9 and x + y < 14 else STRAND[1]
+                band = strand[0] if r < 3.3 or r >= 5.7 else strand[2] if 4.1 <= r < 4.9 and x + y < 14 else strand[1]
                 sheet.put("all", x, y, band)
-    for x, y, c in ((11, 11, STRAND[1]), (12, 12, STRAND[1]), (12, 11, STRAND[0]), (11, 12, STRAND[0]), (13, 13, copper[4]), (14, 14, copper[5]), (14, 13, copper[2]), (13, 14, copper[2])):
+    for x, y, c in ((11, 11, strand[1]), (12, 12, strand[1]), (12, 11, strand[0]), (11, 12, strand[0]), (13, 13, copper[4]), (14, 14, copper[5]), (14, 13, copper[2]), (13, 14, copper[2])):
         sheet.put("all", x, y, c)
     return sheet
 
@@ -177,11 +182,37 @@ def bus(steel, tone):
     return sheet
 
 
+def transformer(steel, tone):
+    ceramic, copper = palette("ceramic"), palette("copper")
+    sheet = Sheet(32, TRANSFORMER)
+    for y in range(11):
+        for x in range(8):
+            sheet.put("tank_end", x, y, tone[4] if y == 0 else tone[1] if y == 10 else tone[5] if x == 0 else tone[2] if x == 7 else tone[3])
+    sheet.paste("tank_top", nine(steel, 14, 8))
+    for y in range(8):
+        for x in range(12):
+            sheet.put("fins", x, y, tone[1] if y == 7 else tone[4] if x % 2 == 0 else tone[1])
+        for x in range(3):
+            sheet.put("fin_end", x, y, tone[1] if y == 7 else (tone[4], tone[3], tone[2])[x])
+    sheet.paste("lid", nine(steel, 16, 10))
+    for x in range(16):
+        sheet.put("lid_side", x, 0, tone[2] if x in (0, 15) else tone[5])
+    for y in range(4):
+        sheet.put("bushing", 0, y, ceramic[4] if y % 2 == 0 else ceramic[2])
+        sheet.put("bushing", 1, y, ceramic[3] if y % 2 == 0 else ceramic[1])
+    sheet.fill("bushing_top", 0, 0, 1, 1, copper[4])
+    sheet.put("bushing_top", 1, 1, copper[2])
+    for y in range(3):
+        for x in range(4):
+            sheet.put("tank", x, y, tone[5] if y == 0 else tone[2] if y == 2 else tone[4] if x < 3 else tone[2])
+    return sheet
+
+
 def sheets():
     casing = source("reactor_vessel_casing")
     steel = source("steel_block")
     tone = ramp(steel)
-    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone)}
+    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone)}
 
 
 def main():
@@ -192,7 +223,9 @@ def main():
         sheet.save(os.path.join(BLOCK, name + ".png"))
         print("painted", name)
     wire().save(os.path.join(ITEM, "power_wire.png"))
-    print("painted power_wire")
+    wire(CABLE_TONES).save(os.path.join(ITEM, "power_cable.png"))
+    wire(LINE_TONES, LINE_TONES + LINE_TONES).save(os.path.join(ITEM, "transmission_line.png"))
+    print("painted the three wires")
 
 
 if __name__ == "__main__":

@@ -28,11 +28,7 @@ import net.minecraft.world.phys.Vec3;
 public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode {
     private final WireLinks wires = new WireLinks();
     private static final int SYNC_TICKS = 10;
-    private static final int RESCAN_TICKS = 40;
     private ScrollValueBehaviour contract;
-    private PowerNetwork.Island island;
-    private int islandVersion = -1;
-    private int rescanIn;
     private double delivered;
     private double order;
     private int orderTicks;
@@ -114,13 +110,7 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     }
 
     private PowerNetwork.Island island() {
-        int version = PowerNetwork.version(level);
-        if (island == null || version != islandVersion || rescanIn-- <= 0) {
-            island = PowerNetwork.scan(level, worldPosition);
-            islandVersion = version;
-            rescanIn = RESCAN_TICKS;
-        }
-        return island;
+        return PowerNetwork.scan(level, worldPosition);
     }
 
     private void finish(boolean met) {

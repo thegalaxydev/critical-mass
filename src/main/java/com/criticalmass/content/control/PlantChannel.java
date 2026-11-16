@@ -7,6 +7,7 @@ import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.TransformerBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
@@ -40,7 +41,8 @@ public enum PlantChannel {
     BORON("boron", "ppm"),
     FREQUENCY("frequency", "Hz"),
     SYNC("sync", "\u00b0"),
-    DEMAND("demand", "MW");
+    DEMAND("demand", "MW"),
+    VOLTAGE("voltage", "kV");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -64,7 +66,11 @@ public enum PlantChannel {
 
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
-                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity;
+                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity;
+    }
+
+    private static double scale(double kilovolts) {
+        return kilovolts <= Power.MOTOR_KV * Power.OVERVOLTAGE ? 8 : kilovolts <= Power.GENERATOR_KV * Power.OVERVOLTAGE ? 25 : 250;
     }
 
     private Reading of(double value, double min, double max) {
@@ -154,7 +160,16 @@ public enum PlantChannel {
         if (be instanceof BusBarBlockEntity bus) {
             return switch (this) {
                 case FREQUENCY -> of(bus.frequency(), 45, 55);
+                case VOLTAGE -> of(bus.kilovolts(), 0, scale(bus.kilovolts()));
                 case DEMAND -> of(Power.megawatts(bus.loadSu()), 0, Power.megawatts(Power.SECTION_RATED_SU));
+                default -> null;
+            };
+        }
+        if (be instanceof TransformerBlockEntity t) {
+            return switch (this) {
+                case VOLTAGE -> of(t.lowSide(), 0, scale(t.lowKilovolts()));
+                case DEMAND -> of(t.throughMw(), 0, Power.TRANSFORMER_MW * 1.5);
+                case TEMPERATURE -> of(t.oilTemperature(), 0, 120);
                 default -> null;
             };
         }

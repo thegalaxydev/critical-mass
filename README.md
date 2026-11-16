@@ -210,25 +210,35 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 **Electricity.** The plant has its own electrical system. It does not use Forge Energy and nothing stores power: what the generators make goes down the wires as they make it. Values live in `content/power/Power.java`.
 - **Generator:** a block with a shaft through it. Sections in a line on one shaft are one machine, up to 8 sections.
   - Each section is rated 8,192 SU, which is 32.8 MW (1 SU is 4 kW).
-  - It makes 50 Hz at 64 RPM, so set the turbine's rated speed to 64.
+  - It makes 50 Hz at 64 RPM, so set the turbine's rated speed to 64. Its terminals are at 20 kV.
   - Its load on the shaft is its load setting times its rating, limited to what the shaft has to spare. The sections share it evenly.
   - Off the grid it carries whatever is wired to it: see Off the grid below.
-- **Power Wire:** use it on one terminal, then on another, to string a wire between them. Generators, Electric Motors, Circuit Breakers, Bus Bars, Grid Connections and Insulators have terminals.
+- **Voltages:** the plant works at three. Generators make 20 kV, the grid is 220 kV and motors take 6 kV. Transformers join them.
+  - Everything is built for its own voltage and stands 10% more. Above that it is lost: see Faults below.
+  - A voltage reaches as far as wires, closed breakers and bus bars carry it. A transformer starts a new one on its other side.
+- **Wires:** there are three, and each has a highest voltage and a highest current. Use one on a terminal, then on another, to string it between them. Generators, Electric Motors, Transformers, Circuit Breakers, Bus Bars, Grid Connections and Insulators have terminals.
+  - **Power Wire:** copper, for 6 kV and 1 kA, which is 10 MW: one motor at full load.
+  - **Power Cable:** thick and black, for 20 kV and 4 kA. That is 139 MW at 20 kV, enough for four generator sections, or 42 MW at 6 kV to feed a motor bus.
+  - **Transmission Line:** bare and silver, for 220 kV and 1 kA, which is 381 MW.
+  - A wire may be used below its voltage. Its current limit stays the same, so it carries less power there.
   - A wire reaches 24 blocks and a terminal holds 4 wires.
   - Sneak-use on a terminal cuts its last wire and gives it back. Sneak-use in the air lets go of a wire that has been started.
   - Breaking a block drops its wires.
+- **Transformer:** has a tall high-voltage bushing and a short low-voltage one. Its ratio is set on its value box: 220 / 20 kV for the generator's step-up, 220 / 6 kV to start the plant from the grid, and 20 / 6 kV to run the plant from its own generator.
+  - It works both ways and carries 100 MW. Transformers wired side by side share what passes.
+  - Above its rating its oil heats: at 130% it has about 20 seconds. Goggles show both voltages and what it carries, and a comparator reads its temperature. Left alone it explodes.
 - **Insulator:** stands on any solid face. It is a place to join wires, turn a corner or carry a run across a hall.
 - **Bus Bar:** a copper bar on a stand-off. Up to 8 in a line are one bar, and each block of it takes 4 wires, so it is where feeders meet.
-  - Goggles show whether it is live, its frequency and the load on its network. A comparator reads 15 while it is live.
+  - Goggles show whether it is live, its voltage and frequency and the load on its network. A comparator reads 15 while it is live.
 - **Electric Motor:** turns electricity back into rotation, with a shaft on its front and a terminal box on top.
   - Its speed is set on its value box, up to 256 RPM either way, and it gives up to 2,048 SU at any speed.
   - It draws what its shaft load takes, plus 5% in losses and a little for running idle. Turning a generator with a motor always costs more than it makes.
-  - It runs while its supply is live and between 47 and 53 Hz. A redstone signal stops it.
+  - It runs on 6 kV, between 47 and 53 Hz. On less than 5.4 kV it stands still. A redstone signal stops it.
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.
-  - It closes onto a dead side freely. With both sides live it closes only when they are within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
+  - It closes onto a dead side freely. With both sides live it closes only when they are at the same voltage and within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
   - A redstone signal trips it. A comparator reads 15 while it is closed.
   - The red lamp is lit while it is closed and the green one while it is open.
-- **Grid Connection:** the outside grid. It is always live at 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
+- **Grid Connection:** the outside grid. It is always live at 220 kV and 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
 - **Synchronising:** a running generator that is not on the grid runs at 50 Hz times its RPM over 64, plus its speed trim.
   - Raise and lower change the trim by 0.02 Hz, up to 1 Hz either way.
   - While the two frequencies differ the phase angle between them turns, one full turn a second for each Hz apart. Close the breaker as the angle passes zero.
@@ -238,11 +248,18 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - If the leader stops, the next one takes over the bus.
   - A generator asked for more than its shaft can give for a second trips the breaker nearest it. With no breaker to trip it shuts down for 5 seconds.
 - **Trips:** the breaker nearest a generator trips when the generator is started against wires that are already live, when it stops while following the grid or another generator, when its shaft speed puts it more than 1.5 Hz from what it follows, and when it is overloaded off the grid.
+- **Where the power goes:** every quarter of a second the plant works out how much each wire and transformer carries, from what each generator makes and each motor draws. Where there are two ways round, each takes its share by how much it can carry.
+- **Faults:** a mistake costs equipment.
+  - **Too much current:** a wire above its current heats and glows orange. At one and a half times its limit it burns through in about 8 seconds, at twice in about 3. It cools again in 20 seconds if the load comes off. A burnt wire is lost and starts a fire at each end and under its middle.
+  - **Too much voltage:** a wire on more than it is built for flashes over at once and is lost. A motor, a generator or a transformer winding on more than its voltage explodes, is lost and sets fire to what is round it. A transformer wired backwards does this to itself.
+  - **Live work:** stringing or cutting a wire on a live terminal draws an arc: 4 hearts at 6 kV, 8 at 20 kV, and death at 220 kV. Open a breaker and work on the dead side.
+  - A breaker protects only what is behind it. It will not close two voltages together, but closing it onto dead equipment of the wrong voltage is the operator's mistake to make.
+  - In the server config, `electrical.fires` turns the fires off, `electrical.liveWorkHurts` turns the arcs off, and `electrical.blastsBreakBlocks` lets a blast break the blocks round it.
 - **Power orders:** set Largest Power Order on the Grid Connection's value box, in steps of 5 MW up to 300 MW. Zero means no orders.
   - Thirty seconds after the last order the grid asks for between 40% and 100% of that figure.
   - Hold the delivered power within 5% of the order for 20 seconds to meet it. An order not met within 2 minutes is missed.
   - A comparator reads how far through the hold the plant is, and goggles show the order and the tally of orders met and missed.
-- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, and a bus's frequency and load.
+- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, a bus's voltage, frequency and load, and a transformer's low-side voltage, what it carries and its oil temperature.
 - **Jump to load:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).

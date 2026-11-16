@@ -96,6 +96,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.GRID_TIE.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.INSULATOR.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.BUS_BAR.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.TRANSFORMER.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ELECTRIC_MOTOR.get(), MotorRenderer::new);
     }
 
