@@ -2,8 +2,10 @@ package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
+import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
@@ -62,7 +64,7 @@ public enum PlantChannel {
 
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
-                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity;
+                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity;
     }
 
     private Reading of(double value, double min, double max) {
@@ -139,6 +141,20 @@ public enum PlantChannel {
                 case FREQUENCY -> g.energised() ? of(g.frequency(), 45, 55) : of(0, 45, 55);
                 case SYNC -> g.synced() ? of(0, -180, 180) : g.energised() ? of(g.phase(), -180, 180) : null;
                 case DEMAND -> new Reading(Power.megawatts(g.load() * g.ratedSu()), 0, Power.megawatts(g.ratedSu()), "MW");
+                default -> null;
+            };
+        }
+        if (be instanceof MotorBlockEntity m) {
+            return switch (this) {
+                case DEMAND -> of(Power.megawatts(m.demandSu()), 0, Power.megawatts(Power.MOTOR_RATED_SU / Power.MOTOR_EFFICIENCY));
+                case SPEED -> of(Math.abs(m.getSpeed()), 0, MotorBlockEntity.MAX_SPEED);
+                default -> null;
+            };
+        }
+        if (be instanceof BusBarBlockEntity bus) {
+            return switch (this) {
+                case FREQUENCY -> of(bus.frequency(), 45, 55);
+                case DEMAND -> of(Power.megawatts(bus.loadSu()), 0, Power.megawatts(Power.SECTION_RATED_SU));
                 default -> null;
             };
         }

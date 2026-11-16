@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "A": {
+      "item": "create:shaft"
+    },
+    "W": {
+      "item": "criticalmass:power_wire"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "CAC",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:electric_motor",
+    "count": 1
+  }
+}

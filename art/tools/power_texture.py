@@ -12,6 +12,9 @@ GENERATOR = {"barrel": (0, 0, 12, 14), "flange_side": (12, 0, 14, 1), "end": (0,
 BREAKER = {"door": (0, 0, 14, 14), "wall": (14, 0, 14, 1), "handle": (14, 2, 2, 2), "red": (16, 2, 2, 2), "red_lit": (18, 2, 2, 2), "green": (20, 2, 2, 2),
            "green_lit": (22, 2, 2, 2), "terminal": (0, 14, 16, 16)}
 GRID = {"tank": (0, 0, 14, 11), "tank_top": (0, 11, 14, 14), "bushing": (14, 0, 2, 5), "bushing_top": (16, 0, 2, 2)}
+MOTOR = {"side": (0, 0, 11, 12), "top": (12, 0, 12, 11), "front": (0, 12, 10, 10), "back": (10, 12, 10, 10), "rim": (20, 12, 12, 12), "foot": (0, 22, 10, 2),
+         "box_side": (0, 24, 6, 2), "box_top": (6, 24, 6, 6)}
+BUS = {"bar": (0, 0, 4, 16), "bar_end": (4, 0, 4, 4), "post": (4, 4, 5, 4), "plate": (9, 4, 6, 6), "plate_side": (4, 10, 6, 1)}
 WINDING = (5, 6, 7, 8)
 
 
@@ -122,11 +125,63 @@ def grid(steel, tone):
     return sheet
 
 
+def motor(casing, steel, tone):
+    light, mid, shade, dark = navy(casing)
+    copper = palette("copper")
+    sheet = Sheet(32, MOTOR)
+    for y in range(12):
+        for x in range(11):
+            sheet.put("side", x, y, light if y == 0 else dark if y == 11 else shade if x % 2 else mid)
+    sheet.fill("top", 0, 0, 11, 10, mid)
+    for y in range(11):
+        sheet.put("top", 0, y, light)
+        sheet.put("top", 11, y, shade)
+    sheet.fill("rim", 0, 0, 11, 11, shade)
+    sheet.outline("rim", 0, 0, 11, 11, dark)
+    for name in ("front", "back"):
+        sheet.paste(name, nine(steel, 10, 10))
+    sheet.outline("front", 2, 2, 7, 7, tone[2])
+    sheet.fill("front", 3, 3, 6, 6, GLASS[0])
+    for y in (2, 4, 6):
+        for x in range(2, 8):
+            sheet.put("back", x, y, GLASS[0])
+            sheet.put("back", x, y + 1, tone[2])
+    for x in range(10):
+        sheet.put("foot", x, 0, tone[4])
+        sheet.put("foot", x, 1, tone[2])
+    for x in range(6):
+        sheet.put("box_side", x, 0, tone[5] if x not in (0, 5) else tone[3])
+        sheet.put("box_side", x, 1, tone[3] if x not in (0, 5) else tone[2])
+    sheet.paste("box_top", nine(steel, 6, 6, 1))
+    sheet.outline("box_top", 1, 1, 4, 4, copper[4])
+    sheet.put("box_top", 4, 4, copper[2])
+    sheet.fill("box_top", 2, 2, 3, 3, GLASS[0])
+    return sheet
+
+
+def bus(steel, tone):
+    ceramic, copper = palette("ceramic"), palette("copper")
+    sheet = Sheet(16, BUS)
+    row = across(4, copper[5], copper[4], copper[3], copper[2])
+    for y in range(16):
+        for x in range(4):
+            sheet.put("bar", x, y, row[x])
+    sheet.fill("bar_end", 0, 0, 3, 3, copper[3])
+    sheet.outline("bar_end", 0, 0, 3, 3, copper[2])
+    for x in range(5):
+        for y in range(4):
+            sheet.put("post", x, y, (ceramic[4], ceramic[3], ceramic[3], ceramic[1])[y] if x % 2 == 0 else (ceramic[3], ceramic[2], ceramic[2], ceramic[1])[y])
+    sheet.paste("plate", nine(steel, 6, 6, 1))
+    for x in range(6):
+        sheet.put("plate_side", x, 0, tone[2] if x in (0, 5) else tone[4])
+    return sheet
+
+
 def sheets():
     casing = source("reactor_vessel_casing")
     steel = source("steel_block")
     tone = ramp(steel)
-    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone)}
+    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone)}
 
 
 def main():

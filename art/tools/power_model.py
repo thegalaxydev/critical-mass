@@ -66,15 +66,33 @@ def grid():
     bbmodel.write(os.path.join(STATES, "grid_connection.json"), {"variants": {"": {"model": M + "grid_connection"}}})
 
 
+def motor():
+    parts, textures = bbmodel.load("electric_motor")
+    bbmodel.write(os.path.join(BLOCK, "electric_motor.json"), bbmodel.model(parts["body"], textures, textures["0"]))
+    item("electric_motor", "electric_motor")
+    turns = dict(FACING, up={"x": 270}, down={"x": 90})
+    bbmodel.write(os.path.join(STATES, "electric_motor.json"), {"variants": {"facing=" + side: dict({"model": M + "electric_motor"}, **turn) for side, turn in turns.items()}})
+
+
+def bus():
+    parts, textures = bbmodel.load("bus_bar")
+    bbmodel.write(os.path.join(BLOCK, "bus_bar.json"), bbmodel.model(parts["body"], textures, textures["0"]))
+    item("bus_bar", "bus_bar")
+    bbmodel.write(os.path.join(STATES, "bus_bar.json"), {"variants": {"axis=y": {"model": M + "bus_bar"}, "axis=z": {"model": M + "bus_bar", "x": 90},
+                                                                  "axis=x": {"model": M + "bus_bar", "x": 90, "y": 90}}})
+
+
 def main():
     insulator()
     generator()
     breaker()
     grid()
-    print("exported the insulator, wire, generator, breaker and grid connection")
+    motor()
+    bus()
+    print("exported the insulator, wire, generator, breaker, grid connection, motor and bus bar")
     if len(sys.argv) > 1:
         shots = []
-        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),))):
+        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),))):
             path = sys.argv[1].replace(".png", "_" + ref + ".png")
             bbmodel.preview(M + ref, path, views=views, size=260)
             with Image.open(path) as shot:

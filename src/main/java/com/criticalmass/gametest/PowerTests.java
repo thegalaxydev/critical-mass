@@ -3,13 +3,17 @@ package com.criticalmass.gametest;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
+import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
 import com.criticalmass.content.power.WireLinks;
 import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import net.minecraft.core.BlockPos;
@@ -17,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -172,6 +177,169 @@ public final class PowerTests {
                 })
                 .thenIdle(Power.ORDER_HOLD_TICKS)
                 .thenExecute(() -> h.assertTrue(grid.completed() == 1 && grid.missed() == 0 && !grid.ordering(), "Holding the ordered power for the hold time should complete the order: " + grid.completed()))
+                .thenSucceed();
+    }
+
+    private static MotorBlockEntity motor(GameTestHelper h, BlockPos pos, int rpm, int presses) {
+        h.setBlock(pos, CMBlocks.ELECTRIC_MOTOR.get().defaultBlockState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        for (int i = 1; i <= presses; i++) {
+            press(h, pos.east(i));
+        }
+        MotorBlockEntity motor = h.getBlockEntity(pos);
+        motor.setSpeed(rpm);
+        return motor;
+    }
+
+    private static void press(GameTestHelper h, BlockPos pos) {
+        h.setBlock(pos, AllBlocks.MECHANICAL_PRESS.getDefaultState().setValue(HorizontalKineticBlock.HORIZONTAL_FACING, Direction.EAST));
+    }
+
+    private static double pressLoad(int presses, int rpm) {
+        return presses * BlockStressValues.getImpact(AllBlocks.MECHANICAL_PRESS.get()) * rpm;
+    }
+
+    private static double drawFor(double shaftLoad) {
+        return shaftLoad / Power.MOTOR_EFFICIENCY + Power.MOTOR_RATED_SU * Power.MOTOR_IDLE;
+    }
+
+    private static boolean near(double value, double target) {
+        return Math.abs(value - target) <= Math.max(4.0, target * 0.05);
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void aMotorRunsOnGridPowerAndTheGridCountsWhatItDraws(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(1, 2, 1);
+        BlockPos motorPos = new BlockPos(1, 2, 3);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 2);
+        GridTieBlockEntity grid = h.getBlockEntity(gridPos);
+        double draw = drawFor(pressLoad(2, 16));
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(!motor.live() && motor.getSpeed() == 0 && motor.status().endsWith("motor.dead"), "A motor with no wire should stand still: " + motor.status());
+                    wire(h, gridPos, 0, motorPos, 0);
+                })
+                .thenIdle(50)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live() && Math.abs(motor.getSpeed()) == 16, "A motor wired to the grid should turn at its set speed: " + motor.getSpeed());
+                    h.assertTrue(near(motor.demandSu(), draw), "A motor should draw what its shaft load takes, plus its losses: " + motor.demandSu() + " for " + draw);
+                    h.assertTrue(near(-Power.su(grid.deliveredMw()), draw), "The grid should count what the plant draws from it: " + grid.deliveredMw());
+                    h.setBlock(motorPos.north(), Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(!motor.live() && motor.getSpeed() == 0 && motor.status().endsWith("motor.held"), "A redstone signal should stop a motor: " + motor.status());
+                    h.assertTrue(motor.demandSu() < 2, "A stopped motor should draw nothing: " + motor.demandSu());
+                    h.setBlock(motorPos.north(), Blocks.AIR);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live(), "A motor should start again when the signal goes");
+                    WireLinks.cutAll(h.getLevel(), h.absolutePos(gridPos));
+                })
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(!motor.live() && motor.status().endsWith("motor.dead"), "Cutting its wire should stop a motor: " + motor.status()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aGeneratorAloneCarriesItsBusAndItsBreakerTripsOnOverload(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos driverPos = new BlockPos(0, 2, 2);
+        BlockPos generatorPos = new BlockPos(1, 2, 2);
+        BlockPos breakerPos = new BlockPos(1, 2, 5);
+        BlockPos busPos = new BlockPos(3, 2, 5);
+        BlockPos loadPos = new BlockPos(2, 4, 2);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        MotorBlockEntity driver = motor(h, driverPos, (int) Power.SYNC_RPM, 0);
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(busPos.east(), CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        MotorBlockEntity load = motor(h, loadPos, (int) Power.SYNC_RPM, 1);
+        wire(h, gridPos, 0, driverPos, 0);
+        wire(h, generatorPos, 0, breakerPos, BreakerBlockEntity.LOAD);
+        wire(h, breakerPos, BreakerBlockEntity.LINE, busPos, 0);
+        wire(h, busPos.east(), 0, loadPos, 0);
+        GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(driver.live() && g.online() && !g.synced() && Math.abs(g.frequency() - Power.GRID_HZ) < 1e-6, "A generator turned by a motor should run by itself at 50 Hz: " + g.status());
+                    h.assertTrue(!bus.live() && !load.live(), "A bus behind an open breaker should be dead");
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "A breaker should close onto a dead bus");
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    double draw = drawFor(pressLoad(1, (int) Power.SYNC_RPM));
+                    h.assertTrue(bus.live() && load.live() && Math.abs(load.getSpeed()) == Power.SYNC_RPM, "Two bars in a line should be one bus and feed the motor wired to the far one");
+                    h.assertTrue(near(load.demandSu(), draw) && near(g.outputSu(), draw), "A generator alone should make what its bus draws: " + g.outputSu() + " for " + load.demandSu());
+                    h.assertTrue(near(bus.loadSu(), draw) && g.status().endsWith("generator.supplying"), "The bus should read its load: " + bus.loadSu());
+                    h.assertTrue(driver.demandSu() > g.outputSu(), "Turning a generator with a motor should cost more than it makes");
+                    press(h, loadPos.east(2));
+                    press(h, loadPos.east(3));
+                    press(h, loadPos.east(4));
+                })
+                .thenIdle(80)
+                .thenExecute(() -> {
+                    h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("trip.overload"), "More load than the shaft can carry should trip the generator's breaker: " + breaker.tripReason());
+                    h.assertTrue(!bus.live() && !load.live() && g.online(), "The trip should leave the bus dead and the generator running");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void twoGeneratorsShareABusOnceSynchronised(GameTestHelper h) {
+        BlockPos[] drivers = {new BlockPos(0, 2, 0), new BlockPos(0, 2, 6)};
+        BlockPos[] breakers = {new BlockPos(3, 2, 0), new BlockPos(3, 2, 6)};
+        BlockPos busPos = new BlockPos(5, 2, 3);
+        BlockPos loadPos = new BlockPos(3, 4, 3);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
+        for (int i = 0; i < 2; i++) {
+            h.setBlock(drivers[i], AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+            h.setBlock(drivers[i].east(), CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+            h.setBlock(breakers[i], CMBlocks.CIRCUIT_BREAKER.get());
+            wire(h, drivers[i].east(), 0, breakers[i], BreakerBlockEntity.LOAD);
+            wire(h, breakers[i], BreakerBlockEntity.LINE, busPos, 0);
+            CreativeMotorBlockEntity driver = h.getBlockEntity(drivers[i]);
+            driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+        }
+        MotorBlockEntity load = motor(h, loadPos, (int) Power.SYNC_RPM, 2);
+        wire(h, busPos, 0, loadPos, 0);
+        GeneratorBlockEntity[] g = {h.getBlockEntity(drivers[0].east()), h.getBlockEntity(drivers[1].east())};
+        BreakerBlockEntity[] b = {h.getBlockEntity(breakers[0]), h.getBlockEntity(breakers[1])};
+        double draw = drawFor(pressLoad(2, (int) Power.SYNC_RPM));
+        int[] lead = new int[1];
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(b[0].close().endsWith("breaker.closed"), "The first generator should close onto the dead bus"))
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    g[1].setPhase(90);
+                    h.assertTrue(b[1].close().endsWith("refused.phase"), "A second generator out of phase with the bus should be refused");
+                    g[1].setPhase(g[0].phase());
+                    h.assertTrue(b[1].close().endsWith("breaker.closed"), "In phase with the bus the second generator should close on");
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(g[0].online() && g[1].online() && g[0].synced() != g[1].synced(), "One generator should lead the bus and the other follow it: " + g[0].status() + ", " + g[1].status());
+                    h.assertTrue(near(g[0].outputSu(), draw / 2) && near(g[1].outputSu(), draw / 2), "Equal generators should share the bus evenly: " + g[0].outputSu() + " and " + g[1].outputSu());
+                    lead[0] = g[0].synced() ? 1 : 0;
+                    CreativeMotorBlockEntity driver = h.getBlockEntity(drivers[lead[0]]);
+                    driver.generatedSpeed.setValue(0);
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    GeneratorBlockEntity left = g[1 - lead[0]];
+                    h.assertTrue(load.live() && left.online() && !left.synced() && near(left.outputSu(), draw), "When the leading generator stops the other should take the whole bus: " + left.outputSu());
+                    CreativeMotorBlockEntity driver = h.getBlockEntity(drivers[lead[0]]);
+                    driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> h.assertTrue(!b[lead[0]].closed() && b[lead[0]].tripReason().endsWith("not_synchronised"), "Starting it again onto the live bus should trip its breaker: " + b[lead[0]].tripReason()))
                 .thenSucceed();
     }
 }

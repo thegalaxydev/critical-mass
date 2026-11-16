@@ -19,6 +19,14 @@ public final class Power {
     public static final double ORDER_MARGIN = 0.05;
     public static final int ORDER_STEP_MW = 5;
     public static final int ORDER_MAX_STEPS = 60;
+    public static final double MOTOR_RATED_SU = 2048.0;
+    public static final double MOTOR_EFFICIENCY = 0.95;
+    public static final double MOTOR_IDLE = 0.01;
+    public static final double SUPPLY_MIN_HZ = 47.0;
+    public static final double SUPPLY_MAX_HZ = 53.0;
+    public static final int OVERLOAD_TICKS = 20;
+    public static final int LOCKOUT_TICKS = 100;
+    public static final int MAX_BUS = 8;
 
     private Power() {
     }

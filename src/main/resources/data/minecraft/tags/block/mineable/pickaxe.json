@@ -42,6 +42,8 @@
     "criticalmass:generator",
     "criticalmass:circuit_breaker",
     "criticalmass:grid_connection",
-    "criticalmass:insulator"
+    "criticalmass:insulator",
+    "criticalmass:electric_motor",
+    "criticalmass:bus_bar"
   ]
 }

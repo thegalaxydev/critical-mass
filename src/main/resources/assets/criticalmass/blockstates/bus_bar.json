@@ -1,0 +1,16 @@
+{
+ "variants": {
+  "axis=y": {
+   "model": "criticalmass:block/bus_bar"
+  },
+  "axis=z": {
+   "model": "criticalmass:block/bus_bar",
+   "x": 90
+  },
+  "axis=x": {
+   "model": "criticalmass:block/bus_bar",
+   "x": 90,
+   "y": 90
+  }
+ }
+}

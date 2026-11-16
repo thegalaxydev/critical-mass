@@ -543,5 +543,20 @@
   "criticalmass.wire.already": "Those two are already wired",
   "criticalmass.wire.full": "That terminal is full",
   "criticalmass.command.no_generator": "No Generator at that position",
-  "criticalmass.command.generator": "Generator load set to %s%%"
+  "criticalmass.command.generator": "Generator load set to %s%%",
+  "block.criticalmass.electric_motor": "Electric Motor",
+  "block.criticalmass.bus_bar": "Bus Bar",
+  "criticalmass.generator.supplying": "Running off the grid",
+  "criticalmass.generator.overloaded": "Shut down: overloaded",
+  "criticalmass.breaker.trip.overload": "Tripped: more load than the generator could carry",
+  "criticalmass.motor.speed": "Motor Speed",
+  "criticalmass.motor.running": "Running",
+  "criticalmass.motor.dead": "No supply",
+  "criticalmass.motor.held": "Stopped by a redstone signal",
+  "criticalmass.motor.frequency": "Stopped: supply is outside 47 to 53 Hz",
+  "criticalmass.bus.live": "Live",
+  "criticalmass.bus.dead": "Dead",
+  "criticalmass.goggles.label.power_drawn": "Power Drawn:",
+  "criticalmass.goggles.label.bus_load": "Load:",
+  "criticalmass.goggles.label.drawn": "Drawn From the Grid:"
 }

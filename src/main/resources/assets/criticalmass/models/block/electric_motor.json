@@ -1,0 +1,379 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/electric_motor",
+  "1": "criticalmass:block/steel_block",
+  "particle": "criticalmass:block/electric_motor"
+ },
+ "elements": [
+  {
+   "name": "frame",
+   "from": [
+    2,
+    2,
+    4
+   ],
+   "to": [
+    14,
+    14,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10,
+      6,
+      16,
+      12
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      5.5,
+      6
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      10,
+      6,
+      16,
+      12
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      5.5,
+      6
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      6,
+      0,
+      12,
+      5.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      6,
+      0,
+      12,
+      5.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "bell",
+   "from": [
+    3,
+    3,
+    3
+   ],
+   "to": [
+    13,
+    13,
+    4
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      6,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      6,
+      0.5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      4.5,
+      6,
+      5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0,
+      6,
+      5,
+      6.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      10.5,
+      5,
+      11
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "fan_cover",
+   "from": [
+    3,
+    3,
+    15
+   ],
+   "to": [
+    13,
+    13,
+    16
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      11
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      5,
+      6,
+      10,
+      11
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      9.5,
+      6,
+      10,
+      11
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      5,
+      6,
+      10,
+      6.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      5,
+      10.5,
+      10,
+      11
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "skid_east",
+   "from": [
+    11,
+    0,
+    5
+   ],
+   "to": [
+    14,
+    2,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      11,
+      1.5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      11,
+      5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      11,
+      1.5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      11,
+      5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      3,
+      10
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "skid_west",
+   "from": [
+    2,
+    0,
+    5
+   ],
+   "to": [
+    5,
+    2,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      11,
+      1.5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      11,
+      5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      11,
+      1.5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      11,
+      5,
+      12
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      3,
+      10
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "terminal_box",
+   "from": [
+    5,
+    14,
+    7
+   ],
+   "to": [
+    11,
+    16,
+    13
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      12,
+      3,
+      13
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      12,
+      3,
+      13
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      12,
+      3,
+      13
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      12,
+      3,
+      13
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      3,
+      12,
+      6,
+      15
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

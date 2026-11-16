@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -41,7 +42,12 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private double frequency;
     private double output;
     private boolean synced;
+    private boolean online;
+    private boolean onGrid;
     private boolean syncPermit;
+    private int shortTicks;
+    private int lockout;
+    private int tripIn;
     private int sectionCount = 1;
     private String status = "criticalmass.generator.stopped";
     private PowerNetwork.Island island;
@@ -156,7 +162,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     }
 
     public void raise() {
-        if (synced) {
+        if (synced && onGrid) {
             setLoad(load + Power.LOAD_STEP);
         } else {
             trim = Math.min(Power.TRIM_MAX, trim + Power.TRIM_STEP);
@@ -165,7 +171,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     }
 
     public void lower() {
-        if (synced) {
+        if (synced && onGrid) {
             setLoad(load - Power.LOAD_STEP);
         } else {
             trim = Math.max(-Power.TRIM_MAX, trim - Power.TRIM_STEP);
@@ -175,6 +181,14 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
 
     public boolean synced() {
         return synced;
+    }
+
+    public boolean online() {
+        return online;
+    }
+
+    public boolean onGrid() {
+        return onGrid;
     }
 
     public void permitSync() {
@@ -254,6 +268,18 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         return impact;
     }
 
+    private void advance(double base) {
+        frequency = base + trim;
+        phase = Power.wrap(phase + (frequency - Power.GRID_HZ) * 360.0 / 20.0);
+    }
+
+    private void tripOnce(String reason) {
+        if (tripIn-- <= 0) {
+            tripIn = 20;
+            PowerNetwork.tripNearest(level, worldPosition, reason);
+        }
+    }
+
     @Override
     public void tick() {
         super.tick();
@@ -269,51 +295,79 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         boolean resized = parts.size() != sectionCount;
         sectionCount = Math.max(1, parts.size());
         float speed = Math.abs(getSpeed());
-        boolean running = speed > 0 && !isOverStressed();
+        if (lockout > 0) {
+            lockout--;
+        }
+        boolean running = speed > 0 && !isOverStressed() && lockout <= 0;
         double base = Power.GRID_HZ * speed / Power.SYNC_RPM;
-        boolean grid = !island().grids.isEmpty();
+        PowerNetwork.Island around = island();
+        boolean grid = !around.grids.isEmpty();
         boolean was = synced;
+        boolean wasOnline = online;
         String now;
         double wanted = 0;
         if (!running) {
-            if (grid && synced) {
+            if (synced) {
                 PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.reverse_power");
             }
             synced = false;
+            online = false;
+            onGrid = false;
             frequency = 0;
-            now = "criticalmass.generator.stopped";
-        } else if (grid) {
-            if (!synced && !syncPermit) {
-                PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.not_synchronised");
-                frequency = base + trim;
-                now = "criticalmass.generator.running";
-            } else if (Math.abs(base - Power.GRID_HZ) > Power.OUT_OF_STEP_HZ) {
-                PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.out_of_step");
-                synced = false;
-                frequency = base + trim;
-                now = "criticalmass.generator.running";
-            } else {
-                if (!synced) {
-                    synced = true;
-                    trim = 0;
-                    phase = 0;
-                    load = 0;
-                    setting.value = 0;
-                }
-                frequency = Power.GRID_HZ;
-                wanted = load * ratedSu();
-                now = "criticalmass.generator.synchronised";
-            }
+            now = lockout > 0 ? "criticalmass.generator.overloaded" : "criticalmass.generator.stopped";
         } else {
-            synced = false;
-            frequency = base + trim;
-            phase = Power.wrap(phase + (frequency - Power.GRID_HZ) * 360.0 / 20.0);
-            now = "criticalmass.generator.running";
+            GeneratorBlockEntity other = grid ? null : around.lead(level, this);
+            boolean leading = !grid && (other == null || (online && worldPosition.compareTo(other.getBlockPos()) < 0));
+            if (leading) {
+                online = true;
+                synced = false;
+                onGrid = false;
+                advance(base);
+                double demand = around.demand(level);
+                wanted = demand * ratedSu() / (ratedSu() + around.onlineRating(level, this));
+                now = demand > 0 ? "criticalmass.generator.supplying" : "criticalmass.generator.running";
+            } else {
+                double reference = grid ? Power.GRID_HZ : other.frequency();
+                if (!synced && !syncPermit) {
+                    tripOnce("criticalmass.breaker.trip.not_synchronised");
+                    online = false;
+                    advance(base);
+                    now = "criticalmass.generator.running";
+                } else if (Math.abs(base - reference) > Power.OUT_OF_STEP_HZ) {
+                    PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.out_of_step");
+                    synced = false;
+                    online = false;
+                    advance(base);
+                    now = "criticalmass.generator.running";
+                } else {
+                    if (!synced) {
+                        synced = true;
+                        trim = 0;
+                        load = 0;
+                        setting.value = 0;
+                        tripIn = 0;
+                    }
+                    online = true;
+                    onGrid = grid;
+                    frequency = reference;
+                    phase = grid ? 0 : other.phase();
+                    wanted = grid ? load * ratedSu() : around.demand(level) * ratedSu() / (ratedSu() + around.onlineRating(level, this));
+                    now = "criticalmass.generator.synchronised";
+                }
+            }
         }
         syncPermit = false;
-        if (updateCooldown-- <= 0 || was != synced) {
+        if (updateCooldown-- <= 0 || was != synced || wasOnline != online) {
             updateCooldown = UPDATE_TICKS;
-            apply(running ? Math.min(wanted, headroom(parts) * 0.98) : 0, parts);
+            double room = running ? headroom(parts) * 0.98 : 0;
+            shortTicks = online && !onGrid && wanted > room + 1.0 ? shortTicks + UPDATE_TICKS : 0;
+            apply(online ? Math.min(wanted, room) : 0, parts);
+            if (shortTicks >= Power.OVERLOAD_TICKS) {
+                shortTicks = 0;
+                if (!PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.overload")) {
+                    lockout = Power.LOCKOUT_TICKS;
+                }
+            }
         }
         int shown = (int) Math.round(load * LOAD_STEPS);
         double total = 0;
@@ -325,8 +379,8 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
                 part.sendData();
             }
         }
-        output = synced ? total : 0;
-        boolean changed = !now.equals(status) || was != synced || resized;
+        output = online ? total : 0;
+        boolean changed = !now.equals(status) || was != synced || wasOnline != online || resized;
         status = now;
         if (changed || syncCooldown-- <= 0) {
             syncCooldown = SYNC_TICKS;
@@ -345,6 +399,9 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         tag.putDouble("Frequency", frequency);
         tag.putDouble("Output", output);
         tag.putBoolean("Synced", synced);
+        tag.putBoolean("Online", online);
+        tag.putBoolean("OnGrid", onGrid);
+        tag.putInt("Lockout", lockout);
         tag.putInt("Sections", sectionCount);
         tag.putString("Status", status);
         tag.put("Wires", wires.save());
@@ -360,6 +417,9 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         frequency = tag.getDouble("Frequency");
         output = tag.getDouble("Output");
         synced = tag.getBoolean("Synced");
+        online = tag.contains("Online") ? tag.getBoolean("Online") : synced;
+        onGrid = tag.contains("OnGrid") ? tag.getBoolean("OnGrid") : synced;
+        lockout = tag.getInt("Lockout");
         sectionCount = Math.max(1, tag.getInt("Sections"));
         status = tag.contains("Status") ? tag.getString("Status") : "criticalmass.generator.stopped";
         wires.load(tag, "Wires");
@@ -373,10 +433,10 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
         GeneratorBlockEntity m = master();
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
-        ThermalTooltips.status(tooltip, m.status, m.synced ? ChatFormatting.GREEN : m.energised() ? ChatFormatting.GOLD : ChatFormatting.GRAY);
+        ThermalTooltips.status(tooltip, m.status, m.lockout > 0 ? ChatFormatting.RED : m.synced ? ChatFormatting.GREEN : m.energised() ? ChatFormatting.GOLD : ChatFormatting.GRAY);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.electrical_output");
-        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Power.megawatts(m.output)))
-                .append(ThermalTooltips.aside("criticalmass.goggles.aside.of_megawatts", ThermalTooltips.number(Power.megawatts(m.load * m.ratedSu())))));
+        MutableComponent made = ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Power.megawatts(m.output)));
+        ThermalTooltips.value(tooltip, m.onGrid ? made.append(ThermalTooltips.aside("criticalmass.goggles.aside.of_megawatts", ThermalTooltips.number(Power.megawatts(m.load * m.ratedSu())))) : made);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.frequency");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.hertz", ChatFormatting.AQUA, String.format(java.util.Locale.ROOT, "%.2f", m.frequency)));
         return true;

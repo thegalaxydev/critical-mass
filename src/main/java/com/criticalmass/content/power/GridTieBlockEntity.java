@@ -144,14 +144,15 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         if (level == null || level.isClientSide) {
             return;
         }
-        double total = 0;
-        for (GeneratorBlockEntity g : island().machines(level)) {
+        PowerNetwork.Island around = island();
+        double total = -around.demand(level);
+        for (GeneratorBlockEntity g : around.machines(level)) {
             if (g.synced()) {
                 total += g.outputSu();
             }
         }
         delivered += (total - delivered) * 0.2;
-        if (delivered < 1e-3) {
+        if (Math.abs(delivered) < 1e-3) {
             delivered = 0;
         }
         double size = contractMw();
@@ -215,8 +216,8 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         } else {
             ThermalTooltips.status(tooltip, "criticalmass.grid.idle", ChatFormatting.GRAY);
         }
-        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.delivered");
-        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(deliveredMw())));
+        ThermalTooltips.label(tooltip, delivered < 0 ? "criticalmass.goggles.label.drawn" : "criticalmass.goggles.label.delivered");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Math.abs(deliveredMw()))));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.orders");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.grid.tally", ChatFormatting.AQUA, completed, missed));
         return true;

@@ -93,7 +93,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Banks:** every drive belongs to a bank, A to D. Hold use on the drive's upper case to pick it from Create's value board. A bank target set on the reactor moves every drive in that bank and overrides their redstone signals.
 - **Reactor Viewport:** a window that takes the place of a vessel casing block (craft casing with Shielded Glass). It cracks, welds and shields like casing. Through it, fuel channels are dark when idle, glow dim blue at low power or on decay heat, bright blue at power and orange-red when overheating, and they light their surroundings.
 - **Fail-safe:** losing shaft power, overstress or a trip releases the drive's spring latch and drives the rods fully in within 2 seconds, in any orientation.
-- **Start-up check:** rods will not withdraw, and the reactor will not start, until coolant is flowing through the vessel and the vessel is at least half full. The controller says which is missing. Pumps turn on shaft power, so a cold plant needs rotation from outside before it can make its own.
+- **Start-up check:** rods will not withdraw, and the reactor will not start, until coolant is flowing through the vessel and the vessel is at least half full. The controller says which is missing. Pumps turn on shaft power, so a cold plant needs rotation from outside before it can make its own. Electric Motors fed from a Grid Connection are one way to give it.
 - **Power response:** fission power ramps towards what the rods ask for, taking 3 seconds from zero to full, so heat follows a rod move with a delay. A trip or shutdown cuts fission at once and leaves decay heat.
 - **Temperature feedback:** hot fuel and hot coolant both hold power down. Fuel above 800 °C loses up to half its output by 1,800 °C, and vessel coolant above 250 °C loses up to half by 550 °C. A plant running hot settles at a lower power, and drawing more steam cools the coolant and brings power back up.
 - **Trips:** the reactor trips if the vessel turns invalid, primary flow stops for 2 seconds, the core passes 1,100 °C, or the casing is damaged or breached.
@@ -212,27 +212,37 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Each section is rated 8,192 SU, which is 32.8 MW (1 SU is 4 kW).
   - It makes 50 Hz at 64 RPM, so set the turbine's rated speed to 64.
   - Its load on the shaft is its load setting times its rating, limited to what the shaft has to spare. The sections share it evenly.
-  - Off the grid it takes nothing from the shaft.
-- **Power Wire:** use it on one terminal, then on another, to string a wire between them. Generators, Circuit Breakers, Grid Connections and Insulators have terminals.
+  - Off the grid it carries whatever is wired to it: see Off the grid below.
+- **Power Wire:** use it on one terminal, then on another, to string a wire between them. Generators, Electric Motors, Circuit Breakers, Bus Bars, Grid Connections and Insulators have terminals.
   - A wire reaches 24 blocks and a terminal holds 4 wires.
   - Sneak-use on a terminal cuts its last wire and gives it back. Sneak-use in the air lets go of a wire that has been started.
   - Breaking a block drops its wires.
 - **Insulator:** stands on any solid face. It is a place to join wires, turn a corner or carry a run across a hall.
+- **Bus Bar:** a copper bar on a stand-off. Up to 8 in a line are one bar, and each block of it takes 4 wires, so it is where feeders meet.
+  - Goggles show whether it is live, its frequency and the load on its network. A comparator reads 15 while it is live.
+- **Electric Motor:** turns electricity back into rotation, with a shaft on its front and a terminal box on top.
+  - Its speed is set on its value box, up to 256 RPM either way, and it gives up to 2,048 SU at any speed.
+  - It draws what its shaft load takes, plus 5% in losses and a little for running idle. Turning a generator with a motor always costs more than it makes.
+  - It runs while its supply is live and between 47 and 53 Hz. A redstone signal stops it.
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.
   - It closes onto a dead side freely. With both sides live it closes only when they are within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
   - A redstone signal trips it. A comparator reads 15 while it is closed.
   - The red lamp is lit while it is closed and the green one while it is open.
-- **Grid Connection:** the outside grid. It is always live at 50 Hz and takes whatever is delivered to it.
+- **Grid Connection:** the outside grid. It is always live at 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
 - **Synchronising:** a running generator that is not on the grid runs at 50 Hz times its RPM over 64, plus its speed trim.
   - Raise and lower change the trim by 0.02 Hz, up to 1 Hz either way.
   - While the two frequencies differ the phase angle between them turns, one full turn a second for each Hz apart. Close the breaker as the angle passes zero.
   - Once on the grid the generator is held at 50 Hz and starts unloaded. Raise and lower then change its load by 2%, and the Load Setting value box on the generator sets it directly.
-- **Trips:** the breaker nearest a generator trips when the generator is started against a line that is already live, when it stops while on the grid, and when its shaft speed puts it more than 1.5 Hz from the grid.
+- **Off the grid:** a generator with no grid on its wires runs by itself at its own frequency and makes exactly what the motors on its wires draw. This is how a backup set works: any rotation source at 64 RPM, a Generator, a breaker and a bus.
+  - A second generator joins the same bus through a breaker the way one joins the grid: matched in frequency and phase. The first one leads and the others follow it, and they share the load by their ratings.
+  - If the leader stops, the next one takes over the bus.
+  - A generator asked for more than its shaft can give for a second trips the breaker nearest it. With no breaker to trip it shuts down for 5 seconds.
+- **Trips:** the breaker nearest a generator trips when the generator is started against wires that are already live, when it stops while following the grid or another generator, when its shaft speed puts it more than 1.5 Hz from what it follows, and when it is overloaded off the grid.
 - **Power orders:** set Largest Power Order on the Grid Connection's value box, in steps of 5 MW up to 300 MW. Zero means no orders.
   - Thirty seconds after the last order the grid asks for between 40% and 100% of that figure.
   - Hold the delivered power within 5% of the order for 20 seconds to meet it. An order not met within 2 minutes is missed.
   - A comparator reads how far through the hold the plant is, and goggles show the order and the tally of orders met and missed.
-- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, and a Grid Connection's order, delivered power and frequency.
+- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, and a bus's frequency and load.
 - **Jump to load:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).

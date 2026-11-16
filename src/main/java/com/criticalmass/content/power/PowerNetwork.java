@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 public final class PowerNetwork {
     private static final Map<Level, int[]> VERSIONS = new WeakHashMap<>();
+    private static final int ANY = -1;
 
     private PowerNetwork() {
     }
@@ -36,18 +37,47 @@ public final class PowerNetwork {
         public final Set<BlockPos> generators = new LinkedHashSet<>();
         public final Set<BlockPos> grids = new LinkedHashSet<>();
         public final Set<BlockPos> breakers = new LinkedHashSet<>();
+        public final Set<BlockPos> loads = new LinkedHashSet<>();
         public int wires;
 
         public Side side(Level level) {
             if (!grids.isEmpty()) {
                 return new Side(true, Power.GRID_HZ, 0, true);
             }
+            GeneratorBlockEntity lead = lead(level, null);
+            return lead == null ? Side.DEAD : new Side(true, lead.frequency(), lead.phase(), false);
+        }
+
+        @Nullable
+        public GeneratorBlockEntity lead(Level level, @Nullable GeneratorBlockEntity except) {
+            GeneratorBlockEntity best = null;
             for (BlockPos pos : generators) {
-                if (level.getBlockEntity(pos) instanceof GeneratorBlockEntity g && g.energised()) {
-                    return new Side(true, g.frequency(), g.phase(), false);
+                if (level.getBlockEntity(pos) instanceof GeneratorBlockEntity g && g != except && g.online()
+                        && (best == null || pos.compareTo(best.getBlockPos()) < 0)) {
+                    best = g;
                 }
             }
-            return Side.DEAD;
+            return best;
+        }
+
+        public double onlineRating(Level level, @Nullable GeneratorBlockEntity except) {
+            double total = 0;
+            for (GeneratorBlockEntity g : machines(level)) {
+                if (g != except && g.online()) {
+                    total += g.ratedSu();
+                }
+            }
+            return total;
+        }
+
+        public double demand(Level level) {
+            double total = 0;
+            for (BlockPos pos : loads) {
+                if (level.isLoaded(pos) && level.getBlockEntity(pos) instanceof PowerLoad load) {
+                    total += load.demandSu();
+                }
+            }
+            return total;
         }
 
         public List<GeneratorBlockEntity> machines(Level level) {
@@ -74,9 +104,19 @@ public final class PowerNetwork {
 
     private static void follow(Island island, WireNode node, int terminal, ArrayDeque<Step> queue) {
         for (WireLinks.Link link : node.wires().all()) {
-            if (link.mine() == terminal) {
+            if (terminal == ANY || link.mine() == terminal) {
                 island.wires++;
                 queue.add(new Step(link.other(), link.theirs()));
+            }
+        }
+    }
+
+    private static void followRun(Level level, Island island, List<BlockPos> run, Set<Step> seen, ArrayDeque<Step> queue) {
+        for (BlockPos part : run) {
+            seen.add(new Step(part, ANY));
+            WireNode node = WireLinks.node(level, part);
+            if (node != null) {
+                follow(island, node, ANY, queue);
             }
         }
     }
@@ -91,32 +131,16 @@ public final class PowerNetwork {
             Step step = queue.poll();
             boolean origin = first;
             first = false;
-            if (!seen.add(step)) {
-                continue;
-            }
             WireNode node = WireLinks.node(level, step.pos());
             if (node == null) {
                 continue;
             }
             BlockState state = level.getBlockState(step.pos());
             Block block = state.getBlock();
-            if (block instanceof GeneratorBlock) {
-                BlockPos master = GeneratorBlockEntity.masterPos(level, step.pos());
-                if (island.generators.add(master) && (!stopAtDevices || origin)) {
-                    for (BlockPos section : GeneratorBlockEntity.sections(level, master)) {
-                        seen.add(new Step(section, 0));
-                        WireNode part = WireLinks.node(level, section);
-                        if (part != null) {
-                            follow(island, part, 0, queue);
-                        }
-                    }
+            if (block instanceof BreakerBlock) {
+                if (!seen.add(step)) {
+                    continue;
                 }
-            } else if (block instanceof GridTieBlock) {
-                island.grids.add(step.pos());
-                if (!stopAtDevices) {
-                    follow(island, node, step.terminal(), queue);
-                }
-            } else if (block instanceof BreakerBlock) {
                 if (stopAtDevices) {
                     island.breakers.add(step.pos());
                     continue;
@@ -126,8 +150,31 @@ public final class PowerNetwork {
                     island.breakers.add(step.pos());
                     queue.add(new Step(step.pos(), 1 - step.terminal()));
                 }
+                continue;
+            }
+            if (seen.contains(new Step(step.pos(), ANY))) {
+                continue;
+            }
+            if (block instanceof GeneratorBlock) {
+                BlockPos master = GeneratorBlockEntity.masterPos(level, step.pos());
+                if (island.generators.add(master) && (!stopAtDevices || origin)) {
+                    followRun(level, island, GeneratorBlockEntity.sections(level, master), seen, queue);
+                } else {
+                    seen.add(new Step(step.pos(), ANY));
+                }
+            } else if (block instanceof BusBarBlock) {
+                followRun(level, island, BusBarBlock.run(level, step.pos()), seen, queue);
             } else {
-                follow(island, node, step.terminal(), queue);
+                seen.add(new Step(step.pos(), ANY));
+                if (block instanceof GridTieBlock) {
+                    island.grids.add(step.pos());
+                    if (stopAtDevices) {
+                        continue;
+                    }
+                } else if (node instanceof PowerLoad) {
+                    island.loads.add(step.pos());
+                }
+                follow(island, node, ANY, queue);
             }
         }
         return island;

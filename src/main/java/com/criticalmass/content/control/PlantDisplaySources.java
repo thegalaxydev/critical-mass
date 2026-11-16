@@ -67,6 +67,8 @@ public final class PlantDisplaySources {
         add(CMBlockEntities.GENERATOR.get(), PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.FREQUENCY, PlantChannel.SYNC);
         add(CMBlockEntities.CIRCUIT_BREAKER.get(), PlantChannel.SYNC);
         add(CMBlockEntities.GRID_TIE.get(), PlantChannel.DEMAND, PlantChannel.OUTPUT, PlantChannel.FREQUENCY);
+        add(CMBlockEntities.ELECTRIC_MOTOR.get(), PlantChannel.DEMAND, PlantChannel.SPEED);
+        add(CMBlockEntities.BUS_BAR.get(), PlantChannel.FREQUENCY, PlantChannel.DEMAND);
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ROD_INSERTION.get());
         add(CMBlockEntities.HEAT_EXCHANGER.get(), buffer);
         add(CMBlockEntities.CONDENSER.get(), buffer);

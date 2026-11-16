@@ -16,6 +16,7 @@ import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsE
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMBlockEntities;
+import com.simibubi.create.content.kinetics.base.OrientedRotatingVisual;
 import com.simibubi.create.content.kinetics.base.SingleAxisRotatingVisual;
 import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import com.criticalmass.content.control.LoconauticsCompat;
@@ -94,6 +95,8 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.CIRCUIT_BREAKER.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.GRID_TIE.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.INSULATOR.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.BUS_BAR.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.ELECTRIC_MOTOR.get(), MotorRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
@@ -103,6 +106,10 @@ public class CriticalMassClient {
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
                 .factory(SingleAxisRotatingVisual::shaft)
+                .skipVanillaRender(be -> false)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.ELECTRIC_MOTOR.get())
+                .factory(OrientedRotatingVisual.of(AllPartialModels.SHAFT_HALF))
                 .skipVanillaRender(be -> false)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CENTRIFUGE.get())
