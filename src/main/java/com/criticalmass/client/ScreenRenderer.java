@@ -98,7 +98,7 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
         private final List<Runnable> texts = new ArrayList<>();
         private final float w;
         private final float h;
-        private final float u;
+        private float u;
         private VertexConsumer quads;
 
         Board(ScreenBlockEntity be, Matrix4f base, MultiBufferSource buffer) {
@@ -112,23 +112,93 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
 
         void draw() {
             quads = buffer.getBuffer(RenderType.textBackground());
-            if (be.bigEnough()) {
+            if (be.fullBoard()) {
                 float pad = 0.16f * u;
                 float side = w * 0.285f;
-                Trend[] trends = Trend.values();
-                graph(trends[0], pad, pad, side, h / 2 - pad / 2);
-                graph(trends[1], pad, h / 2 + pad / 2, side, h - pad);
-                graph(trends[2], w - side, pad, w - pad, h / 2 - pad / 2);
-                graph(trends[3], w - side, h / 2 + pad / 2, w - pad, h - pad);
+                graph(0, pad, pad, side, h / 2 - pad / 2);
+                graph(1, pad, h / 2 + pad / 2, side, h - pad);
+                graph(2, w - side, pad, w - pad, h / 2 - pad / 2);
+                graph(3, w - side, h / 2 + pad / 2, w - pad, h - pad);
                 centre(side + pad, pad, w - side - pad, h - pad);
+            } else if (be.bigEnough()) {
+                page();
             } else {
                 float size = Math.min(0.3f, Math.min(w, h) * 0.22f);
                 float y = h / 2 - size * 1.3f;
-                text(Component.translatable("criticalmass.screen.board.too_small", ScreenBlockEntity.BOARD_WIDTH, ScreenBlockEntity.BOARD_HEIGHT).getString(), w / 2, y, size, AMBER, CENTRE, w - 0.4f);
+                text(Component.translatable("criticalmass.screen.board.too_small", ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT).getString(), w / 2, y, size, AMBER, CENTRE, w - 0.4f);
                 text(Component.translatable("criticalmass.screen.board.size", be.width(), be.height()).getString(), w / 2, y + size * 1.5f, size * 0.8f, DIM, CENTRE, w - 0.4f);
             }
             for (Runnable text : texts) {
                 text.run();
+            }
+        }
+
+        private static String upper(String key) {
+            return Component.translatable(key).getString().toUpperCase(java.util.Locale.ROOT);
+        }
+
+        private static String named(PlantChannel channel) {
+            return upper("criticalmass.channel." + channel.key);
+        }
+
+        private void page() {
+            u = Math.min(1f, Math.min(w / 5f, h / 2.5f));
+            float pad = 0.16f * u;
+            float right = w - pad;
+            String status = be.status();
+            text(be.title().isEmpty() ? "--" : upper(be.title()), pad, pad, 0.3f * u, GREEN, LEFT, (right - pad) * 0.58f);
+            text(status.isEmpty() ? "" : upper(status), right, pad + 0.03f * u, 0.25f * u, tone(status), RIGHT, (right - pad) * 0.4f);
+            float top = pad + 0.42f * u;
+            line(pad, top, right, top, 0.02f * u, DIM);
+            top += 0.1f * u;
+            float bottom = h - pad;
+            List<PlantChannel> rows = be.rows();
+            boolean beside = w >= 5 && !rows.isEmpty();
+            float tableWidth = Math.max(2.2f, Math.min(4f, w * 0.3f));
+            float graphsRight = beside ? right - tableWidth - pad : right;
+            float graphsBottom = bottom;
+            boolean under = !beside && h >= 3.5f && !rows.isEmpty();
+            if (under) {
+                graphsBottom = bottom - Math.min(rows.size() * 0.236f * u + 0.16f * u, (bottom - top) * 0.45f);
+            }
+            int count = be.trends().size();
+            float gap = 0.14f * u;
+            float areaWidth = graphsRight - pad;
+            float areaHeight = graphsBottom - top;
+            int maxColumns = Math.max(1, (int) (areaWidth / 2.2f));
+            int maxRows = Math.max(1, (int) (areaHeight / 1.0f));
+            int shown = Math.min(count, maxColumns * maxRows);
+            if (shown > 0) {
+                int columns = Math.min(maxColumns, (int) Math.ceil(shown / (float) maxRows));
+                int lines = (int) Math.ceil(shown / (float) columns);
+                float cellWidth = (areaWidth - gap * (columns - 1)) / columns;
+                float cellHeight = (areaHeight - gap * (lines - 1)) / lines;
+                for (int i = 0; i < shown; i++) {
+                    float x = pad + (i % columns) * (cellWidth + gap);
+                    float y = top + (i / columns) * (cellHeight + gap);
+                    graph(i, x, y, x + cellWidth, y + cellHeight);
+                }
+            }
+            if (beside) {
+                table(right - tableWidth, top, right, bottom);
+            } else if (under) {
+                table(pad, graphsBottom + 0.12f * u, right, bottom);
+            }
+        }
+
+        private void table(float x0, float y0, float x1, float y1) {
+            float width = x1 - x0;
+            float row = 0.236f * u;
+            float size = 0.19f * u;
+            float y = y0;
+            List<PlantChannel> rows = be.rows();
+            List<String> values = be.values();
+            text(Component.translatable("criticalmass.screen.readings").getString(), x0, y, 0.17f * u, DIM, LEFT, width);
+            y += 0.26f * u;
+            for (int i = 0; i < rows.size() && y + size <= y1; i++) {
+                text(named(rows.get(i)), x0, y, size, DIM, LEFT, width * 0.56f);
+                text(i < values.size() ? values.get(i) : "--", x1, y, size, GREEN, RIGHT, width * 0.42f);
+                y += row;
             }
         }
 
@@ -181,12 +251,17 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
             texts.add(() -> font.drawInBatch(text, 0, 0, color, false, at, buffer, Font.DisplayMode.POLYGON_OFFSET, 0, LightTexture.FULL_BRIGHT));
         }
 
-        private void graph(Trend trend, float x0, float y0, float x1, float y1) {
+        private void graph(int index, float x0, float y0, float x1, float y1) {
+            if (index >= be.trends().size()) {
+                return;
+            }
+            PlantChannel channel = be.trends().get(index);
+            String name = be.board() ? Component.translatable("criticalmass.screen.trend." + Trend.values()[index].key).getString() : named(channel) + (be.unit(index).isEmpty() ? "" : " " + be.unit(index));
             float title = 0.2f * u;
             float small = 0.13f * u;
             float thin = 0.012f * u;
-            text(Component.translatable("criticalmass.screen.trend." + trend.key).getString(), x0, y0, title, GREEN, LEFT, (x1 - x0) * 0.68f);
-            text(be.samples() == 0 ? "--" : PlantDisplaySources.number(be.latest(trend)), x1, y0, title, GREEN, RIGHT, (x1 - x0) * 0.28f);
+            text(name, x0, y0, title, GREEN, LEFT, (x1 - x0) * 0.68f);
+            text(be.samples() == 0 ? "--" : PlantDisplaySources.number(be.latest(index)), x1, y0, title, GREEN, RIGHT, (x1 - x0) * 0.28f);
             float px0 = x0 + 0.44f * u;
             float px1 = x1;
             float py0 = y0 + 0.34f * u;
@@ -198,15 +273,16 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
                 line(gx, py0, gx, py1, thin, GRID);
             }
             box(px0, py0, px1, py1, thin * 1.6f, DIM);
-            float max = be.scale(trend);
-            if (max > 0) {
+            float min = be.low(index);
+            float max = be.scale(index);
+            if (max > min) {
                 text(PlantDisplaySources.number(max), px0 - 0.05f * u, py0 - small * 0.2f, small, DIM, RIGHT, 0.38f * u);
-                text(PlantDisplaySources.number(max / 2), px0 - 0.05f * u, (py0 + py1) / 2 - small / 2, small, DIM, RIGHT, 0.38f * u);
+                text(PlantDisplaySources.number((max + min) / 2), px0 - 0.05f * u, (py0 + py1) / 2 - small / 2, small, DIM, RIGHT, 0.38f * u);
             }
-            text("0", px0 - 0.05f * u, py1 - small * 0.9f, small, DIM, RIGHT, 0.38f * u);
+            text(PlantDisplaySources.number(min), px0 - 0.05f * u, py1 - small * 0.9f, small, DIM, RIGHT, 0.38f * u);
             text(Component.translatable("criticalmass.screen.trend.past").getString(), px0, py1 + 0.06f * u, small, DIM, LEFT, 0);
             text(Component.translatable("criticalmass.screen.trend.now").getString(), px1, py1 + 0.06f * u, small, DIM, RIGHT, 0);
-            byte[] plot = be.plot(trend);
+            byte[] plot = be.plot(index);
             float step = (px1 - px0) / (ScreenBlockEntity.HISTORY - 1);
             float lastX = 0;
             float lastY = 0;
@@ -222,13 +298,13 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
         }
 
         private int tone(String key) {
-            if (key.contains(".trip.") || key.contains("breached") || key.contains("damaged") || key.contains("no_reactor")) {
+            if (key.contains(".trip.") || key.contains("breached") || key.contains("damaged") || key.contains("no_target") || key.contains("overloaded") || key.contains("transformer.hot")) {
                 return RED;
             }
             if (key.startsWith("criticalmass.alarm.")) {
                 return AMBER;
             }
-            return key.contains("running") || key.contains("cleared") ? GREEN : AMBER;
+            return key.contains("running") || key.contains("cleared") || key.contains("synchronised") || key.contains("supplying") || key.contains("breaker.closed") || key.endsWith(".live") ? GREEN : AMBER;
         }
 
         private void centre(float x0, float y0, float x1, float y1) {

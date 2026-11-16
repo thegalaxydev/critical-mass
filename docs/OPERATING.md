@@ -30,7 +30,7 @@ Plumb every circuit with Create's fluid pipes and Fluid Valves, then reinforce t
 
 Readings go on a wall of Plant Screens. Screens placed beside and above each other join into one wall. They run on rotation, like a Display Board: each screen holds a cogwheel that meshes with its neighbours, so one turning cogwheel beside any screen drives the whole wall.
 
-Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine the same way to add its speed and shaft load. If the wall is too small it tells you so.
+Build the wall at least 9 wide and 5 high, then use the Plant Linker on the Reactor Controller and on any screen. Smaller walls, from 3 wide and 2 high, show any other machine the same way: link one to the generator, the transformer, a bus or a pump and it graphs that machine's readings. The wall becomes the reactor display: trend graphs of neutron power, pressure, coolant temperature and xenon on the sides, and in the middle the status, every reading and a list of the latest events. Link the turbine the same way to add its speed and shaft load. If the wall is too small it tells you so.
 
 A wall you have not linked shows Display Link text instead, three green lines to a block. Put a Create Display Link on a machine, point it at any screen of the wall, and pick what to show. Create's Display Board, Nixie Tubes and signs take the same links.
 

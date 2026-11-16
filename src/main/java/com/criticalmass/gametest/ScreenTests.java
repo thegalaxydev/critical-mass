@@ -2,9 +2,11 @@ package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.PlantAlarms;
+import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.control.ScreenBlockEntity;
+import com.criticalmass.content.power.Power;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
@@ -12,6 +14,8 @@ import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
+import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
 import com.simibubi.create.content.kinetics.simpleRelays.CogWheelBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlock;
 import com.simibubi.create.content.redstone.displayLink.DisplayLinkBlockEntity;
@@ -28,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -166,6 +171,61 @@ public final class ScreenTests {
                     player.setItemInHand(InteractionHand.MAIN_HAND, empty);
                     empty.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, empty, new BlockHitResult(Vec3.atCenterOf(screenAbs), Direction.NORTH, screenAbs, false)));
                     h.assertTrue(!main.linked() && main.samples() == 0, "An empty linker should unlink the wall");
+                })
+                .thenSucceed();
+    }
+
+    private static ScreenBlockEntity wall(GameTestHelper h, BlockPos corner, int width, int height, List<ScreenBlockEntity> all) {
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                BlockPos p = corner.offset(x, y, 0);
+                h.setBlock(p, CMBlocks.PLANT_SCREEN.get().defaultBlockState().setValue(ScreenBlock.FACING, Direction.NORTH));
+                all.add(h.getBlockEntity(p));
+            }
+        }
+        return h.getBlockEntity(corner.offset(width - 1, height - 1, 0));
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 300)
+    public static void aSmallScreenWallShowsWhateverMachineItIsLinkedTo(GameTestHelper h) {
+        BlockPos driverPos = new BlockPos(2, 2, 2);
+        BlockPos generatorPos = driverPos.east();
+        BlockPos busPos = new BlockPos(2, 2, 5);
+        h.setBlock(driverPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        CreativeMotorBlockEntity driver = h.getBlockEntity(driverPos);
+        driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+        List<ScreenBlockEntity> all = new ArrayList<>();
+        ScreenBlockEntity main = wall(h, new BlockPos(6, 2, 8), ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT, all);
+        ScreenBlockEntity narrow = wall(h, new BlockPos(11, 2, 8), 2, 1, all);
+        h.onEachTick(() -> all.forEach(ScreenBlockEntity::charge));
+        h.startSequence()
+                .thenIdle(15)
+                .thenExecute(() -> {
+                    h.assertTrue(main.width() == ScreenBlockEntity.MIN_WIDTH && main.height() == ScreenBlockEntity.MIN_HEIGHT && main.bigEnough(), "Three by two should be enough for a display");
+                    h.assertTrue(main.link(h.absolutePos(generatorPos)) && narrow.link(h.absolutePos(generatorPos)), "A wall should link to a generator");
+                    h.assertTrue(narrow.linked() && !narrow.bigEnough(), "Two by one should link and report that it is too small");
+                })
+                .thenIdle(70)
+                .thenExecute(() -> {
+                    h.assertTrue(main.samples() >= 3 && !main.board() && !main.fullBoard(), "A wall linked to a generator should sample it as a page, not the reactor board: " + main.samples());
+                    h.assertTrue(main.title().equals(CMBlocks.GENERATOR.get().getDescriptionId()) && main.status().endsWith("generator.running"), "The page should carry the machine's name and state: " + main.status());
+                    h.assertTrue(main.trends().equals(List.of(PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.FREQUENCY, PlantChannel.SYNC)), "The page should graph what a gauge could read there: " + main.trends());
+                    h.assertTrue(main.rows().equals(main.trends()) && main.values().size() == 4 && main.values().get(2).startsWith("50"), "It should list the same readings: " + main.values());
+                    CompoundTag sent = main.getUpdateTag(h.getLevel().registryAccess());
+                    h.assertTrue(sent.getFloat("Low2") == 45f && sent.getFloat("Scale2") == 55f, "Frequency should be graphed on its own window, not from zero: " + sent.getFloat("Low2") + " to " + sent.getFloat("Scale2"));
+                    int middle = sent.getByteArray("Trend2")[0] & 255;
+                    h.assertTrue(middle > 120 && middle < 135, "50 Hz should plot in the middle of 45 to 55: " + middle);
+                    h.assertTrue(main.link(h.absolutePos(busPos)), "The same wall should take another machine");
+                    h.assertTrue(main.samples() == 0, "A new machine should start the graphs again");
+                })
+                .thenIdle(50)
+                .thenExecute(() -> {
+                    h.assertTrue(main.title().equals(CMBlocks.BUS_BAR.get().getDescriptionId()) && main.status().endsWith("bus.dead"), "The page should follow the new machine: " + main.title() + " " + main.status());
+                    h.assertTrue(main.trends().equals(List.of(PlantChannel.DEMAND, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE)) && main.samples() >= 2, "A bus should graph its load, frequency and voltage: " + main.trends());
+                    main.unlink();
+                    h.assertTrue(!main.linked() && main.trends().isEmpty() && main.title().isEmpty(), "Unlinking should clear the page");
                 })
                 .thenSucceed();
     }

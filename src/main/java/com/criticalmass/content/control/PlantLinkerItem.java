@@ -55,7 +55,7 @@ public class PlantLinkerItem extends Item {
             }
             level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
             if (screen.linked() && !screen.bigEnough()) {
-                player.displayClientMessage(Component.translatable("criticalmass.screen.link.too_small", screen.width(), screen.height(), ScreenBlockEntity.BOARD_WIDTH, ScreenBlockEntity.BOARD_HEIGHT), true);
+                player.displayClientMessage(Component.translatable("criticalmass.screen.link.too_small", screen.width(), screen.height(), ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT), true);
             } else {
                 player.displayClientMessage(Component.translatable("criticalmass.linker.bound", level.getBlockState(stored).getBlock().getName(), stored.getX(), stored.getY(), stored.getZ()), true);
             }

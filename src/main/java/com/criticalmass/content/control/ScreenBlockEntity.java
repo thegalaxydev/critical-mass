@@ -1,6 +1,14 @@
 package com.criticalmass.content.control;
 
+import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.BusBarBlockEntity;
+import com.criticalmass.content.power.GeneratorBlockEntity;
+import com.criticalmass.content.power.GridTieBlockEntity;
+import com.criticalmass.content.power.MotorBlockEntity;
+import com.criticalmass.content.power.TransformerBlockEntity;
+import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.api.behaviour.display.DisplayTarget;
@@ -34,11 +42,17 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     public static final int MAX_SPAN = 16;
     public static final int BOARD_WIDTH = 9;
     public static final int BOARD_HEIGHT = 5;
+    public static final int MIN_WIDTH = 3;
+    public static final int MIN_HEIGHT = 2;
+    public static final int MAX_TRENDS = 6;
     public static final int HISTORY = 120;
     public static final int SAMPLE_TICKS = 20;
     public static final int EVENT_LIMIT = 5;
     public static final List<PlantChannel> ROWS = List.of(PlantChannel.NEUTRON, PlantChannel.POWER, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.TEMPERATURE,
             PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.RODS_A, PlantChannel.XENON, PlantChannel.BORON);
+    private static final List<PlantChannel> TREND_ORDER = List.of(PlantChannel.NEUTRON, PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.SPEED, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE,
+            PlantChannel.SYNC, PlantChannel.FLOW, PlantChannel.PRESSURE, PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.LEVEL, PlantChannel.POWER, PlantChannel.RODS_A,
+            PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.REACTIVITY, PlantChannel.PERIOD);
     private static final int SCAN_TICKS = 10;
     private static final int LINE_LIMIT = 160;
 
@@ -75,9 +89,17 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     private BlockPos turbine;
     private int sampleIn;
     private int samples;
-    private final float[][] history = new float[Trend.values().length][HISTORY];
-    private final float[] scale = new float[Trend.values().length];
-    private final byte[][] plot = new byte[Trend.values().length][0];
+    private final float[][] history = new float[MAX_TRENDS][HISTORY];
+    private final float[] low = new float[MAX_TRENDS];
+    private final float[] scale = new float[MAX_TRENDS];
+    private final float[] rangeLow = new float[MAX_TRENDS];
+    private final float[] rangeHigh = new float[MAX_TRENDS];
+    private final byte[][] plot = new byte[MAX_TRENDS][0];
+    private final String[] units = new String[MAX_TRENDS];
+    private List<PlantChannel> trends = List.of();
+    private List<PlantChannel> rows = List.of();
+    private boolean board;
+    private String title = "";
     private String status = "";
     private final List<String> values = new ArrayList<>();
     private String turbineSpeed = "";
@@ -125,7 +147,27 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     }
 
     public boolean bigEnough() {
-        return width >= BOARD_WIDTH && height >= BOARD_HEIGHT;
+        return width >= MIN_WIDTH && height >= MIN_HEIGHT;
+    }
+
+    public boolean board() {
+        return board;
+    }
+
+    public boolean fullBoard() {
+        return board && width >= BOARD_WIDTH && height >= BOARD_HEIGHT;
+    }
+
+    public String title() {
+        return title;
+    }
+
+    public List<PlantChannel> trends() {
+        return trends;
+    }
+
+    public List<PlantChannel> rows() {
+        return rows;
     }
 
     @Nullable
@@ -161,16 +203,28 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         return samples;
     }
 
-    public float scale(Trend trend) {
-        return scale[trend.ordinal()];
+    public String unit(int trend) {
+        return units[trend] == null ? "" : units[trend];
     }
 
-    public byte[] plot(Trend trend) {
-        return plot[trend.ordinal()];
+    public float low(int trend) {
+        return low[trend];
+    }
+
+    public float scale(int trend) {
+        return scale[trend];
+    }
+
+    public byte[] plot(int trend) {
+        return plot[trend];
+    }
+
+    public float latest(int trend) {
+        return samples == 0 ? 0 : history[trend][samples - 1];
     }
 
     public float latest(Trend trend) {
-        return samples == 0 ? 0 : history[trend.ordinal()][samples - 1];
+        return latest(trend.ordinal());
     }
 
     private static boolean joins(LevelAccessor level, BlockPos pos, Direction facing) {
@@ -207,13 +261,15 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             return false;
         }
         BlockEntity be = level.getBlockEntity(pos);
-        if (be instanceof ReactorControllerBlockEntity) {
+        boolean onReactor = reactor != null && level.getBlockEntity(reactor) instanceof ReactorControllerBlockEntity;
+        if (be instanceof SteamTurbineBlockEntity && onReactor) {
+            turbine = pos.immutable();
+        } else if (PlantChannel.isTarget(be)) {
             if (!pos.equals(reactor)) {
                 clearReadings();
+                turbine = null;
             }
             reactor = pos.immutable();
-        } else if (be instanceof SteamTurbineBlockEntity) {
-            turbine = pos.immutable();
         } else {
             return false;
         }
@@ -234,6 +290,10 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     private void clearReadings() {
         samples = 0;
         status = "";
+        title = "";
+        trends = List.of();
+        rows = List.of();
+        board = false;
         values.clear();
         turbineSpeed = "";
         output = "";
@@ -316,33 +376,94 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         }
     }
 
+    public static String statusOf(@Nullable BlockEntity be) {
+        if (be instanceof ReactorControllerBlockEntity c) {
+            return c.isTripped() && !c.tripReason().isEmpty() ? "criticalmass.reactor.trip." + c.tripReason() + ".short" : c.status() + ".short";
+        }
+        if (be instanceof GeneratorBlockEntity g) {
+            return g.master().status();
+        }
+        if (be instanceof MotorBlockEntity m) {
+            return m.status();
+        }
+        if (be instanceof BreakerBlockEntity b) {
+            return b.closed() ? "criticalmass.breaker.closed" : b.tripReason().isEmpty() ? "criticalmass.breaker.open" : b.tripReason();
+        }
+        if (be instanceof BusBarBlockEntity bus) {
+            return bus.live() ? "criticalmass.bus.live" : "criticalmass.bus.dead";
+        }
+        if (be instanceof TransformerBlockEntity t) {
+            return t.heat() > 0.5 ? "criticalmass.transformer.hot" : t.highSide() > 0 || t.lowSide() > 0 ? "criticalmass.transformer.live" : "criticalmass.bus.dead";
+        }
+        if (be instanceof GridTieBlockEntity tie) {
+            return tie.ordering() ? "criticalmass.grid.ordering" : "criticalmass.grid.idle";
+        }
+        if (be instanceof SteamTurbineBlockEntity t) {
+            return t.status();
+        }
+        if (be instanceof CirculationPumpBlockEntity p) {
+            return p.status();
+        }
+        if (be instanceof PressurizerBlockEntity p) {
+            return p.status();
+        }
+        return "";
+    }
+
     public void sample() {
         if (level == null || reactor == null || !level.isLoaded(reactor)) {
             return;
         }
-        String nowStatus = "criticalmass.screen.no_reactor";
-        int alarms = 0;
-        values.clear();
-        if (level.getBlockEntity(reactor) instanceof ReactorControllerBlockEntity c) {
-            nowStatus = c.isTripped() && !c.tripReason().isEmpty() ? "criticalmass.reactor.trip." + c.tripReason() + ".short" : c.status() + ".short";
-            alarms = PlantAlarms.evaluate(c);
-            for (PlantChannel channel : ROWS) {
-                values.add(shown(channel.read(level, reactor)));
+        BlockEntity be = level.getBlockEntity(reactor);
+        boolean nowBoard = be instanceof ReactorControllerBlockEntity;
+        List<PlantChannel> nowTrends;
+        List<PlantChannel> nowRows;
+        if (nowBoard) {
+            nowTrends = new ArrayList<>();
+            for (Trend trend : Trend.values()) {
+                nowTrends.add(trend.channel);
             }
+            nowRows = ROWS;
+        } else {
+            nowRows = new ArrayList<>();
+            for (PlantChannel channel : TREND_ORDER) {
+                if (PlantChannel.isTarget(be) && channel.read(level, reactor) != null) {
+                    nowRows.add(channel);
+                }
+            }
+            nowTrends = nowRows.subList(0, Math.min(MAX_TRENDS, nowRows.size()));
+        }
+        if (!nowTrends.equals(trends)) {
+            trends = List.copyOf(nowTrends);
+            samples = 0;
+        }
+        rows = List.copyOf(nowRows);
+        board = nowBoard;
+        title = be == null ? "" : be.getBlockState().getBlock().getDescriptionId();
+        String nowStatus = rows.isEmpty() ? "criticalmass.screen.no_target" : statusOf(be);
+        int alarms = be instanceof ReactorControllerBlockEntity c ? PlantAlarms.evaluate(c) : 0;
+        values.clear();
+        for (PlantChannel channel : rows) {
+            values.add(shown(channel.read(level, reactor)));
+        }
+        if (!trends.isEmpty()) {
             if (samples == HISTORY) {
                 for (float[] series : history) {
                     System.arraycopy(series, 1, series, 0, HISTORY - 1);
                 }
                 samples--;
             }
-            for (Trend trend : Trend.values()) {
-                PlantChannel.Reading r = trend.channel.read(level, reactor);
-                history[trend.ordinal()][samples] = r == null ? 0 : (float) Math.max(0, r.value());
+            for (int i = 0; i < trends.size(); i++) {
+                PlantChannel.Reading r = trends.get(i).read(level, reactor);
+                rangeLow[i] = r == null ? 0 : (float) r.min();
+                units[i] = r == null ? trends.get(i).unit : r.unit();
+                rangeHigh[i] = r == null ? 0 : (float) r.max();
+                history[i][samples] = r == null ? 0 : (float) Math.max(Math.min(0, r.min()), r.value());
             }
             samples++;
         }
         if (!nowStatus.equals(status)) {
-            if (!status.isEmpty()) {
+            if (!status.isEmpty() && !nowStatus.isEmpty()) {
                 event(nowStatus, "");
             }
             status = nowStatus;
@@ -442,6 +563,10 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         tag.putString("Status", status);
         tag.putInt("Alarms", lastAlarms);
         if (clientPacket && reactor != null) {
+            tag.putString("Title", title);
+            tag.putBoolean("Board", board);
+            tag.putIntArray("Trends", trends.stream().mapToInt(Enum::ordinal).toArray());
+            tag.putIntArray("Rows", rows.stream().mapToInt(Enum::ordinal).toArray());
             ListTag shown = new ListTag();
             for (String value : values) {
                 shown.add(StringTag.valueOf(value));
@@ -450,20 +575,25 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             tag.putString("TurbineSpeed", turbineSpeed);
             tag.putString("Output", output);
             tag.putInt("Samples", samples);
-            for (Trend trend : Trend.values()) {
-                float[] series = history[trend.ordinal()];
+            for (int i = 0; i < trends.size(); i++) {
+                float[] series = history[i];
                 float top = 0;
-                for (int i = 0; i < samples; i++) {
-                    top = Math.max(top, series[i]);
+                for (int j = 0; j < samples; j++) {
+                    top = Math.max(top, series[j]);
                 }
-                float max = ceiling(top, trend.floor);
+                boolean windowed = !board && rangeLow[i] != 0;
+                float floor = board ? Trend.values()[i].floor : Math.max(0.1f, rangeHigh[i] * 0.1f);
+                float min = windowed ? rangeLow[i] : 0;
+                float max = windowed ? rangeHigh[i] : ceiling(top, floor);
                 byte[] packed = new byte[samples];
-                for (int i = 0; i < samples; i++) {
-                    packed[i] = (byte) Math.round(Math.min(1, series[i] / max) * 255);
+                for (int j = 0; j < samples; j++) {
+                    packed[j] = (byte) Math.round(Math.max(0, Math.min(1, (series[j] - min) / (max - min))) * 255);
                 }
-                tag.putFloat("Scale" + trend.ordinal(), max);
-                tag.putFloat("Latest" + trend.ordinal(), samples == 0 ? 0 : series[samples - 1]);
-                tag.putByteArray("Trend" + trend.ordinal(), packed);
+                tag.putFloat("Low" + i, min);
+                tag.putString("Unit" + i, unit(i));
+                tag.putFloat("Scale" + i, max);
+                tag.putFloat("Latest" + i, samples == 0 ? 0 : series[samples - 1]);
+                tag.putByteArray("Trend" + i, packed);
             }
         }
     }
@@ -497,14 +627,31 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             turbineSpeed = tag.getString("TurbineSpeed");
             output = tag.getString("Output");
             samples = tag.getInt("Samples");
-            for (Trend trend : Trend.values()) {
-                scale[trend.ordinal()] = tag.getFloat("Scale" + trend.ordinal());
-                plot[trend.ordinal()] = tag.getByteArray("Trend" + trend.ordinal());
+            title = tag.getString("Title");
+            board = tag.getBoolean("Board");
+            trends = channels(tag.getIntArray("Trends"), MAX_TRENDS);
+            rows = channels(tag.getIntArray("Rows"), PlantChannel.values().length);
+            for (int i = 0; i < trends.size(); i++) {
+                low[i] = tag.getFloat("Low" + i);
+                units[i] = tag.getString("Unit" + i);
+                scale[i] = tag.getFloat("Scale" + i);
+                plot[i] = tag.getByteArray("Trend" + i);
                 if (samples > 0 && samples <= HISTORY) {
-                    history[trend.ordinal()][samples - 1] = tag.getFloat("Latest" + trend.ordinal());
+                    history[i][samples - 1] = tag.getFloat("Latest" + i);
                 }
             }
         }
+    }
+
+    private static List<PlantChannel> channels(int[] ordinals, int limit) {
+        List<PlantChannel> out = new ArrayList<>();
+        PlantChannel[] all = PlantChannel.values();
+        for (int ordinal : ordinals) {
+            if (ordinal >= 0 && ordinal < all.length && out.size() < limit) {
+                out.add(all[ordinal]);
+            }
+        }
+        return out;
     }
 
     @Override
@@ -516,9 +663,9 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         } else if (main == null || main.reactor == null) {
             ThermalTooltips.status(tooltip, "criticalmass.screen.unlinked", ChatFormatting.GRAY);
         } else if (main.bigEnough()) {
-            ThermalTooltips.status(tooltip, "criticalmass.screen.linked", ChatFormatting.GREEN, main.reactor.getX(), main.reactor.getY(), main.reactor.getZ());
+            ThermalTooltips.status(tooltip, "criticalmass.screen.linked", ChatFormatting.GREEN, level.getBlockState(main.reactor).getBlock().getName(), main.reactor.getX(), main.reactor.getY(), main.reactor.getZ());
         } else {
-            ThermalTooltips.status(tooltip, "criticalmass.screen.too_small", ChatFormatting.GOLD, BOARD_WIDTH, BOARD_HEIGHT);
+            ThermalTooltips.status(tooltip, "criticalmass.screen.too_small", ChatFormatting.GOLD, MIN_WIDTH, MIN_HEIGHT);
         }
         return true;
     }

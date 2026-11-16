@@ -107,13 +107,18 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Readings refresh once a second. A Display Board only flips while it turns at 30 RPM or more, which is Create's own rule.
   - A comparator on the Reactor Controller reads the hottest fuel column against the 1,100 °C trip temperature (0 to 15).
 - **Plant Linker:** the tool that links a Plant Screen wall to its machines. Use it on a machine to remember it, then on a screen of the wall. Sneak-use in the air to clear it.
-- **Plant Screen:** a screen with green text, built like Create's Display Board in a steel frame. A wall of them shows the reactor display, or Display Link text like a Display Board.
-  - **Reactor display:** use the Plant Linker on a Reactor Controller and then on any screen of a wall at least 9 wide and 5 high. The wall then shows the whole reactor by itself.
+- **Plant Screen:** a screen with green text, built like Create's Display Board in a steel frame. A wall of them shows a display of its own for whatever machine it is linked to, or Display Link text like a Display Board.
+  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers and the Grid Connection.
+    - The wall shows the machine's name and its state, trend graphs of its readings over the last two minutes, and a table of every reading.
+    - How much it shows depends on its size. Three by two is one graph. A bigger wall fits more graphs, up to six, and from 5 wide the table stands beside them. A narrow wall 4 or more high puts the table under them.
+    - Readings that start at zero scale themselves to what they have seen. Frequency, phase angle and temperature are graphed on a fixed window, so 50 Hz sits in the middle of 45 to 55.
+    - Linking another machine to the same wall replaces the first and starts the graphs again.
+  - **Reactor display:** a wall at least 9 wide and 5 high linked to a Reactor Controller shows the whole reactor by itself. A smaller one shows the reactor as a machine display.
     - Four trend graphs cover the last two minutes: neutron power, pressure, coolant temperature and xenon. Each scales itself to what it has seen.
     - The centre panel shows the status, with trips in red, and every reading: neutron power, heat output, period, reactivity, fuel and coolant temperature, pressure, flow, rod position, xenon and boron.
     - Below that is a list of the latest events with their age: status changes, trips, and alarms raised and cleared.
-    - Link a Steam Turbine the same way to add its speed and shaft load.
-    - A linked wall that is too small says so on its face and in goggles. An empty linker unlinks the wall, and it goes back to Display Link text.
+    - Link a Steam Turbine to a wall that already shows a reactor to add its speed and shaft load. Linked to a wall of its own, a turbine gets its own display.
+  - A linked wall smaller than 3 by 2 says so on its face and in goggles. An empty linker unlinks the wall, and it goes back to Display Link text.
   - Screens placed beside and above each other join into one wall. Each block gives three lines and about five characters.
   - It runs on rotation, like Create's Display Board. Each screen holds a cogwheel that meshes with its neighbours, so one turning cogwheel beside any screen drives the whole wall. Each screen costs 0.25 SU per RPM. A wall stays lit for up to 20 seconds after it stops turning, and a dark wall keeps its text for when power returns.
 - **Control desk:** the Reactor Alloy Dashboard and its parts. The desk and part models and the part textures come from Create: Loconautics, used with its authors' permission; the desk has its own reactor alloy colours. Loconautics does not need to be installed.
