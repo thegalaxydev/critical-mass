@@ -1,0 +1,16 @@
+{
+ "variants": {
+  "axis=y": {
+   "model": "criticalmass:block/generator"
+  },
+  "axis=z": {
+   "model": "criticalmass:block/generator",
+   "x": 90
+  },
+  "axis=x": {
+   "model": "criticalmass:block/generator",
+   "x": 90,
+   "y": 90
+  }
+ }
+}

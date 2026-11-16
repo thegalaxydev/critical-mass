@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "W": {
+      "item": "criticalmass:power_wire"
+    },
+    "B": {
+      "item": "criticalmass:steel_block"
+    },
+    "E": {
+      "item": "create:precision_mechanism"
+    }
+  },
+  "pattern": [
+    "WWW",
+    "SBS",
+    "SES"
+  ],
+  "result": {
+    "id": "criticalmass:grid_connection"
+  }
+}

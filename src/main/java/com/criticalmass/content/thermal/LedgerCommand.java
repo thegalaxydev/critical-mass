@@ -1,6 +1,7 @@
 package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.fuel.FuelState;
+import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.radiation.Radiation;
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
@@ -53,6 +54,8 @@ public final class LedgerCommand {
                         .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), Double.NaN))
                         .then(Commands.argument("coolant", DoubleArgumentType.doubleArg(20, 340))
                                 .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), DoubleArgumentType.getDouble(ctx, "coolant")))))))
+                .then(Commands.literal("generator").then(Commands.argument("generator", BlockPosArgument.blockPos()).then(Commands.argument("load", DoubleArgumentType.doubleArg(0, 1))
+                        .executes(ctx -> generator(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "generator"), DoubleArgumentType.getDouble(ctx, "load"))))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -257,5 +260,16 @@ public final class LedgerCommand {
                 + " stored=" + fmt(stored) + " added=" + fmt(added) + " extracted=" + fmt(extracted) + " sunk=" + fmt(sunk) + " lostVolume=" + lostVolume + " ruptures=" + ruptures + " balance=" + fmt(balance);
         source.sendSuccess(() -> Component.literal(summary), false);
         return controllers + pumps + turbines;
+    }
+
+    private static int generator(CommandSourceStack source, BlockPos pos, double load) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof GeneratorBlockEntity section)) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_generator"));
+            return 0;
+        }
+        GeneratorBlockEntity g = section.master();
+        g.setLoad(load);
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.generator", Math.round(g.load() * 100)), true);
+        return 1;
     }
 }

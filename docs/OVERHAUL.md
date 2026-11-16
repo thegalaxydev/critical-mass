@@ -27,7 +27,7 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
 
 ## Phases (dependency order)
 
-1. **A. Energy chain.** Turbine governor and overspeed. The Generator built in this phase was later removed: the shaft is the output.
+1. **A. Energy chain.** Turbine governor and overspeed. The Generator built in this phase was later removed. The electrical system that replaced it is described under Electricity in the README: generators, wires, breakers and a grid connection, in the mod's own units.
 2. **B. Rods and inspection.** Visible rod travel, banks, viewport.
 3. **C. Controls and instruments.** Dashboard and parts, part settings, Signal Interface jobs, alarm signal.
 4. **D. Plant equipment.** Pressurizer, feedwater tank, built cooling tower with fans.

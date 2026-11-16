@@ -1,6 +1,8 @@
 package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.client.DashboardAim;
@@ -363,6 +365,18 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
             t.resetTrip();
             return "criticalmass.dashboard.result.turbine_reset";
+        }
+        if (be instanceof GeneratorBlockEntity section) {
+            GeneratorBlockEntity g = section.master();
+            if (press == DashPart.Press.GENERATOR_RAISE) {
+                g.raise();
+            } else {
+                g.lower();
+            }
+            return g.synced() ? "criticalmass.dashboard.result.generator_load" : "criticalmass.dashboard.result.generator_speed";
+        }
+        if (be instanceof BreakerBlockEntity b) {
+            return press == DashPart.Press.BREAKER_CLOSE ? b.close() : b.open();
         }
         return part.target == null ? "criticalmass.dashboard.unbound" : "";
     }

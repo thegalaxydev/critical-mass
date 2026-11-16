@@ -1,6 +1,7 @@
 package com.criticalmass.registry;
 
 import com.criticalmass.content.control.DashPart;
+import com.criticalmass.content.power.WireItem;
 import com.criticalmass.content.control.DashPartItem;
 import com.criticalmass.content.control.PlantLinkerItem;
 import com.criticalmass.CriticalMass;
@@ -45,6 +46,7 @@ public final class CMItems {
     public static final DeferredItem<Item> STEEL_INGOT = simple("steel_ingot", new Item.Properties());
     public static final DeferredItem<Item> STEEL_NUGGET = simple("steel_nugget", new Item.Properties());
     public static final DeferredItem<Item> STEEL_PLATE = simple("steel_plate", new Item.Properties());
+    public static final DeferredItem<WireItem> POWER_WIRE = custom("power_wire", () -> new WireItem(new Item.Properties()));
     public static final DeferredItem<Item> REACTOR_ALLOY_INGOT = simple("reactor_alloy_ingot", new Item.Properties());
     public static final DeferredItem<Item> REACTOR_ALLOY_SHEET = simple("reactor_alloy_sheet", new Item.Properties());
     public static final DeferredItem<Item> CONTROL_ROD = simple("control_rod", new Item.Properties());

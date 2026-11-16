@@ -1,0 +1,26 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "L": {
+      "item": "minecraft:lever"
+    },
+    "E": {
+      "item": "create:electron_tube"
+    }
+  },
+  "pattern": [
+    "SLS",
+    "CEC",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:circuit_breaker"
+  }
+}

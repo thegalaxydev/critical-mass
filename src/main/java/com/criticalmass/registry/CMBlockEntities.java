@@ -9,6 +9,10 @@ import com.criticalmass.content.thermal.PressurizerBlockEntity;
 import com.criticalmass.content.control.DashboardBlockEntity;
 import com.criticalmass.content.control.ScreenBlockEntity;
 import com.criticalmass.content.control.SignalInterfaceBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.GeneratorBlockEntity;
+import com.criticalmass.content.power.GridTieBlockEntity;
+import com.criticalmass.content.power.InsulatorBlockEntity;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
@@ -47,6 +51,15 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<SignalInterfaceBlockEntity>> REACTOR_SIGNAL_INTERFACE = BLOCK_ENTITIES.register("reactor_signal_interface",
             () -> BlockEntityType.Builder.of((pos, state) -> new SignalInterfaceBlockEntity(CMBlockEntities.REACTOR_SIGNAL_INTERFACE.get(), pos, state), CMBlocks.REACTOR_SIGNAL_INTERFACE.get()).build(null));
+
+    public static final Supplier<BlockEntityType<GeneratorBlockEntity>> GENERATOR = BLOCK_ENTITIES.register("generator",
+            () -> BlockEntityType.Builder.of((pos, state) -> new GeneratorBlockEntity(CMBlockEntities.GENERATOR.get(), pos, state), CMBlocks.GENERATOR.get()).build(null));
+    public static final Supplier<BlockEntityType<BreakerBlockEntity>> CIRCUIT_BREAKER = BLOCK_ENTITIES.register("circuit_breaker",
+            () -> BlockEntityType.Builder.of((pos, state) -> new BreakerBlockEntity(CMBlockEntities.CIRCUIT_BREAKER.get(), pos, state), CMBlocks.CIRCUIT_BREAKER.get()).build(null));
+    public static final Supplier<BlockEntityType<InsulatorBlockEntity>> INSULATOR = BLOCK_ENTITIES.register("insulator",
+            () -> BlockEntityType.Builder.of((pos, state) -> new InsulatorBlockEntity(CMBlockEntities.INSULATOR.get(), pos, state), CMBlocks.INSULATOR.get()).build(null));
+    public static final Supplier<BlockEntityType<GridTieBlockEntity>> GRID_TIE = BLOCK_ENTITIES.register("grid_connection",
+            () -> BlockEntityType.Builder.of((pos, state) -> new GridTieBlockEntity(CMBlockEntities.GRID_TIE.get(), pos, state), CMBlocks.GRID_CONNECTION.get()).build(null));
 
     public static final Supplier<BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReactorControllerBlockEntity(CMBlockEntities.REACTOR_CONTROLLER.get(), pos, state), CMBlocks.REACTOR_CONTROLLER.get()).build(null));

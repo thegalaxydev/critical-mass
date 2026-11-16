@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "K": {
+      "item": "minecraft:dried_kelp"
+    },
+    "C": {
+      "tag": "c:ingots/copper"
+    }
+  },
+  "pattern": [
+    "KCK"
+  ],
+  "result": {
+    "id": "criticalmass:power_wire",
+    "count": 4
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "A": {
+      "item": "create:shaft"
+    }
+  },
+  "pattern": [
+    "SCS",
+    "CAC",
+    "SCS"
+  ],
+  "result": {
+    "id": "criticalmass:generator"
+  }
+}

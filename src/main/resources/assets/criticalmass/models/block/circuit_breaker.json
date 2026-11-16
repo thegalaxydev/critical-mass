@@ -1,0 +1,414 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/circuit_breaker",
+  "1": "criticalmass:block/steel_block",
+  "particle": "criticalmass:block/steel_block"
+ },
+ "elements": [
+  {
+   "name": "shell",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      0,
+      7,
+      8,
+      15
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "frame_top",
+   "from": [
+    0,
+    15,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ],
+     "texture": "#1"
+    },
+    "down": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_bottom",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    1,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      15,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_left",
+   "from": [
+    15,
+    1,
+    0
+   ],
+   "to": [
+    16,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      1,
+      1,
+      15
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "frame_right",
+   "from": [
+    0,
+    1,
+    0
+   ],
+   "to": [
+    1,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      15,
+      1,
+      16,
+      15
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "door",
+   "from": [
+    1,
+    1,
+    1
+   ],
+   "to": [
+    15,
+    15,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      7
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "handle_open",
+   "from": [
+    7,
+    4,
+    0
+   ],
+   "to": [
+    9,
+    6,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      1,
+      8,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      7,
+      1,
+      7.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      7.5,
+      1,
+      8,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      7,
+      1,
+      8,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      7,
+      1.5,
+      8,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "lamp_red",
+   "from": [
+    10,
+    11,
+    0
+   ],
+   "to": [
+    12,
+    13,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      1,
+      9,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8,
+      1,
+      8.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8.5,
+      1,
+      9,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      1,
+      9,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      8,
+      1.5,
+      9,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "lamp_green_lit",
+   "from": [
+    4,
+    11,
+    0
+   ],
+   "to": [
+    6,
+    13,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      11,
+      1,
+      12,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      11,
+      1,
+      11.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      11.5,
+      1,
+      12,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      11,
+      1,
+      12,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      11,
+      1.5,
+      12,
+      2
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false,
+   "neoforge_data": {
+    "block_light": 15,
+    "sky_light": 15,
+    "ambient_occlusion": false
+   }
+  }
+ ]
+}

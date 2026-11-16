@@ -1,0 +1,258 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/grid_connection",
+  "particle": "criticalmass:block/steel_block"
+ },
+ "elements": [
+  {
+   "name": "tank",
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    11,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      5.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      7,
+      5.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      7,
+      5.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      7,
+      5.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      0,
+      5.5,
+      7,
+      12.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      5.5,
+      7,
+      12.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "bushing_1",
+   "from": [
+    3,
+    11,
+    7
+   ],
+   "to": [
+    5,
+    16,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      0,
+      9,
+      1
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "bushing_2",
+   "from": [
+    7,
+    11,
+    7
+   ],
+   "to": [
+    9,
+    16,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      0,
+      9,
+      1
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "bushing_3",
+   "from": [
+    11,
+    11,
+    7
+   ],
+   "to": [
+    13,
+    16,
+    9
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      8,
+      2.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      0,
+      9,
+      1
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

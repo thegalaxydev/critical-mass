@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": {
+      "item": "minecraft:brick"
+    },
+    "S": {
+      "item": "criticalmass:steel_plate"
+    }
+  },
+  "pattern": [
+    "B",
+    "B",
+    "S"
+  ],
+  "result": {
+    "id": "criticalmass:insulator",
+    "count": 2
+  }
+}

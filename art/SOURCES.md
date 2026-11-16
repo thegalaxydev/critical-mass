@@ -29,6 +29,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
+| Generator, Circuit Breaker, Grid Connection, Insulator, Power Wire | Script | `art/tools/power_texture.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
 | Shielded Cask | Script | `art/tools/cask_texture.py` |
@@ -140,6 +141,20 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
 - Texture: `art/tools/boiler_plate_texture.py` paints the plate and coil from the copper tones in `docs/art/palette.json` and the sockets in the author's Steel Block tones. The base and posts use the Steel Block texture itself.
 - Status: script-painted placeholder, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/boiler_plate_model.py` then exports the three models and the blockstate.
+- Date: 2026-11-16
+
+## generator, circuit_breaker, grid_connection, insulator and power_wire
+
+- Used by: `textures/block/generator.png`, `circuit_breaker.png`, `grid_connection.png`, `insulator.png` and `textures/item/power_wire.png`, and the models `block/generator.json`, `circuit_breaker.json`, `circuit_breaker_closed.json`, `grid_connection.json` and `insulator.json`
+- Source: one Blockbench file each in `art/blockbench/`: `generator.bbmodel`, `circuit_breaker.bbmodel`, `grid_connection.bbmodel` and `insulator.bbmodel`.
+  - The generator is a barrel between two flanges with a copper winding band and a terminal stud on one side. The game turns it so the stud is on top when the shaft lies flat.
+  - The breaker is a steel cabinet with a door, a handle and two lamps. The groups `open` and `closed` each hold the handle and lamps for one state, so show one at a time. Its top has the two terminal rings.
+  - The grid connection is a ribbed tank with three bushings. Wires land on the middle one.
+  - The insulator is a ceramic post with two sheds on a steel foot and a copper cap.
+- Texture: `art/tools/power_texture.py` paints all five. The dark panels take the Reactor Vessel Casing's tones, the steel is the author's Steel Block, and the copper, ceramic and lamp tones come from `docs/art/palette.json`.
+- The wires themselves have no texture: the game draws them as dark strips between the terminals.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/power_model.py` then exports the models, the blockstates and the item models.
 - Date: 2026-11-16
 
 ## circulation_pump

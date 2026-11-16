@@ -10,6 +10,10 @@ import net.minecraft.core.Direction;
 import com.criticalmass.content.control.DashboardBlock;
 import com.criticalmass.content.control.PartPanelBlock;
 import com.criticalmass.content.control.SignalInterfaceBlock;
+import com.criticalmass.content.power.BreakerBlock;
+import com.criticalmass.content.power.GeneratorBlock;
+import com.criticalmass.content.power.GridTieBlock;
+import com.criticalmass.content.power.InsulatorBlock;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.thermal.ChannelBlocks;
 import com.criticalmass.CriticalMass;
@@ -90,6 +94,11 @@ public final class CMBlocks {
     public static final DeferredBlock<PartPanelBlock> PART_PANEL = BLOCKS.register("part_panel",
             () -> new PartPanelBlock(metal(1.0f).noOcclusion().noCollission().dynamicShape().noLootTable()));
     public static final DeferredBlock<SignalInterfaceBlock> REACTOR_SIGNAL_INTERFACE = register("reactor_signal_interface", SignalInterfaceBlock::new, metal(4.0f));
+
+    public static final DeferredBlock<GeneratorBlock> GENERATOR = register("generator", GeneratorBlock::new, metal(4.0f).noOcclusion());
+    public static final DeferredBlock<InsulatorBlock> INSULATOR = register("insulator", InsulatorBlock::new, metal(1.5f).noOcclusion());
+    public static final DeferredBlock<BreakerBlock> CIRCUIT_BREAKER = register("circuit_breaker", BreakerBlock::new, metal(4.0f));
+    public static final DeferredBlock<GridTieBlock> GRID_CONNECTION = register("grid_connection", GridTieBlock::new, metal(5.0f).noOcclusion());
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));

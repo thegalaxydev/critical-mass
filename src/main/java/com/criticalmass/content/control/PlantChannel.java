@@ -1,6 +1,10 @@
 package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.GeneratorBlockEntity;
+import com.criticalmass.content.power.GridTieBlockEntity;
+import com.criticalmass.content.power.Power;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
@@ -31,7 +35,10 @@ public enum PlantChannel {
     PERIOD("period", "s"),
     REACTIVITY("reactivity", "pcm"),
     XENON("xenon", "%"),
-    BORON("boron", "ppm");
+    BORON("boron", "ppm"),
+    FREQUENCY("frequency", "Hz"),
+    SYNC("sync", "\u00b0"),
+    DEMAND("demand", "MW");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -54,7 +61,8 @@ public enum PlantChannel {
     }
 
     public static boolean isTarget(@Nullable BlockEntity be) {
-        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity;
+        return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
+                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity;
     }
 
     private Reading of(double value, double min, double max) {
@@ -121,6 +129,28 @@ public enum PlantChannel {
         if (be instanceof ControlRodDriveBlockEntity d) {
             return switch (this) {
                 case RODS_A, RODS_B, RODS_C, RODS_D -> of(d.insertion() * 100, 0, 100);
+                default -> null;
+            };
+        }
+        if (be instanceof GeneratorBlockEntity section) {
+            GeneratorBlockEntity g = section.master();
+            return switch (this) {
+                case OUTPUT -> new Reading(Power.megawatts(g.outputSu()), 0, Power.megawatts(g.ratedSu()), "MW");
+                case FREQUENCY -> g.energised() ? of(g.frequency(), 45, 55) : of(0, 45, 55);
+                case SYNC -> g.synced() ? of(0, -180, 180) : g.energised() ? of(g.phase(), -180, 180) : null;
+                case DEMAND -> new Reading(Power.megawatts(g.load() * g.ratedSu()), 0, Power.megawatts(g.ratedSu()), "MW");
+                default -> null;
+            };
+        }
+        if (be instanceof BreakerBlockEntity b) {
+            return this == SYNC && b.bothLive() ? of(b.angle(), -180, 180) : null;
+        }
+        if (be instanceof GridTieBlockEntity tie) {
+            double scale = Math.max(Power.ORDER_STEP_MW, tie.contractMw());
+            return switch (this) {
+                case DEMAND -> of(tie.orderMw(), 0, scale);
+                case OUTPUT -> new Reading(tie.deliveredMw(), 0, scale, "MW");
+                case FREQUENCY -> of(Power.GRID_HZ, 45, 55);
                 default -> null;
             };
         }

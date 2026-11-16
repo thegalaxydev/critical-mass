@@ -90,11 +90,19 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.DASHBOARD.get(), DashboardRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.SPENT_FUEL_RACK.get(), RackRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.SHIELDED_CASK.get(), CaskRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.GENERATOR.get(), GeneratorRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.CIRCUIT_BREAKER.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.GRID_TIE.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.INSULATOR.get(), WireNodeRenderer::new);
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
                 .factory(SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))
+                .skipVanillaRender(be -> false)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
+                .factory(SingleAxisRotatingVisual::shaft)
                 .skipVanillaRender(be -> false)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CENTRIFUGE.get())

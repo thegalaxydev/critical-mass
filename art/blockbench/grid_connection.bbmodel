@@ -1,0 +1,472 @@
+{
+ "meta": {
+  "format_version": "5.0",
+  "model_format": "java_block",
+  "box_uv": false
+ },
+ "name": "grid_connection",
+ "parent": "block/block",
+ "ambientocclusion": true,
+ "front_gui_light": false,
+ "visible_box": [
+  1,
+  1,
+  0
+ ],
+ "variable_placeholders": "",
+ "variable_placeholder_buttons": [],
+ "unhandled_root_fields": {},
+ "resolution": {
+  "width": 16,
+  "height": 16
+ },
+ "elements": [
+  {
+   "name": "tank",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    1,
+    0,
+    1
+   ],
+   "to": [
+    15,
+    11,
+    15
+   ],
+   "autouv": 0,
+   "color": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0.0,
+      0.0,
+      7.0,
+      5.5
+     ],
+     "texture": 0
+    },
+    "east": {
+     "uv": [
+      0.0,
+      0.0,
+      7.0,
+      5.5
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      0.0,
+      0.0,
+      7.0,
+      5.5
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      0.0,
+      0.0,
+      7.0,
+      5.5
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      0.0,
+      5.5,
+      7.0,
+      12.5
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      0.0,
+      5.5,
+      7.0,
+      12.5
+     ],
+     "texture": 0
+    }
+   },
+   "type": "cube",
+   "uuid": "d90a1caa-addb-4bb6-a3c7-2d409821b3db",
+   "visibility": true
+  },
+  {
+   "name": "bushing_1",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    3,
+    11,
+    7
+   ],
+   "to": [
+    5,
+    16,
+    9
+   ],
+   "autouv": 0,
+   "color": 1,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "east": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      8.0,
+      0.0,
+      9.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "texture": null
+    }
+   },
+   "type": "cube",
+   "uuid": "6e098f38-add1-4b1f-9a21-2e114b12392c",
+   "visibility": true
+  },
+  {
+   "name": "bushing_2",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    7,
+    11,
+    7
+   ],
+   "to": [
+    9,
+    16,
+    9
+   ],
+   "autouv": 0,
+   "color": 1,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "east": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      8.0,
+      0.0,
+      9.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "texture": null
+    }
+   },
+   "type": "cube",
+   "uuid": "0c31f7eb-f1a4-4670-983b-9bbb7b9342e5",
+   "visibility": true
+  },
+  {
+   "name": "bushing_3",
+   "box_uv": false,
+   "render_order": "default",
+   "locked": false,
+   "export": true,
+   "scope": 0,
+   "allow_mirror_modeling": true,
+   "from": [
+    11,
+    11,
+    7
+   ],
+   "to": [
+    13,
+    16,
+    9
+   ],
+   "autouv": 0,
+   "color": 1,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "east": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "south": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "west": {
+     "uv": [
+      7.0,
+      0.0,
+      8.0,
+      2.5
+     ],
+     "texture": 0
+    },
+    "up": {
+     "uv": [
+      8.0,
+      0.0,
+      9.0,
+      1.0
+     ],
+     "texture": 0
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      0,
+      0
+     ],
+     "texture": null
+    }
+   },
+   "type": "cube",
+   "uuid": "be99bca5-51e8-4d64-84fa-1c8790569d97",
+   "visibility": true
+  }
+ ],
+ "groups": [
+  {
+   "name": "body",
+   "uuid": "fe345fa9-40cf-405c-8aa3-1fd799e66c0e",
+   "export": true,
+   "locked": false,
+   "scope": 0,
+   "origin": [
+    8,
+    8,
+    8
+   ],
+   "rotation": [
+    0,
+    0,
+    0
+   ],
+   "color": 0,
+   "children": [],
+   "reset": false,
+   "shade": true,
+   "mirror_uv": false,
+   "visibility": true,
+   "autouv": 0,
+   "isOpen": true
+  }
+ ],
+ "outliner": [
+  {
+   "uuid": "fe345fa9-40cf-405c-8aa3-1fd799e66c0e",
+   "isOpen": true,
+   "children": [
+    "d90a1caa-addb-4bb6-a3c7-2d409821b3db",
+    "6e098f38-add1-4b1f-9a21-2e114b12392c",
+    "0c31f7eb-f1a4-4670-983b-9bbb7b9342e5",
+    "be99bca5-51e8-4d64-84fa-1c8790569d97"
+   ]
+  }
+ ],
+ "textures": [
+  {
+   "path": "D:\\Minecraft\\create-critical-mass-1.21.1\\src\\main\\resources\\assets\\criticalmass\\textures\\block\\grid_connection.png",
+   "name": "grid_connection.png",
+   "relative_path": "../../src/main/resources/assets/criticalmass/textures/block/grid_connection.png",
+   "folder": "block",
+   "namespace": "criticalmass",
+   "id": "0",
+   "group": "",
+   "scope": 0,
+   "width": 32,
+   "height": 32,
+   "uv_width": 16,
+   "uv_height": 16,
+   "particle": true,
+   "use_as_default": false,
+   "layers_enabled": false,
+   "sync_to_project": "",
+   "file_format": "png",
+   "render_mode": "default",
+   "render_sides": "auto",
+   "wrap_mode": "limited",
+   "pbr_channel": "color",
+   "fps": 7,
+   "frame_time": 1,
+   "frame_order_type": "loop",
+   "frame_order": "",
+   "frame_interpolate": false,
+   "visible": true,
+   "internal": false,
+   "saved": true,
+   "uuid": "bbdf1a3e-2382-427c-916c-2794146072fa",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACM0lEQVR4nO2UXWvTUBjH/21OpG2S2lSGLwM3bS+m6+YUwU68GSIR9RMIfgM/ip/EG6+clLINdj0EXZkKHUtbWjvd2mx9m0s18px2bbYbR3J6I/1BOM/Defk/5/knCbxbXnXggYTeRmHHxMTHdZ6n37wNeDmHaRd1FEslNA/rUKP6ucbbs/NYyb5HftvEqwkJ2Y0tL9q9AuCRx0+WkEyaSL987enmvgtYya7xDvgl6KcDT40l3wUwrxvnF1/4ar3vDogiKOykcQEeYcvZtWFW2T/XaFZce3zCrNpPJKev8+TTZg535lL/3JQ3i+IKePRwEffuLsAsFOE4DM+eGzwmpqd6hbmhuZ1SWVwB6B9KPEjfx97ePlRF4TnFo4ZlMhkoWhQLqRmoqgbGhv+mbrfLx1AoxEdZlvEhu4rdalVcAYZhcAvotrLMwGS5J27bw0WyDCUSQavdRmLqJiRJEvsjMvsWuMVtu8sftzgxO3dLmDjXrFbK0KMqioUfvNXU9q593JsNBKHHYugcHQ3saDQaOLTq4gq4cm0SNxJJaC4L2q0mAgEJ4Uj4VEdovm4dIBr7MhoL3N6TmFv8hFqtBuEWdFoNhMNh/gVQ+5l8oReTHdR65w+3g+h0OuItiMfj/Ns/uTWhKAos6wCO85vnZMnILDgLif867r+ILnF6P4RbkPuaR2omyQ+m+JKm4erk5cGC7+XdQU6xaNi3rU2UC9s8abbaUJUIPudOLzqb07oxY8b8N/wF5L39OS9vl/QAAAAASUVORK5CYII="
+  },
+  {
+   "path": "D:\\Minecraft\\create-critical-mass-1.21.1\\src\\main\\resources\\assets\\criticalmass\\textures\\block\\steel_block.png",
+   "name": "steel_block.png",
+   "relative_path": "../../src/main/resources/assets/criticalmass/textures/block/steel_block.png",
+   "folder": "block",
+   "namespace": "criticalmass",
+   "id": "1",
+   "group": "",
+   "scope": 0,
+   "width": 32,
+   "height": 32,
+   "uv_width": 16,
+   "uv_height": 16,
+   "particle": false,
+   "use_as_default": false,
+   "layers_enabled": false,
+   "sync_to_project": "",
+   "file_format": "png",
+   "render_mode": "default",
+   "render_sides": "auto",
+   "wrap_mode": "limited",
+   "pbr_channel": "color",
+   "fps": 7,
+   "frame_time": 1,
+   "frame_order_type": "loop",
+   "frame_order": "",
+   "frame_interpolate": false,
+   "visible": true,
+   "internal": false,
+   "saved": true,
+   "uuid": "b9869ae8-c080-4e7b-841c-ede7cea05311",
+   "source": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAB6UlEQVR4nH2ST0/bQBDFn/EuxLEdhfRACoJQkgMVQdCqVSniHqmcAIk7fIDe+3V66aV/Dr006hXBuSpSewA1SRsaIgihJsHEBqMZy2ZJBU+yPOudtzO/9Wibr98EhckJkL5938XcbBH3Sc3Zq9QglhZf4umTeVSqNQSBwKvlEsekyVx4sKrs6Fic/+t3HYI+RoYXC89wdHQMyzR5TXG/JsbH43ySKJfLMO0U5ovTsCwbQvCZLN/3+Z1IJPgtpYTjOBhOp/H5y1ccNhoQpVKJW6JqUgoIKUOz591UkRJmMolOt4uhwUEuks/tQ9d1DKgIqtnzfH5UM+mi1+POZmYfh57GQR3DKQu1apNbpU3f64WltQFu99x1YxyqTijNZhP/2icQdKuP8gXYCkK3cwZN02EkjVsdRfuEIYcMpNI/biOo7JSsmvvVarVuEM47DgzD4PaofSHDi2Icaj24YpzojxACeWKETCbD/z6qSjJNE+32KYLgMrwOTb8boV9kptuOpJr/Q/jw8RNGslksLTznD7Ztw1NmgBDU4XJdl3O2tnfCQVpbXWEEOpEGKjKp6p/OP/UD5HNTPEhi9+ceitMF3nz77j0e2DYejo3Ehr/1w3hN8bHjcE6Mt7y+EVhmkhdnnS6i+C6pORRfA1LK5JBEfOpRAAAAAElFTkSuQmCC"
+  }
+ ]
+}

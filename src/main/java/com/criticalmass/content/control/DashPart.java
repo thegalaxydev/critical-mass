@@ -1,6 +1,8 @@
 package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
@@ -56,7 +58,7 @@ public final class DashPart {
     }
 
     public enum Press {
-        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET;
+        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, GENERATOR_RAISE, GENERATOR_LOWER, BREAKER_CLOSE, BREAKER_OPEN;
 
         public final String key = name().toLowerCase(Locale.ROOT);
     }
@@ -107,7 +109,7 @@ public final class DashPart {
             case FLOW, OUTPUT -> 15;
             case POWER -> 22;
             case RODS_A, RODS_B, RODS_C, RODS_D -> 32;
-            case SPEED -> DEFAULT_FACE;
+            case SPEED, FREQUENCY, SYNC, DEMAND -> DEFAULT_FACE;
             case NEUTRON -> 23;
             case PERIOD -> 33;
             case REACTIVITY -> 28;
@@ -167,7 +169,8 @@ public final class DashPart {
     public static boolean accepts(Type type, Level level, BlockPos pos) {
         BlockEntity be = level.getBlockEntity(pos);
         return switch (type) {
-            case BUTTON -> be instanceof ReactorControllerBlockEntity || be instanceof SteamTurbineBlockEntity || isReceiver(level, pos);
+            case BUTTON -> be instanceof ReactorControllerBlockEntity || be instanceof SteamTurbineBlockEntity || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity
+                    || isReceiver(level, pos);
             case SWITCH, LEVER -> isReceiver(level, pos);
             case GAUGE -> PlantChannel.isTarget(be);
             case ALARM -> be instanceof ReactorControllerBlockEntity;
@@ -186,6 +189,12 @@ public final class DashPart {
         }
         if (be instanceof SteamTurbineBlockEntity) {
             return List.of(Press.TURBINE_TRIP, Press.TURBINE_RESET);
+        }
+        if (be instanceof GeneratorBlockEntity) {
+            return List.of(Press.GENERATOR_RAISE, Press.GENERATOR_LOWER);
+        }
+        if (be instanceof BreakerBlockEntity) {
+            return List.of(Press.BREAKER_CLOSE, Press.BREAKER_OPEN);
         }
         return List.of(Press.PULSE);
     }
