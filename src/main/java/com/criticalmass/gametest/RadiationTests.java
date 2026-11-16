@@ -108,11 +108,13 @@ public final class RadiationTests {
         SpentFuelRackBlockEntity wet = h.getBlockEntity(wetPos);
         ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
         wet.coolant().set(new FluidStack(Fluids.WATER, CMThermal.RACK_CAPACITY), 0);
+        cask.setLid(true);
         for (int i = 0; i < 4; i++) {
             rack.insert(spent(0.4));
             wet.insert(spent(0.4));
             cask.insert(spent(0.4));
         }
+        cask.setLid(false);
         h.startSequence()
                 .thenIdle(3)
                 .thenExecute(() -> {
@@ -123,6 +125,9 @@ public final class RadiationTests {
                     h.assertTrue(dry > 10, "A dry rack of spent fuel is a strong source: " + dry);
                     h.assertTrue(flooded < dry * 0.2, "Water cuts the rack dose: " + flooded + " vs " + dry);
                     h.assertTrue(sealed < 1, "A sealed cask stays below 1 mSv/min next to it: " + sealed);
+                    cask.setLid(true);
+                    double lifted = Radiation.fromSources(h.getLevel(), Vec3.atCenterOf(h.absolutePos(caskPos)).add(1.5, 0, 0), local(h), null);
+                    h.assertTrue(lifted > sealed * 10, "A cask with its lid up shields far less: " + lifted + " vs " + sealed);
                 })
                 .thenSucceed();
     }

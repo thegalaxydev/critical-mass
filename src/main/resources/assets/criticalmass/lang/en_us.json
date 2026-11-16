@@ -481,5 +481,8 @@
   "criticalmass.dashboard.gui.invert.on": "Inverted: on sends off and off sends on",
   "criticalmass.dashboard.gui.invert.off": "Normal",
   "criticalmass.dashboard.inverted": "Output inverted",
-  "criticalmass.dashboard.labelled": "Labelled: %s"
+  "criticalmass.dashboard.labelled": "Labelled: %s",
+  "criticalmass.cask.closed": "The cask is bolted shut: use a wrench on it, or give it a redstone signal",
+  "criticalmass.cask.sealed": "Sealed",
+  "criticalmass.cask.open": "Lid up"
 }

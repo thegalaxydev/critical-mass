@@ -226,47 +226,6 @@ def edge_band(top, body):
     return paint
 
 
-def cask(jar):
-    def body(w, h):
-        img = tile(w, h)
-        rect(img, 0, 0, w - 1, h - 1, LEAD[2])
-        for x in range(w):
-            put(img, x, 0, LEAD[4])
-            put(img, x, h - 1, LEAD[0])
-        for y in range(h):
-            put(img, 0, y, LEAD[3])
-            put(img, w - 1, y, LEAD[1])
-        for y in (2, h - 3):
-            for x in range(w):
-                put(img, x, y, IRON[3] if y == 2 else IRON[1])
-        band = h // 2
-        for x in range(w):
-            stripe = (x // 2) % 2 == 0
-            put(img, x, band - 1, HAZARD[2] if stripe else HAZARD[0])
-            put(img, x, band, HAZARD[1] if stripe else HAZARD[0])
-        return img
-
-    def lid(w, h):
-        img = tile(w, h)
-        bevel(img, 0, 0, w - 1, h - 1, LEAD, 3)
-        bevel(img, 2, 2, w - 3, h - 3, LEAD, 2, raised=False)
-        for x, y in ((1, 1), (w - 2, 1), (1, h - 2), (w - 2, h - 2), (w // 2, 1), (w // 2, h - 2), (1, h // 2), (w - 2, h // 2)):
-            put(img, x, y, IRON[5])
-        return img
-    spec = {"models": ["shielded_cask"], "faces": {
-        ("body", "north"): body,
-        ("body", "down"): plate(LEAD, 1),
-        ("lid", "up"): lid,
-        ("lid", "north"): plate(LEAD, 4),
-        ("lid", "down"): plate(LEAD, 1),
-        ("lug", "up"): plate(IRON, 4),
-        ("lug", "north"): plate(IRON, 3),
-        ("lug", "east"): plate(IRON, 2),
-    }}
-    return apply("shielded_cask", 32, spec)
-
-
-
 def gauge(img, cx, cy, r):
     disc(img, cx, cy, r, lambda x, y, d: (BRASS[3] if x + y < cx + cy else BRASS[1]) if d > r - 1 else (232, 228, 214))
     put(img, int(cx), int(cy), STEEL[0])
@@ -293,5 +252,4 @@ def instrument_panel(jar):
 
 
 REST = {
-    "shielded_cask": cask,
 }

@@ -46,6 +46,7 @@ public final class Radiation {
     public static final double RESIDUAL_DOSE = 20.0;
     public static final double CANISTER_DOSE = 3.0;
     public static final double CASK_TRANSMISSION = 0.01;
+    public static final double OPEN_CASK_TRANSMISSION = 0.5;
     public static final double FLOODED_RACK_TRANSMISSION = 0.1;
     public static final double PORT_TRANSMISSION = 0.5;
     public static final double FIELD_DOSE = 1.0;
@@ -178,7 +179,7 @@ public final class Radiation {
                     s += itemStrength(st);
                 }
                 if (s > 0) {
-                    out.add(new Source(c, s * CASK_TRANSMISSION, null, body(be), null));
+                    out.add(new Source(c, s * (cask.sealed() ? CASK_TRANSMISSION : OPEN_CASK_TRANSMISSION), null, body(be), null));
                 }
             } else if (be instanceof Corium.Entity_ lump) {
                 out.add(new Source(c, lump.strength(), null, body(be), null));

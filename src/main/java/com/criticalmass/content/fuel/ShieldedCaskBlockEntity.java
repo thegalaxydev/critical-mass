@@ -8,6 +8,8 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.List;
+import net.createmod.catnip.animation.LerpedFloat;
+import net.createmod.catnip.animation.LerpedFloat.Chaser;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
@@ -26,6 +28,10 @@ import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, Clearable {
+    private static final double LID_SPEED = 0.1;
+    public final LerpedFloat lid = LerpedFloat.linear().startWithValue(0).chase(0, 0, Chaser.LINEAR);
+    private boolean unbolted;
+    private boolean powered;
     private final NonNullList<ItemStack> slots = NonNullList.withSize(CMThermal.CASK_SLOTS, ItemStack.EMPTY);
     private final IItemHandler handler = new Handler();
 
@@ -51,6 +57,44 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
 
     public IItemHandler handler() {
         return handler;
+    }
+
+    public boolean open() {
+        return lid.getValue() >= 1;
+    }
+
+    public boolean sealed() {
+        return lid.getValue() <= 0;
+    }
+
+    private void moveLid() {
+        lid.chase(unbolted || powered ? 1 : 0, LID_SPEED, Chaser.LINEAR);
+        setChanged();
+        sendData();
+    }
+
+    public void toggle() {
+        unbolted = !unbolted;
+        moveLid();
+    }
+
+    public void setPowered(boolean value) {
+        if (powered != value) {
+            powered = value;
+            moveLid();
+        }
+    }
+
+    public void setLid(boolean open) {
+        unbolted = open;
+        lid.startWithValue(open || powered ? 1 : 0);
+        moveLid();
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        lid.tickChaser();
     }
 
     public NonNullList<ItemStack> slots() {
@@ -85,7 +129,7 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     public boolean insert(ItemStack stack) {
-        if (stack.isEmpty() || refuseReason(stack) != null) {
+        if (stack.isEmpty() || !open() || refuseReason(stack) != null) {
             return false;
         }
         for (int i = 0; i < slots.size(); i++) {
@@ -101,6 +145,9 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
     }
 
     public ItemStack takeLast() {
+        if (!open()) {
+            return ItemStack.EMPTY;
+        }
         for (int i = slots.size() - 1; i >= 0; i--) {
             if (!slots.get(i).isEmpty()) {
                 ItemStack out = slots.get(i);
@@ -144,6 +191,9 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
     protected void write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket) {
         super.write(tag, registries, clientPacket);
         ContainerHelper.saveAllItems(tag, slots, true, registries);
+        tag.put("Lid", lid.writeNBT());
+        tag.putBoolean("Unbolted", unbolted);
+        tag.putBoolean("Powered", powered);
     }
 
     @Override
@@ -153,11 +203,17 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
             slots.set(i, ItemStack.EMPTY);
         }
         ContainerHelper.loadAllItems(tag, slots, registries);
+        if (tag.contains("Lid")) {
+            lid.readNBT(tag.getCompound("Lid"), clientPacket);
+        }
+        unbolted = tag.getBoolean("Unbolted");
+        powered = tag.getBoolean("Powered");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
+        ThermalTooltips.status(tooltip, sealed() ? "criticalmass.cask.sealed" : "criticalmass.cask.open", sealed() ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         int n = 0;
         for (ItemStack s : slots) {
             if (!s.isEmpty()) {
@@ -182,7 +238,7 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
 
         @Override
         public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-            if (stack.isEmpty() || !isItemValid(slot, stack) || !slots.get(slot).isEmpty()) {
+            if (stack.isEmpty() || !open() || !isItemValid(slot, stack) || !slots.get(slot).isEmpty()) {
                 return stack;
             }
             if (!simulate) {
@@ -197,7 +253,7 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             ItemStack s = slots.get(slot);
-            if (amount <= 0 || s.isEmpty()) {
+            if (amount <= 0 || s.isEmpty() || !open()) {
                 return ItemStack.EMPTY;
             }
             if (!simulate) {

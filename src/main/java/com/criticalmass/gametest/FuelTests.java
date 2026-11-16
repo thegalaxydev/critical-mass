@@ -421,12 +421,16 @@ public final class FuelTests {
         ItemStack damaged = assembly(FuelState.fresh().withCondition(0, "overheat"));
         h.assertTrue("criticalmass.cask.too_hot".equals(ShieldedCaskBlockEntity.refuseReason(hotSpent)), "Hot spent fuel is refused");
         h.assertTrue("criticalmass.cask.damaged".equals(ShieldedCaskBlockEntity.refuseReason(damaged)), "Damaged fuel is refused");
+        h.assertTrue(!cask.insert(cooled.copy()) && cask.handler().insertItem(0, cooled.copy(), false).getCount() == 1, "A shut cask takes nothing by hand or by funnel");
+        cask.setLid(true);
         h.assertTrue(cask.handler().insertItem(0, hotSpent, false).getCount() == 1, "Funnel cannot insert hot fuel");
         h.assertTrue(cask.insert(cooled) && cask.insert(fresh) && cask.insert(canister), "Cask accepts cooled fuel, fresh fuel and canisters");
         List<ItemStack> before = new ArrayList<>();
         for (ItemStack s : cask.slots()) {
             before.add(s.copy());
         }
+        cask.setLid(false);
+        h.assertTrue(cask.takeLast().isEmpty() && cask.handler().extractItem(0, 1, false).isEmpty(), "A shut cask gives nothing up");
         h.startSequence()
                 .thenIdle(2)
                 .thenExecute(() -> {
@@ -534,6 +538,7 @@ public final class FuelTests {
                     SpentFuelRackBlockEntity rack = h.getBlockEntity(rackPos);
                     ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
                     rack.insert(assembly(r));
+                    cask.setLid(true);
                     cask.insert(assembly(k));
                     ids.add(r.id());
                     ids.add(k.id());
@@ -585,4 +590,31 @@ public final class FuelTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = EMPTY)
+    public static void caskLidIsUnboltedWithAWrenchOrHeldUpByRedstone(GameTestHelper h) {
+        BlockPos caskPos = new BlockPos(2, 1, 2);
+        h.setBlock(caskPos, CMBlocks.SHIELDED_CASK.get());
+        ShieldedCaskBlockEntity cask = h.getBlockEntity(caskPos);
+        h.assertTrue(cask.sealed() && !cask.open(), "A cask should start shut");
+        cask.toggle();
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(cask.open(), "Unbolting should raise the lid: " + cask.lid.getValue());
+                    cask.toggle();
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(cask.sealed(), "Bolting it again should seat the lid: " + cask.lid.getValue());
+                    h.setBlock(caskPos.north(), net.minecraft.world.level.block.Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(cask.open(), "A redstone signal should hold the lid up: " + cask.lid.getValue());
+                    h.setBlock(caskPos.north(), net.minecraft.world.level.block.Blocks.AIR);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(cask.sealed(), "The lid should come down when the signal goes: " + cask.lid.getValue()))
+                .thenSucceed();
+    }
 }

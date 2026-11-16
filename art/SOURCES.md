@@ -31,7 +31,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Boiler Heating Plate | Script | `art/tools/handmade_plant.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
-| Shielded Cask | Script | `art/tools/handmade_rest.py` |
+| Shielded Cask | Script | `art/tools/cask_texture.py` |
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
 | Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
 | Centrifuge | Script | `art/tools/centrifuge_texture.py` |
@@ -53,7 +53,7 @@ This table is the current state and overrides anything further down. Only the ro
 - `primary_coolant_port` (fronts and nozzle): the casing frame with copper flanges and blue (inlet) and red (outlet) collars.
 - `shielded_hatch`: Create's train trapdoor recoloured to iron with a hazard band.
 - Plant machines (`art/tools/handmade_plant.py`): `emergency_coolant_tank` on Create's fluid tank recoloured to dark steel with red bands, a sight glass and a valve wheel; `boiler_heating_plate` drawn by the script with Create's copper, brass and iron ramps.
-- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `shielded_cask`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
+- Remaining blocks (`art/tools/handmade_rest.py`, which paints each model face from its UVs): `fuel_assembly_bench`, `alarm_siren` and `instrumentation_panel`, using Create's andesite, brass, copper and iron ramps, brass shaft sockets and colour-coded flanges.
 ## Block texture passover (2026-10-19)
 
 All block textures except the pipe, ores and crack overlays were cleaned by `art/tools/despeckle.py`: greys snapped to one cool-grey ramp built from Create's railway casing and industrial iron tones, thin frames and bevels restored to the clean blockout tones, and single-pixel speckle merged into its surroundings while straight lines, signal colours and locked functional pixels are kept. The steam turbine window band was made opaque except a centre slit, with inward liner faces, to fit the smaller rotor disc.
@@ -627,21 +627,12 @@ Atlas with two front faces of the primary coolant port in iron casing: a copper 
 
 ## shielded_cask
 
-- Used by: `textures/block/shielded_cask.png`
-- Raw output: `art/generated/shielded_cask-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
-- Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: shielded cask, 32x32 game pixels.
-Atlas for a shielded transport cask: dark lead-grey cylinder side with a black-and-yellow hazard band and bolts, steel lid with a ring of bolts, iron lifting lugs.
-
-```
+- Used by: `textures/block/shielded_cask.png` and the models `block/shielded_cask.json`, `shielded_cask_lid.json` and `shielded_cask_item.json`
+- Source: `art/blockbench/shielded_cask.bbmodel`, in two groups. `body` is the part that stands still: a barrel between a foot flange and a head flange, a trunnion on two sides, and four studs standing up from the head. `lid` is the plate the studs pass through; the game raises it up the studs when the cask is unbolted.
+- Texture: `art/tools/cask_texture.py` paints the barrel in the Reactor Vessel Casing's tones with one hazard band from `docs/art/palette.json`, and the lid and studs in the author's Steel Block tones. The flanges and trunnions use the Steel Block texture itself.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/cask_model.py` then exports the models and the blockstate.
+- Date: 2026-11-16
 
 ## shielded_glass
 
