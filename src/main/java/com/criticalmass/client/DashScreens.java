@@ -14,4 +14,8 @@ public final class DashScreens {
             mc.setScreen(new DashPartScreen(desk, slot));
         }
     }
+
+    public static void grabLever(BlockPos pos, int slot, int level, boolean inverted) {
+        LeverHold.grab(pos, slot, level, inverted);
+    }
 }

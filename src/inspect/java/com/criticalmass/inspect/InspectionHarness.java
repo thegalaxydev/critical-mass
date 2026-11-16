@@ -158,6 +158,9 @@ public class InspectionHarness {
         if (step.has("holdUse")) {
             mc.options.keyUse.setDown(step.get("holdUse").getAsBoolean());
         }
+        if (step.has("dragLever")) {
+            com.criticalmass.client.LeverHold.mouse(0, step.get("dragLever").getAsDouble());
+        }
         if (step.has("forward")) {
             mc.options.keyUp.setDown(step.get("forward").getAsBoolean());
         }

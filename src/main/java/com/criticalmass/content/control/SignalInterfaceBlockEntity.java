@@ -90,7 +90,7 @@ public class SignalInterfaceBlockEntity extends SmartBlockEntity {
     static class FaceBox extends ValueBoxTransform.Sided {
         @Override
         protected Vec3 getSouthLocation() {
-            return VecHelper.voxelSpace(8, 8, 14.05);
+            return VecHelper.voxelSpace(8, 10, 14.05);
         }
 
         @Override

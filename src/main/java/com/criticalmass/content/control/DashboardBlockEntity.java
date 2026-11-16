@@ -216,6 +216,17 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         return result;
     }
 
+    public void setLever(int slot, int strength) {
+        DashPart part = part(slot);
+        int clamped = Math.max(0, Math.min(DashPart.MAX_LEVEL, strength));
+        if (part == null || level == null || part.type != DashPart.Type.LEVER || part.level == clamped) {
+            return;
+        }
+        part.level = clamped;
+        level.playSound(null, worldPosition, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.25f, 0.9f + clamped / (float) DashPart.MAX_LEVEL * 0.6f);
+        changed();
+    }
+
     private String act(DashPart part) {
         BlockEntity be = part.targetEntity(level);
         DashPart.Press press = part.press(level);

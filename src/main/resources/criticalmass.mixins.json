@@ -6,6 +6,9 @@
   "mixins": [
     "SequencedAssemblyRecipeMixin"
   ],
+  "client": [
+    "MouseHandlerMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

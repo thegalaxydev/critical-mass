@@ -32,6 +32,9 @@ import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
@@ -48,6 +51,8 @@ public class CriticalMassClient {
         modEventBus.addListener(this::hideDuplicateParts);
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);
+        modEventBus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(CriticalMass.asResource("lever_hold"), LeverHold::render));
+        NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> LeverHold.tick());
     }
 
     private void addSkinPack(AddPackFindersEvent event) {

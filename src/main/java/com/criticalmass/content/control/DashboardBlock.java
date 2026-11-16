@@ -48,6 +48,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.Nullable;
 
 public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<DashboardBlockEntity>, IWrenchable {
@@ -303,6 +304,12 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         DashPart part = be == null ? null : be.part(slot);
         if (part == null) {
             return InteractionResult.PASS;
+        }
+        if (part.type == DashPart.Type.LEVER && !(player instanceof FakePlayer)) {
+            if (level.isClientSide) {
+                DashScreens.grabLever(pos, slot, part.level, part.inverted);
+            }
+            return InteractionResult.sidedSuccess(level.isClientSide);
         }
         if (!level.isClientSide) {
             String result = be.use(slot, depthAt(state, pos, hit.getLocation()));
