@@ -45,7 +45,7 @@ public final class ProductionTests {
     private static final List<String> CHAIN = List.of("milling/raw_uranium", "splashing/crushed_raw_uranium", "mixing/uranium_concentrate", "compacting/ceramic_fuel_pellet", "mixing/shielding_concrete_from_depleted_uranium", "mechanical_crafting/centrifuge",
             "mixing/reactor_alloy_ingot", "pressing/reactor_alloy_sheet", "pressing/fuel_cladding", "compacting/sealing_gasket", "mechanical_crafting/empty_fuel_assembly",
             "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller",
-            "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister");
+            "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister", "sequenced_assembly/sheared_fuel", "mixing/reprocessed_fuel");
 
     private ProductionTests() {
     }
@@ -122,6 +122,38 @@ public final class ProductionTests {
         h.setBlock(pos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.WEST));
         CreativeMotorBlockEntity motor = h.getBlockEntity(pos);
         motor.generatedSpeed.setValue(128);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void spentFuelIsShearedOnlyOnceCooledAndDissolvesIntoStrontium(GameTestHelper h) {
+        FuelState hot = FuelState.fresh().withRemaining(0).discharged(5);
+        FuelState cool = hot.withResidual(0.1);
+        h.assertTrue(FuelAssemblyItem.stackFor(hot).is(CMItems.SPENT_FUEL_ASSEMBLY.get()) && !hot.cooled() && cool.cooled(), "The test needs a hot and a cooled spent assembly");
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(hot), AllRecipeTypes.CUTTING.getType(), com.simibubi.create.content.kinetics.saw.CuttingRecipe.class).isEmpty(),
+                "A saw should refuse a spent assembly that is still hot");
+        h.assertTrue(SequencedAssemblyRecipe.getRecipe(h.getLevel(), FuelAssemblyItem.stackFor(cool), AllRecipeTypes.CUTTING.getType(), com.simibubi.create.content.kinetics.saw.CuttingRecipe.class).isPresent(),
+                "A saw should shear a cooled spent assembly");
+        RecipeManager rm = h.getLevel().getRecipeManager();
+        h.assertTrue(rm.byKey(CriticalMass.asResource("sequenced_assembly/sheared_fuel")).isPresent(), "The shearing sequence should load");
+        h.assertTrue(rm.byKey(CriticalMass.asResource("sequenced_assembly/sheared_fuel")).get().value() instanceof SequencedAssemblyRecipe shear
+                && shear.getResultItem(h.getLevel().registryAccess()).is(CMItems.SHEARED_FUEL.get()) && shear.getResultItem(h.getLevel().registryAccess()).getCount() == 4, "One assembly should shear into four pieces");
+        h.assertTrue(rm.byKey(CriticalMass.asResource("mixing/reprocessed_fuel")).isPresent()
+                && rm.byKey(CriticalMass.asResource("mixing/reprocessed_fuel")).get().value() instanceof com.simibubi.create.content.processing.recipe.ProcessingRecipe<?, ?>, "The dissolving recipe should load");
+        com.simibubi.create.content.processing.recipe.ProcessingRecipe<?, ?> dissolve = (com.simibubi.create.content.processing.recipe.ProcessingRecipe<?, ?>) rm.byKey(CriticalMass.asResource("mixing/reprocessed_fuel")).get().value();
+        int uranium = 0;
+        int strontium = 0;
+        for (ItemStack out : dissolve.getRollableResultsAsItemStacks()) {
+            uranium += out.is(CMItems.URANIUM_CONCENTRATE.get()) ? out.getCount() : 0;
+            strontium += out.is(CMItems.STRONTIUM_90.get()) ? out.getCount() : 0;
+        }
+        h.assertTrue(uranium == 4 && strontium == 1, "Four pieces should give 4 Uranium Concentrate and 1 Strontium-90: " + uranium + " and " + strontium);
+        h.assertTrue(dissolve.getFluidResults().size() == 1 && dissolve.getFluidResults().get(0).getAmount() == 400 && dissolve.getFluidResults().get(0).getFluid().isSame(com.criticalmass.registry.CMFluids.CONTAMINATED_COOLANT.source.get()),
+                "It should leave 400 mB of Contaminated Coolant");
+        h.assertTrue(dissolve.getRequiredHeat() == com.simibubi.create.content.processing.recipe.HeatCondition.HEATED, "It should need a heated basin");
+        double pieces = com.criticalmass.content.radiation.Radiation.itemStrength(new ItemStack(CMItems.SHEARED_FUEL.get(), 4));
+        h.assertTrue(pieces == com.criticalmass.content.radiation.Radiation.SPENT_DOSE && com.criticalmass.content.radiation.Radiation.itemStrength(new ItemStack(CMItems.INCOMPLETE_SHEARED_FUEL.get())) == pieces,
+                "The pieces of one assembly should give what a cooled spent assembly gives: " + pieces);
+        h.succeed();
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 600)

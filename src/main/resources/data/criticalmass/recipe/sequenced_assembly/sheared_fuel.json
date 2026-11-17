@@ -1,0 +1,32 @@
+{
+ "type": "create:sequenced_assembly",
+ "ingredient": {
+  "item": "criticalmass:spent_fuel_assembly"
+ },
+ "loops": 4,
+ "results": [
+  {
+   "id": "criticalmass:sheared_fuel",
+   "count": 4
+  }
+ ],
+ "sequence": [
+  {
+   "type": "create:cutting",
+   "ingredients": [
+    {
+     "item": "criticalmass:incomplete_sheared_fuel"
+    }
+   ],
+   "processing_time": 100,
+   "results": [
+    {
+     "id": "criticalmass:incomplete_sheared_fuel"
+    }
+   ]
+  }
+ ],
+ "transitional_item": {
+  "id": "criticalmass:incomplete_sheared_fuel"
+ }
+}

@@ -45,6 +45,25 @@ METAL_PIXELS = (
     "................",
     "................",
 )
+SHEARED = {"d": (46, 50, 56), "s": (104, 110, 118), "m": (150, 156, 164), "l": (204, 208, 214), "f": (64, 82, 58), "g": (132, 206, 96)}
+SHEARED_PIXELS = (
+    "................",
+    "................",
+    "...dd...........",
+    "..dlmd....dd....",
+    "..dmmsd..dlmd...",
+    "...dsfd..dmmsd..",
+    "....dd....dsgd..",
+    ".....dd....dd...",
+    "....dlmd........",
+    "....dmmsd..dd...",
+    ".....dsgd.dlmd..",
+    "......dd..dmmsd.",
+    "...........dsfd.",
+    "............dd..",
+    "................",
+    "................",
+)
 CELL_PIXELS = (
     "................",
     "......cccc......",
@@ -94,13 +113,18 @@ def marker():
 
 def main():
     if "fresh" not in sys.argv:
-        print("left alone; pass fresh to repaint the fallout ash, strontium and cell art")
+        print("left alone; pass fresh to repaint the fallout ash, strontium, sheared fuel and cell art")
         return
-    draw(ASH_PIXELS, ASH).save(os.path.join(ITEM, "fallout_ash.png"))
-    draw(METAL_PIXELS, METAL).save(os.path.join(ITEM, "strontium_90.png"))
-    draw(CELL_PIXELS, cell_tones()).save(os.path.join(ITEM, "radioisotope_cell.png"))
-    marker().save(os.path.join(BLOCK, "station_battery_cell.png"))
-    print("painted the fallout ash, strontium and cell art")
+    art = {"fallout_ash": lambda: draw(ASH_PIXELS, ASH).save(os.path.join(ITEM, "fallout_ash.png")),
+           "strontium_90": lambda: draw(METAL_PIXELS, METAL).save(os.path.join(ITEM, "strontium_90.png")),
+           "sheared_fuel": lambda: draw(SHEARED_PIXELS, SHEARED).save(os.path.join(ITEM, "sheared_fuel.png")),
+           "radioisotope_cell": lambda: draw(CELL_PIXELS, cell_tones()).save(os.path.join(ITEM, "radioisotope_cell.png")),
+           "station_battery_cell": lambda: marker().save(os.path.join(BLOCK, "station_battery_cell.png"))}
+    wanted = [name for name in sys.argv[1:] if name in art]
+    for name, paint in art.items():
+        if not wanted or name in wanted:
+            paint()
+            print("painted", name)
 
 
 if __name__ == "__main__":

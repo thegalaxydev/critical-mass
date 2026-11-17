@@ -19,7 +19,7 @@ public final class WasteCanisterSequence {
     }
 
     public static boolean tooHot(ItemStack input) {
-        if (!input.is(CMItems.DAMAGED_FUEL_ASSEMBLY.get())) {
+        if (!input.is(CMItems.DAMAGED_FUEL_ASSEMBLY.get()) && !input.is(CMItems.SPENT_FUEL_ASSEMBLY.get())) {
             return false;
         }
         FuelState state = input.get(CMComponents.FUEL_STATE.get());

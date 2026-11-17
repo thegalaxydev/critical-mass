@@ -60,6 +60,8 @@
   "item.criticalmass.decontamination_compound": "Decontamination Compound",
   "item.criticalmass.fallout_ash": "Fallout Ash",
   "item.criticalmass.strontium_90": "Strontium-90",
+  "item.criticalmass.sheared_fuel": "Sheared Spent Fuel",
+  "item.criticalmass.incomplete_sheared_fuel": "Partly Sheared Fuel Assembly",
   "item.criticalmass.radioisotope_cell": "Radioisotope Cell",
   "item.criticalmass.welding_torch": "Welding Torch",
   "block.criticalmass.open_waste_canister": "Open Waste Canister",

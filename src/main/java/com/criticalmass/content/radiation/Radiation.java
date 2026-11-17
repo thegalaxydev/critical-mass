@@ -49,6 +49,7 @@ public final class Radiation {
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
     public static final double ORE_DOSE = 0.2;
+    public static final int SHEARED_PIECES = 4;
     public static final double URANIUM_DOSE = 0.01;
     public static final double ENRICHED_DOSE = 0.02;
     public static final double DEPLETED_DOSE = 0.005;
@@ -106,6 +107,12 @@ public final class Radiation {
         }
         if (stack.is(CMItems.DEPLETED_URANIUM.get())) {
             return stack.getCount() * DEPLETED_DOSE;
+        }
+        if (stack.is(CMItems.SHEARED_FUEL.get())) {
+            return stack.getCount() * SPENT_DOSE / SHEARED_PIECES;
+        }
+        if (stack.is(CMItems.INCOMPLETE_SHEARED_FUEL.get())) {
+            return stack.getCount() * SPENT_DOSE;
         }
         if (stack.is(CMItems.INCOMPLETE_WASTE_CANISTER.get())) {
             return stack.getCount() * (s == null ? CANISTER_DOSE : 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual));

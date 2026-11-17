@@ -537,10 +537,10 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Repainting: run the tool with `fresh`. `art/tools/water_cannon_model.py` then exports the models and the blockstate. If the barrel is moved, `NOZZLE_OUT` and `NOZZLE_UP` in `WaterCannonBlockEntity` say where the jet leaves it.
 - Date: 2026-11-17
 
-## fallout_ash (item), strontium_90, radioisotope_cell and station_battery_cell
+## fallout_ash (item), strontium_90, sheared_fuel, radioisotope_cell and station_battery_cell
 
-- Used by: `textures/item/fallout_ash.png`, `textures/item/strontium_90.png`, `textures/item/radioisotope_cell.png` and `textures/block/station_battery_cell.png`, the lit cell that `block/station_battery_cell.json` puts on the door of a Station Battery with a cell fitted
+- Used by: `textures/item/fallout_ash.png`, `textures/item/strontium_90.png`, `textures/item/sheared_fuel.png`, `textures/item/radioisotope_cell.png` and `textures/block/station_battery_cell.png`, the lit cell that `block/station_battery_cell.json` puts on the door of a Station Battery with a cell fitted
 - Source: drawn by `art/tools/isotope_art.py` from pixel maps in the script. The cell's casing takes its tones from the author's Reactor Alloy Ingot.
 - Status: script-painted placeholders, not yet approved.
-- Repainting: run the tool with `fresh`. `art/tools/power_model.py` writes the cell model and the battery's blockstate.
+- Repainting: run the tool with `fresh`, and name the pieces after it to repaint only those, as in `isotope_art.py fresh sheared_fuel`. `art/tools/power_model.py` writes the cell model and the battery's blockstate. The Partly Sheared Fuel Assembly has no art of its own: its model shows the Spent Fuel Assembly.
 - Date: 2026-11-17

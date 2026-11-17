@@ -2407,6 +2407,28 @@
    "missing": []
   },
   {
+   "key": "incomplete_sheared_fuel",
+   "registry_id": "criticalmass:incomplete_sheared_fuel",
+   "type": "item",
+   "name": "Partly Sheared Fuel Assembly",
+   "art": "generated",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/spent_fuel_assembly.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/incomplete_sheared_fuel.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "incomplete_waste_canister",
    "registry_id": "criticalmass:incomplete_waste_canister",
    "type": "item",
@@ -2699,6 +2721,28 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/item/sealing_gasket.json"
+   ],
+   "missing": []
+  },
+  {
+   "key": "sheared_fuel",
+   "registry_id": "criticalmass:sheared_fuel",
+   "type": "item",
+   "name": "Sheared Spent Fuel",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/sheared_fuel.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/sheared_fuel.json"
    ],
    "missing": []
   },

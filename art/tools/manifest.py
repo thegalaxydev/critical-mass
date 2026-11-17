@@ -31,7 +31,7 @@ ART = {
     "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
     "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": SCRIPT,
     "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
-    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "charred_log": SCRIPT, "fallout_ash": SCRIPT, "water_cannon": SCRIPT, "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT,
+    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "charred_log": SCRIPT, "fallout_ash": SCRIPT, "water_cannon": SCRIPT, "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
     "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,
     "welding_torch": AUTHOR, "dosimeter": AUTHOR, "survey_meter": AUTHOR, "decontamination_compound": AUTHOR, "ceramic_fuel_pellet": AUTHOR,
     "reactor_alloy_ingot": AUTHOR, "reactor_alloy_sheet": AUTHOR,

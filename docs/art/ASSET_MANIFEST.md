@@ -68,7 +68,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:uranium_ore` | Uranium Ore | script | `block/uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
 
-## Items (39)
+## Items (41)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -88,6 +88,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:fuel_assembly` | Fresh Fuel Assembly | generated | `item/fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:fuel_cladding` | Fuel Cladding | generated | `item/fuel_cladding.png` 16x16 |  | 1 |
 | `criticalmass:incomplete_fuel_assembly` | Incomplete Fuel Assembly | generated | `item/empty_fuel_assembly.png` 16x16 |  | 1 |
+| `criticalmass:incomplete_sheared_fuel` | Partly Sheared Fuel Assembly | generated | `item/spent_fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:incomplete_waste_canister` | Incomplete Waste Canister | author | `block/open_waste_canister.png` 32x32<br>`block/sealed_waste_canister.png` 32x32 |  | 3 |
 | `criticalmass:plant_linker` | Plant Linker | script | `item/plant_linker.png` 16x16 |  | 1 |
 | `criticalmass:power_cable` | Power Cable | script | `item/power_cable.png` 16x16 |  | 1 |
@@ -101,6 +102,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:reactor_alloy_ingot` | Reactor Alloy Ingot | author | `item/reactor_alloy_ingot.png` 16x16 |  | 1 |
 | `criticalmass:reactor_alloy_sheet` | Reactor Alloy Sheet | author | `item/reactor_alloy_sheet.png` 16x16 |  | 1 |
 | `criticalmass:sealing_gasket` | Sealing Gasket | author | `item/sealing_gasket.png` 16x16 |  | 1 |
+| `criticalmass:sheared_fuel` | Sheared Spent Fuel | script | `item/sheared_fuel.png` 16x16 |  | 1 |
 | `criticalmass:spent_fuel_assembly` | Spent Fuel Assembly | generated | `item/spent_fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:steel_ingot` | Steel Ingot | author | `item/steel_ingot.png` 16x16 |  | 1 |
 | `criticalmass:steel_nugget` | Steel Nugget | author | `item/steel_nugget.png` 16x16 |  | 1 |

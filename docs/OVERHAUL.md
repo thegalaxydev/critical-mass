@@ -47,7 +47,7 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
   - **Behaviour:** synchronising, frequency and voltage that move with load, short circuits, overloads, lightning, rain and grid disturbances in storms, wear, and wrecks that are repaired where they stand.
   - **Control room:** a Plant Screen wall linked to a Bus Bar draws the network as a one-line diagram, and Dashboard Alarm lamps watch electrical equipment.
 - **Ponder:** sixteen scenes, built by `src/inspect/scenes/make_ponder.py`. The reactor plant has the vessel, control rods, the primary loop, the steam loop, the feedwater train, rejecting heat and refuelling. The electrics have wires, the Circuit Breaker, synchronising, standby power and repair. Accidents have the protection bypass, meltdown, fallout and the Water Cannon. The control desk, the Plant Screens and the fuel factory have none yet.
-- **Not done:** The reference station has a feed tank and feed pump but no feedwater heater and no make-up to its steam loops. Brackets do not render on Reinforced Pipe. The Power Regulator and the rod lever are not in the reference station's control room, and neither has a Ponder scene.
+- **Not done:** The reference station has a feed tank and feed pump but no feedwater heater and no make-up to its steam loops. Brackets do not render on Reinforced Pipe. The Power Regulator and the rod lever are not in the reference station's control room, and neither has a Ponder scene. The reference station has no reprocessing hall.
 
 Each phase lands with game tests and an in-game check before the next starts. Saves: existing blocks keep their ids and data; new state defaults to the old behaviour when absent.
 

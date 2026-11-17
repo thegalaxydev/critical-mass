@@ -77,6 +77,8 @@ public final class CMItems {
     public static final DeferredItem<WeldingTorchItem> WELDING_TORCH = custom("welding_torch", () -> new WeldingTorchItem(new Item.Properties().durability(128)));
     public static final DeferredItem<WasteCanisterItem> SEALED_WASTE_CANISTER = custom("sealed_waste_canister", () -> new WasteCanisterItem(CMBlocks.SEALED_WASTE_CANISTER.get(), new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_WASTE_CANISTER = ITEMS.register("incomplete_waste_canister", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
+    public static final DeferredItem<Item> SHEARED_FUEL = simple("sheared_fuel", new Item.Properties());
+    public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_SHEARED_FUEL = ITEMS.register("incomplete_sheared_fuel", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SequencedAssemblyItem> INCOMPLETE_FUEL_ASSEMBLY = ITEMS.register("incomplete_fuel_assembly", () -> new SequencedAssemblyItem(new Item.Properties().stacksTo(1)));
 
     private CMItems() {
