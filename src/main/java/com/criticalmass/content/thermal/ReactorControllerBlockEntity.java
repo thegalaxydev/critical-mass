@@ -11,6 +11,15 @@ import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
+import com.google.common.collect.ImmutableList;
+import com.criticalmass.content.HorizontalBlock;
+import net.createmod.catnip.math.VecHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -100,6 +109,10 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int clientHotSpots;
 
     private final double[] bankTargets = {Double.NaN, Double.NaN, Double.NaN, Double.NaN};
+    private final int[] leverShift = new int[4];
+    private final long[] leverUntil = new long[4];
+    private final boolean[] leverMoving = new boolean[4];
+    private ScrollValueBehaviour regulator;
     private String startBlock = "";
     private int coriumFloor = Integer.MIN_VALUE;
     private double primaryPressure = CMThermal.ATMOSPHERIC;
@@ -126,6 +139,114 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        regulator = new Regulator(this);
+        behaviours.add(regulator);
+    }
+
+    static class Regulator extends ScrollValueBehaviour {
+        Regulator(SmartBlockEntity be) {
+            super(Component.translatable("criticalmass.reactor.regulator"), be, new RegulatorBox());
+            between(0, 100);
+            value = 0;
+            withFormatter(percent -> percent == 0 ? "-" : percent + "%");
+        }
+
+        @Override
+        public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
+            return new ValueSettingsBoard(label, max, 10, ImmutableList.of(Component.translatable("criticalmass.reactor.regulator_row")),
+                    new ValueSettingsFormatter(settings -> settings.value() == 0 ? Component.translatable("criticalmass.reactor.regulator_off") : Component.literal(settings.value() + "%")));
+        }
+    }
+
+    static class RegulatorBox extends ValueBoxTransform.Sided {
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(8, 2.5, 16.05);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            return direction == state.getValue(HorizontalBlock.FACING);
+        }
+    }
+
+    public int regulatorSetpoint() {
+        return regulator == null ? 0 : regulator.getValue();
+    }
+
+    public void setRegulator(int percent) {
+        regulator.setValue(Math.max(0, Math.min(100, percent)));
+    }
+
+    public void rodLever(int bank, int shift) {
+        if (level == null) {
+            return;
+        }
+        int clamped = Math.max(-CMThermal.LEVER_REACH, Math.min(CMThermal.LEVER_REACH, shift));
+        for (int i = 0; i < bankTargets.length; i++) {
+            if (bank < 0 || bank == i) {
+                leverShift[i] = clamped;
+                leverUntil[i] = level.getGameTime() + 2;
+            }
+        }
+    }
+
+    private static double bankPosition(Map<Long, ControlRodDriveBlockEntity> drives, int bank) {
+        double sum = 0;
+        int n = 0;
+        for (ControlRodDriveBlockEntity d : drives.values()) {
+            if (d.bank() == bank) {
+                sum += d.insertion();
+                n++;
+            }
+        }
+        return n == 0 ? Double.NaN : sum / n;
+    }
+
+    private void moveBank(int bank, double actual, double step) {
+        double from = Double.isNaN(bankTargets[bank]) ? actual : bankTargets[bank];
+        double to = Math.max(actual - CMThermal.ROD_LEAD, Math.min(actual + CMThermal.ROD_LEAD, from - step));
+        bankTargets[bank] = Math.max(0, Math.min(1, to));
+    }
+
+    private void workLevers(Map<Long, ControlRodDriveBlockEntity> drives, long now) {
+        for (int bank = 0; bank < bankTargets.length; bank++) {
+            boolean held = now < leverUntil[bank] && leverShift[bank] != 0;
+            double actual = bankPosition(drives, bank);
+            if (Double.isNaN(actual)) {
+                leverMoving[bank] = false;
+            } else if (held) {
+                moveBank(bank, actual, leverShift[bank] * CMThermal.LEVER_STEP / CMThermal.LEVER_REACH);
+                leverMoving[bank] = true;
+            } else if (leverMoving[bank]) {
+                bankTargets[bank] = actual;
+                leverMoving[bank] = false;
+            }
+        }
+    }
+
+    private void regulate(Map<Long, ControlRodDriveBlockEntity> drives, boolean canRun) {
+        int percent = regulator.getValue();
+        if (percent <= 0) {
+            return;
+        }
+        if (tripped || !canRun) {
+            regulator.setValue(0);
+            return;
+        }
+        double actual = bankPosition(drives, CMThermal.REGULATING_BANK);
+        if (Double.isNaN(actual)) {
+            return;
+        }
+        double setpoint = percent / 100.0;
+        double power = core.neutronPower();
+        double rate = core.startupRate();
+        double wanted = Math.max(-CMThermal.REGULATOR_FALL, Math.min(CMThermal.REGULATOR_RISE, (setpoint - power) / (Math.max(power, 1e-9) * CMThermal.REGULATOR_SETTLE)));
+        double step = Math.max(-CMThermal.REGULATOR_STEP, Math.min(CMThermal.REGULATOR_STEP, (wanted - rate) * CMThermal.REGULATOR_GAIN));
+        if (Math.abs(setpoint - power) < CMThermal.REGULATOR_BAND && Math.abs(rate) < CMThermal.REGULATOR_QUIET) {
+            step = 0;
+        }
+        moveBank(CMThermal.REGULATING_BANK, actual, step);
     }
 
     @Override
@@ -864,6 +985,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         double fallback = manualInsertion;
         VesselStructure shape = structure != null && structure.valid() ? structure : lastValid;
+        workLevers(drives, level.getGameTime());
+        regulate(drives, canRun);
         for (ControlRodDriveBlockEntity d : drives.values()) {
             d.linkToReactor(shape == null ? 0 : shape.interiorHeight, bankTargets[d.bank()]);
         }
@@ -1211,6 +1334,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         ThermalTooltips.status(tooltip, status, running ? ChatFormatting.GREEN : healthy ? ChatFormatting.GRAY : ChatFormatting.RED);
         if (status.endsWith("tripped") && !tripReason.isEmpty()) {
             ThermalTooltips.status(tooltip, "criticalmass.reactor.trip." + tripReason, ChatFormatting.RED);
+        }
+        if (regulatorSetpoint() > 0) {
+            ThermalTooltips.status(tooltip, "criticalmass.reactor.regulating", ChatFormatting.AQUA, regulatorSetpoint());
         }
         if (sizeError != null) {
             ThermalTooltips.status(tooltip, sizeError, ChatFormatting.RED, dims[0], dims[1], dims[2]);

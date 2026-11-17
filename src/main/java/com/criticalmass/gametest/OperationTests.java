@@ -109,6 +109,90 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = LARGE, timeoutTicks = 900)
+    public static void aRodLeverMovesItsBankWhileHeldAndHoldsItInTheMiddle(GameTestHelper h) {
+        ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
+        ControlRodDriveBlockEntity a = drive(h, DRIVE_A, 64);
+        ControlRodDriveBlockEntity b = drive(h, DRIVE_B, 64);
+        b.setBank(1);
+        BlockPos deskPos = new BlockPos(10, 1, 10);
+        h.setBlock(deskPos, CMBlocks.REACTOR_ALLOY_DASHBOARD.get());
+        com.criticalmass.content.control.DashboardBlockEntity desk = h.getBlockEntity(deskPos);
+        com.criticalmass.content.control.DashPart lever = new com.criticalmass.content.control.DashPart(com.criticalmass.content.control.DashPart.Type.LEVER);
+        h.assertTrue(desk.install(0, lever) && desk.bind(0, h.absolutePos(TestVessels.CONTROLLER)), "A lever should bind to a Reactor Controller");
+        h.assertTrue(lever.modes(h.getLevel()) == CMThermal.ROD_BANKS + 1 && lever.rodBank() == 0 && desk.modeKey(lever).endsWith("rods_a"), "A rod lever should offer each bank and all of them: " + lever.modes(h.getLevel()));
+        int top = com.criticalmass.content.control.DashPart.MAX_LEVEL;
+        double[] seen = new double[1];
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() == 1 && b.insertion() == 1, "A lever at the bottom should leave the rods in");
+                    desk.setLever(0, top);
+                })
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() < 0.84 && a.insertion() > 0.76 && b.insertion() == 1, "A lever pushed right up should withdraw its own bank at 4% a second: A " + a.insertion() + " B " + b.insertion());
+                    seen[0] = a.insertion();
+                    desk.setLever(0, top / 2);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(a.insertion() - seen[0]) < 0.012 && Math.abs(c.bankTarget(0) - a.insertion()) < 1e-9, "A lever in the middle should hold the rods where they are: " + a.insertion() + " from " + seen[0]);
+                    seen[0] = a.insertion();
+                    desk.setLever(0, top / 2 + 2);
+                })
+                .thenIdle(70)
+                .thenExecute(() -> {
+                    double moved = seen[0] - a.insertion();
+                    h.assertTrue(Math.abs(moved - 70 * CMThermal.LEVER_STEP / CMThermal.LEVER_REACH) < 0.006, "One notch above the middle should creep the rods out: " + moved);
+                    for (int i = 0; i < CMThermal.ROD_BANKS; i++) {
+                        desk.cycle(0);
+                    }
+                    h.assertTrue(lever.rodBank() == -1 && desk.modeKey(lever).endsWith("rods_all"), "The last setting should be all banks");
+                    c.setBankTarget(1, 0.5);
+                    desk.setLever(0, 0);
+                })
+                .thenIdle(200)
+                .thenExecute(() -> h.assertTrue(a.insertion() > 1 - 1e-9 && b.insertion() > 1 - 1e-9 && c.bankTarget(0) == 1 && c.bankTarget(1) == 1, "Pulled right down on all banks it should drive every rod in: A " + a.insertion() + " B " + b.insertion()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 2600)
+    public static void theRegulatorHoldsPowerWithBankDAndATripSwitchesItOff(GameTestHelper h) {
+        ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
+        ControlRodDriveBlockEntity a = drive(h, DRIVE_A, 64);
+        ControlRodDriveBlockEntity d = drive(h, DRIVE_B, 64);
+        d.setBank(CMThermal.REGULATING_BANK);
+        c.setBoron(5000);
+        c.setBankTarget(0, 0.0);
+        c.setBankTarget(CMThermal.REGULATING_BANK, 0.5);
+        h.startSequence()
+                .thenIdle(540)
+                .thenExecute(() -> {
+                    h.assertTrue(a.insertion() == 0 && Math.abs(d.insertion() - 0.5) < 1e-6, "The banks should be set up: A " + a.insertion() + " D " + d.insertion());
+                    TestVessels.atPower(c, 0.2);
+                    double xenon = (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT) * 0.2 / (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT * 0.2);
+                    double defect = (CMThermal.FUEL_COEFFICIENT + CMThermal.MODERATOR_COEFFICIENT) * (c.coolant().temperature() - CMThermal.AMBIENT) + CMThermal.XENON_WORTH * xenon;
+                    c.setBoron((c.core().excessReactivity() - CMThermal.ROD_WORTH * 3 / 5 / 2 - defect) / CMThermal.BORON_WORTH);
+                    c.setRegulator(30);
+                })
+                .thenIdle(700)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isTripped() && c.regulatorSetpoint() == 30, "The regulator should not trip the reactor: " + c.tripReason());
+                    h.assertTrue(Math.abs(c.core().neutronPower() - 0.3) < 0.02, "The regulator should bring power to its setpoint and hold it: " + c.core().neutronPower() + " with bank D at " + d.insertion());
+                    h.assertTrue(a.insertion() == 0, "It should leave the other banks alone: " + a.insertion());
+                    c.setRegulator(45);
+                })
+                .thenIdle(700)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.isTripped() && Math.abs(c.core().neutronPower() - 0.45) < 0.03, "It should follow a new setpoint: " + c.core().neutronPower() + " with bank D at " + d.insertion() + " " + c.tripReason());
+                    c.scram();
+                })
+                .thenIdle(5)
+                .thenExecute(() -> h.assertTrue(c.isTripped() && c.regulatorSetpoint() == 0, "A trip should switch the regulator off: " + c.regulatorSetpoint()))
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE, timeoutTicks = 1000)
     public static void rodBanksMoveSeparatelyAndShowInTheCore(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);

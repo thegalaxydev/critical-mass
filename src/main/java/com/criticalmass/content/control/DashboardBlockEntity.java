@@ -281,6 +281,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         if (part.type == DashPart.Type.SWITCH && part.targetEntity(level) instanceof ReactorControllerBlockEntity) {
             return "criticalmass.dashboard.switch.bypass";
         }
+        if (part.type == DashPart.Type.LEVER && part.targetEntity(level) instanceof ReactorControllerBlockEntity) {
+            return part.rodBank() < 0 ? "criticalmass.dashboard.lever.rods_all" : "criticalmass.dashboard.lever.rods_" + "abcd".charAt(part.rodBank());
+        }
         return switch (part.type) {
             case BUTTON -> "criticalmass.dashboard.press." + part.press(level).key;
             case GAUGE -> {
@@ -484,6 +487,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             if (part.type == DashPart.Type.SWITCH && part.signal(now) > 0 && part.targetEntity(level) instanceof ReactorControllerBlockEntity reactor) {
                 reactor.holdBypass(BYPASS_HOLD_TICKS);
             }
+            if (part.type == DashPart.Type.LEVER && part.targetEntity(level) instanceof ReactorControllerBlockEntity reactor) {
+                reactor.rodLever(part.rodBank(), part.rodShift(now));
+            }
             if (!read) {
                 continue;
             }
@@ -583,7 +589,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
 
     private void describe(List<Component> tooltip, DashPart part) {
         Component name = part.label.isEmpty() ? Component.translatable("criticalmass.dashboard.part." + part.type.key) : part.labelText();
-        boolean plain = part.type == DashPart.Type.SWITCH || part.type == DashPart.Type.LEVER || part.target == null;
+        boolean plain = part.type == DashPart.Type.SWITCH || part.type == DashPart.Type.LEVER && !(part.targetEntity(level) instanceof ReactorControllerBlockEntity) || part.target == null;
         tooltip.add(plain ? Component.literal("     ").append(name).withStyle(ChatFormatting.WHITE)
                 : ThermalTooltips.line("criticalmass.dashboard.part_function", ChatFormatting.WHITE, name, Component.translatable(modeKey(part))));
         if (part.inverted && part.controls()) {
@@ -604,7 +610,15 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         }
         switch (part.type) {
             case SWITCH -> tooltip.add(ThermalTooltips.line(part.on ? "criticalmass.dashboard.result.on" : "criticalmass.dashboard.result.off", part.on ? ChatFormatting.GREEN : ChatFormatting.GRAY));
-            case LEVER -> tooltip.add(ThermalTooltips.line("criticalmass.dashboard.result.strength", ChatFormatting.AQUA, part.level));
+            case LEVER -> {
+                if (part.targetEntity(level) instanceof ReactorControllerBlockEntity && level != null) {
+                    int shift = part.rodShift(level.getGameTime());
+                    tooltip.add(ThermalTooltips.line(shift > 0 ? "criticalmass.dashboard.result.rods_out" : shift < 0 ? "criticalmass.dashboard.result.rods_in" : "criticalmass.dashboard.result.rods_hold",
+                            shift > 0 ? ChatFormatting.GOLD : shift < 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, Math.abs(shift), CMThermal.LEVER_REACH));
+                } else {
+                    tooltip.add(ThermalTooltips.line("criticalmass.dashboard.result.strength", ChatFormatting.AQUA, part.level));
+                }
+            }
             case GAUGE -> {
                 if (!part.readout.isEmpty()) {
                     tooltip.add(Component.literal("     " + part.readout).withStyle(ChatFormatting.GREEN));

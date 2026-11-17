@@ -149,6 +149,17 @@ public final class CMThermal {
     public static final int CHANNEL_VISUAL_TICKS = 5;
     public static final int ROD_BANKS = 4;
     public static final double ROD_JOG = 0.005;
+    public static final int LEVER_REACH = 7;
+    public static final double LEVER_STEP = 0.002;
+    public static final double ROD_LEAD = 0.01;
+    public static final int REGULATING_BANK = 3;
+    public static final double REGULATOR_SETTLE = 10.0;
+    public static final double REGULATOR_RISE = 1.0 / 20.0;
+    public static final double REGULATOR_FALL = 1.0 / 10.0;
+    public static final double REGULATOR_STEP = 0.0005;
+    public static final double REGULATOR_GAIN = REGULATOR_STEP / 0.05;
+    public static final double REGULATOR_BAND = 0.005;
+    public static final double REGULATOR_QUIET = 0.002;
     public static final double LOW_COOLANT_ALARM = 0.5;
     public static final int ROD_LINK_TICKS = 20;
     public static final double PIPE_LEAK_PER_BAR = 0.004;

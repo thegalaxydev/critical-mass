@@ -3,6 +3,7 @@ package com.criticalmass.content.control;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
+import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
@@ -172,7 +173,7 @@ public final class DashPart {
             case BUTTON -> be instanceof ReactorControllerBlockEntity || be instanceof SteamTurbineBlockEntity || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity
                     || isReceiver(level, pos);
             case SWITCH -> be instanceof ReactorControllerBlockEntity || isReceiver(level, pos);
-            case LEVER -> isReceiver(level, pos);
+            case LEVER -> be instanceof ReactorControllerBlockEntity || isReceiver(level, pos);
             case GAUGE -> PlantChannel.isTarget(be);
             case ALARM -> PlantAlarms.watchable(be);
         };
@@ -217,6 +218,7 @@ public final class DashPart {
             case BUTTON -> presses(level).size();
             case GAUGE -> Math.max(1, channels(level).size());
             case ALARM -> PlantAlarms.Alarm.values().length + 1;
+            case LEVER -> targetEntity(level) instanceof ReactorControllerBlockEntity ? CMThermal.ROD_BANKS + 1 : 1;
             default -> 1;
         };
     }
@@ -249,6 +251,16 @@ public final class DashPart {
 
     public boolean sounding() {
         return (alarms & watched() & ~acknowledged) != 0;
+    }
+
+    public int rodBank() {
+        int which = Math.floorMod(mode, CMThermal.ROD_BANKS + 1);
+        return which == CMThermal.ROD_BANKS ? -1 : which;
+    }
+
+    public int rodShift(long gameTime) {
+        int raw = signal(gameTime);
+        return raw > MAX_LEVEL / 2 ? raw - (MAX_LEVEL / 2 + 1) : raw - MAX_LEVEL / 2;
     }
 
     public boolean pressed(long gameTime) {

@@ -128,6 +128,8 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 
 - **Bigger core:** fuel columns next to each other give more power each, and need coolant channels beside every one of them. Check the hottest fuel column, not the average.
 - **More rods:** put drives in separate banks so you can move a few at a time.
+- **Rod lever:** bind a Dashboard Lever to the controller and pick its bank in its settings. Middle holds, up withdraws, down inserts, and the further from the middle the faster.
+- **Power Regulator:** put at least one drive in bank D, bring the reactor critical by hand with the other banks, then set a power on the controller's value box. The controller works bank D to hold it. Set it back to Off before moving bank D yourself.
 - **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
