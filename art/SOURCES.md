@@ -143,7 +143,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 - Used by: `textures/particle/steam_0.png` to `steam_3.png`, `glow.png`, `ring.png`, `spark.png`, `mote.png` and `streak.png`, through the definitions in `particles/`
 - Source: `art/tools/effect_texture.py` draws every sprite. The four steam puffs are lumps of round cloud in three steps of opacity; smoke and the tower plume are the same puffs tinted and sized by the game. The glow and ring are plain falloffs, drawn additively. The streak is the cross-section of an arc.
-- The bolts themselves are not textures: the game builds each one from a random jagged path and redraws it every two ticks.
+- The bolts themselves are not textures: the game runs a smooth curve through a few random points, draws it as a tapered ribbon that fades from a white core to a blue edge, and moves the points every three ticks so the bolt writhes.
 - Status: script-drawn, not yet approved.
 - Repainting: run the tool with `fresh`. It also rewrites the particle definitions.
 - Date: 2026-11-16

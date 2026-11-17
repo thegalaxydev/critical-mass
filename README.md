@@ -319,7 +319,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Commands:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting. `/criticalmass breaker <breaker> close`, `open` or `reset` works a breaker with the same checks as by hand. `/criticalmass wire <from> <terminal> <to> <terminal> <wire, cable or line>` strings a wire; a breaker's terminals are 0 for line and 1 for load, a transformer's are 0 for high and 1 for low, and everything else has terminal 0.
 
 **Effects and sounds.** The plant has its own effects and its own sounds. The sounds are synthesised from square, saw and triangle waves and noise at a low sample rate, to sit with the green screens and the analog control room.
-- **Arcs:** a flashover, a short circuit, a disconnect switch worked live and a hand on a live terminal each draw a jagged blue-white bolt that forks and flickers, with a crackle.
+- **Arcs:** a flashover, a short circuit, a disconnect switch worked live and a hand on a live terminal each draw a curved blue-white bolt with a soft glow, a flare at each end and thin forks, which writhes for its half second and comes with a crackle.
 - **Electrical explosions:** equipment lost to a fault goes with a flash, a fireball, a ring across the ground, a spray of sparks, black smoke that hangs for seconds, a bang and a shake of the view that fades with distance.
 - **Wires:** a wire near its limit spits sparks along its length and sizzles before it burns.
 - **Switchgear:** breakers close, open and trip with their own heavy sounds, and a relay clicks when a breaker's current first passes its setting. Switches thud. Stringing and cutting wire each has a sound.
