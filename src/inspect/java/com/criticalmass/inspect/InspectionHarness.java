@@ -226,6 +226,53 @@ public class InspectionHarness {
                 }
             });
         }
+        if (step.has("structure") && mc.getSingleplayerServer() != null) {
+            JsonObject spec = step.getAsJsonObject("structure");
+            JsonArray from = spec.getAsJsonArray("from");
+            JsonArray size = spec.getAsJsonArray("size");
+            BlockPos corner = new BlockPos(from.get(0).getAsInt(), from.get(1).getAsInt(), from.get(2).getAsInt());
+            net.minecraft.core.Vec3i extent = new net.minecraft.core.Vec3i(size.get(0).getAsInt(), size.get(1).getAsInt(), size.get(2).getAsInt());
+            Path file = mc.gameDirectory.getAbsoluteFile().getParentFile().toPath().resolve(spec.get("file").getAsString());
+            MinecraftServer server = mc.getSingleplayerServer();
+            server.execute(() -> {
+                try {
+                    net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate template = new net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate();
+                    template.fillFromWorld(server.overworld(), corner, extent, false, net.minecraft.world.level.block.Blocks.STRUCTURE_VOID);
+                    Files.createDirectories(file.getParent());
+                    net.minecraft.nbt.NbtIo.writeCompressed(template.save(new net.minecraft.nbt.CompoundTag()), file);
+                    note("structure " + file.getFileName() + " saved");
+                } catch (IOException ex) {
+                    note("structure " + file + " failed " + ex);
+                }
+            });
+        }
+        if (step.has("ponderLang")) {
+            java.util.Map<String, String> lines = new java.util.TreeMap<>();
+            net.createmod.ponder.foundation.PonderIndex.getLangAccess().provideLang("criticalmass", lines::put);
+            JsonObject out = new JsonObject();
+            lines.forEach(out::addProperty);
+            try {
+                Files.writeString(mc.gameDirectory.getAbsoluteFile().getParentFile().toPath().resolve(step.get("ponderLang").getAsString()), new com.google.gson.GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(out), StandardCharsets.UTF_8);
+                note("ponderLang " + lines.size() + " lines");
+            } catch (IOException ex) {
+                note("ponderLang failed " + ex);
+            }
+        }
+        if (step.has("ponder")) {
+            net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM.get(net.minecraft.resources.ResourceLocation.parse(step.get("ponder").getAsString()));
+            net.createmod.catnip.gui.ScreenOpener.open(net.createmod.ponder.foundation.ui.PonderUI.of(new ItemStack(item)));
+            note("ponder " + item);
+        }
+        if (step.has("ponderScroll") && mc.screen instanceof net.createmod.ponder.foundation.ui.PonderUI ui) {
+            for (int i = 0; i < step.get("ponderScroll").getAsInt(); i++) {
+                ui.mouseScrolled(0, 0, 0, 1);
+            }
+            note("ponder scene " + ui.getActiveScene().getId());
+        }
+        if (step.has("ponderSeek") && mc.screen instanceof net.createmod.ponder.foundation.ui.PonderUI ui) {
+            ui.seekToTime(step.get("ponderSeek").getAsInt());
+            note("ponder at " + ui.getActiveScene().getCurrentTime() + " of " + ui.getActiveScene().getTotalTime());
+        }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";
             Screenshot.grab(mc.gameDirectory, name, mc.getMainRenderTarget(), msg -> {

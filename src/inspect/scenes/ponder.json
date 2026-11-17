@@ -1,0 +1,461 @@
+{
+ "name": "ponder",
+ "steps": [
+  {
+   "cmds": [
+    "/gamemode creative",
+    "/time set 6000"
+   ],
+   "wait": 60,
+   "gui": true
+  },
+  {
+   "ponder": "criticalmass:power_wire",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "wires_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "wires_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "wires_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "wires_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "wires_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "wires_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:circuit_breaker",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:generator",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:transfer_switch",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "standby_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "standby_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "standby_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "standby_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "standby_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "standby_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:transformer",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "repair_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "repair_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "repair_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "repair_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "repair_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "repair_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:dashboard_switch",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:corium",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:survey_meter",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 200,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 400,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 600,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 800,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1100,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_5",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  }
+ ]
+}

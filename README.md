@@ -26,6 +26,7 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
 
 - Blocks, items, fluids and the protective outfit are registered and textured. Status per asset: `docs/art/ASSET_MANIFEST.md` (and `.json`).
 - Operating manual (circuits, a minimal plant, control room wiring, start-up, shutdown, faults, expansion): `docs/OPERATING.md`. Overhaul plan and status: `docs/OVERHAUL.md`.
+- Ponder scenes: hold the Ponder key on the wires, the Circuit Breaker, the Generator, the Transfer Switch, the Transformer, the Dashboard Switch, Corium or the Survey Meter. `src/inspect/scenes/make_ponder.py build` writes the scene that builds their schematics into `assets/criticalmass/ponder/`, `make_ponder.py view` the scene that screenshots them, and `make_ponder.py lang <dump>` puts the scene text into `en_us.json`. The scripts are in `ponder/PlantScenes.java`.
 - Art direction and the texture pipeline: `docs/art/STYLE.md`. Reference breakdown: `docs/art/REFERENCES.md`.
 - QA contact sheets (iso views, functional faces, item sizes, outfit poses, kinetics, Aeronautics body): `docs/art/qa/`.
 - Generated art and how each texture was made (raw outputs, processing): `art/SOURCES.md`, `art/generated/`. The scripts that paint textures, export models and make sounds: `art/tools/`.

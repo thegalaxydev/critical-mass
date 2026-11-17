@@ -193,6 +193,40 @@ public final class WireLinks {
         return null;
     }
 
+    public static void sketch(Level level, BlockPos a, int ta, BlockPos b, int tb, WireType type, int glowing) {
+        if (!(level.getBlockEntity(a) instanceof WireNode from) || !(level.getBlockEntity(b) instanceof WireNode to)) {
+            return;
+        }
+        Link there = from.wires().find(b, ta, tb);
+        if (there == null) {
+            there = new Link(b.immutable(), ta, tb, type);
+            from.wires().links.add(there);
+        }
+        Link back = to.wires().find(a, tb, ta);
+        if (back == null) {
+            back = new Link(a.immutable(), tb, ta, type);
+            to.wires().links.add(back);
+        }
+        if (glowing > 0) {
+            from.wires().glow.put(there, glowing);
+            to.wires().glow.put(back, glowing);
+        } else {
+            from.wires().glow.remove(there);
+            to.wires().glow.remove(back);
+        }
+    }
+
+    public static void erase(Level level, BlockPos a, BlockPos b) {
+        if (level.getBlockEntity(a) instanceof WireNode from) {
+            from.wires().links.removeIf(link -> link.other().equals(b));
+            from.wires().glow.keySet().retainAll(from.wires().links);
+        }
+        if (level.getBlockEntity(b) instanceof WireNode to) {
+            to.wires().links.removeIf(link -> link.other().equals(a));
+            to.wires().glow.keySet().retainAll(to.wires().links);
+        }
+    }
+
     public static boolean cut(Level level, BlockPos pos, Link link) {
         WireNode node = node(level, pos);
         if (node == null || !node.wires().links.contains(link)) {
