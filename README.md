@@ -175,7 +175,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
     - **Commands:** `/criticalmass fallout <position> [radius]` starts a plume by itself and `/criticalmass fallout clear` ends every plume. The ash stays.
   - **How to get one:** not while the protection is on. The automatic trip and the fuel's own feedback stop a loss of cooling and a sudden loss of xenon and boron well short of melting.
   - **Protection bypass:** a Dashboard Switch bound to the Reactor Controller is a protection bypass. While it is on, the reactor no longer trips on fuel failure, high temperature, high flux, a short period or lost flow. A SCRAM by hand still works, and so does the trip for a broken vessel. An alarm lamp can watch for it, and the Plant Screen lists it. Fit the switch with a glass cover.
-  - **A real one:** at 70% power on the reference station, with the bypass on, every rod withdrawn, the xenon and boron gone and the primary pump lost, four of the five fuel columns melted within two seconds. That stopped the reaction, decay heat melted the fifth half a minute later, and the core went off.
+  - **A real one:** at 70% power on a small station of five fuel columns, with the bypass on, every rod withdrawn, the xenon and boron gone and the primary pump lost, four of the five fuel columns melted within two seconds. That stopped the reaction, decay heat melted the fifth half a minute later, and the core went off.
   - **Commands:** `/criticalmass meltdown` melts the nearest core to test it. `/criticalmass melt <controller>`, `/criticalmass detonate <position> [radius]` and `/criticalmass bypass <controller> <seconds>` do the parts on their own.
 - **Config:** `accidents.meltdown` turns melting off, `accidents.coriumDepth` limits burn-through, and `accidents.coriumContamination` scales the release. `accidents.nuclearExplosion` turns the explosion off, so a total meltdown only leaves corium, and `accidents.explosionRadius` sets the crater of a 15-block core. `accidents.fallout` turns the fallout off and `accidents.falloutHalfLifeMinutes` sets how fast the airborne part fades.
   - Repair with the Welding Torch: hold use for 2 seconds; each weld restores 50%.
@@ -275,6 +275,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Station Battery:** a cabinet of cells for the 6 kV bus. It holds the bus up when everything else has gone.
   - While the bus is live it charges, drawing 128 SU. From flat it is full in about 7 minutes.
   - When its wires have no grid and no running generator on them it supplies the bus by itself, at 6 kV and 50 Hz, up to 512 SU, which is 2 MW. Full, it lasts 5 minutes at that load and longer at less.
+  - Batteries on the same wires share the load evenly, so two carry 1,024 SU.
   - Asked for more than 512 SU it shuts down for 5 seconds. As soon as a generator or the grid is back it stops supplying and charges again.
   - Goggles show its state and charge, and a comparator reads the charge.
 - **Diesel Engine:** a rotation source for a standby set. It turns its shaft at 64 RPM with 4,096 SU, which is the speed a Generator needs.

@@ -70,6 +70,10 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         return status;
     }
 
+    public boolean ready() {
+        return lockout <= 0 && charge > 0;
+    }
+
     public int comparator() {
         return (int) Math.round(charge() * 15);
     }
@@ -169,7 +173,13 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         } else {
             draw = 0;
             online = true;
-            double share = around.demand(level) * ratedSu() / (ratedSu() + around.onlineRating(level, this));
+            double beside = 0;
+            for (PowerSource source : around.feeders(level)) {
+                if (source != this && (source.online() || source instanceof BatteryBlockEntity other && other.ready())) {
+                    beside += source.ratedSu();
+                }
+            }
+            double share = around.demand(level) * ratedSu() / (ratedSu() + beside);
             if (share > ratedSu()) {
                 online = false;
                 output = 0;

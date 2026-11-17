@@ -46,7 +46,7 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
   - **Standby power:** a Station Battery, a Diesel Engine and a Transfer Switch.
   - **Behaviour:** synchronising, frequency and voltage that move with load, short circuits, overloads, lightning, rain and grid disturbances in storms, wear, and wrecks that are repaired where they stand.
   - **Control room:** a Plant Screen wall linked to a Bus Bar draws the network as a one-line diagram, and Dashboard Alarm lamps watch electrical equipment.
-- **Not done:** Ponder scenes. The reference station's own motors use about 40% of what it generates, where a real plant uses about 5%; that needs a bigger core and turbine. Feedwater equipment is a surge tank only. Brackets do not render on Reinforced Pipe. Rod banks are set with buttons; there is no analog bank lever. Automatic rod regulation is left to player-built gauge and button wiring.
+- **Not done:** Ponder scenes. Feedwater equipment is a surge tank only. Brackets do not render on Reinforced Pipe. Rod banks are set with buttons; there is no analog bank lever. Automatic rod regulation is left to player-built gauge and button wiring.
 
 Each phase lands with game tests and an in-game check before the next starts. Saves: existing blocks keep their ids and data; new state defaults to the old behaviour when absent.
 

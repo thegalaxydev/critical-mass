@@ -839,6 +839,55 @@ public final class PowerTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void twoBatteriesShareABusThatIsTooMuchForOne(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos firstPos = new BlockPos(6, 2, 3);
+        BlockPos secondPos = new BlockPos(4, 2, 3);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(firstPos, CMBlocks.STATION_BATTERY.get());
+        h.setBlock(secondPos, CMBlocks.STATION_BATTERY.get());
+        MotorBlockEntity motor = motor(h, motorPos, 32, 2);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, busPos, 0);
+        wire(h, busPos, 0, firstPos, 0);
+        wire(h, busPos, 0, secondPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        BatteryBlockEntity first = h.getBlockEntity(firstPos);
+        BatteryBlockEntity second = h.getBlockEntity(secondPos);
+        double draw = drawFor(pressLoad(2, 32));
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> breaker.close())
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(draw > Power.BATTERY_RATED_SU && draw < 2 * Power.BATTERY_RATED_SU, "The motor should draw more than one battery gives: " + draw);
+                    first.setCharge(0.5);
+                    second.setCharge(0.5);
+                    breaker.open();
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(first.online() && second.online(), "Two batteries should take up a bus that one cannot carry: " + first.status() + " " + second.status());
+                    h.assertTrue(near(first.outputSu(), draw / 2) && near(second.outputSu(), draw / 2), "They should share it evenly: " + first.outputSu() + " " + second.outputSu());
+                    h.assertTrue(bus.live() && motor.live(), "The bus should stay up and the motor keep turning");
+                    second.setCharge(0);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> h.assertTrue(!first.online() && first.status().endsWith("battery.overloaded") && !bus.live() && !motor.live(), "Left alone the other battery is overloaded and the bus goes dead: " + first.status()))
+                .thenSucceed();
+    }
+
     private static DieselEngineBlockEntity engine(GameTestHelper h, BlockPos pos, int fuel) {
         h.setBlock(pos, CMBlocks.DIESEL_ENGINE.get().defaultBlockState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
         DieselEngineBlockEntity engine = h.getBlockEntity(pos);
