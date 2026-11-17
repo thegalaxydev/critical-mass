@@ -4,7 +4,7 @@ import sys
 
 from PIL import Image
 
-from plant_style import BLOCK, ROOT, Sheet, source
+from plant_style import BLOCK, CRUST, EMBER, ROOT, Sheet, source
 
 ITEM = os.path.join(os.path.dirname(BLOCK), "item")
 ISLANDS = {
@@ -98,30 +98,64 @@ def coolant():
     return sheet
 
 
+RUINED = {
+    "plate_top": (0, 0, 16, 16),
+    "plate_side": (0, 16, 16, 1),
+    "rod_side": (16, 0, 2, 14),
+    "rod_end": (18, 0, 2, 2),
+    "slag": (20, 0, 8, 8),
+}
+SLAG = (
+    "........",
+    "..#.....",
+    "..#.....",
+    "...##...",
+    ".....#..",
+    ".....#..",
+    "........",
+    "........",
+)
+
+
 def ruined():
-    sheet = Sheet(32, ISLANDS)
-    plate(sheet, (72, 58, 46), (52, 42, 36), (30, 26, 24))
+    sheet = Sheet(32, RUINED)
+    plate(sheet, CRUST[4], CRUST[3], CRUST[1])
     for x in RODS:
         for y in RODS:
-            sheet.fill("plate_top", x, y, x + 1, y + 1, (34, 30, 30))
-    column(sheet, "rod_side", ((58, 50, 46), (34, 30, 30)))
-    sheet.put("rod_side", 0, 9, (196, 96, 40))
-    sheet.put("rod_side", 0, 10, (126, 52, 24))
+            sheet.fill("plate_top", x, y, x + 1, y + 1, CRUST[0])
+    for y in range(14):
+        burnt = y < 2
+        sheet.put("rod_side", 0, y, EMBER[0] if burnt else CRUST[4])
+        sheet.put("rod_side", 1, y, CRUST[1] if burnt else CRUST[2])
+    sheet.fill("rod_end", 0, 0, 1, 1, CRUST[1])
+    sheet.put("rod_end", 0, 0, EMBER[0])
+    for y in range(8):
+        for x in range(8):
+            if SLAG[y][x] == "#":
+                c = CRUST[0]
+            elif x == 0 or y == 0:
+                c = CRUST[3]
+            elif x == 7 or y == 7:
+                c = CRUST[1]
+            else:
+                c = CRUST[2]
+            sheet.put("slag", x, y, c)
     return sheet
 
 
 def main():
+    only = [a for a in sys.argv[1:] if a != "fresh"]
     first = os.path.join(BLOCK, "fuel_channel.png")
     if "fresh" not in sys.argv and Image.open(first).getpixel((31, 31))[3] == 0:
-        print("left alone; pass fresh to repaint the channel sheets")
+        print("left alone; pass fresh to repaint the channel sheets, with names after it to repaint only those")
         return
-    fuel(None).save(first)
+    sheets = {"fuel_channel": lambda: fuel(None), "control_channel": control, "coolant_channel": coolant, "ruined_channel": ruined}
     for level, rod in GLOW.items():
-        fuel(rod).save(os.path.join(BLOCK, "fuel_channel_glow_%d.png" % level))
-    control().save(os.path.join(BLOCK, "control_channel.png"))
-    coolant().save(os.path.join(BLOCK, "coolant_channel.png"))
-    ruined().save(os.path.join(BLOCK, "ruined_channel.png"))
-    print("painted the channel sheets")
+        sheets["fuel_channel_glow_%d" % level] = lambda rod=rod: fuel(rod)
+    painted = [name for name in sheets if not only or name in only]
+    for name in painted:
+        sheets[name]().save(os.path.join(BLOCK, name + ".png"))
+    print("painted", ", ".join(painted))
 
 
 if __name__ == "__main__":

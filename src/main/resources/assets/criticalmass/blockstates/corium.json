@@ -1,10 +1,38 @@
 {
  "variants": {
-  "hot=false": {
-   "model": "criticalmass:block/corium"
-  },
-  "hot=true": {
-   "model": "criticalmass:block/corium_hot"
-  }
+  "hot=false": [
+   {
+    "model": "criticalmass:block/corium"
+   },
+   {
+    "model": "criticalmass:block/corium",
+    "y": 90
+   },
+   {
+    "model": "criticalmass:block/corium",
+    "y": 180
+   },
+   {
+    "model": "criticalmass:block/corium",
+    "y": 270
+   }
+  ],
+  "hot=true": [
+   {
+    "model": "criticalmass:block/corium_hot"
+   },
+   {
+    "model": "criticalmass:block/corium_hot",
+    "y": 90
+   },
+   {
+    "model": "criticalmass:block/corium_hot",
+    "y": 180
+   },
+   {
+    "model": "criticalmass:block/corium_hot",
+    "y": 270
+   }
+  ]
  }
 }

@@ -392,6 +392,14 @@
      "animated": false
     },
     {
+     "path": "src/main/resources/assets/criticalmass/textures/block/corium_glow.png",
+     "size": [
+      16,
+      64
+     ],
+     "animated": true
+    },
+    {
      "path": "src/main/resources/assets/criticalmass/textures/block/corium_hot.png",
      "size": [
       16,
@@ -1199,32 +1207,32 @@
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/reactor_viewport.png",
      "size": [
-      16,
-      16
+      32,
+      32
      ],
      "animated": false
     },
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/reactor_viewport_crack_1.png",
      "size": [
-      16,
-      16
+      32,
+      32
      ],
      "animated": false
     },
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/reactor_viewport_crack_2.png",
      "size": [
-      16,
-      16
+      32,
+      32
      ],
      "animated": false
     },
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/reactor_viewport_crack_3.png",
      "size": [
-      16,
-      16
+      32,
+      32
      ],
      "animated": false
     }
@@ -1418,14 +1426,6 @@
    "art": "script",
    "textures": [
     {
-     "path": "src/main/resources/assets/criticalmass/textures/block/fuel_channel.png",
-     "size": [
-      32,
-      32
-     ],
-     "animated": false
-    },
-    {
      "path": "src/main/resources/assets/criticalmass/textures/block/ruined_channel.png",
      "size": [
       32,
@@ -1436,7 +1436,6 @@
    ],
    "borrowed_textures": [],
    "models": [
-    "src/main/resources/assets/criticalmass/models/block/fuel_channel.json",
     "src/main/resources/assets/criticalmass/models/block/ruined_channel.json",
     "src/main/resources/assets/criticalmass/models/item/ruined_channel.json"
    ],

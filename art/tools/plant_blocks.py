@@ -52,42 +52,6 @@ def atlas(quads):
 
 
 
-def viewport_base():
-    img = casing(IRON, STEEL)(16, 16)
-    for y in range(3, 13):
-        for x in range(3, 13):
-            img.putpixel((x, y), (118, 158, 178, 64))
-    for k in range(4):
-        img.putpixel((4 + k, 7 - k), (206, 232, 242, 120))
-        img.putpixel((8 + k, 11 - k), (206, 232, 242, 96))
-    for x, y in ((1, 1), (14, 1), (1, 14), (14, 14)):
-        put(img, x, y, IRON[5])
-    return img
-
-
-def viewport_textures():
-    base = viewport_base()
-    out = {"reactor_viewport": base}
-    for stage in (1, 2, 3):
-        crack = Image.open(os.path.join(OUT, "casing_crack_%d.png" % stage)).convert("RGBA").resize((16, 16), Image.NEAREST)
-        img = base.copy()
-        img.alpha_composite(crack)
-        out["reactor_viewport_crack_%d" % stage] = img
-    return out
-
-
-def viewport_models():
-    models = {}
-    for stage in range(4):
-        name = "reactor_viewport" if stage == 0 else "reactor_viewport_crack_%d" % stage
-        models[name] = {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/" + name}, "render_type": "minecraft:translucent"}
-    return models
-
-
-def viewport_state(name):
-    return {"variants": {"crack=%d" % i: {"model": M + "block/" + (name if i == 0 else "%s_crack_%d" % (name, i))} for i in range(4)}}
-
-
 PILLAR = {"y": {}, "x": {"x": 90, "y": 90}, "z": {"x": 90}}
 WINDOW_DARK = (0x17, 0x19, 0x1c)
 GLOWS = {1: {(0x17, 0x19, 0x1c): (14, 44, 84), (0x1e, 0x21, 0x26): (18, 54, 98), (0x23, 0x26, 0x2b): (16, 48, 90), (0xd2, 0xc7, 0xb4): (196, 222, 240), (0x8f, 0x82, 0x73): (112, 150, 190)},
@@ -95,31 +59,7 @@ GLOWS = {1: {(0x17, 0x19, 0x1c): (14, 44, 84), (0x1e, 0x21, 0x26): (18, 54, 98),
          3: {(0x17, 0x19, 0x1c): (126, 34, 14), (0x1e, 0x21, 0x26): (146, 44, 16), (0x23, 0x26, 0x2b): (136, 38, 14), (0xd2, 0xc7, 0xb4): (255, 226, 160), (0x8f, 0x82, 0x73): (244, 150, 70)}}
 
 
-GLASS_DARK = (20, 22, 26)
 ITEM_OUT = os.path.join(os.path.dirname(OUT), "item")
-
-
-def linker_item():
-    img = Image.new("RGBA", (16, 16))
-    for k in range(7):
-        put(img, 3 + k, 12 - k, BRASS[3])
-        put(img, 4 + k, 12 - k, BRASS[1])
-        put(img, 3 + k, 11 - k, BRASS[4])
-    bevel(img, 9, 2, 13, 6, IRON, 3)
-    put(img, 11, 4, BLUE[4])
-    put(img, 10, 4, BLUE[2])
-    put(img, 12, 4, BLUE[2])
-    put(img, 11, 3, BLUE[3])
-    put(img, 11, 5, BLUE[1])
-    put(img, 2, 13, BRASS[1])
-    os.makedirs(ITEM_OUT, exist_ok=True)
-    img.save(os.path.join(ITEM_OUT, "plant_linker.png"))
-    path = os.path.join(ASSETS, "models", "item", "plant_linker.json")
-    with open(path, "w", newline="\n", encoding="utf8") as f:
-        json.dump({"parent": "minecraft:item/handheld", "textures": {"layer0": M + "item/plant_linker"}}, f, indent=2)
-        f.write("\n")
-
-
 SIDES = {"north": "a", "south": "a", "east": "a", "west": "a", "up": "b", "down": "c"}
 CLEAR = (0, 0, 0, 0)
 
@@ -167,49 +107,13 @@ def pressurizer_texture():
     return atlas({"a": side, "b": top, "c": plate(IRON, 2)})
 
 
-def corium_textures():
-    import random
-    out = {}
-    for name, hot in (("corium", False), ("corium_hot", True)):
-        rnd = random.Random(7)
-        img = Image.new("RGBA", (16, 16))
-        for y in range(16):
-            for x in range(16):
-                v = rnd.random()
-                put(img, x, y, (34, 30, 30) if v < 0.5 else (48, 42, 40) if v < 0.85 else (24, 21, 22))
-        cracks = [(2, 3), (3, 3), (4, 4), (5, 5), (6, 5), (7, 6), (8, 7), (9, 7), (10, 8), (11, 9), (12, 9), (13, 10), (5, 11), (6, 12), (7, 12), (8, 13), (10, 3), (11, 2), (12, 2), (3, 9), (4, 10)]
-        for x, y in cracks:
-            put(img, x, y, (255, 150, 40) if hot else (86, 60, 44))
-        if hot:
-            for x, y in cracks[::3]:
-                put(img, x, y, (255, 226, 130))
-                if y + 1 < 16:
-                    put(img, x, y + 1, (190, 70, 20))
-        out[name] = img
-    return out
-
-
-def corium_models():
-    return {"corium": {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/corium"}},
-            "corium_hot": {"parent": "minecraft:block/cube_all", "textures": {"all": M + "block/corium_hot"}}}
-
-
 def simple_state(name):
     return {"variants": {"": {"model": M + "block/" + name}}}
 
 
 BLOCKS = {
-    "corium": {"lang": "Corium", "textures": corium_textures, "models": corium_models,
-               "state": lambda n: {"variants": {"hot=false": {"model": M + "block/corium"}, "hot=true": {"model": M + "block/corium_hot"}}}},
-    "ruined_channel": {"lang": "Ruined Fuel Channel", "model": lambda n: {"parent": M + "block/fuel_channel", "textures": {"0": M + "block/ruined_channel", "particle": M + "block/ruined_channel"}}, "state": simple_state},
     "centrifuge": {"lang": "Centrifuge"},
     "pressurizer": {"lang": "Pressurizer"},
-    "reactor_viewport": {
-        "lang": "Reactor Viewport",
-        "textures": viewport_textures,
-        "models": viewport_models,
-        "state": viewport_state,
-    },
 }
 
 LANG = {
@@ -321,7 +225,6 @@ def main():
         write(os.path.join(ASSETS, "blockstates", name + ".json"), d["state"](name))
         write(os.path.join(ASSETS, "models", "item", name + ".json"), {"parent": M + "block/" + d.get("item", name)})
         write(os.path.join(DATA, "criticalmass", "loot_table", "blocks", name + ".json"), loot(name))
-    linker_item()
     uranium_items()
     screen_blocks.write_all(write, ASSETS, DATA, OUT)
     entries.update(screen_blocks.LANG)

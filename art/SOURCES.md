@@ -40,15 +40,17 @@ This table is the current state and overrides anything further down. Only the ro
 | Control Rod Drive and its rod | Script | `art/tools/rod_drive_texture.py`; the cogwheel is Create's own model |
 | Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
 | Centrifuge | Script | `art/tools/centrifuge_texture.py` |
-| Reactor Viewport and its cracked stages, Corium | Script | `art/tools/plant_blocks.py` |
+| Reactor Viewport and its cracked stages | Script | `art/tools/viewport_texture.py`: the frame is the author's Reactor Vessel Casing, the pane is in the tones of the author's Shielded Glass and the cracks are the author's casing cracks |
+| Corium | Script | `art/tools/corium_texture.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
-| Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla stone with spots taken from the Raw Uranium icon |
+| Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla's iron ore with its ore pixels in the Raw Uranium icon's greens |
 | Reactor Alloy Dashboard texture, Dashboard Alarm | Not recorded | Their sections say hand-made without saying by whom |
 | Dashboard and its other parts | Create: Loconautics | Used with its authors' permission |
 | Steel Ingot, Nugget and Plate, Control Rod, Turbine Blade, Sealing Gasket, Welding Torch, Dosimeter, Survey Meter, Decontamination Compound, Ceramic Fuel Pellet, Reactor Alloy Ingot and Sheet | Author | `art/originals/` |
 | Raw Uranium, Crushed Uranium, Uranium Concentrate, Fuel Cladding, the four Fuel Assembly icons, the four Protective Suit icons and the worn suit layers | Generated | |
-| Enriched Uranium, Depleted Uranium, Plant Linker | Script | `art/tools/plant_blocks.py`; the two uranium icons are recolours of Uranium Concentrate |
+| Enriched Uranium, Depleted Uranium | Script | `art/tools/plant_blocks.py`: recolours of Uranium Concentrate |
+| Plant Linker | Script | `art/tools/linker_texture.py`, in the tones of the author's Dosimeter and Survey Meter |
 | Primary Coolant, Contaminated Coolant and Steam fluids | Generated | |
 | Alarm sound | Script | `art/tools/alarm_sound.py` |
 
@@ -453,10 +455,20 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Repainting: run the tool with `fresh`. Without it the sheet is left alone, so hand edits are safe. `art/tools/turbine_model.py` then exports the model and texture into the game. `art/blockbench/steam_turbine_uv_guide.png` names the islands.
 - Date: 2026-11-15
 
-## Overhaul blocks (script-painted)
+## Reactor Viewport, Corium, Ruined Fuel Channel, Uranium Ores and Plant Linker
 
-- Used by: `textures/block/reactor_viewport*.png`, `plant_screen.png`, `corium.png`, `corium_hot.png`, `textures/item/plant_linker.png`
-- Source: painted by `art/tools/plant_blocks.py` and `art/tools/screen_blocks.py` from Create's iron, brass, copper and steel ramps. The cracked viewports use the casing crack overlays.
+- Reactor Viewport: `art/blockbench/reactor_viewport.bbmodel`, in two groups. `frame` is twelve bars two pixels thick round the edges of the block, and `glass` is a pane set two pixels back on every side. `art/tools/viewport_texture.py` paints the sheet and its three cracked stages, and `art/tools/viewport_model.py` exports the models.
+- Corium: a plain cube. `art/tools/corium_texture.py` paints a crust of plates split by one fissure and two branches, a hot version with the fissure lit, and `corium_glow.png`, which the hot model draws over the crust at full brightness and which pulses over four frames. The blockstate turns each block one of four ways so a pool does not repeat.
+- Ruined Fuel Channel: `art/blockbench/ruined_channel.bbmodel`, in three groups: `plates`, `rods` (stumps standing on the bottom plate and stubs hanging from the top one, with one rod left whole) and `slag`. `art/tools/channel_texture.py` paints its sheet in the Corium's crust tones and `art/tools/channel_model.py` exports it.
+- Uranium Ore and Deepslate Uranium Ore: `art/tools/ore_paint.py` takes vanilla's iron ore and deepslate iron ore and repaints only their ore pixels.
+- Plant Linker: `art/tools/linker_texture.py` draws a handset with a screen, two buttons and an aerial.
+- Status: script-painted placeholders, not yet approved. Each script paints only when run with `fresh`.
+- Date: 2026-11-17
+
+## Plant Screen
+
+- Used by: `textures/block/plant_screen.png`
+- Source: painted by `art/tools/screen_blocks.py`.
 
 ## Plant Screen frame
 

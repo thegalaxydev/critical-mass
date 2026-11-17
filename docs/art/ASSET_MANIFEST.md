@@ -21,7 +21,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:control_rod_drive` | Control Rod Drive | script | `block/control_rod_drive.png` 32x32<br>`block/control_rod_shaft.png` 16x16 | `create:block/cogwheel` | 5 |
 | `criticalmass:coolant_channel` | Coolant Channel | script | `block/coolant_channel.png` 32x32 |  | 2 |
 | `criticalmass:cooling_tower_packing` | Cooling Tower Packing | author | `block/cooling_tower_packing.png` 32x32<br>`block/cooling_tower_packing_bottom.png` 32x32<br>`block/cooling_tower_packing_middle.png` 32x32<br>`block/cooling_tower_packing_top.png` 32x32 |  | 5 |
-| `criticalmass:corium` | Corium | script | `block/corium.png` 16x16<br>`block/corium_hot.png` 16x16 |  | 3 |
+| `criticalmass:corium` | Corium | script | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
@@ -45,11 +45,11 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:reactor_service_port` | Reactor Service Port | script | `block/reactor_service_port.png` 32x32<br>`block/reactor_vessel_casing.png` 16x16 |  | 5 |
 | `criticalmass:reactor_signal_interface` | Reactor Signal Interface | script | `block/reactor_signal_interface.png` 32x32<br>`block/reactor_vessel_casing.png` 16x16 |  | 11 |
 | `criticalmass:reactor_vessel_casing` | Reactor Vessel Casing | author | `block/casing_crack_1.png` 16x16<br>`block/casing_crack_2.png` 16x16<br>`block/casing_crack_3.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/reactor_vessel_casing_connected.png` 128x128 |  | 5 |
-| `criticalmass:reactor_viewport` | Reactor Viewport | script | `block/reactor_viewport.png` 16x16<br>`block/reactor_viewport_crack_1.png` 16x16<br>`block/reactor_viewport_crack_2.png` 16x16<br>`block/reactor_viewport_crack_3.png` 16x16 |  | 5 |
+| `criticalmass:reactor_viewport` | Reactor Viewport | script | `block/reactor_viewport.png` 32x32<br>`block/reactor_viewport_crack_1.png` 32x32<br>`block/reactor_viewport_crack_2.png` 32x32<br>`block/reactor_viewport_crack_3.png` 32x32 |  | 5 |
 | `criticalmass:reinforced_pipe` | Reinforced Pipe | script | `block/reinforced_pipe.png` 32x32<br>`block/reinforced_pipe_connected.png` 32x32 |  | 57 |
 | `criticalmass:reinforced_valve` | Reinforced Valve | author | `block/reinforced_valve.png` 32x32<br>`block/reinforced_valve_closed.png` 16x16<br>`block/reinforced_valve_open.png` 16x16 |  | 7 |
 | `criticalmass:relief_valve` | Relief Valve | script, approved | `block/reinforced_pipe.png` 32x32<br>`block/relief_valve.png` 32x32 |  | 4 |
-| `criticalmass:ruined_channel` | Ruined Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/ruined_channel.png` 32x32 |  | 3 |
+| `criticalmass:ruined_channel` | Ruined Fuel Channel | script | `block/ruined_channel.png` 32x32 |  | 2 |
 | `criticalmass:sealed_waste_canister` | Sealed Waste Canister | author | `block/sealed_waste_canister.png` 32x32 |  | 2 |
 | `criticalmass:shielded_cask` | Shielded Cask | script | `block/shielded_cask.png` 32x32<br>`block/steel_block.png` 16x16 |  | 4 |
 | `criticalmass:shielded_glass` | Shielded Glass | author | `block/shielded_glass.png` 16x16<br>`block/shielded_glass_connected.png` 128x128 |  | 2 |

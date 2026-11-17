@@ -34,47 +34,42 @@ def palette():
     return ranked
 
 
-def brighten(ramp, value=1.3, sat=1.35):
+def brighten(ramp, value=1.18, sat=1.7):
     out = []
-    for i, c in enumerate(ramp):
-        if i == 0:
-            out.append(c)
-            continue
+    for c in ramp:
         h, s, v = colorsys.rgb_to_hsv(*[x / 255 for x in c])
         r, g, b = colorsys.hsv_to_rgb(h, min(1, s * sat), min(1, v * value))
         out.append((round(r * 255), round(g * 255), round(b * 255)))
     return out
 
 
+def grey(c):
+    return max(c[:3]) - min(c[:3]) < 12
+
+
 def paint(z, name, base_name, mask_name, ramp):
     base = vanilla(z, base_name)
     mask = vanilla(z, mask_name)
-    out = base.copy()
-    spots = [(x, y) for y in range(16) for x in range(16) if mask.getpixel((x, y))[:3] != base.getpixel((x, y))[:3]]
-    lums = [luminance(mask.getpixel(p)) for p in spots]
-    lo, hi = min(lums), max(lums)
-    for p, l in zip(spots, lums):
-        t = 0 if hi == lo else (l - lo) / (hi - lo)
-        c = ramp[min(len(ramp) - 1, int(t * len(ramp)))]
-        out.putpixel(p, c + (255,))
+    out = mask.copy()
+    metal = sorted({mask.getpixel((x, y))[:3] for y in range(16) for x in range(16) if not grey(mask.getpixel((x, y)))}, key=luminance)
+    for y in range(16):
+        for x in range(16):
+            c = mask.getpixel((x, y))[:3]
+            if c in metal:
+                t = metal.index(c) / max(1, len(metal) - 1)
+                out.putpixel((x, y), ramp[round(t * (len(ramp) - 1))] + (255,))
     out.save(os.path.join(OUT, name + ".png"))
-    return out, spots
-
-
-def transplant(z, name, base_name, source, spots):
-    out = vanilla(z, base_name)
-    for p in spots:
-        out.putpixel(p, source.getpixel(p))
-    out.save(os.path.join(OUT, name + ".png"))
-    return len(spots)
+    return sum(1 for y in range(16) for x in range(16) if out.getpixel((x, y)) != base.getpixel((x, y)))
 
 
 def main():
-    ramp = brighten(palette())
+    if "fresh" not in sys.argv:
+        print("left alone; pass fresh to repaint the uranium ores")
+        return
+    ramp = brighten(palette()[1:])
     with zipfile.ZipFile(VANILLA) as z:
-        deep, spots = paint(z, "deepslate_uranium_ore", "deepslate", "deepslate_gold_ore", ramp)
-        print("deepslate_uranium_ore", len(spots), "ore pixels")
-        print("uranium_ore", transplant(z, "uranium_ore", "stone", deep, spots), "ore pixels from the deepslate ore")
+        for name, base, mask in (("uranium_ore", "stone", "iron_ore"), ("deepslate_uranium_ore", "deepslate", "deepslate_iron_ore")):
+            print(name, paint(z, name, base, mask, ramp), "pixels differ from", base)
 
 
 if __name__ == "__main__":

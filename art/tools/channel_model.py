@@ -47,9 +47,11 @@ def main():
     bbmodel.write(os.path.join(BLOCK, "control_channel.json"), bbmodel.model(parts["frame"] + [cut(e, ROD_LEVELS) for e in parts["rod"]], textures, textures["0"]))
     parts, textures = whole("coolant_channel", ("frame", "tubes"))
     bbmodel.write(os.path.join(BLOCK, "coolant_channel.json"), bbmodel.model(parts["frame"] + parts["tubes"], textures, textures["0"]))
+    parts, textures = whole("ruined_channel", ("plates", "rods", "slag"))
+    bbmodel.write(os.path.join(BLOCK, "ruined_channel.json"), bbmodel.model(parts["plates"] + parts["rods"] + parts["slag"], textures, textures["0"]))
     print("exported the channel models")
     if len(sys.argv) > 1:
-        names = ("fuel_channel", "fuel_channel_glow_2", "control_channel_rod_4", "control_channel_rod_2", "control_channel_rod_0", "coolant_channel")
+        names = ("fuel_channel", "fuel_channel_glow_2", "control_channel_rod_4", "control_channel_rod_2", "control_channel_rod_0", "coolant_channel", "ruined_channel")
         shots = []
         for name in names:
             path = os.path.join(sys.argv[1], name + "_tmp.png")
