@@ -10,6 +10,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 public final class CMParticles {
     public static final DeferredRegister<ParticleType<?>> PARTICLES = DeferredRegister.create(Registries.PARTICLE_TYPE, CriticalMass.MODID);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> STEAM = simple("steam", false);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FALLOUT = simple("fallout", false);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> PLUME = simple("plume", true);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ARC_SPARK = simple("arc_spark", false);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> EMBER = simple("ember", false);

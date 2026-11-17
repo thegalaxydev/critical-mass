@@ -696,5 +696,9 @@
   "criticalmass.dashboard.result.bypass_on": "Protection bypassed: only a SCRAM by hand will trip the reactor",
   "criticalmass.dashboard.result.bypass_off": "Protection restored",
   "criticalmass.dashboard.switch.bypass": "Protection bypass",
-  "criticalmass.command.bypassed": "Protection bypassed for %s seconds"
+  "criticalmass.command.bypassed": "Protection bypassed for %s seconds",
+  "criticalmass.subtitle.fallout": "Fallout drifts",
+  "block.criticalmass.fallout_ash": "Fallout Ash",
+  "criticalmass.command.fallout": "Fallout is drifting from here",
+  "criticalmass.command.fallout_cleared": "Cleared %s fallout plumes"
 }

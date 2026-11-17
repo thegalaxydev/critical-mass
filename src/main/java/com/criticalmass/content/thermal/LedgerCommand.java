@@ -79,6 +79,11 @@ public final class LedgerCommand {
                         .then(Commands.literal("outage").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
                                 .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.OUTAGE, IntegerArgumentType.getInteger(ctx, "seconds")))))))
                 .then(Commands.literal("strike").then(Commands.argument("near", BlockPosArgument.blockPos()).executes(ctx -> strike(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "near")))))
+                .then(Commands.literal("fallout").then(Commands.literal("clear").executes(ctx -> falloutClear(ctx.getSource())))
+                        .then(Commands.argument("centre", BlockPosArgument.blockPos())
+                                .executes(ctx -> fallout(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "centre"), com.criticalmass.registry.CMConfig.explosionRadius()))
+                                .then(Commands.argument("radius", IntegerArgumentType.integer(4, 96))
+                                        .executes(ctx -> fallout(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "centre"), IntegerArgumentType.getInteger(ctx, "radius"))))))
                 .then(Commands.literal("bypass").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("seconds", IntegerArgumentType.integer(1, 3600))
                         .executes(ctx -> bypass(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), IntegerArgumentType.getInteger(ctx, "seconds"))))))
                 .then(Commands.literal("meltdown").executes(ctx -> meltdown(ctx.getSource())))
@@ -332,6 +337,18 @@ public final class LedgerCommand {
         tie.disturb(event, seconds * 20, event == GridTieBlockEntity.Event.DIP ? Power.DIP_FLOOR : event == GridTieBlockEntity.Event.SWING ? Power.SWING_HZ : 0);
         source.sendSuccess(() -> Component.translatable("criticalmass.command.grid." + event.name().toLowerCase(java.util.Locale.ROOT)), true);
         return 1;
+    }
+
+    private static int fallout(CommandSourceStack source, BlockPos pos, int radius) {
+        com.criticalmass.content.radiation.Fallout.start(source.getLevel(), pos, radius);
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.fallout"), true);
+        return 1;
+    }
+
+    private static int falloutClear(CommandSourceStack source) {
+        int cleared = com.criticalmass.content.radiation.Fallout.clear(source.getLevel());
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.fallout_cleared", cleared), true);
+        return cleared;
     }
 
     private static int bypass(CommandSourceStack source, BlockPos pos, int seconds) {

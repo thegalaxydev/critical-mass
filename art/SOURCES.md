@@ -35,6 +35,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
 | Sounds other than the alarm and the nuclear explosion | Script | `art/tools/sfx.py` |
 | Nuclear explosion sound | Generated | A generated sound effect, trimmed and levelled |
+| Fallout Ash | Script | `art/tools/ash_texture.py`: a grey-green ash and a sheet of green specks the game draws over it at full brightness |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |

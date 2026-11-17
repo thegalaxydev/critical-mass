@@ -53,6 +53,9 @@ public final class ClientEffects {
         }));
         modBus.addListener((RegisterGuiLayersEvent event) -> event.registerBelowAll(CriticalMass.asResource("radiation_grain"), ClientEffects::grain));
         modBus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(CriticalMass.asResource("blast_flash"), ClientEffects::flash));
+        modBus.addListener((RegisterGuiLayersEvent event) -> event.registerBelowAll(CriticalMass.asResource("fallout_haze"), FalloutEffects::overlay));
+        NeoForge.EVENT_BUS.addListener(FalloutEffects::fogColor);
+        NeoForge.EVENT_BUS.addListener(FalloutEffects::fog);
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> tick());
         NeoForge.EVENT_BUS.addListener(ClientEffects::camera);
         Effects.client = ClientEffects::loop;
@@ -231,6 +234,7 @@ public final class ClientEffects {
             LOOPS.clear();
             EMITTERS.clear();
             MushroomCloud.clear();
+            FalloutEffects.clear();
             shake = 0;
             doseRate = 0;
             return;
@@ -244,6 +248,7 @@ public final class ClientEffects {
         }
         emit(mc.level);
         MushroomCloud.tick(mc.level);
+        FalloutEffects.tick(mc.level);
         shake = Math.max(shake, MushroomCloud.rumble());
         LOOPS.values().removeIf(Loop::isStopped);
         if (doseAge++ > 60) {

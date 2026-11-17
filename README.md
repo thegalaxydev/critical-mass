@@ -168,11 +168,16 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Crater:** a 15-block core leaves a bowl 40 blocks in radius and about 18 deep, lined with basalt, blackstone and magma, with a pool of hot Corium at the bottom. Bigger cores leave bigger craters, up to 64 blocks.
   - **Blast:** everything living inside the crater's radius dies, and out to nearly twice that it is burnt and thrown. Leaves, plants and timber there are stripped, tree trunks are left standing as Charred Logs, grass is scorched to dirt and fires start.
   - **Cloud:** a flash whites out the view, then a fireball rises on a stem and rolls into a mushroom cloud that stands for over a minute. The blast is heard when its wave arrives, later the further away you are.
+  - **Fallout:** the explosion leaves a plume of fallout that the wind carries one way, about 90 blocks wide and 300 long for a 40-block crater. It reaches its full length over a minute and a half.
+    - **In the air:** the dose rate is up to 900 mSv/min near the crater and falls to nothing at the plume's edge. It halves every 5 minutes. A roof overhead cuts it to three tenths, and a full protective outfit blocks most of the rest, since most of it is dust and not direct radiation. A Survey Meter reads it.
+    - **On the ground:** Fallout Ash settles across the plume for three minutes, kills the grass it lands on and glows faintly green. It is contamination, so it gives a dose until it is broken or washed off, and it does not decay.
+    - **Wildlife:** animals and monsters caught in the open in the thick of it sicken and die.
+    - **Commands:** `/criticalmass fallout <position> [radius]` starts a plume by itself and `/criticalmass fallout clear` ends every plume. The ash stays.
   - **How to get one:** not while the protection is on. The automatic trip and the fuel's own feedback stop a loss of cooling and a sudden loss of xenon and boron well short of melting.
   - **Protection bypass:** a Dashboard Switch bound to the Reactor Controller is a protection bypass. While it is on, the reactor no longer trips on fuel failure, high temperature, high flux, a short period or lost flow. A SCRAM by hand still works, and so does the trip for a broken vessel. An alarm lamp can watch for it, and the Plant Screen lists it. Fit the switch with a glass cover.
   - **A real one:** at 70% power on the reference station, with the bypass on, every rod withdrawn, the xenon and boron gone and the primary pump lost, four of the five fuel columns melted within two seconds. That stopped the reaction, decay heat melted the fifth half a minute later, and the core went off.
   - **Commands:** `/criticalmass meltdown` melts the nearest core to test it. `/criticalmass melt <controller>`, `/criticalmass detonate <position> [radius]` and `/criticalmass bypass <controller> <seconds>` do the parts on their own.
-- **Config:** `accidents.meltdown` turns melting off, `accidents.coriumDepth` limits burn-through, and `accidents.coriumContamination` scales the release. `accidents.nuclearExplosion` turns the explosion off, so a total meltdown only leaves corium, and `accidents.explosionRadius` sets the crater of a 15-block core.
+- **Config:** `accidents.meltdown` turns melting off, `accidents.coriumDepth` limits burn-through, and `accidents.coriumContamination` scales the release. `accidents.nuclearExplosion` turns the explosion off, so a total meltdown only leaves corium, and `accidents.explosionRadius` sets the crater of a 15-block core. `accidents.fallout` turns the fallout off and `accidents.falloutHalfLifeMinutes` sets how fast the airborne part fades.
   - Repair with the Welding Torch: hold use for 2 seconds; each weld restores 50%.
   - Welding is refused on a breached reactor until residual heat falls below 20 HU/t.
 
@@ -338,6 +343,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Radiation:** a Survey Meter or Dosimeter in hand clicks, faster with the dose rate. Above a rate of 10 the view picks up static, heavier as the rate climbs.
 - **Grid:** a power order arriving, met or missed each plays a short tune.
 - **Nuclear explosion:** the flash, fireball, stem, rolling cap, ground surge and shock rings of a mushroom cloud, seen from up to a thousand blocks away. Its sound is the one sound that is not synthesised.
+- **Fallout:** inside the plume the fog turns thick and green, glowing green ash drifts down on the wind, the edges of the view darken to green and pulse, and a hollow wind plays. All of it thins under a roof. From outside, a low green mist hangs over the whole zone, and the ash on the ground shimmers at night.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).
 - **Dose rate:** in mSv/min. A player receives, from every source within 48 blocks, its strength times the shielding transmission divided by (1 + distance²).

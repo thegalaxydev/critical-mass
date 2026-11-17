@@ -75,6 +75,7 @@ public final class EffectParticles {
     static SpriteSet puffs;
     static SpriteSet glows;
     static SpriteSet rings;
+    static SpriteSet motes;
 
     private EffectParticles() {
     }
@@ -98,7 +99,11 @@ public final class EffectParticles {
             return (type, level, x, y, z, xd, yd, zd) -> new Ring(level, x, y, z, sprites, (float) Math.max(1.0, xd));
         });
         event.registerSpriteSet(CMParticles.CHERENKOV.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Halo(level, x, y, z, sprites, (float) Math.max(0.2, xd)));
-        event.registerSpriteSet(CMParticles.MOTE.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Mote(level, x, y, z, xd, yd, zd, sprites));
+        event.registerSpriteSet(CMParticles.MOTE.get(), sprites -> {
+            motes = sprites;
+            return (type, level, x, y, z, xd, yd, zd) -> new Mote(level, x, y, z, xd, yd, zd, sprites);
+        });
+        event.registerSpriteSet(CMParticles.FALLOUT.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new FalloutEffects.Flake(level, x, y, z, xd, yd, zd, sprites));
     }
 
     static class Cloud extends TextureSheetParticle {

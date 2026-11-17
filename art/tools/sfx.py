@@ -294,8 +294,20 @@ def service():
     return level(crush(edges(wave, 0.0005, 0.04), 6), 0.55)
 
 
+def fallout():
+    t = clock(8.5)
+    gust = 0.55 + 0.3 * sine(0.25, t) + 0.15 * sine(0.5, t + 0.7)
+    wind = highpass(lowpass(noise(t, 61), 700), 120) * gust
+    whistle = lowpass(noise(t, 62), 2400) * sine(0.125, t) ** 2 * 0.18 * sine(430 + 40 * sine(0.25, t), t)
+    drone = 0.5 * sine(55, t) + 0.35 * sine(82.5, t) * (0.6 + 0.4 * sine(0.5, t)) + 0.12 * triangle(110, t)
+    ticks = crackle(t, 63, 14, 0.0008) * 0.5
+    wave = 1.0 * wind + whistle + 0.5 * drone + ticks
+    return level(crush(seamless(wave, 0.5), 7), 0.5)
+
+
 SOUNDS = {
     "service": service,
+    "fallout": fallout,
     "engine_start": engine_start, "engine_run": engine_run,
     "hum": hum, "generator_run": generator_run, "motor_run": motor_run, "steam_hiss": steam_hiss, "reactor_thrum": reactor_thrum, "breaker_close": breaker_close,
     "breaker_open": breaker_open, "breaker_trip": breaker_trip, "switch_throw": switch_throw, "relay_click": relay_click, "arc_zap": arc_zap, "arc_blast": arc_blast,

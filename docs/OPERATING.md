@@ -118,6 +118,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Ruined Fuel Channel | Fuel melted | Keep the vessel flooded so the corium cools inside. Then replace the ruined channels and any failed casing |
 | Corium outside the vessel | The floor failed | Stay off it. Flood it with water, wait for it to go dark, mine it and store it shielded. Decontaminate the area |
 | BYPASS lamp lit | A switch bound to the Reactor Controller is on, so the automatic trips are off | Switch it off unless you mean it. Until then only a SCRAM by hand will stop the reactor |
+| Green fog and falling ash | You are in the fallout of a nuclear explosion | Get under a roof, which cuts the dose to three tenths, or walk out across the wind. Wear the protective outfit. Read the rate on a Survey Meter. Break the Fallout Ash to clean the ground |
 | Every fuel column melted | Total meltdown | Run. Three seconds later the core goes off and leaves a crater 40 blocks in radius, with fire and blast to nearly twice that |
 
 ## Expanding safely

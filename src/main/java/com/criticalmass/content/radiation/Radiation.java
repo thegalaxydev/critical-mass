@@ -241,6 +241,6 @@ public final class Radiation {
     }
 
     public static double ambientRate(ServerLevel level, Vec3 receiver) {
-        return fromSources(level, receiver, sourcesNear(level, receiver, blockSources(level)), null) + fieldDose(level, receiver);
+        return fromSources(level, receiver, sourcesNear(level, receiver, blockSources(level)), null) + fieldDose(level, receiver) + Fallout.rate(level, receiver);
     }
 }

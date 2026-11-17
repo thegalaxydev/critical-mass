@@ -61,6 +61,11 @@ public final class RadiationEvents {
         int pieces = protectivePieces(player);
         double external = Radiation.fromSources(level, eye, Radiation.sourcesNear(level, eye, blockSources), player)
                 + Radiation.inventoryStrength(player) + Radiation.fieldDose(level, eye);
+        double fallout = Fallout.rate(level, eye);
+        double exposed = 1 - CMConfig.get(CMConfig.GEAR_CONTAMINATION_PROTECTION) * pieces / 4.0;
+        external += fallout * Fallout.SHINE;
+        double dust = fallout * (1 - Fallout.SHINE) * exposed;
+        d.contamination += fallout * Fallout.UPTAKE * exposed;
         double ground = ContaminationData.get(level).near(player.position().add(0, 0.5, 0), 2);
         double uptake = ground * UPTAKE;
         d.contamination += uptake * (1 - CMConfig.get(CMConfig.GEAR_CONTAMINATION_PROTECTION) * pieces / 4.0);
@@ -71,7 +76,7 @@ public final class RadiationEvents {
             }
         }
         double direct = external * (1 - CMConfig.get(CMConfig.GEAR_DOSE_PROTECTION) * pieces / 4.0);
-        double rate = (direct + d.contamination * Radiation.SKIN_DOSE + gearContamination(player) * Radiation.GEAR_DOSE) * CMConfig.get(CMConfig.DOSE_MULTIPLIER);
+        double rate = (direct + dust + d.contamination * Radiation.SKIN_DOSE + gearContamination(player) * Radiation.GEAR_DOSE) * CMConfig.get(CMConfig.DOSE_MULTIPLIER);
         d.lastRate = rate;
         d.body += rate / 60.0;
         d.total += rate / 60.0;
@@ -135,6 +140,12 @@ public final class RadiationEvents {
         boolean meter = player.getMainHandItem().is(CMItems.SURVEY_METER.get()) || player.getOffhandItem().is(CMItems.SURVEY_METER.get())
                 || player.getMainHandItem().is(CMItems.DOSIMETER.get()) || player.getOffhandItem().is(CMItems.DOSIMETER.get());
         PacketDistributor.sendToPlayer(player, new DosePacket((float) (CMConfig.radiation() ? data(player).lastRate : 0), meter));
+        Vec3 eye = player.getEyePosition();
+        Vec3 wind = Fallout.wind(player.serverLevel(), eye);
+        Fallout.Plume plume = Fallout.nearest(player.serverLevel(), eye);
+        Vec3 heart = plume == null ? Vec3.ZERO : plume.centre();
+        PacketDistributor.sendToPlayer(player, new com.criticalmass.content.effects.FalloutPacket((float) Fallout.intensity(player.serverLevel(), eye), (float) wind.x, (float) wind.z, Fallout.sheltered(player.serverLevel(), eye),
+                heart.x, heart.y, heart.z, plume == null ? 0f : (float) plume.radius(), plume == null ? 0f : (float) plume.strength(player.serverLevel())));
     }
 
     public static void onClone(PlayerEvent.Clone event) {

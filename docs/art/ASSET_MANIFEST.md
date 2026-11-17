@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (55)
+## Blocks (56)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -28,6 +28,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
+| `criticalmass:fallout_ash` | Fallout Ash (no item) | script | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x64 |  | 1 |
 | `criticalmass:fuel_channel` | Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/fuel_channel_glow_1.png` 32x32<br>`block/fuel_channel_glow_2.png` 32x32<br>`block/fuel_channel_glow_3.png` 32x32 |  | 5 |
 | `criticalmass:generator` | Generator | script | `block/generator.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
@@ -139,7 +140,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (26)
+## Sounds (27)
 
 All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
 
@@ -171,6 +172,7 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:engine_run` | Engine runs | script | `sounds/engine_run.ogg` |
 | `criticalmass:service` | Equipment serviced | script | `sounds/service.ogg` |
 | `criticalmass:nuclear_blast` | Nuclear explosion | generated | `sounds/nuclear_blast.ogg` |
+| `criticalmass:fallout` | Fallout drifts | script | `sounds/fallout.ogg` |
 
 ## Problems
 

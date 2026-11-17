@@ -604,6 +604,38 @@
    "item": true
   },
   {
+   "key": "fallout_ash",
+   "registry_id": "criticalmass:fallout_ash",
+   "type": "block",
+   "name": "Fallout Ash",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/fallout_ash.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/fallout_ash_glow.png",
+     "size": [
+      16,
+      64
+     ],
+     "animated": true
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/fallout_ash.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/fallout_ash.json",
+   "item": false
+  },
+  {
    "key": "fuel_channel",
    "registry_id": "criticalmass:fuel_channel",
    "type": "block",
@@ -3328,6 +3360,15 @@
    "subtitle": "Nuclear explosion",
    "missing": [],
    "art": "generated"
+  },
+  {
+   "key": "fallout",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/fallout.ogg"
+   ],
+   "subtitle": "Fallout drifts",
+   "missing": [],
+   "art": "script"
   }
  ],
  "problems": []

@@ -133,6 +133,9 @@ public final class Detonation {
 
     private void flash(ServerLevel level, Vec3 core) {
         Effects.nuke(level, core, radius);
+        if (scorch) {
+            com.criticalmass.content.radiation.Fallout.start(level, centre, radius);
+        }
         double reach = radius * REACH;
         for (Entity entity : level.getEntities((Entity) null, new AABB(centre).inflate(reach), e -> true)) {
             double distance = Math.sqrt(entity.distanceToSqr(core));
@@ -187,6 +190,9 @@ public final class Detonation {
                     BlockState state = level.getBlockState(cursor);
                     if (state.isAir() || state.getDestroySpeed(level, cursor) < 0) {
                         continue;
+                    }
+                    if (level.getBlockState(cursor.above()).is(CMBlocks.FALLOUT_ASH.get())) {
+                        level.setBlock(cursor.above(), Blocks.AIR.defaultBlockState(), QUIET);
                     }
                     if (m < radius) {
                         level.setBlock(cursor, Blocks.AIR.defaultBlockState(), QUIET);

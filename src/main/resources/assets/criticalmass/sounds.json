@@ -232,5 +232,13 @@
     "attenuation_distance": 512
    }
   ]
+ },
+ "fallout": {
+  "subtitle": "criticalmass.subtitle.fallout",
+  "sounds": [
+   {
+    "name": "criticalmass:fallout"
+   }
+  ]
  }
 }
