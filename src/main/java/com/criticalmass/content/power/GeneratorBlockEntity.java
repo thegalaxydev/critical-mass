@@ -51,6 +51,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private int tripIn;
     private int shedIn;
     private boolean faultLock;
+    private int offBand;
     private int sectionCount = 1;
     private String status = "criticalmass.generator.stopped";
     private int updateCooldown;
@@ -82,6 +83,11 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     @Override
     public Vec3 terminal(int index) {
         return axis(getBlockState()).isVertical() ? new Vec3(0.5, 0.5, 0.875) : new Vec3(0.5, 0.875, 0.5);
+    }
+
+    @Override
+    public boolean weatherproof() {
+        return false;
     }
 
     private static Direction.Axis axis(BlockState state) {
@@ -345,6 +351,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         double base = Power.GRID_HZ * speed / Power.SYNC_RPM;
         PowerNetwork.Island around = island();
         boolean grid = !around.grids.isEmpty();
+        PowerNetwork.Side outside = grid ? around.side(level) : null;
         boolean was = synced;
         boolean wasOnline = online;
         String now;
@@ -365,12 +372,19 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
                 online = true;
                 synced = false;
                 onGrid = false;
-                advance(base);
+                advance(base - Power.DROOP_HZ * Math.min(1.0, output / ratedSu()));
                 double demand = around.demand(level);
                 wanted = demand * ratedSu() / (ratedSu() + around.onlineRating(level, this));
                 now = demand > 0 ? "criticalmass.generator.supplying" : "criticalmass.generator.running";
+                offBand = demand > 0 && (frequency < Power.UNDER_HZ || frequency > Power.OVER_HZ) ? offBand + 1 : 0;
+                if (offBand >= Power.FREQUENCY_TRIP_TICKS) {
+                    offBand = 0;
+                    if (!PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.frequency")) {
+                        lockout = Power.LOCKOUT_TICKS;
+                    }
+                }
             } else {
-                double reference = grid ? Power.GRID_HZ : other.frequency();
+                double reference = grid ? outside.frequency() : other.frequency();
                 if (!synced && !syncPermit) {
                     tripOnce("criticalmass.breaker.trip.not_synchronised");
                     online = false;
@@ -393,7 +407,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
                     online = true;
                     onGrid = grid;
                     frequency = reference;
-                    phase = grid ? 0 : other.phase();
+                    phase = grid ? outside.phase() : other.phase();
                     wanted = grid ? load * ratedSu() : around.demand(level) * ratedSu() / (ratedSu() + around.onlineRating(level, this));
                     now = "criticalmass.generator.synchronised";
                 }

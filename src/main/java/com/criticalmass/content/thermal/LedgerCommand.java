@@ -2,6 +2,9 @@ package com.criticalmass.content.thermal;
 
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.PowerNetwork;
+import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.WireLinks;
 import com.criticalmass.content.power.WireType;
@@ -67,6 +70,15 @@ public final class LedgerCommand {
                         .then(Commands.literal("close").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), true)))
                         .then(Commands.literal("open").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), false)))
                         .then(Commands.literal("reset").executes(ctx -> reset(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"))))))
+                .then(Commands.literal("grid").then(Commands.argument("tie", BlockPosArgument.blockPos())
+                        .then(Commands.literal("normal").executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.NORMAL, 0)))
+                        .then(Commands.literal("dip").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
+                                .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.DIP, IntegerArgumentType.getInteger(ctx, "seconds")))))
+                        .then(Commands.literal("swing").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
+                                .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.SWING, IntegerArgumentType.getInteger(ctx, "seconds")))))
+                        .then(Commands.literal("outage").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
+                                .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.OUTAGE, IntegerArgumentType.getInteger(ctx, "seconds")))))))
+                .then(Commands.literal("strike").then(Commands.argument("near", BlockPosArgument.blockPos()).executes(ctx -> strike(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "near")))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -301,6 +313,25 @@ public final class LedgerCommand {
             return 0;
         }
         source.sendSuccess(() -> Component.translatable("criticalmass.wire.joined"), false);
+        return 1;
+    }
+
+    private static int grid(CommandSourceStack source, BlockPos pos, GridTieBlockEntity.Event event, int seconds) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof GridTieBlockEntity tie)) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_grid"));
+            return 0;
+        }
+        tie.disturb(event, seconds * 20, event == GridTieBlockEntity.Event.DIP ? Power.DIP_FLOOR : event == GridTieBlockEntity.Event.SWING ? Power.SWING_HZ : 0);
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.grid." + event.name().toLowerCase(java.util.Locale.ROOT)), true);
+        return 1;
+    }
+
+    private static int strike(CommandSourceStack source, BlockPos pos) {
+        if (!PowerNetwork.strikeNear(source.getLevel(), net.minecraft.world.phys.Vec3.atCenterOf(pos), 6.0, false)) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_wire_near"));
+            return 0;
+        }
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.struck"), true);
         return 1;
     }
 

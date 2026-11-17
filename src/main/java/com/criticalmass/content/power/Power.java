@@ -59,9 +59,34 @@ public final class Power {
     public static final double TRANSFORMER_COOL_SECONDS = 40.0;
     public static final double WIRE_HEAT_SECONDS = 10.0;
     public static final double WIRE_COOL_SECONDS = 20.0;
+    public static final double DROOP_HZ = 2.0;
+    public static final double UNDER_HZ = 47.5;
+    public static final double OVER_HZ = 52.5;
+    public static final int FREQUENCY_TRIP_TICKS = 40;
+    public static final double TAP_STEP = 0.0125;
+    public static final int TAP_STEPS = 6;
+    public static final double REGULATION = 0.05;
+    public static final double WIRE_DROP = 0.002;
+    public static final int RIDE_THROUGH_TICKS = 30;
+    public static final double RIDE_THROUGH_FLOOR = 0.5;
+    public static final double DIP_FLOOR = 0.84;
+    public static final double DIP_CEILING = 0.97;
+    public static final double DIP_RATE = 0.02;
+    public static final double SWING_HZ = 0.5;
+    public static final double SWING_RATE = 0.005;
+    public static final int STORM_QUIET_STEPS = 120;
+    public static final int STRIKE_STEPS = 3000;
+    public static final int ROD_REACH = 12;
+    public static final int RAIN_STEPS = 8;
+    public static final int RAIN_CHANCE = 6;
+    public static final double SURGE_REACH = 32.0;
     private static final double ROOT_THREE = Math.sqrt(3.0);
 
     private Power() {
+    }
+
+    public static double nominal(double kilovolts) {
+        return kilovolts > 66 ? GRID_KV : kilovolts > 11 ? GENERATOR_KV : MOTOR_KV;
     }
 
     public static double megawatts(double su) {

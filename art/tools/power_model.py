@@ -125,8 +125,16 @@ def emergency():
     bbmodel.write(os.path.join(STATES, "transfer_switch.json"), {"variants": variants})
 
 
+def arrester():
+    parts, textures = bbmodel.load("surge_arrester")
+    bbmodel.write(os.path.join(BLOCK, "surge_arrester.json"), bbmodel.model(parts["body"], textures, textures["0"]))
+    item("surge_arrester", "surge_arrester")
+    bbmodel.write(os.path.join(STATES, "surge_arrester.json"), {"variants": {"": {"model": M + "surge_arrester"}}})
+
+
 def main():
     insulator()
+    arrester()
     generator()
     breaker()
     grid()
@@ -139,7 +147,7 @@ def main():
     if len(sys.argv) > 1:
         shots = []
         for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),)), ("disconnect_switch", ((215, 25),)), ("disconnect_switch_closed", ((215, 25),)), ("earthing_switch", ((215, 25),)), ("earthing_switch_closed", ((215, 25),)), ("station_battery", ((35, 20),)), ("diesel_engine", ((215, 25),)), ("diesel_engine", ((35, 25),)), ("transfer_switch_normal", ((35, 20),)),
-                       ("transfer_switch_standby", ((35, 20),))):
+                       ("transfer_switch_standby", ((35, 20),)), ("surge_arrester", ((215, 25),))):
             path = sys.argv[1].replace(".png", "_" + ref + ".png")
             bbmodel.preview(M + ref, path, views=views, size=260)
             with Image.open(path) as shot:

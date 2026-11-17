@@ -14,6 +14,7 @@ import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.GeneratorBlock;
 import com.criticalmass.content.power.BusBarBlock;
 import com.criticalmass.content.power.BatteryBlock;
+import com.criticalmass.content.power.SurgeArresterBlock;
 import com.criticalmass.content.power.DieselEngineBlock;
 import com.criticalmass.content.power.DisconnectBlock;
 import com.criticalmass.content.power.EarthingBlock;
@@ -115,6 +116,7 @@ public final class CMBlocks {
     public static final DeferredBlock<BatteryBlock> STATION_BATTERY = register("station_battery", BatteryBlock::new, metal(4.0f));
     public static final DeferredBlock<DieselEngineBlock> DIESEL_ENGINE = register("diesel_engine", DieselEngineBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<TransferSwitchBlock> TRANSFER_SWITCH = register("transfer_switch", TransferSwitchBlock::new, metal(4.0f));
+    public static final DeferredBlock<SurgeArresterBlock> SURGE_ARRESTER = register("surge_arrester", SurgeArresterBlock::new, metal(2.0f).noOcclusion());
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));

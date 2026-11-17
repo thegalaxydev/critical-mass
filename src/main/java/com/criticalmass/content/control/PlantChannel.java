@@ -203,7 +203,8 @@ public enum PlantChannel {
             return switch (this) {
                 case DEMAND -> of(tie.orderMw(), 0, scale);
                 case OUTPUT -> new Reading(tie.deliveredMw(), 0, scale, "MW");
-                case FREQUENCY -> of(Power.GRID_HZ, 45, 55);
+                case FREQUENCY -> of(tie.live() ? tie.hertz() : 0, 45, 55);
+                case VOLTAGE -> of(tie.live() ? tie.kilovolts() : 0, 0, 250);
                 default -> null;
             };
         }

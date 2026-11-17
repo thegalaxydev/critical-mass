@@ -53,6 +53,11 @@ public class TransferSwitchBlockEntity extends SmartBlockEntity implements IHave
         sendData();
     }
 
+    @Override
+    public boolean weatherproof() {
+        return false;
+    }
+
     private Direction normalSide() {
         return getBlockState().getValue(HorizontalBlock.FACING).getClockWise();
     }
@@ -95,7 +100,7 @@ public class TransferSwitchBlockEntity extends SmartBlockEntity implements IHave
             fed |= g.online();
         }
         double hz = island.side(level).frequency();
-        return fed && kilovolts > 0 && hz >= Power.SUPPLY_MIN_HZ && hz <= Power.SUPPLY_MAX_HZ;
+        return fed && kilovolts > 0 && kilovolts >= Power.nominal(kilovolts) * Power.UNDERVOLTAGE && hz >= Power.SUPPLY_MIN_HZ && hz <= Power.SUPPLY_MAX_HZ;
     }
 
     private void move(Position to) {

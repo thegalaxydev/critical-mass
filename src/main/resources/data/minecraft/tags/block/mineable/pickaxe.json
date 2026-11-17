@@ -50,6 +50,7 @@
     "criticalmass:earthing_switch",
     "criticalmass:station_battery",
     "criticalmass:diesel_engine",
-    "criticalmass:transfer_switch"
+    "criticalmass:transfer_switch",
+    "criticalmass:surge_arrester"
   ]
 }

@@ -103,6 +103,7 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.EARTHING_SWITCH.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.STATION_BATTERY.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.TRANSFER_SWITCH.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.SURGE_ARRESTER.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.DIESEL_ENGINE.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ELECTRIC_MOTOR.get(), MotorRenderer::new);
     }

@@ -11,10 +11,12 @@ import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBehaviour.ValueSettings;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
 import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
 import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
 import java.util.List;
+import java.util.Locale;
 import net.createmod.catnip.math.VecHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -22,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -42,6 +45,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
     private double highSide;
     private double lowSide;
     private int syncIn;
+    private int tap;
 
     public TransformerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -100,6 +104,32 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
 
     public double lowKilovolts() {
         return RATIOS[ratio.getValue()][1];
+    }
+
+    public int tap() {
+        return tap;
+    }
+
+    public void setTap(int steps) {
+        int next = Math.max(-Power.TAP_STEPS, Math.min(Power.TAP_STEPS, steps));
+        if (next == tap) {
+            return;
+        }
+        tap = next;
+        syncIn = 0;
+        if (level != null && !level.isClientSide) {
+            level.playSound(null, worldPosition, CMSounds.SWITCH_THROW.get(), SoundSource.BLOCKS, 0.8f, 0.8f);
+        }
+        setChanged();
+        sendData();
+    }
+
+    public double turns() {
+        return lowKilovolts() / highKilovolts() * (1.0 + tap * Power.TAP_STEP);
+    }
+
+    private static String offset(int steps) {
+        return steps == 0 ? "" : String.format(Locale.ROOT, " %+.2f%%", steps * Power.TAP_STEP * 100);
     }
 
     public void carry(double megawatts) {
@@ -176,6 +206,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         tag.putDouble("Heat", heat);
         tag.putDouble("HighSide", highSide);
         tag.putDouble("LowSide", lowSide);
+        tag.putInt("Tap", tap);
         tag.put("Wires", wires.save());
     }
 
@@ -186,6 +217,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         heat = tag.getDouble("Heat");
         highSide = tag.getDouble("HighSide");
         lowSide = tag.getDouble("LowSide");
+        tap = tag.getInt("Tap");
         wires.load(tag, "Wires");
     }
 
@@ -203,7 +235,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.high_side");
         ThermalTooltips.value(tooltip, side(highSide));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.low_side");
-        ThermalTooltips.value(tooltip, side(lowSide));
+        ThermalTooltips.value(tooltip, tap == 0 ? side(lowSide) : side(lowSide).copy().append(ThermalTooltips.aside("criticalmass.goggles.aside.tap", String.format(Locale.ROOT, "%+d", tap))));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.loading");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(through))
                 .append(ThermalTooltips.aside("criticalmass.goggles.aside.of_rating", ThermalTooltips.number(Power.TRANSFORMER_MW))));
@@ -219,8 +251,31 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
 
         @Override
         public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
-            return new ValueSettingsBoard(label, max, 1, ImmutableList.of(Component.translatable("criticalmass.transformer.ratio_row")),
-                    new ValueSettingsFormatter(settings -> Component.literal(pair(settings.value()))));
+            ImmutableList.Builder<Component> rows = ImmutableList.builder();
+            for (int i = 0; i < RATIOS.length; i++) {
+                rows.add(Component.translatable("criticalmass.transformer.tap_raise", pair(i)));
+                rows.add(Component.translatable("criticalmass.transformer.tap_lower", pair(i)));
+            }
+            return new ValueSettingsBoard(label, Power.TAP_STEPS, 2, rows.build(),
+                    new ValueSettingsFormatter(settings -> Component.literal(pair(settings.row() / 2) + offset((settings.row() % 2 == 0 ? 1 : -1) * settings.value()))));
+        }
+
+        @Override
+        public void setValueSettings(Player player, ValueSettings settings, boolean ctrlHeld) {
+            if (settings.equals(getValueSettings())) {
+                return;
+            }
+            setValue(settings.row() / 2);
+            if (blockEntity instanceof TransformerBlockEntity transformer) {
+                transformer.setTap((settings.row() % 2 == 0 ? 1 : -1) * settings.value());
+            }
+            playFeedbackSound(this);
+        }
+
+        @Override
+        public ValueSettings getValueSettings() {
+            int tap = blockEntity instanceof TransformerBlockEntity transformer ? transformer.tap() : 0;
+            return new ValueSettings(value * 2 + (tap < 0 ? 1 : 0), Math.abs(tap));
         }
     }
 

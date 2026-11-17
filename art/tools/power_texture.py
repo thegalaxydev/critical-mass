@@ -26,6 +26,7 @@ ENGINE = {"side": (0, 0, 13, 7), "head_top": (13, 0, 8, 10), "head_side": (0, 7,
           "skid": (0, 18, 13, 2), "top": (0, 20, 12, 11)}
 TRANSFER = {"door": (0, 0, 14, 14), "wall": (14, 0, 14, 1), "handle": (14, 2, 4, 2), "hub": (18, 2, 2, 2), "green": (20, 2, 2, 2), "green_lit": (22, 2, 2, 2), "amber": (24, 2, 2, 2),
             "amber_lit": (26, 2, 2, 2), "top": (0, 14, 16, 16)}
+ARRESTER = {"base_top": (0, 0, 8, 8), "base_side": (8, 0, 8, 2), "body": (8, 2, 4, 11), "cap": (12, 2, 2, 2), "cap_side": (12, 4, 2, 2), "shed_top": (0, 8, 6, 6), "shed_side": (0, 14, 6, 1)}
 WINDING = (5, 6, 7, 8)
 
 
@@ -334,12 +335,34 @@ def transfer(casing, steel, tone):
     return sheet
 
 
+def arrester(steel, tone):
+    housing, copper = palette("red"), palette("copper")
+    sheet = Sheet(16, ARRESTER)
+    sheet.paste("base_top", nine(steel, 8, 8, 1))
+    for x in range(8):
+        sheet.put("base_side", x, 0, tone[2] if x in (0, 7) else tone[4])
+        sheet.put("base_side", x, 1, tone[1] if x in (0, 7) else tone[3])
+    for x in range(6):
+        sheet.put("shed_side", x, 0, housing[0] if x == 5 else housing[3] if x == 0 else housing[2])
+    sheet.fill("shed_top", 0, 0, 5, 5, housing[2])
+    sheet.outline("shed_top", 0, 0, 5, 5, housing[1])
+    sheet.fill("shed_top", 1, 1, 4, 4, housing[3])
+    for y in range(11):
+        row = across(4, housing[3], housing[2], housing[1], housing[0])
+        for x in range(4):
+            sheet.put("body", x, y, row[x])
+    for name in ("cap", "cap_side"):
+        for x, y, c in ((0, 0, copper[5]), (1, 0, copper[4]), (0, 1, copper[3]), (1, 1, copper[2])):
+            sheet.put(name, x, y, c)
+    return sheet
+
+
 def sheets():
     casing = source("reactor_vessel_casing")
     steel = source("steel_block")
     tone = ramp(steel)
     return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone), "switchgear": switchgear(steel, tone), "station_battery": battery(casing, steel, tone), "diesel_engine": engine(casing, steel, tone),
-            "transfer_switch": transfer(casing, steel, tone)}
+            "transfer_switch": transfer(casing, steel, tone), "surge_arrester": arrester(steel, tone)}
 
 
 def main():

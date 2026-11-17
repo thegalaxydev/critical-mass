@@ -218,9 +218,11 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - It makes 50 Hz at 64 RPM, so set the turbine's rated speed to 64. Its terminals are at 20 kV.
   - Its load on the shaft is its load setting times its rating, limited to nine tenths of what the shaft has to spare. The sections share it evenly. If the shaft sags under it, it sheds load at once and takes it up again, so a weak turbine lowers its output and does not stall.
   - Off the grid it carries whatever is wired to it: see Off the grid below.
+  - It is built for indoors: see Weather below.
 - **Voltages:** the plant works at three. Generators make 20 kV, the grid is 220 kV and motors take 6 kV. Transformers join them.
   - Everything is built for its own voltage and stands 10% more. Above that it is lost: see Faults below.
   - A voltage reaches as far as wires, closed breakers and bus bars carry it. A transformer starts a new one on its other side.
+  - **Voltage drop:** a loaded wire loses voltage along it, 0.2% a block at its full current, and a transformer loses 5% at its full 100 MW. A motor at full load at the end of two long runs of Power Wire is near its limit, so carry power far at a high voltage and step it down where it is used. Goggles, gauges and screens show the voltage that is really there.
 - **Wires:** there are three, and each has a highest voltage and a highest current. Use one on a terminal, then on another, to string it between them. Generators, Electric Motors, Transformers, Circuit Breakers, Bus Bars, Grid Connections and Insulators have terminals.
   - **Power Wire:** copper, for 6 kV and 1 kA, which is 10 MW: one motor at full load.
   - **Power Cable:** thick and black, for 20 kV and 4 kA. That is 139 MW at 20 kV, enough for four generator sections, or 42 MW at 6 kV to feed a motor bus.
@@ -231,6 +233,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Breaking a block drops its wires.
 - **Transformer:** has a tall high-voltage bushing and a short low-voltage one. Its ratio is set on its value box: 220 / 20 kV for the generator's step-up, 220 / 6 kV to start the plant from the grid, and 20 / 6 kV to run the plant from its own generator.
   - It works both ways and carries 100 MW. Transformers wired side by side share what passes.
+  - **Tap changer:** the same value box raises or lowers the low side in six steps of 1.25%, up to 7.5% either way. Raise it to make up for a long feeder or to ride through dips on the grid. Two transformers in a row both raised to the top give more than the 10% that equipment stands.
   - Above its rating its oil heats: at 130% it has about 20 seconds. Goggles show both voltages and what it carries, and a comparator reads its temperature. Left alone it explodes.
 - **Insulator:** stands on any solid face. It is a place to join wires, turn a corner or carry a run across a hall.
 - **Bus Bar:** a copper bar on a stand-off. Up to 8 in a line are one bar, and each block of it takes 4 wires, so it is where feeders meet.
@@ -238,7 +241,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Electric Motor:** turns electricity back into rotation, with a shaft on its front and a terminal box on top.
   - Its speed is set on its value box, up to 256 RPM either way, and it gives up to 2,048 SU at any speed.
   - It draws what its shaft load takes, plus 5% in losses and a little for running idle. Turning a generator with a motor always costs more than it makes.
-  - It runs on 6 kV, between 47 and 53 Hz. On less than 5.4 kV it stands still. A redstone signal stops it.
+  - It runs on 6 kV, between 47 and 53 Hz. On less than 5.4 kV it runs on for a second and a half and then stands still. A redstone signal stops it.
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.
   - It closes onto a dead side freely. With both sides live it closes only when they are at the same voltage and within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
   - A redstone signal trips it. A comparator reads 15 while it is closed.
@@ -260,21 +263,23 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - It burns Fuel Oil from its own 4,000 mB tank, filled by pipe: 0.4 mB a second idling and 4 mB a second at full load, so a full tank lasts about 17 minutes flat out. Out of fuel, it stops.
   - **Fuel Oil** is mixed in a heated Basin from coal or charcoal and 500 mB of water.
 - **Transfer Switch:** moves a bus from its normal supply to a standby one by itself. It has three terminals on top: normal and standby at the two ends, under the lamps of the same side, and the load in the middle.
-  - It sits on the normal supply while that has a grid or a running generator behind it, at between 47 and 53 Hz.
+  - It sits on the normal supply while that has a grid or a running generator behind it, at between 47 and 53 Hz and at least nine tenths of its voltage.
   - A second after the normal supply is lost it lets go of it and gives a redstone signal. Lead that signal to a Diesel Engine, directly or along redstone dust, and the engine starts.
   - Once the standby supply is live it moves the load onto it. When the normal supply has been back for 5 seconds it moves the load back and drops the signal, and the engine stops.
   - It is never on both supplies at once, so the two need not be in step. The bus is dead for the time between them unless a Station Battery holds it.
   - Goggles show which supply it is on and the voltage of each.
-- **Grid Connection:** the outside grid. It is always live at 220 kV and 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
+- **Surge Arrester:** a post that leads a lightning surge to earth. Wire one to a line and it takes every strike on anything joined to that line at the same voltage, with a flash and no damage. Goggles count the surges it has taken.
+- **Grid Connection:** the outside grid. Outside thunderstorms it is always live at 220 kV and 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
 - **Synchronising:** a running generator that is not on the grid runs at 50 Hz times its RPM over 64, plus its speed trim.
   - Raise and lower change the trim by 0.02 Hz, up to 1 Hz either way.
+  - A generator carrying load by itself sags: 2 Hz from no load to full load. Trim it back up, and trim a second generator down to it before closing that one on.
   - While the two frequencies differ the phase angle between them turns, one full turn a second for each Hz apart. Close the breaker as the angle passes zero.
   - Once on the grid the generator is held at 50 Hz and starts unloaded. Raise and lower then change its load by 2%, and the Load Setting value box on the generator sets it directly.
 - **Off the grid:** a generator with no grid on its wires runs by itself at its own frequency and makes exactly what the motors on its wires draw. This is how a backup set works: a Diesel Engine or any rotation source at 64 RPM, a Generator, a Transformer down to 6 kV, and a Transfer Switch or a breaker onto the bus.
   - A second generator joins the same bus through a breaker the way one joins the grid: matched in frequency and phase. The first one leads and the others follow it, and they share the load by their ratings.
   - If the leader stops, the next one takes over the bus.
   - A generator asked for more than its shaft can give for a second trips the breaker nearest it. With no breaker to trip it shuts down for 5 seconds.
-- **Trips:** the breaker nearest a generator trips when the generator is started against wires that are already live, when it stops while following the grid or another generator, when its shaft speed puts it more than 1.5 Hz from what it follows, and when it is overloaded off the grid.
+- **Trips:** the breaker nearest a generator trips when the generator is started against wires that are already live, when it stops while following the grid or another generator, when its shaft speed puts it more than 1.5 Hz from what it follows, when it is overloaded off the grid, and when it carries load off the grid below 47.5 Hz or above 52.5 Hz for 2 seconds.
 - **Where the power goes:** every quarter of a second the plant works out how much each wire and transformer carries, from what each generator makes and each motor draws. Where there are two ways round, each takes its share by how much it can carry.
 - **Faults:** a mistake costs equipment.
   - **Too much current:** a wire above its current heats and glows orange. At one and a half times its limit it burns through in about 8 seconds, at twice in about 3. It cools again in 20 seconds if the load comes off. A burnt wire is lost and starts a fire at each end and under its middle.
@@ -283,6 +288,16 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Live work:** stringing or cutting a wire on a live terminal draws an arc: 4 hearts at 6 kV, 8 at 20 kV, and death at 220 kV. Open a breaker and work on the dead side.
   - A breaker protects only what is behind it. It will not close two voltages together, but closing it onto dead equipment of the wrong voltage is the operator's mistake to make.
   - In the server config, `electrical.fires` turns the fires off, `electrical.liveWorkHurts` turns the arcs off, and `electrical.blastsBreakBlocks` lets a blast break the blocks round it.
+- **Weather:** rain and thunder reach the plant's electrics.
+  - **Rain:** Generators, Electric Motors, Station Batteries and Transfer Switches are indoor equipment. Live under open sky in the rain, one flashes over to earth every so often: the breaker nearest it trips, and with no breaker on its feeder it is lost. Put a roof over it. Transformers, breakers, switches, bus bars, insulators, arresters and wires stand the weather.
+  - **Lightning:** in a thunderstorm, wires under open sky draw lightning, each about once in twelve minutes of storm. A natural bolt that lands beside a wire counts as well.
+  - A vanilla Lightning Rod within 12 blocks takes the strike and nothing happens to the line. A Surge Arrester on the line takes the surge.
+  - With neither, the struck wire flashes over and is lost, every breaker on that line trips, and the nearest transformer, generator or motor on it within 32 blocks explodes.
+  - **The grid in a storm:** every 30 to 60 seconds of thunder the grid is disturbed. Half the time its voltage dips, to between 84% and 97% for 3 to 10 seconds. Four times in ten its frequency swings up to half a hertz either way for 10 to 20 seconds. One time in ten it is lost altogether for 10 to 40 seconds.
+  - When the grid is lost the breaker nearest the Grid Connection trips and locks out, so the plant is left running by itself if it can. When the grid is back, reset the breaker and close it in step, as for synchronising.
+  - The Grid Connection shows what the grid is doing through goggles, and gauges and Display Links read its voltage and frequency.
+  - In the server config, `electrical.weather` turns all of this off.
+  - `/criticalmass grid <position> dip|swing|outage <seconds>` disturbs a Grid Connection and `normal` ends it. `/criticalmass strike <position>` puts lightning on the wire nearest a position.
 - **Power orders:** set Largest Power Order on the Grid Connection's value box, in steps of 5 MW up to 300 MW. Zero means no orders.
   - Thirty seconds after the last order the grid asks for between 40% and 100% of that figure.
   - Hold the delivered power within 5% of the order for 20 seconds to meet it. An order not met within 2 minutes is missed.

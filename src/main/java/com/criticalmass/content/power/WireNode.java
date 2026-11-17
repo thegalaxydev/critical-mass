@@ -16,4 +16,8 @@ public interface WireNode {
     default boolean earthed() {
         return false;
     }
+
+    default boolean weatherproof() {
+        return true;
+    }
 }

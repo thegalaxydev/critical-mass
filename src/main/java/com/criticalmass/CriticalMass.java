@@ -1,6 +1,7 @@
 package com.criticalmass;
 
 import com.criticalmass.content.power.PowerNetwork;
+import com.criticalmass.content.power.Storms;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.PipeConnectable;
 import com.criticalmass.content.kinetics.CirculationPumpBlock;
@@ -110,6 +111,7 @@ public class CriticalMass {
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(PowerNetwork::tick);
+        NeoForge.EVENT_BUS.addListener(Storms::onJoin);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }

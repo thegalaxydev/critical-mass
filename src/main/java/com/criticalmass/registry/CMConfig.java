@@ -25,6 +25,7 @@ public final class CMConfig {
     public static final ModConfigSpec.BooleanValue ELECTRICAL_FIRES;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_BLASTS_BREAK_BLOCKS;
     public static final ModConfigSpec.BooleanValue LIVE_WORK_HURTS;
+    public static final ModConfigSpec.BooleanValue ELECTRICAL_WEATHER;
     public static final int DEFAULT_FUEL_LIFETIME = 120000;
     public static final double DEFAULT_FUEL_WEAR = 0.25;
 
@@ -45,6 +46,7 @@ public final class CMConfig {
         ELECTRICAL_FIRES = b.comment("Whether electrical faults start fires").define("fires", true);
         ELECTRICAL_BLASTS_BREAK_BLOCKS = b.comment("Whether the blast from an electrical fault breaks the blocks round it; the failed equipment is always lost").define("blastsBreakBlocks", false);
         LIVE_WORK_HURTS = b.comment("Whether stringing or cutting a wire on a live terminal hurts the player").define("liveWorkHurts", true);
+        ELECTRICAL_WEATHER = b.comment("Whether rain faults indoor electrical equipment left under the sky, and thunderstorms strike wires and disturb the grid").define("weather", true);
         b.pop();
         b.push("radiation");
         RADIATION_ENABLED = b.comment("Whether players receive dose and contamination").define("enabled", true);

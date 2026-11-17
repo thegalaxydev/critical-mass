@@ -35,6 +35,7 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     private double demand;
     private String status = DEAD;
     private int checkIn;
+    private int sagTicks;
     private int syncIn;
 
     public MotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -77,6 +78,11 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
         Direction box = boxSide(getBlockState());
         return new Vec3(0.5 - facing.getStepX() * 0.125 + box.getStepX() * 0.5, 0.5 - facing.getStepY() * 0.125 + box.getStepY() * 0.5,
                 0.5 - facing.getStepZ() * 0.125 + box.getStepZ() * 0.5);
+    }
+
+    @Override
+    public boolean weatherproof() {
+        return false;
     }
 
     public void setSpeed(int rpm) {
@@ -150,6 +156,11 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
             boolean inBand = side.frequency() >= Power.SUPPLY_MIN_HZ && side.frequency() <= Power.SUPPLY_MAX_HZ;
             String now = level.hasNeighborSignal(worldPosition) ? "criticalmass.motor.held" : !side.live() || kilovolts <= 0 ? DEAD
                     : kilovolts < Power.MOTOR_KV * Power.UNDERVOLTAGE ? "criticalmass.motor.voltage" : inBand ? RUNNING : "criticalmass.motor.frequency";
+            boolean sagging = live && now.equals("criticalmass.motor.voltage") && kilovolts >= Power.MOTOR_KV * Power.RIDE_THROUGH_FLOOR;
+            sagTicks = sagging ? sagTicks + CHECK_TICKS : 0;
+            if (sagging && sagTicks < Power.RIDE_THROUGH_TICKS) {
+                now = RUNNING;
+            }
             boolean run = now.equals(RUNNING);
             if (!now.equals(status)) {
                 status = now;

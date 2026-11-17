@@ -52,6 +52,11 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         return new Vec3(0.5, 1.0, 0.5);
     }
 
+    @Override
+    public boolean weatherproof() {
+        return false;
+    }
+
     public double charge() {
         return charge / CAPACITY;
     }

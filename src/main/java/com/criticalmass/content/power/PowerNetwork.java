@@ -89,6 +89,8 @@ public final class PowerNetwork {
         public final Set<BlockPos> switches = new LinkedHashSet<>();
         public final Set<BlockPos> earths = new LinkedHashSet<>();
         public final Set<BlockPos> sources = new LinkedHashSet<>();
+        public final Set<BlockPos> deadGrids = new LinkedHashSet<>();
+        public final Set<BlockPos> arresters = new LinkedHashSet<>();
         public int wires;
         private final List<Step> keys = new ArrayList<>();
         private final Map<Step, Integer> index = new HashMap<>();
@@ -97,6 +99,8 @@ public final class PowerNetwork {
         private final BlockPos held;
         private int[] zone = new int[0];
         private double[] kilovolts = new double[0];
+        private double[] pu = new double[0];
+        private int[][] incident = new int[0][];
         private long voltsAt = -1;
         private long born;
 
@@ -104,9 +108,20 @@ public final class PowerNetwork {
             this.held = held;
         }
 
+        @Nullable
+        private GridTieBlockEntity tie(Level level) {
+            for (BlockPos pos : grids) {
+                if (level.getBlockEntity(pos) instanceof GridTieBlockEntity tie) {
+                    return tie;
+                }
+            }
+            return null;
+        }
+
         public Side side(Level level) {
             if (!grids.isEmpty()) {
-                return new Side(true, Power.GRID_HZ, 0, true);
+                GridTieBlockEntity tie = tie(level);
+                return tie == null ? new Side(true, Power.GRID_HZ, 0, true) : new Side(true, tie.hertz(), tie.phase(), true);
             }
             PowerSource lead = lead(level, null);
             return lead == null ? Side.DEAD : new Side(true, lead.frequency(), lead.phase(), false);
@@ -174,7 +189,7 @@ public final class PowerNetwork {
                 return 0;
             }
             volts(level);
-            return kilovolts[zone[node]];
+            return kilovolts[zone[node]] * pu[node];
         }
 
         private int node(Level level, BlockPos pos, int terminal) {
@@ -205,6 +220,23 @@ public final class PowerNetwork {
                 zone[i] = id;
             }
             kilovolts = new double[ids.size()];
+            pu = new double[n];
+            java.util.Arrays.fill(pu, 1.0);
+            int[] count = new int[n];
+            for (Edge edge : edges) {
+                count[edge.a]++;
+                count[edge.b]++;
+            }
+            incident = new int[n][];
+            for (int i = 0; i < n; i++) {
+                incident[i] = new int[count[i]];
+                count[i] = 0;
+            }
+            for (int i = 0; i < edges.size(); i++) {
+                Edge edge = edges.get(i);
+                incident[edge.a][count[edge.a]++] = i;
+                incident[edge.b][count[edge.b]++] = i;
+            }
         }
 
         private static int find(int[] parent, int i) {
@@ -225,7 +257,7 @@ public final class PowerNetwork {
             for (BlockPos pos : grids) {
                 int node = node(level, pos, 0);
                 if (node >= 0) {
-                    kv[zone[node]] = Math.max(kv[zone[node]], Power.GRID_KV);
+                    kv[zone[node]] = Math.max(kv[zone[node]], level.getBlockEntity(pos) instanceof GridTieBlockEntity tie ? tie.kilovolts() : Power.GRID_KV);
                 }
             }
             for (PowerSource source : feeders(level)) {
@@ -243,13 +275,14 @@ public final class PowerNetwork {
                     }
                     double high = kv[zone[edge.a]];
                     double low = kv[zone[edge.b]];
-                    if (high > 0 && high <= t.highKilovolts() * Power.OVERVOLTAGE && high * t.lowKilovolts() / t.highKilovolts() > low + 1e-6) {
-                        low = high * t.lowKilovolts() / t.highKilovolts();
+                    double turns = t.turns();
+                    if (high > 0 && high <= t.highKilovolts() * Power.OVERVOLTAGE && high * turns > low + 1e-6) {
+                        low = high * turns;
                         kv[zone[edge.b]] = low;
                         moved = true;
                     }
-                    if (low > 0 && low <= t.lowKilovolts() * Power.OVERVOLTAGE && low * t.highKilovolts() / t.lowKilovolts() > high + 1e-6) {
-                        kv[zone[edge.a]] = low * t.highKilovolts() / t.lowKilovolts();
+                    if (low > 0 && low <= t.lowKilovolts() * Power.OVERVOLTAGE && low / turns > high + 1e-6) {
+                        kv[zone[edge.a]] = low / turns;
                         moved = true;
                     }
                 }
@@ -514,6 +547,153 @@ public final class PowerNetwork {
             }
         }
 
+        private void drops(Level level) {
+            int n = keys.size();
+            double[] loss = new double[n];
+            java.util.Arrays.fill(loss, Double.MAX_VALUE);
+            ArrayDeque<Integer> queue = new ArrayDeque<>();
+            for (BlockPos pos : grids) {
+                int node = node(level, pos, 0);
+                if (node >= 0 && loss[node] > 0) {
+                    loss[node] = 0;
+                    queue.add(node);
+                }
+            }
+            for (PowerSource source : feeders(level)) {
+                int node = node(level, source.sourcePos(), 0);
+                if (node >= 0 && source.online() && loss[node] > 0) {
+                    loss[node] = 0;
+                    queue.add(node);
+                }
+            }
+            while (!queue.isEmpty()) {
+                int at = queue.poll();
+                for (int i : incident[at]) {
+                    Edge edge = edges.get(i);
+                    int other = edge.a == at ? edge.b : edge.a;
+                    double drop;
+                    if (edge.link == null) {
+                        drop = Power.REGULATION * Math.abs(edge.flow) / Power.TRANSFORMER_MW;
+                    } else {
+                        double kv = kilovolts[zone[edge.a]];
+                        double ratio = kv > 0 ? Power.kiloamps(Math.abs(edge.flow), kv) / edge.link.type().kiloamps : 0;
+                        drop = Power.WIRE_DROP * Math.sqrt(edge.owner.distSqr(edge.link.other())) * ratio;
+                    }
+                    double next = loss[at] + Math.min(0.5, drop);
+                    if (next < loss[other] - 1e-9) {
+                        loss[other] = next;
+                        queue.add(other);
+                    }
+                }
+            }
+            for (int i = 0; i < n; i++) {
+                pu[i] = loss[i] == Double.MAX_VALUE ? 1.0 : Math.max(0.0, 1.0 - loss[i]);
+            }
+        }
+
+        private void wet(Level level, BlockPos pos) {
+            BlockPos target = level.getBlockEntity(pos) instanceof GeneratorBlockEntity g ? g.wiredSection() : pos;
+            Vec3 at = terminal(level, target, 0);
+            Effects.arc(level, at, Vec3.atBottomCenterOf(target), 1.0f);
+            Hazard.sparks(level, at, 14);
+            if (!tripNearest(level, target, "criticalmass.breaker.trip.wet")) {
+                Hazard.destroy(level, target, 2.0f);
+            }
+        }
+
+        private void struck(Level level, Edge edge, Vec3 at, boolean fromStorm) {
+            if (fromStorm) {
+                BlockPos rod = Storms.rod(level, at);
+                if (rod != null) {
+                    Storms.bolt(level, Vec3.atBottomCenterOf(rod.above()));
+                    return;
+                }
+                Storms.bolt(level, at);
+            }
+            int hit = zone[edge.a];
+            for (BlockPos pos : arresters) {
+                int node = node(level, pos, 0);
+                if (node >= 0 && zone[node] == hit && level.getBlockEntity(pos) instanceof SurgeArresterBlockEntity arrester) {
+                    arrester.absorb(at);
+                    return;
+                }
+            }
+            List<BlockPos> windings = new ArrayList<>();
+            for (Edge other : edges) {
+                if (other.link == null && (zone[other.a] == hit || zone[other.b] == hit)) {
+                    windings.add(other.owner);
+                }
+            }
+            for (GeneratorBlockEntity g : machines(level)) {
+                int node = node(level, g.getBlockPos(), 0);
+                if (node >= 0 && zone[node] == hit) {
+                    windings.add(g.wiredSection());
+                }
+            }
+            for (BlockPos pos : loads) {
+                int node = node(level, pos, 0);
+                if (node >= 0 && zone[node] == hit && level.getBlockEntity(pos) instanceof MotorBlockEntity) {
+                    windings.add(pos);
+                }
+            }
+            BlockPos victim = null;
+            double nearest = Power.SURGE_REACH * Power.SURGE_REACH;
+            for (BlockPos pos : windings) {
+                double distance = pos.distToCenterSqr(at);
+                if (distance < nearest) {
+                    nearest = distance;
+                    victim = pos;
+                }
+            }
+            List<BlockPos> closed = new ArrayList<>();
+            for (BlockPos pos : breakers) {
+                int node = node(level, pos, 0);
+                if (node >= 0 && zone[node] == hit) {
+                    closed.add(pos);
+                }
+            }
+            Hazard.burnWire(level, edge.owner, edge.link, true);
+            for (BlockPos pos : closed) {
+                if (level.getBlockEntity(pos) instanceof BreakerBlockEntity breaker) {
+                    breaker.trip("criticalmass.breaker.trip.surge");
+                }
+            }
+            if (victim != null) {
+                Hazard.destroy(level, victim, 3.0f);
+            }
+        }
+
+        private void weather(Level level) {
+            if (!Storms.enabled() || !level.isRaining()) {
+                return;
+            }
+            if (level.getGameTime() / STEP_TICKS % Power.RAIN_STEPS == 0) {
+                for (int i = 0; i < keys.size(); i++) {
+                    BlockPos pos = keys.get(i).pos();
+                    WireNode wired = WireLinks.node(level, pos);
+                    if (wired == null || wired.weatherproof() || kilovolts[zone[i]] <= 0 || !level.isRainingAt(pos.above()) || level.random.nextInt(Power.RAIN_CHANCE) != 0) {
+                        continue;
+                    }
+                    wet(level, pos);
+                    return;
+                }
+            }
+            if (level.isThundering()) {
+                for (Edge edge : edges) {
+                    if (edge.link == null || level.random.nextInt(Power.STRIKE_STEPS) != 0) {
+                        continue;
+                    }
+                    Vec3 from = terminal(level, edge.owner, edge.link.mine());
+                    Vec3 to = terminal(level, edge.link.other(), edge.link.theirs());
+                    Vec3 at = from.lerp(to, 0.2 + level.random.nextDouble() * 0.6);
+                    if (level.isRainingAt(BlockPos.containing(at).above())) {
+                        struck(level, edge, at, true);
+                        return;
+                    }
+                }
+            }
+        }
+
         private void step(Level level) {
             voltsAt = -1;
             volts(level);
@@ -523,6 +703,9 @@ public final class PowerNetwork {
             boolean fault = faulted(level);
             if (!flows(level, fault)) {
                 return;
+            }
+            if (!fault) {
+                drops(level);
             }
             if (relays(level)) {
                 return;
@@ -541,8 +724,61 @@ public final class PowerNetwork {
                     }
                 }
             }
+            int before = version(level);
             heat(level);
+            if (version(level) == before) {
+                weather(level);
+            }
         }
+    }
+
+    public static boolean strikeNear(Level level, Vec3 at, double reach, boolean natural) {
+        Map<Island, Boolean> unique = new IdentityHashMap<>();
+        int range = (int) Math.ceil(reach + WireLinks.MAX_LENGTH);
+        BlockPos centre = BlockPos.containing(at);
+        for (int cx = (centre.getX() - range) >> 4; cx <= (centre.getX() + range) >> 4; cx++) {
+            for (int cz = (centre.getZ() - range) >> 4; cz <= (centre.getZ() + range) >> 4; cz++) {
+                if (!level.hasChunk(cx, cz)) {
+                    continue;
+                }
+                for (BlockPos pos : new ArrayList<>(level.getChunk(cx, cz).getBlockEntitiesPos())) {
+                    if (WireLinks.node(level, pos) == null) {
+                        continue;
+                    }
+                    for (int terminal = 0; terminal <= 2; terminal++) {
+                        unique.put(scanAt(level, pos, terminal), Boolean.TRUE);
+                    }
+                }
+            }
+        }
+        Island found = null;
+        Edge hit = null;
+        Vec3 where = null;
+        double best = reach;
+        for (Island island : unique.keySet()) {
+            for (Edge edge : island.edges) {
+                if (edge.link == null) {
+                    continue;
+                }
+                Vec3 from = terminal(level, edge.owner, edge.link.mine());
+                Vec3 to = terminal(level, edge.link.other(), edge.link.theirs());
+                for (int i = 0; i <= 8; i++) {
+                    Vec3 point = from.lerp(to, i / 8.0);
+                    double distance = natural ? point.y < at.y - 1 ? Double.MAX_VALUE : Math.hypot(point.x - at.x, point.z - at.z) : point.distanceTo(at);
+                    if (distance < best) {
+                        best = distance;
+                        found = island;
+                        hit = edge;
+                        where = point;
+                    }
+                }
+            }
+        }
+        if (found == null) {
+            return false;
+        }
+        found.struck(level, hit, where, !natural);
+        return true;
     }
 
     private static Step canon(Level level, BlockPos pos, int terminal, @Nullable BlockPos held) {
@@ -591,6 +827,9 @@ public final class PowerNetwork {
             return cached;
         }
         Island island = build(level, key, null);
+        if (cached != null && cached.keys.equals(island.keys) && cached.edges.size() == island.edges.size()) {
+            island.pu = cached.pu;
+        }
         island.born = now;
         for (Step step : island.keys) {
             state.islands.put(step, island);
@@ -681,7 +920,13 @@ public final class PowerNetwork {
                 }
             } else {
                 if (block instanceof GridTieBlock) {
-                    island.grids.add(pos);
+                    if (level.getBlockEntity(pos) instanceof GridTieBlockEntity tie && !tie.live()) {
+                        island.deadGrids.add(pos);
+                    } else {
+                        island.grids.add(pos);
+                    }
+                } else if (block instanceof SurgeArresterBlock) {
+                    island.arresters.add(pos);
                 } else if (level.getBlockEntity(pos) instanceof PowerLoad) {
                     island.loads.add(pos);
                 }
@@ -769,6 +1014,21 @@ public final class PowerNetwork {
             }
             island.step(level);
         }
+        if (state.version != version) {
+            return;
+        }
+        for (Vec3 at : Storms.pending(level)) {
+            strikeNear(level, at, 2.5, true);
+        }
+        if (state.version != version) {
+            return;
+        }
+        Set<BlockPos> ties = new LinkedHashSet<>();
+        for (Island island : unique.keySet()) {
+            ties.addAll(island.grids);
+            ties.addAll(island.deadGrids);
+        }
+        Storms.grid(level, ties);
     }
 
     public static Vec3 terminal(Level level, BlockPos pos, int terminal) {

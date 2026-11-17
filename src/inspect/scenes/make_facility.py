@@ -89,6 +89,8 @@ MAIN_T = (47, 1, -3)
 GRID_BREAKER = (49, 1, -3)
 GRID = (51, 1, -3)
 UNIT_T = (48, 1, -6)
+ARRESTER = (48, 1, -1)
+MAST = (20, -11)
 OUT6, IN6 = (46, 3, -6), (44, 3, -6)
 STATION_BREAKER = (43, 1, -5)
 BUS6 = [(39, 1, -5), (40, 1, -5), (41, 1, -5)]
@@ -108,7 +110,7 @@ HIGH, LOW, LINE, LOAD = 0, 1, 0, 1
 ON_NORMAL, ON_STANDBY, TO_LOAD = 0, 1, 2
 WIRES = [
     ("cable", GENERATORS[-1], 0, GEN_BREAKER, LINE), ("cable", GEN_BREAKER, LOAD, BUS20[0], 0), ("cable", BUS20[2], 0, IN20, 0), ("cable", IN20, 0, OUT20, 0),
-    ("cable", OUT20, 0, MAIN_T, LOW), ("line", MAIN_T, HIGH, GRID_BREAKER, LOAD), ("line", GRID_BREAKER, LINE, GRID, 0),
+    ("cable", OUT20, 0, MAIN_T, LOW), ("line", MAIN_T, HIGH, GRID_BREAKER, LOAD), ("line", GRID_BREAKER, LINE, GRID, 0), ("line", ARRESTER, 0, GRID_BREAKER, LOAD),
     ("cable", OUT20, 0, UNIT_T, HIGH), ("cable", UNIT_T, LOW, OUT6, 0), ("cable", OUT6, 0, IN6, 0), ("cable", IN6, 0, STATION_BREAKER, LINE), ("cable", STATION_BREAKER, LOAD, C_NORMAL, 0),
     ("cable", C_NORMAL, 0, TRANSFER, ON_NORMAL), ("cable", STANDBY_GEN, 0, STANDBY_T, HIGH), ("cable", STANDBY_T, LOW, TRANSFER, ON_STANDBY),
     ("cable", TRANSFER, TO_LOAD, C_LOAD, 0), ("cable", C_LOAD, 0, BUS6[2], 0), ("cable", BATTERY, 0, BUS6[0], 0),
@@ -735,6 +737,9 @@ def switchyard():
     post((49, 1, -1), 8, "Grid", "Breaker")
     post((50, 1, -5), 0, "220 kV", "Grid")
     post((48, 1, -7), 0, "Unit", "Transformer", "20 / 6 kV")
+    assert not taken(ARRESTER), "arrester in the way"
+    machine(ARRESTER, "criticalmass:surge_arrester")
+    post((48, 1, 0), 8, "Surge", "Arrester")
 
 
 def electrics():
@@ -767,6 +772,10 @@ def electrics():
         assert pos not in PIPES and pos not in machines, "insulator in the way at %s" % (pos,)
         attach(pos, "criticalmass:insulator[facing=%s]" % facing)
     sign((14, 5, 5), "east", "Containment", "Penetration")
+    for y in range(1, 8):
+        assert not taken((MAST[0], y, MAST[1])), "mast in the way"
+    box(MAST[0], 1, MAST[1], MAST[0], 6, MAST[1], STEEL)
+    put(MAST[0], 7, MAST[1], "minecraft:lightning_rod[facing=up]")
 
 
 def stack():

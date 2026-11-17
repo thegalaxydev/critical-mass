@@ -37,6 +37,16 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private int completed;
     private int missed;
     private int syncIn;
+    private Event event = Event.NORMAL;
+    private int eventTicks;
+    private double depth;
+    private double pu = 1.0;
+    private double offset;
+    private double phase;
+
+    public enum Event {
+        NORMAL, DIP, SWING, OUTAGE
+    }
 
     public GridTieBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -62,6 +72,41 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     @Override
     public Vec3 terminal(int index) {
         return new Vec3(0.5, 1.0, 0.5);
+    }
+
+    public Event event() {
+        return event;
+    }
+
+    public boolean live() {
+        return event != Event.OUTAGE;
+    }
+
+    public double kilovolts() {
+        return Power.GRID_KV * pu;
+    }
+
+    public double hertz() {
+        return Power.GRID_HZ + offset;
+    }
+
+    public double phase() {
+        return phase;
+    }
+
+    public void disturb(Event kind, int ticks, double amount) {
+        boolean was = live();
+        event = kind;
+        eventTicks = kind == Event.NORMAL ? 0 : ticks;
+        depth = amount;
+        if (level != null && !level.isClientSide && was != live()) {
+            PowerNetwork.changed(level);
+            if (was) {
+                PowerNetwork.tripNearest(level, worldPosition, "criticalmass.breaker.trip.grid_lost");
+            }
+        }
+        syncIn = 0;
+        setChanged();
     }
 
     public double contractMw() {
@@ -134,11 +179,20 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         if (level == null || level.isClientSide) {
             return;
         }
+        if (event != Event.NORMAL && --eventTicks <= 0) {
+            disturb(Event.NORMAL, 0, 0);
+        }
+        pu += Math.max(-Power.DIP_RATE, Math.min(Power.DIP_RATE, (event == Event.DIP ? depth : 1.0) - pu));
+        offset += Math.max(-Power.SWING_RATE, Math.min(Power.SWING_RATE, (event == Event.SWING ? depth : 0.0) - offset));
+        phase = Power.wrap(phase + offset * 360.0 / 20.0);
         PowerNetwork.Island around = island();
-        double total = -around.demand(level);
-        for (GeneratorBlockEntity g : around.machines(level)) {
-            if (g.synced()) {
-                total += g.outputSu();
+        double total = 0;
+        if (live()) {
+            total = -around.demand(level);
+            for (GeneratorBlockEntity g : around.machines(level)) {
+                if (g.synced()) {
+                    total += g.outputSu();
+                }
             }
         }
         delivered += (total - delivered) * 0.2;
@@ -182,6 +236,12 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         tag.putInt("IdleTicks", idleTicks);
         tag.putInt("Completed", completed);
         tag.putInt("Missed", missed);
+        tag.putInt("Event", event.ordinal());
+        tag.putInt("EventTicks", eventTicks);
+        tag.putDouble("Depth", depth);
+        tag.putDouble("Pu", pu);
+        tag.putDouble("Offset", offset);
+        tag.putDouble("Phase", phase);
         tag.put("Wires", wires.save());
     }
 
@@ -195,17 +255,32 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         idleTicks = tag.getInt("IdleTicks");
         completed = tag.getInt("Completed");
         missed = tag.getInt("Missed");
+        event = Event.values()[Math.max(0, Math.min(Event.values().length - 1, tag.getInt("Event")))];
+        eventTicks = tag.getInt("EventTicks");
+        depth = tag.getDouble("Depth");
+        pu = tag.contains("Pu") ? tag.getDouble("Pu") : 1.0;
+        offset = tag.getDouble("Offset");
+        phase = tag.getDouble("Phase");
         wires.load(tag, "Wires");
     }
 
     @Override
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
-        if (order > 0) {
+        if (event == Event.OUTAGE) {
+            ThermalTooltips.status(tooltip, "criticalmass.grid.lost", ChatFormatting.RED);
+        } else if (event == Event.DIP) {
+            ThermalTooltips.status(tooltip, "criticalmass.grid.dipping", ChatFormatting.GOLD);
+        } else if (event == Event.SWING) {
+            ThermalTooltips.status(tooltip, "criticalmass.grid.swinging", ChatFormatting.GOLD);
+        } else if (order > 0) {
             ThermalTooltips.status(tooltip, "criticalmass.grid.order", ChatFormatting.GOLD, ThermalTooltips.number(order), (Power.ORDER_DEADLINE_TICKS - orderTicks) / 20);
         } else {
             ThermalTooltips.status(tooltip, "criticalmass.grid.idle", ChatFormatting.GRAY);
         }
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.grid_supply");
+        ThermalTooltips.value(tooltip, live() ? ThermalTooltips.reading("criticalmass.unit.kilovolts", ChatFormatting.AQUA, ThermalTooltips.number(kilovolts()))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.at_hertz", String.format(java.util.Locale.ROOT, "%.2f", hertz()))) : ThermalTooltips.reading("criticalmass.breaker.dead", ChatFormatting.GRAY));
         ThermalTooltips.label(tooltip, delivered < 0 ? "criticalmass.goggles.label.drawn" : "criticalmass.goggles.label.delivered");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Math.abs(deliveredMw()))));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.orders");

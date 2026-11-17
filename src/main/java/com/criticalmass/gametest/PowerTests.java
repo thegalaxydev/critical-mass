@@ -12,6 +12,8 @@ import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.SurgeArresterBlockEntity;
+import com.criticalmass.content.power.PowerNetwork;
 import com.criticalmass.content.power.TransferSwitchBlock;
 import com.criticalmass.content.power.TransferSwitchBlockEntity;
 import com.criticalmass.content.power.TransformerBlockEntity;
@@ -31,6 +33,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -365,6 +368,14 @@ public final class PowerTests {
                 .thenIdle(20)
                 .thenExecute(() -> h.assertTrue(b[0].close().endsWith("breaker.closed"), "The first generator should close onto the dead bus"))
                 .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(g[0].frequency() < Power.GRID_HZ - Power.SYNC_HZ, "A generator carrying load by itself should run below 50 Hz: " + g[0].frequency());
+                    h.assertTrue(b[1].close().endsWith("refused.frequency"), "A second generator faster than the loaded bus should be refused");
+                    for (int i = (int) Math.round((Power.GRID_HZ - g[0].frequency()) / Power.TRIM_STEP); i > 0; i--) {
+                        g[1].lower();
+                    }
+                })
+                .thenIdle(5)
                 .thenExecute(() -> {
                     g[1].setPhase(90);
                     h.assertTrue(b[1].close().endsWith("refused.phase"), "A second generator out of phase with the bus should be refused");
@@ -899,6 +910,260 @@ public final class PowerTests {
                 .thenExecute(() -> {
                     h.assertTrue(transfer.position() == TransferSwitchBlock.Position.NORMAL && !transfer.calling(), "With the normal supply back for five seconds the switch should return to it: " + transfer.position());
                     h.assertTrue(bus.live() && motor.live() && !engine.running(), "The bus should be back on the grid and the engine stopped: " + engine.status());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aLoadedGeneratorOffTheGridSagsAndTripsOnUnderFrequency(GameTestHelper h) {
+        BlockPos driverPos = new BlockPos(0, 2, 0);
+        BlockPos generatorPos = driverPos.east();
+        BlockPos breakerPos = new BlockPos(3, 2, 0);
+        BlockPos unit = new BlockPos(5, 2, 2);
+        BlockPos loadPos = new BlockPos(2, 4, 4);
+        h.setBlock(driverPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        transformer(h, unit, UNIT);
+        MotorBlockEntity load = motor(h, loadPos, (int) Power.SYNC_RPM, 2);
+        wire(h, generatorPos, 0, breakerPos, BreakerBlockEntity.LOAD);
+        wire(h, breakerPos, BreakerBlockEntity.LINE, unit, TransformerBlockEntity.HIGH);
+        wire(h, WireType.COPPER, unit, TransformerBlockEntity.LOW, loadPos, 0);
+        CreativeMotorBlockEntity driver = h.getBlockEntity(driverPos);
+        driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+        GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(breaker.close().endsWith("breaker.closed"), "The generator should close onto the dead line"))
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    double sag = Power.DROOP_HZ * g.outputSu() / g.ratedSu();
+                    h.assertTrue(load.live() && sag > 0.2 && Math.abs(g.frequency() - (Power.GRID_HZ - sag)) < 0.03, "Its frequency should sag with its load: " + g.frequency() + " for " + g.outputSu());
+                    driver.generatedSpeed.setValue(61);
+                })
+                .thenIdle(100)
+                .thenExecute(() -> h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("trip.frequency"), "Held under 47.5 Hz it should trip its breaker: " + g.frequency() + " " + breaker.tripReason()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void losingTheGridTripsTheBreakerNearestItAndItComesBackDead(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos breakerPos = new BlockPos(2, 2, 0);
+        BlockPos startup = new BlockPos(4, 2, 0);
+        BlockPos busPos = new BlockPos(6, 2, 2);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, WireType.LINE, breakerPos, BreakerBlockEntity.LOAD, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, busPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        GridTieBlockEntity tie = h.getBlockEntity(gridPos);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> breaker.close())
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live(), "The motor should run from the grid");
+                    tie.disturb(GridTieBlockEntity.Event.OUTAGE, 60, 0);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(!tie.live() && !breaker.closed() && breaker.tripReason().endsWith("trip.grid_lost"), "Losing the grid should trip the breaker nearest it: " + breaker.tripReason());
+                    h.assertTrue(!breaker.line().live() && !motor.live(), "A lost grid should be dead on its side of the breaker");
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(tie.live() && breaker.line().live() && breaker.locked(), "The grid should come back live against the tripped breaker");
+                    breaker.reset();
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "Reset, the breaker should close onto the dead plant");
+                })
+                .thenIdle(30)
+                .thenExecute(() -> h.assertTrue(motor.live(), "The motor should run again"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 500)
+    public static void aVoltageDipStopsMotorsUnlessTheTransformerIsTappedUp(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos busPos = new BlockPos(4, 2, 2);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        TransformerBlockEntity t = transformer(h, startup, STARTUP);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, busPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        GridTieBlockEntity tie = h.getBlockEntity(gridPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        double raised = Power.MOTOR_KV * (1 + Power.TAP_STEPS * Power.TAP_STEP);
+        t.setTap(Power.TAP_STEPS);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live() && Math.abs(bus.kilovolts() - raised) < 0.03, "Tapped up six steps the low side should stand 7.5% high: " + bus.kilovolts());
+                    tie.disturb(GridTieBlockEntity.Event.DIP, 400, 0.85);
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(bus.kilovolts() - raised * 0.85) < 0.03 && motor.live(), "Tapped up, the motor should run through the dip: " + bus.kilovolts() + " " + motor.status());
+                    t.setTap(0);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(bus.kilovolts() < Power.MOTOR_KV * Power.UNDERVOLTAGE && motor.live(), "A motor should ride through the first second and a half of low voltage: " + bus.kilovolts()))
+                .thenIdle(45)
+                .thenExecute(() -> {
+                    h.assertTrue(!motor.live() && motor.status().endsWith("motor.voltage"), "Left on low voltage the motor should stop: " + motor.status());
+                    tie.disturb(GridTieBlockEntity.Event.NORMAL, 0, 0);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> h.assertTrue(motor.live() && Math.abs(bus.kilovolts() - Power.MOTOR_KV) < 0.03, "With the grid back to normal the motor should run again: " + bus.kilovolts()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aFrequencySwingOnTheGridCarriesToEverythingOnIt(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos busPos = new BlockPos(4, 2, 2);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, busPos, 0);
+        GridTieBlockEntity tie = h.getBlockEntity(gridPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        h.startSequence()
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(bus.frequency() - Power.GRID_HZ) < 1e-6, "A quiet grid should hold 50 Hz");
+                    tie.disturb(GridTieBlockEntity.Event.SWING, 300, 0.4);
+                })
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(bus.frequency() - (Power.GRID_HZ + 0.4)) < 0.01, "The bus should follow the grid's frequency: " + bus.frequency());
+                    tie.disturb(GridTieBlockEntity.Event.NORMAL, 0, 0);
+                })
+                .thenIdle(120)
+                .thenExecute(() -> h.assertTrue(Math.abs(bus.frequency() - Power.GRID_HZ) < 0.01, "The grid should settle back to 50 Hz: " + bus.frequency()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 600)
+    public static void aTransferSwitchLeavesASupplyThatSagsAndTheBatteryHoldsTheBus(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos switchPos = new BlockPos(4, 2, 3);
+        BlockPos busPos = new BlockPos(2, 2, 5);
+        BlockPos batteryPos = new BlockPos(6, 2, 5);
+        BlockPos motorPos = new BlockPos(1, 4, 3);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(switchPos, CMBlocks.TRANSFER_SWITCH.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(batteryPos, CMBlocks.STATION_BATTERY.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, switchPos, TransferSwitchBlockEntity.NORMAL);
+        wire(h, switchPos, TransferSwitchBlockEntity.LOAD, busPos, 0);
+        wire(h, busPos, 0, batteryPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        GridTieBlockEntity tie = h.getBlockEntity(gridPos);
+        TransferSwitchBlockEntity transfer = h.getBlockEntity(switchPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        BatteryBlockEntity battery = h.getBlockEntity(batteryPos);
+        battery.setCharge(0.5);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(transfer.position() == TransferSwitchBlock.Position.NORMAL && motor.live(), "The switch should sit on a healthy supply: " + transfer.position());
+                    tie.disturb(GridTieBlockEntity.Event.DIP, 400, 0.85);
+                })
+                .thenIdle(70)
+                .thenExecute(() -> {
+                    h.assertTrue(transfer.position() == TransferSwitchBlock.Position.OFF && transfer.calling(), "A supply under nine tenths of its voltage should be left: " + transfer.position());
+                    h.assertTrue(battery.online() && motor.live() && Math.abs(bus.kilovolts() - Power.MOTOR_KV) < 0.03, "The battery should hold the bus at 6 kV meanwhile: " + bus.kilovolts());
+                    tie.disturb(GridTieBlockEntity.Event.NORMAL, 0, 0);
+                })
+                .thenIdle(Power.TRANSFER_RETURN_TICKS + 80)
+                .thenExecute(() -> h.assertTrue(transfer.position() == TransferSwitchBlock.Position.NORMAL && !battery.online() && motor.live(), "With the supply healthy again the switch should return: " + transfer.position()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void aLoadedWireLosesVoltageAlongIt(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos busPos = new BlockPos(4, 2, 0);
+        BlockPos motorPos = new BlockPos(1, 2, 6);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        MotorBlockEntity motor = motor(h, motorPos, (int) Power.SYNC_RPM, 2);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, busPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        h.startSequence()
+                .thenIdle(80)
+                .thenExecute(() -> {
+                    double megawatts = Power.megawatts(motor.demandSu());
+                    double length = Math.sqrt(h.absolutePos(busPos).distSqr(h.absolutePos(motorPos)));
+                    double lost = Power.MOTOR_KV * Power.WIRE_DROP * length * Power.kiloamps(megawatts, Power.MOTOR_KV) / WireType.COPPER.kiloamps;
+                    double end = PowerNetwork.kilovolts(h.getLevel(), h.absolutePos(motorPos), 0);
+                    h.assertTrue(motor.live() && megawatts > 4, "The motor should be drawing over 4 MW: " + megawatts);
+                    h.assertTrue(bus.kilovolts() < Power.MOTOR_KV - 0.005 && bus.kilovolts() > Power.MOTOR_KV * 0.99, "A loaded transformer should give a little under its voltage: " + bus.kilovolts());
+                    h.assertTrue(lost > 0.02 && Math.abs(bus.kilovolts() - end - lost) < lost * 0.2, "The wire should lose " + lost + " kV to the motor: " + bus.kilovolts() + " to " + end);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void lightningOnAWireIsTakenByAnArresterOrARodAndOtherwiseCostsEquipment(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos breakerPos = new BlockPos(2, 2, 0);
+        BlockPos main = new BlockPos(6, 2, 0);
+        BlockPos arresterPos = new BlockPos(5, 2, 3);
+        BlockPos rodPos = new BlockPos(4, 2, 2);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        transformer(h, main, MAIN);
+        h.setBlock(arresterPos, CMBlocks.SURGE_ARRESTER.get());
+        wire(h, WireType.LINE, gridPos, 0, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, WireType.LINE, breakerPos, BreakerBlockEntity.LOAD, main, TransformerBlockEntity.HIGH);
+        wire(h, WireType.LINE, arresterPos, 0, main, TransformerBlockEntity.HIGH);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        SurgeArresterBlockEntity arrester = h.getBlockEntity(arresterPos);
+        Vec3 over = Vec3.atCenterOf(h.absolutePos(new BlockPos(4, 3, 0)));
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> breaker.close())
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(PowerNetwork.strikeNear(h.getLevel(), over, 4.0, false), "A strike beside a wire should find it");
+                    h.assertTrue(arrester.surges() == 1 && breaker.closed() && h.getBlockState(main).is(CMBlocks.TRANSFORMER.get()), "An arrester on the line should take the surge and nothing be lost");
+                    WireLinks.cutAll(h.getLevel(), h.absolutePos(arresterPos));
+                    h.setBlock(rodPos, Blocks.LIGHTNING_ROD);
+                })
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(PowerNetwork.strikeNear(h.getLevel(), over, 4.0, false), "A strike beside a wire should find it");
+                    h.assertTrue(arrester.surges() == 1 && breaker.closed() && h.getBlockState(main).is(CMBlocks.TRANSFORMER.get()), "A lightning rod close by should take the strike off the wire");
+                    h.setBlock(rodPos, Blocks.AIR);
+                })
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(PowerNetwork.strikeNear(h.getLevel(), over, 4.0, false), "A strike beside a wire should find it");
+                    h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("trip.surge"), "With nothing to take it the surge should trip the breaker on that line: " + breaker.tripReason());
+                    h.assertTrue(h.getBlockState(main).isAir() && breaker.wires().all().size() == 1, "It should cost the struck wire and the nearest transformer");
                 })
                 .thenSucceed();
     }

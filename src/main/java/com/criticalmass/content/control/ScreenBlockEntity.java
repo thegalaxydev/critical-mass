@@ -404,7 +404,12 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             return engine.status();
         }
         if (be instanceof GridTieBlockEntity tie) {
-            return tie.ordering() ? "criticalmass.grid.ordering" : "criticalmass.grid.idle";
+            return switch (tie.event()) {
+                case OUTAGE -> "criticalmass.grid.lost";
+                case DIP -> "criticalmass.grid.dipping";
+                case SWING -> "criticalmass.grid.swinging";
+                default -> tie.ordering() ? "criticalmass.grid.ordering" : "criticalmass.grid.idle";
+            };
         }
         if (be instanceof SteamTurbineBlockEntity t) {
             return t.status();

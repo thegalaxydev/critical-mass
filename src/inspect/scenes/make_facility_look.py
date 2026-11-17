@@ -14,6 +14,7 @@ VIEWS = {
     "entrance": ((36, 1, 44), (32, 6, 10), False),
     "switchyard": ((55, 3, 5), (48, 3, -4), False),
     "switchyard_wall": ((50, 2, -11), (46, 4, -3), False),
+    "tower_feeder": ((15, 2, -11), (22, 4, -13), False),
     "generator": ((31, 7, 4), (29, 8, -1), False),
     "unit_bus": ((34, 7, 2), (37, 8, -4), False),
     "station_bus": ((38, 1, -1), (41, 2, -6), False),
