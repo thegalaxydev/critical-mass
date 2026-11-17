@@ -193,6 +193,12 @@ public class InspectionHarness {
         if (step.has("useItem") && step.get("useItem").getAsBoolean() && mc.player != null && mc.gameMode != null) {
             note("useItem " + mc.player.getMainHandItem().getItem() + " -> " + mc.gameMode.useItem(mc.player, InteractionHand.MAIN_HAND));
         }
+        if (step.has("tooltip") && step.get("tooltip").getAsBoolean() && mc.player != null) {
+            ItemStack held = mc.player.getMainHandItem();
+            for (Component line : held.getTooltipLines(net.minecraft.world.item.Item.TooltipContext.of(mc.level), mc.player, net.minecraft.world.item.TooltipFlag.NORMAL)) {
+                note("tooltip " + line.getString());
+            }
+        }
         if (step.has("jei")) {
             note("jei " + step.get("jei").getAsString() + " -> " + InspectJeiPlugin.showRecipes(step.get("jei").getAsString()));
         }

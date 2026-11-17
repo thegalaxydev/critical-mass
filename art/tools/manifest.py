@@ -1,351 +1,243 @@
-import base64
 import datetime
 import glob
-import io
 import json
 import os
 import re
-import sys
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import art
-import specs
-import gen
 from PIL import Image
 
-ROOT = art.ROOT
-MOD = gen.MOD
-RES = gen.RES
+MOD = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+RES = os.path.join(MOD, "src", "main", "resources", "assets", "criticalmass")
 DOCS = os.path.join(MOD, "docs", "art")
-CONSOLE_SRC = os.path.join(ROOT, "build")
+NS = "criticalmass:"
+REL = "src/main/resources/assets/criticalmass/"
 
-KINETIC = {
-    "circulation_pump": {
-        "role": "consumer", "impact_su": "4.0 per RPM (CMStress.CIRCULATION_PUMP_IMPACT, provisional)",
-        "block_class": "DirectionalAxisKineticBlock (facing = outlet, axis_along_first selects the shaft axis perpendicular to facing)",
-        "shaft_faces": "both faces on the rotation axis (hasShaftTowards: face.axis == rotation axis)",
-        "axis": "perpendicular to the fluid axis; 2 options per facing",
-        "placement": "6 facings x 2 shaft orientations; facing defaults to looking direction, shift reverses",
-        "rotating": "circulation_pump_rotor partial: Create shaft (create:block/axis) plus two brass drive hubs on the shaft faces",
-        "stationary": "housing, copper pipe body, red outlet and blue inlet flanges",
-        "direction": "rotor turns exactly with network speed and direction (Create SingleAxisRotatingVisual / KineticBlockEntityRenderer); 1:1 with input shaft",
-        "renderer": "Flywheel visual SingleAxisRotatingVisual.of(CIRCULATION_PUMP_ROTOR); fallback BER AxialRotorRenderer when visualization is unsupported",
-    },
-    "steam_turbine": {
-        "role": "generator (GeneratingKineticBlockEntity) running on steam energy (heat above saturated water); 16 RPM whenever it delivers capacity; admission cut by redstone governor or a disconnected shaft",
-        "impact_su": "capacity = delivered heat x 4 SU per HU/t (CMThermal.SU_PER_HEAT), independent of RPM; 0 with no delivered heat",
-        "block_class": "HorizontalKineticBlock (blockstate property 'facing' = the side the big end and the shaft face)",
-        "shaft_faces": "the front end of the three-block structure, through a shaft pass-through part",
-        "axis": "horizontal, along the facing",
-        "placement": "big end faces the player; needs a clear three-block space and fills it with invisible structure blocks, as Create's large water wheel does; steam goes in through the back-centre part and out through the bottom-centre or top-centre part, whichever has a pipe, and an exhaust duct shows only there",
-        "rotating": "steam_turbine_rotor partial: the shaft and six bladed discs, seen through the open front and the side windows",
-        "stationary": "three stepped octagonal casing rings with an open framed window in each side, five stator rings and the back plate",
-        "direction": "rotor follows network speed and direction 1:1",
-        "renderer": "Flywheel visual SingleAxisRotatingVisual.of(STEAM_TURBINE_ROTOR); fallback BER AxialRotorRenderer",
-    },
-    "control_rod_drive": {
-        "role": "consumer", "impact_su": "1.0 per RPM (CMStress.CONTROL_ROD_DRIVE_IMPACT, provisional)",
-        "block_class": "HorizontalKineticBlock that is also a Create cogwheel (blockstate 'facing' only turns the case)",
-        "shaft_faces": "none; it is a cogwheel on a vertical axis and meshes with Cogwheels and other drives beside it",
-        "axis": "vertical",
-        "placement": "4 horizontal facings, which only turn the case",
-        "rotating": "Create's cogwheel_shaftless between the gear case halves, turning with the network; it meshes with Cogwheels and other drives beside it",
-        "stationary": "bolted base, the two halves of the gear case, cap plate and brass rod sleeve; the threaded rod rises through the sleeve as it withdraws",
-        "direction": "the cogwheel follows network speed and direction 1:1; the rod follows its own travel",
-        "renderer": "Flywheel SingleAxisRotatingVisual of Create's shaftless cogwheel; the block entity renderer draws the rod and, without Flywheel, the cogwheel",
-    },
-}
-
-STATE_NOTES = {
-    "primary_coolant_port": "mode=inlet|outlet toggled with Create's wrench (CoolantPortBlock.onWrenched); inlet = blue collar, outlet = red collar",
-    "reactor_vessel_casing": "crack=0..3 overlay models (textures/block/casing_crack_1..3, Minecraft's breaking stages 3, 6 and 9 recoloured to the author's stage 5, drawn translucent over the casing) follow integrity tracked by the controller: 75%+ intact, 50-75% stage 1, 25-50% stage 2, under 25% stage 3",
-    "relief_valve": "venting=true|false; inline on pipe (faces off the vent axis), with north|south|east|west|up|down=true bringing out a flanged pipe stub on each side that has a pipe; vents through its front at 8 bar until 6 bar, redstone output while venting",
-    "shielded_hatch": "vanilla iron-trapdoor behaviour: open/close by redstone only; models use vanilla trapdoor templates",
-    "fuel_channel": "rotated pillar (axis)", "control_channel": "rotated pillar (axis)", "coolant_channel": "rotated pillar (axis)",
-}
+AUTHOR = "author"
+SCRIPT = "script"
+GENERATED = "generated"
+LOCONAUTICS = "Create: Loconautics, with permission"
+UNRECORDED = "not recorded"
 
 ART = {
-    "reactor_vessel_casing": "author",
-    "circulation_pump": "author",
-    "cooling_tower_packing": "author",
-    "radiator_panel": "author",
-    "reinforced_valve": "author",
-    "shielding_concrete": "author",
-    "shielded_glass": "author",
-    "open_waste_canister": "author",
-    "sealed_waste_canister": "author",
-    "steel_block": "author",
-    "reactor_alloy_block": "author",
-    "steel_ingot": "author",
-    "steel_nugget": "author",
-    "steel_plate": "author",
-    "control_rod": "author",
-    "turbine_blade": "author",
-    "sealing_gasket": "author",
-    "welding_torch": "author",
-    "dosimeter": "author",
-    "survey_meter": "author",
-    "decontamination_compound": "author",
-    "ceramic_fuel_pellet": "author",
-    "reactor_alloy_ingot": "author",
-    "reactor_alloy_sheet": "author",
-    "reactor_controller": "script",
-    "reactor_viewport": "script",
-    "fuel_channel": "script",
-    "control_channel": "script",
-    "coolant_channel": "script",
-    "reactor_service_port": "script",
-    "primary_coolant_port": "script",
-    "reinforced_pipe": "script",
-    "heat_exchanger": "script",
-    "condenser": "script",
-    "centrifuge": "script",
-    "pressurizer": "script",
-    "ruined_channel": "script",
-    "corium": "script",
-    "boiler_heating_plate": "script",
-    "shielded_hatch": "script",
-    "spent_fuel_rack": "script",
-    "shielded_cask": "script",
-    "plant_screen": "script",
-    "reactor_signal_interface": "script",
-    "uranium_ore": "script",
-    "deepslate_uranium_ore": "script",
-    "plant_linker": "script",
-    "enriched_uranium": "script",
-    "depleted_uranium": "script",
-    "raw_uranium": "generated",
-    "crushed_uranium": "generated",
-    "uranium_concentrate": "generated",
-    "fuel_cladding": "generated",
-    "empty_fuel_assembly": "generated",
-    "fuel_assembly": "generated",
-    "spent_fuel_assembly": "generated",
-    "damaged_fuel_assembly": "generated",
-    "protective_hood": "generated",
-    "protective_suit": "generated",
-    "protective_leggings": "generated",
-    "protective_boots": "generated",
-    "primary_coolant": "generated",
-    "steam": "generated",
-    "contaminated_coolant": "generated",
-    "control_rod_drive": "script",
-    "steam_turbine": "author's model, script texture",
+    "reactor_vessel_casing": AUTHOR, "shielding_concrete": AUTHOR, "shielded_glass": AUTHOR, "steel_block": AUTHOR, "reactor_alloy_block": AUTHOR,
+    "open_waste_canister": AUTHOR, "sealed_waste_canister": AUTHOR, "incomplete_waste_canister": AUTHOR, "reinforced_valve": AUTHOR,
+    "circulation_pump": AUTHOR, "radiator_panel": AUTHOR, "cooling_tower_packing": AUTHOR,
+    "steam_turbine": "author's model, script texture", "steam_turbine_structure": "author's model, script texture",
     "relief_valve": "script, approved",
-    "reactor_alloy_dashboard": "not recorded"
+    "reactor_controller": SCRIPT, "reactor_signal_interface": SCRIPT, "primary_coolant_port": SCRIPT, "shielded_hatch": SCRIPT, "reactor_service_port": SCRIPT,
+    "heat_exchanger": SCRIPT, "condenser": SCRIPT, "boiler_heating_plate": SCRIPT, "generator": SCRIPT, "circuit_breaker": SCRIPT, "grid_connection": SCRIPT,
+    "insulator": SCRIPT, "electric_motor": SCRIPT, "bus_bar": SCRIPT, "transformer": SCRIPT, "disconnect_switch": SCRIPT, "earthing_switch": SCRIPT,
+    "station_battery": SCRIPT, "diesel_engine": SCRIPT, "transfer_switch": SCRIPT, "surge_arrester": SCRIPT, "burnt_equipment": SCRIPT,
+    "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
+    "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": SCRIPT,
+    "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
+    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own",
+    "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,
+    "welding_torch": AUTHOR, "dosimeter": AUTHOR, "survey_meter": AUTHOR, "decontamination_compound": AUTHOR, "ceramic_fuel_pellet": AUTHOR,
+    "reactor_alloy_ingot": AUTHOR, "reactor_alloy_sheet": AUTHOR,
+    "raw_uranium": GENERATED, "uranium_concentrate": GENERATED, "fuel_cladding": GENERATED, "empty_fuel_assembly": GENERATED, "incomplete_fuel_assembly": GENERATED,
+    "fuel_assembly": GENERATED, "spent_fuel_assembly": GENERATED, "damaged_fuel_assembly": GENERATED,
+    "protective_hood": GENERATED, "protective_suit": GENERATED, "protective_leggings": GENERATED, "protective_boots": GENERATED,
+    "enriched_uranium": SCRIPT, "depleted_uranium": SCRIPT, "plant_linker": SCRIPT, "power_wire": SCRIPT, "power_cable": SCRIPT, "transmission_line": SCRIPT,
+    "dashboard_alarm": UNRECORDED, "dashboard_button": LOCONAUTICS, "dashboard_switch": LOCONAUTICS, "dashboard_lever": LOCONAUTICS, "dashboard_gauge": LOCONAUTICS,
+    "primary_coolant": GENERATED, "contaminated_coolant": GENERATED, "steam": GENERATED, "fuel_oil": SCRIPT,
 }
-GONE = {"alarm_siren", "docking_service_connector", "contaminated_filter", "emergency_coolant_tank", "fuel_assembly_bench", "instrumentation_panel", "repair_kit", "shielding_plate", "steam_bypass_valve"}
-ART_LEGEND = "The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is."
-
-
-def art(name, fallback="not recorded"):
-    return ART.get(name, "removed" if name in GONE else fallback)
-
-
-REFS = {
-    "reactor_vessel_casing": ["create:block/andesite_casing", "simulated:block/iron_gearbox"],
-    "circulation_pump": ["create:block/pump", "create:block/pipes", "create:block/gearbox"],
-    "steam_turbine": ["create:block/engine", "aeronautics:block/propeller_bearing", "create:block/axis"],
-    "control_rod_drive": ["aeronautics:block/gyroscopic_propeller_bearing", "create:block/gearbox"],
-    "relief_valve": ["create:block/fluid_pipe", "create:block/fluid_valve"],
-    "heat_exchanger": ["create:block/fluid_tank_top", "create:block/pipes"],
-    "primary_coolant_port": ["create:block/pipes"],
+OTHER_ART = [("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT)]
+OWNERS = {"block/control_rod_cap": "control_rod_drive", "block/control_rod_shaft": "control_rod_drive"}
+DIRECT = {
+    "block/casing_crack_1": "reactor_vessel_casing", "block/casing_crack_2": "reactor_vessel_casing", "block/casing_crack_3": "reactor_vessel_casing",
+    "block/reactor_vessel_casing_connected": "reactor_vessel_casing", "block/shielded_glass_connected": "shielded_glass",
 }
-
-ISSUES = {
-    "reactor_vessel_casing": ["No connected textures: tiled vessels show a frame on every block. Connected-texture support is a follow-up."],
-    "steam_turbine": ["Takes up three blocks each way, less the four back corners."],
-    "control_rod_drive": ["The rack is static: rod insertion control is not implemented."],
-    "shielded_glass": ["Translucent; depth sorting against other translucent blocks has not been checked."],
-    "crushed_uranium": ["Create already ships create:crushed_raw_uranium (enabled by uranium tags); this addon item may be redundant. Needs a design decision."],
-    "survey_meter": ["Item has no behaviour yet (measurement is task tsk-073)."],
-    "dosimeter": ["Item has no behaviour yet (task tsk-074)."],
-    "protective_hood": ["First-person sleeves are not applicable: vanilla does not render armor on first-person arms.", "Slim (Alex) model: checked in the 1.21.1 client code, not with an Alex skin in game. PlayerRenderer bakes PLAYER_SLIM_INNER/OUTER_ARMOR for slim players, and LayerDefinitions registers them with the same layer definitions as the wide model, so the outfit geometry and texture are identical."],
-    "fuel_assembly": ["No remaining-fuel overlay: fuel item data is not implemented yet (tsk-070)."],
-}
-
-CONTENT_FILES = [os.path.join(CONSOLE_SRC, "p2_data.js"), os.path.join(CONSOLE_SRC, "p2b_content.js")]
+NO_ITEM = {"burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure"}
+LEGEND = ("The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: "
+          "both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. "
+          "`not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.")
 
 
-def console_ids():
-    m = {}
-    for f in CONTENT_FILES:
-        t = open(f, encoding="utf8").read()
-        for mm in re.finditer(r'id: "((?:blk|itm|fld)-[a-z0-9-]+)", name: "([^"]+)",(?: ownership: "[a-z]+",)? registryId: "([^"]+)"', t):
-            cid, name, reg = mm.groups()
-            if reg.startswith("criticalmass:"):
-                m[reg.split(":")[1]] = (cid, name)
-        for mm in re.finditer(r'protectiveItem\("(itm-[a-z-]+)", "([^"]+)", "([a-z]+)"', t):
-            m["protective_" + mm.group(3)] = (mm.group(1), mm.group(2))
-    return m
+def names(folder, ext):
+    base = os.path.join(RES, folder)
+    return sorted(os.path.relpath(f, base).replace(os.sep, "/")[:-len(ext)] for f in glob.glob(os.path.join(base, "**", "*" + ext), recursive=True))
 
 
-def console_tasks():
-    tasks = {}
-    for f in CONTENT_FILES:
-        t = open(f, encoding="utf8").read()
-        for mm in re.finditer(r'T2?\("(tsk-\d+)", "ms-\d", "([^"]+)", "[A-Za-z]+", \[[^\]]*\], \[([^\]]*)\]', t):
-            tid, title, links = mm.groups()
-            for l in re.findall(r'"([a-z]+-[a-z0-9-]+)"', links):
-                tasks.setdefault(l, []).append(tid)
-    return tasks
+def strings(node, key):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == key and isinstance(v, str):
+                yield v
+            else:
+                yield from strings(v, key)
+    elif isinstance(node, list):
+        for v in node:
+            yield from strings(v, key)
 
 
-def final_source(key):
-    side = os.path.join(art.ART, "final", key + ".json")
-    if os.path.exists(side):
-        return json.load(open(side))
-    vs = sorted(glob.glob(os.path.join(art.ART, "generated", key + "-v*.png")), key=lambda f: int(re.search(r"-v(\d+)\.png$", f).group(1)))
-    return {"src": os.path.basename(vs[-1]) if vs else None}
+def read(path):
+    return json.load(open(path, encoding="utf8"))
 
 
-def png_data_uri(path, size=None, upscale=None):
-    im = Image.open(path).convert("RGBA")
-    if size:
-        im = im.resize(size, Image.LANCZOS)
-    if upscale:
-        im = im.resize((im.width * upscale, im.height * upscale), Image.NEAREST)
-    buf = io.BytesIO()
-    im.save(buf, "PNG", optimize=True)
-    return "data:image/png;base64," + base64.b64encode(buf.getvalue()).decode()
+class Use:
+    def __init__(self):
+        self.models = set()
+        self.own = set()
+        self.borrowed = set()
+        self.missing = set()
+
+    def model(self, ref):
+        if not ref.startswith(NS) or ref in self.models:
+            return
+        path = os.path.join(RES, "models", ref[len(NS):] + ".json")
+        if not os.path.exists(path):
+            self.missing.add("model " + ref)
+            return
+        self.models.add(ref)
+        node = read(path)
+        for tex in node.get("textures", {}).values():
+            if tex.startswith("#"):
+                continue
+            if tex.startswith(NS):
+                self.own.add(tex[len(NS):])
+                if not os.path.exists(os.path.join(RES, "textures", tex[len(NS):] + ".png")):
+                    self.missing.add("texture " + tex)
+            else:
+                self.borrowed.add(tex if ":" in tex else "minecraft:" + tex)
+        for key in ("parent", "model"):
+            for inner in strings(node, key):
+                self.model(inner)
 
 
-def build(qa=None, render_icons=True):
-    import iso
-    qa = qa or {}
-    models = gen.build_models()
-    ids = console_ids()
-    tasks = console_tasks()
-    icons_dir = os.path.join(DOCS, "icons")
-    os.makedirs(icons_dir, exist_ok=True)
-    records = []
-    atlases_of = {}
-    for name, m in models.items():
-        atlases_of.setdefault(name, set()).add(m.atlas)
-    for name, d in specs.BLOCK_DEFS.items():
-        model_names = [n for n in models if n == name or n.startswith(name + "_")]
-        if name == "shielded_hatch":
-            model_names = ["shielded_hatch"]
-        atlases = sorted({models[n].atlas for n in model_names})
-        tex = []
-        for a in atlases:
-            p = os.path.join(RES, "textures", "block", a + ".png")
-            size = Image.open(p).size if os.path.exists(p) else None
-            src = final_source(a)
-            mdl = next(models[n] for n in model_names if models[n].atlas == a)
-            regions = {r.key: [r.x, r.y, r.w, r.h] for r in (mdl.share or mdl).regions.values()}
-            tex.append({"path": "src/main/resources/assets/criticalmass/textures/block/%s.png" % a, "exists": os.path.exists(p), "size": size, "generated_source": src.get("src"), "uv_regions": regions})
-        partials = [n for n in model_names if n.endswith(("_rotor", "_pinion"))]
-        cid, cname = ids.get(name, (None, d["lang"]))
-        icon_path = os.path.join(icons_dir, "block_" + name + ".png")
-        if render_icons:
-            refs = ["criticalmass:block/" + n for n in model_names if not n.endswith(("_rotor", "_pinion", "_powered", "_connected", "_outlet", "_arm", "_vertical"))]
-            if name == "shielded_hatch":
-                refs = ["criticalmass:block/shielded_hatch"]
-            extra = []
-            if name in ("circulation_pump", "steam_turbine"):
-                extra = [("criticalmass:block/%s_rotor" % name, lambda c: (c[1], 16 - c[0], c[2]))]
-            if name == "control_rod_drive":
-                extra = [("criticalmass:block/control_rod_drive_pinion", lambda c: (c[0], 16 - c[2], c[1]))]
-            try:
-                iso.render(refs + extra, 96, 45).save(icon_path)
-            except Exception as e:
-                print("icon failed", name, e)
-        state = d["state"][0]
-        records.append({
-            "key": name, "registry_id": "criticalmass:" + name, "type": "block", "console_id": cid, "name": cname,
-            "textures": tex, "block_models": ["src/main/resources/assets/criticalmass/models/block/%s.json" % n for n in model_names],
-            "blockstate": "src/main/resources/assets/criticalmass/blockstates/%s.json" % name,
-            "item_model": "src/main/resources/assets/criticalmass/models/item/%s.json" % name,
-            "inventory_icon": "item model %s (%s)" % (name, "merged housing + rotor, static" if name in ("circulation_pump", "steam_turbine") else "parent: block model"),
-            "placed_appearance": "blockstate %s (%s)" % (name, state),
-            "state_notes": STATE_NOTES.get(name, ""),
-            "partials": partials, "kinetic": KINETIC.get(name),
-            "references": REFS.get(name, ["see docs/art/REFERENCES.md"]),
-            "generation": art(name),
-            "integration": "integrated" if all(t["exists"] for t in tex) else "missing-texture",
-            "verification": qa.get(name, {"iso": False, "in_game": False, "moving_body": False}),
-            "issues": ISSUES.get(name, []),
-            "related_tasks": sorted(set(tasks.get(cid, []) + ["tsk-068"])) if cid else ["tsk-068"],
-            "icon": os.path.relpath(icon_path, MOD).replace(os.sep, "/"),
-        })
-    for name, d in specs.ITEM_DEFS.items():
-        p = os.path.join(RES, "textures", "item", name + ".png")
-        cid, cname = ids.get(name, (None, d["lang"]))
-        src = final_source("item__" + name)
-        rec = {
-            "key": name, "registry_id": "criticalmass:" + name, "type": "item", "console_id": cid, "name": cname,
-            "textures": [{"path": "src/main/resources/assets/criticalmass/textures/item/%s.png" % name, "exists": os.path.exists(p), "size": Image.open(p).size if os.path.exists(p) else None, "generated_source": src.get("src")}],
-            "item_model": "src/main/resources/assets/criticalmass/models/item/%s.json" % name,
-            "presentation": "flat sprite, %s" % ("item/handheld" if d.get("handheld") else "item/generated"),
-            "references": ["create:item/precision_mechanism", "create:item/brass_sheet"] if not name.startswith("protective") else ["create:item/goggles", "create:item/copper_diving_helmet"],
-            "generation": art(name),
-            "integration": "integrated" if os.path.exists(p) else "missing-texture",
-            "verification": qa.get(name, {"iso": False, "in_game": False}),
-            "issues": ISSUES.get(name, []),
-            "related_tasks": sorted(set(tasks.get(cid, []) + ["tsk-067", "tsk-068"])) if cid else ["tsk-068"],
-            "icon": "src/main/resources/assets/criticalmass/textures/item/%s.png" % name,
-        }
-        if name.startswith("protective_"):
-            layer = 2 if name == "protective_leggings" else 1
-            rec["equipment"] = {"texture": "src/main/resources/assets/criticalmass/textures/models/armor/protective_layer_%d.png" % layer, "size": [64, 32],
-                                "registration": "ArmorMaterial 'criticalmass:protective' (Registries.ARMOR_MATERIAL) with Layer('criticalmass:protective'); 1.21.1 humanoid armor layers"}
+def texture(name):
+    path = os.path.join(RES, "textures", name + ".png")
+    size = list(Image.open(path).size) if os.path.exists(path) else None
+    return {"path": REL + "textures/" + name + ".png", "size": size, "animated": os.path.exists(path + ".mcmeta")}
+
+
+def record(kind, key, name, use):
+    return {"key": key, "registry_id": NS + key, "type": kind, "name": name, "art": ART.get(key, UNRECORDED),
+            "textures": [texture(t) for t in sorted(use.own)], "borrowed_textures": sorted(use.borrowed),
+            "models": sorted(REL + "models/" + m[len(NS):] + ".json" for m in use.models), "missing": sorted(use.missing)}
+
+
+def other_art(name):
+    for prefix, label in OTHER_ART:
+        if name.startswith(prefix):
+            return label
+    return UNRECORDED
+
+
+def versions():
+    out = {}
+    for line in open(os.path.join(MOD, "gradle.properties"), encoding="utf8"):
+        m = re.match(r"(\w+)_version=(.+)", line.strip())
+        if m:
+            out[m.group(1)] = m.group(2)
+    return out
+
+
+def build():
+    lang = read(os.path.join(RES, "lang", "en_us.json"))
+    states = names("blockstates", ".json")
+    records, taken_models, taken_textures, unnamed = [], set(), set(), []
+    blocks = {}
+    for key in states:
+        use = Use()
+        for ref in set(strings(read(os.path.join(RES, "blockstates", key + ".json")), "model")):
+            use.model(ref)
+        if key not in NO_ITEM:
+            use.model(NS + "item/" + key)
+        blocks[key] = use
+    for name in names("models/block", ".json"):
+        ref = NS + "block/" + name
+        if any(ref in use.models for use in blocks.values()):
+            continue
+        owner = OWNERS.get("block/" + name) or max((k for k in states if name == k or name.startswith(k + "_") or name.startswith(k + "/")), key=len, default=None)
+        if owner:
+            blocks[owner].model(ref)
+    for name, owner in DIRECT.items():
+        blocks[owner].own.add(name)
+    for key in states:
+        use = blocks[key]
+        title = lang.get("block.criticalmass." + key)
+        if not title:
+            unnamed.append(NS + key)
+        rec = record("block", key, title, use)
+        rec["blockstate"] = REL + "blockstates/" + key + ".json"
+        rec["item"] = key not in NO_ITEM
         records.append(rec)
-    records.append({"key": "contaminated_filter", "registry_id": "TBD", "type": "item", "console_id": "itm-filter", "name": "Contaminated Filter", "textures": [],
-                    "generation": "deferred", "integration": "deferred", "verification": {}, "issues": ["Deferred: depends on a filter/purification system that is not designed. No art made on purpose."],
-                    "related_tasks": [], "icon": None})
-    for n, lang in specs.FLUID_LANG.items():
-        st = os.path.join(RES, "textures", "fluid", n + "_still.png")
-        src = final_source("fluid__" + n)
-        cid = {"primary_coolant": "fld-primary-coolant", "steam": "fld-steam", "contaminated_coolant": "fld-contaminated-coolant"}[n]
-        records.append({"key": n, "registry_id": "criticalmass:" + n, "type": "fluid", "console_id": cid, "name": lang,
-                        "textures": [{"path": "src/main/resources/assets/criticalmass/textures/fluid/%s_still.png" % n, "exists": os.path.exists(st), "size": [16, 256], "animated": "16 frames, frametime 3, interpolated"},
-                                     {"path": "src/main/resources/assets/criticalmass/textures/fluid/%s_flow.png" % n, "exists": os.path.exists(st.replace("_still", "_flow")), "size": [32, 512], "animated": "16 frames scrolling, frametime 2"}],
-                        "registration": "FluidType + BaseFlowingFluid source/flowing, no world block, no bucket; IClientFluidTypeExtensions still/flow textures",
-                        "generation": art(n), "integration": "integrated" if os.path.exists(st) else "missing-texture",
-                        "verification": qa.get(n, {"in_game": False}), "issues": ["No world block or bucket by design; it is only visible inside Create tanks and pipes (animation confirmed in a tank in game). Textures are stitched into the block atlas through assets/minecraft/atlases/blocks.json (directory source fluid/)."],
-                        "related_tasks": ["tsk-078", "tsk-079", "tsk-080"], "icon": "src/main/resources/assets/criticalmass/textures/fluid/%s_still.png" % n})
-    records.append({"key": "water", "registry_id": "minecraft:water", "type": "fluid", "console_id": "fld-water", "name": "Water", "textures": [], "generation": "vanilla", "integration": "vanilla", "verification": {}, "issues": [], "related_tasks": [], "icon": None})
-    manifest = {"generated": datetime.datetime.now().isoformat(timespec="seconds"), "minecraft": "1.21.1", "neoforge": "21.1.262", "create": "6.0.10-280", "aeronautics": "1.3.2", "sable": "2.0.6", "flywheel": "1.0.6",
-                "density": "16 texels per block; items 16x16", "records": records}
-    os.makedirs(DOCS, exist_ok=True)
-    json.dump(manifest, open(os.path.join(DOCS, "ASSET_MANIFEST.json"), "w"), indent=1)
+        taken_models |= use.models
+        taken_textures |= use.own
+    for key in names("models/item", ".json"):
+        if key in states:
+            continue
+        use = Use()
+        use.model(NS + "item/" + key)
+        title = lang.get("item.criticalmass." + key) or lang.get("block.criticalmass." + key)
+        if not title:
+            unnamed.append(NS + key)
+        records.append(record("item", key, title, use))
+        taken_models |= use.models
+        taken_textures |= use.own
+    for key in sorted({n.split("/")[1].rsplit("_", 1)[0] for n in names("textures", ".png") if n.startswith("fluid/")}):
+        use = Use()
+        use.own = {"fluid/%s_still" % key, "fluid/%s_flow" % key}
+        title = lang.get("fluid.criticalmass." + key) or lang.get("fluid_type.criticalmass." + key)
+        records.append(record("fluid", key, title, use))
+        taken_textures |= use.own
+    parts = Use()
+    for name in names("models", ".json"):
+        if NS + name not in taken_models:
+            parts.model(NS + name)
+    others = []
+    for name in names("textures", ".png"):
+        if name in taken_textures:
+            continue
+        used = name in parts.own or name.startswith(("gui/", "models/armor/", "particle/")) or name == "block/dashboard_part/alarm_atlas_lit"
+        others.append({**texture(name), "art": other_art(name), "used": used})
+    sounds = []
+    for key, node in read(os.path.join(RES, "sounds.json")).items():
+        files = [s if isinstance(s, str) else s.get("name") for s in node.get("sounds", [])]
+        sounds.append({"key": key, "files": [REL + "sounds/" + f.split(":")[-1] + ".ogg" for f in files], "subtitle": lang.get(node.get("subtitle", ""), ""),
+                       "missing": [f for f in files if not os.path.exists(os.path.join(RES, "sounds", f.split(":")[-1] + ".ogg"))], "art": SCRIPT})
+    problems = [r["registry_id"] + ": " + m for r in records for m in r["missing"]] + ["missing " + m for m in sorted(parts.missing)]
+    problems += ["no name in en_us.json: " + u for u in unnamed] + ["sound file missing: " + f for s in sounds for f in s["missing"]]
+    problems += ["texture nothing uses: " + o["path"].split("/textures/")[-1] for o in others if not o["used"]]
+    problems += ["no art record: " + r["registry_id"] for r in records if r["key"] not in ART]
+    v = versions()
+    manifest = {"generated": datetime.date.today().isoformat(), "minecraft": v.get("minecraft"), "neoforge": v.get("neo"), "create": v.get("create"),
+                "aeronautics": v.get("aeronautics"), "sable": v.get("sable"), "flywheel": v.get("flywheel"), "loconautics": v.get("loconautics"),
+                "records": records, "other_textures": others, "part_models": sorted(REL + "models/" + m[len(NS):] + ".json" for m in parts.models), "sounds": sounds,
+                "problems": problems}
+    json.dump(manifest, open(os.path.join(DOCS, "ASSET_MANIFEST.json"), "w", encoding="utf8", newline="\n"), indent=1)
     write_md(manifest)
     return manifest
 
 
-def yesno(v):
-    return {True: "yes", False: "no"}.get(v, str(v)) if not isinstance(v, str) else v
+def sized(t):
+    return "`%s`%s" % (t["path"].split("/textures/")[-1], " " + "x".join(map(str, t["size"])) if t["size"] else " missing")
 
 
 def write_md(manifest):
-    out = ["# Asset manifest", "", "Generated %s from `art/tools/manifest.py`. Machine-readable version: `ASSET_MANIFEST.json` (UV regions, model and texture paths, kinetic specs)." % manifest["generated"], "",
-           "Minecraft %s, NeoForge %s, Create %s, Aeronautics %s, Sable %s. %s." % (manifest["minecraft"], manifest["neoforge"], manifest["create"], manifest["aeronautics"], manifest["sable"], manifest["density"]), "", ART_LEGEND, ""]
+    out = ["# Asset manifest", "",
+           "Made %s by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`." % manifest["generated"], "",
+           "Minecraft %s, NeoForge %s, Create %s, Aeronautics %s, Sable %s, Loconautics %s." % tuple(manifest[k] for k in ("minecraft", "neoforge", "create", "aeronautics", "sable", "loconautics")), "", LEGEND, ""]
     for kind, title in (("block", "Blocks"), ("item", "Items"), ("fluid", "Fluids")):
         recs = [r for r in manifest["records"] if r["type"] == kind]
-        out += ["## %s (%d)" % (title, len(recs)), "", "| Registry ID | Textures | Art | Integration | Verified | Issues |", "|---|---|---|---|---|---|"]
+        out += ["## %s (%d)" % (title, len(recs)), "", "| Registry ID | Name | Art | Textures | Other mods' textures | Models |", "|---|---|---|---|---|---|"]
         for r in recs:
-            tex = "<br>".join("`%s` %s" % (t["path"].split("/textures/")[-1], "x".join(map(str, t["size"])) if t.get("size") else "") for t in r.get("textures", [])) or "none"
-            ver = ", ".join("%s: %s" % (k, yesno(v)) for k, v in r.get("verification", {}).items()) or "n/a"
-            iss = "<br>".join(r.get("issues", [])) or ""
-            out.append("| `%s` | %s | %s | %s | %s | %s |" % (r["registry_id"], tex, r["generation"], r["integration"], ver, iss.replace("|", "/")))
+            name = (r["name"] or "") + (" (no item)" if r.get("item") is False else "")
+            out.append("| `%s` | %s | %s | %s | %s | %d |" % (r["registry_id"], name, r["art"], "<br>".join(sized(t) for t in r["textures"]) or "none",
+                                                              "<br>".join("`%s`" % b for b in r["borrowed_textures"]), len(r["models"])))
         out.append("")
-    kin = [r for r in manifest["records"] if r.get("kinetic")]
-    out += ["## Kinetic blocks", ""]
-    for r in kin:
-        out += ["### `%s`" % r["registry_id"], ""] + ["- **%s**: %s" % (k.replace("_", " "), v) for k, v in r["kinetic"].items()] + ["- **partials**: " + ", ".join(r["partials"]), ""]
-    out += ["## Inventory icon vs placed appearance", ""]
-    for r in manifest["records"]:
-        if r["type"] == "block":
-            out.append("- `%s`: inventory = %s; placed = %s%s" % (r["key"], r["inventory_icon"], r["placed_appearance"], ("; " + r["state_notes"]) if r.get("state_notes") else ""))
-    out += ["", "## Equipment", ""]
-    for r in manifest["records"]:
-        if r.get("equipment"):
-            out.append("- `%s`: `%s` (%s), %s" % (r["key"], r["equipment"]["texture"].split("/textures/")[-1], "x".join(map(str, r["equipment"]["size"])), r["equipment"]["registration"]))
-    open(os.path.join(DOCS, "ASSET_MANIFEST.md"), "w", encoding="utf8").write(chr(10).join(out) + chr(10))
+    out += ["## Other textures (%d)" % len(manifest["other_textures"]), "", "Dashboard part sheets, the dashboard screen, the worn suit layers and effect sprites.", "", "| Texture | Art |", "|---|---|"]
+    out += ["| %s | %s |" % (sized(t), t["art"]) for t in manifest["other_textures"]]
+    out += ["", "## Sounds (%d)" % len(manifest["sounds"]), "", "All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`.", "", "| Sound | Subtitle | File |", "|---|---|---|"]
+    out += ["| `%s%s` | %s | %s |" % (NS, s["key"], s["subtitle"], "<br>".join("`%s`" % f.split("/assets/criticalmass/")[-1] for f in s["files"])) for s in manifest["sounds"]]
+    out += ["", "## Problems", ""]
+    out += ["- " + p for p in manifest["problems"]] or ["None: every model and texture a blockstate, item or sound points at exists, every texture is used, and everything has a name and an art record."]
+    open(os.path.join(DOCS, "ASSET_MANIFEST.md"), "w", encoding="utf8", newline="\n").write("\n".join(out) + "\n")
 
 
 if __name__ == "__main__":
-    qa = json.load(open(sys.argv[1])) if len(sys.argv) > 1 and os.path.exists(sys.argv[1]) else {}
-    m = build(qa)
-    print("records:", len(m["records"]))
+    m = build()
+    print("records:", len(m["records"]), "other textures:", len(m["other_textures"]), "sounds:", len(m["sounds"]))
+    for p in m["problems"]:
+        print("problem:", p)

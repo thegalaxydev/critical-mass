@@ -299,7 +299,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - An Electric Motor loses 0.4% with every start and 1% each time it rides through low voltage. At the end of its life it burns out.
   - A Transformer ages while its oil is hot. Five minutes close to exploding uses it up, and a milder overload does the same more slowly. Then it burns out, without a blast.
   - A Circuit Breaker's contacts wear each time it breaks a short circuit, by up to a third, and what it can break falls with them, down to a tenth of 1,500 MW. Asked to break more than it can, it fails.
-  - **Servicing:** use a Copper Sheet on the machine to give back a quarter of its condition. It must be dead: on a live machine you get the arc. Open its breaker, open a Disconnect Switch and close an Earthing Switch first.
+  - **Servicing:** use a Copper Sheet on the machine, anywhere but its value box, to give back a quarter of its condition. It must be dead: on a live machine you get the arc. Open its breaker, open a Disconnect Switch and close an Earthing Switch first.
   - A worn machine keeps its condition when it is broken and placed again, and its item shows it.
 - **Weather:** rain and thunder reach the plant's electrics.
   - **Rain:** Generators, Electric Motors, Station Batteries and Transfer Switches are indoor equipment. Live under open sky in the rain, one flashes over to earth every so often: the breaker nearest it trips, and with no breaker on its feeder it is lost. Put a roof over it. Transformers, breakers, switches, bus bars, insulators, arresters and wires stand the weather.
@@ -381,7 +381,7 @@ fluids in Create tanks, items, the worn outfit in several poses, a small reactor
 
 Besides commands, waits and screenshots, scenes can use `"rejoin": true` (save, quit and reopen the same world) and
 `"invoke": {"offset": [x, y, z], "method": "name", "far": true}` (call a public no-argument method on the block entity at that offset from the loaded Reactor Controller; `far` picks the controller on a sub-level).
-`"slot": n` selects a hotbar slot, `"use": [x, y, z, "face"]` right-clicks that block face with the held item, `"useItem": true` uses the held item in the air, and `"inventory": true` logs every inventory item with its components. With JEI in the dev runtime, `"jei": "<item id>"` opens JEI's recipes for that item and `"closeScreen": true` closes it.
+`"slot": n` selects a hotbar slot, `"use": [x, y, z, "face"]` right-clicks that block face with the held item, `"useItem": true` uses the held item in the air, and `"inventory": true` logs every inventory item with its components, and `"tooltip": true` logs the held item's tooltip lines. With JEI in the dev runtime, `"jei": "<item id>"` opens JEI's recipes for that item and `"closeScreen": true` closes it.
 
 ## Target and dependency versions
 
