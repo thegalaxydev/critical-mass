@@ -1,5 +1,7 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.content.HorizontalBlock;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -84,6 +86,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         current = kiloamps;
         through = megawatts;
         double ratio = kiloamps / pickupKiloamps();
+        if (ratio > 1 && relay <= 0) {
+            level.playSound(null, worldPosition, CMSounds.RELAY_CLICK.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
+        }
         if (ratio >= Power.RELAY_INSTANT) {
             trip("criticalmass.breaker.trip.fault");
             return true;
@@ -164,7 +169,7 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private void set(boolean closed) {
         level.setBlock(worldPosition, getBlockState().setValue(BreakerBlock.CLOSED, closed), Block.UPDATE_ALL);
         PowerNetwork.changed(level);
-        level.playSound(null, worldPosition, closed ? SoundEvents.PISTON_EXTEND : SoundEvents.PISTON_CONTRACT, SoundSource.BLOCKS, 0.6f, closed ? 0.7f : 0.9f);
+        level.playSound(null, worldPosition, closed ? CMSounds.BREAKER_CLOSE.get() : CMSounds.BREAKER_OPEN.get(), SoundSource.BLOCKS, 1.0f, 0.95f + level.random.nextFloat() * 0.1f);
         syncIn = 0;
         setChanged();
     }
@@ -218,13 +223,19 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
                 Hazard.destroy(level, worldPosition, 3.0f);
                 return;
             }
+            boolean heavy = current > pickupKiloamps();
+            Vec3 inside = Vec3.atCenterOf(worldPosition);
             tripReason = reason;
             locked = !reason.endsWith("trip.signal");
             relay = 0;
             current = 0;
             through = 0;
             set(false);
-            level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.6f);
+            level.playSound(null, worldPosition, CMSounds.BREAKER_TRIP.get(), SoundSource.BLOCKS, 1.6f, 1.0f);
+            if (heavy) {
+                Effects.pop(level, inside.add(0, 0.45, 0), reason.endsWith("trip.fault") ? 1.5f : 0.8f);
+                Effects.sound(level, inside, CMSounds.ARC_ZAP.get(), 1.0f, 1.0f);
+            }
         }
     }
 

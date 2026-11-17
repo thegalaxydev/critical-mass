@@ -1,15 +1,15 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
 import com.criticalmass.registry.CMConfig;
+import com.criticalmass.registry.CMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public final class Hazard {
@@ -17,12 +17,11 @@ public final class Hazard {
     }
 
     public static void sparks(Level level, Vec3 at, int count) {
-        if (level instanceof ServerLevel server) {
-            server.sendParticles(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, count, 0.25, 0.25, 0.25, 0.4);
-            server.sendParticles(ParticleTypes.FLASH, at.x, at.y, at.z, 1, 0, 0, 0, 0);
-            server.sendParticles(ParticleTypes.LARGE_SMOKE, at.x, at.y, at.z, count / 3, 0.2, 0.2, 0.2, 0.02);
+        if (level.isClientSide) {
+            return;
         }
-        level.playSound(null, at.x, at.y, at.z, SoundEvents.LIGHTNING_BOLT_IMPACT, SoundSource.BLOCKS, 1.5f, 1.4f);
+        Effects.pop(level, at, Math.min(1.5f, count / 10f));
+        Effects.sound(level, at, CMSounds.ARC_ZAP.get(), 0.5f + Math.min(0.8f, count / 20f), 0.9f + level.random.nextFloat() * 0.3f);
     }
 
     public static void fire(Level level, BlockPos pos) {
@@ -42,8 +41,27 @@ public final class Hazard {
     }
 
     public static void blast(Level level, Vec3 at, float power) {
-        sparks(level, at, 30);
-        level.explode(null, at.x, at.y, at.z, power, false, CMConfig.ELECTRICAL_BLASTS_BREAK_BLOCKS.get() ? Level.ExplosionInteraction.BLOCK : Level.ExplosionInteraction.NONE);
+        if (level.isClientSide) {
+            return;
+        }
+        Effects.blast(level, at, power / 2f);
+        Effects.sound(level, at, CMSounds.ARC_BLAST.get(), 2.0f + power, 0.85f + level.random.nextFloat() * 0.2f);
+        if (CMConfig.ELECTRICAL_BLASTS_BREAK_BLOCKS.get()) {
+            level.explode(null, at.x, at.y, at.z, power, false, Level.ExplosionInteraction.BLOCK);
+            return;
+        }
+        double reach = power * 2.0;
+        for (LivingEntity near : level.getEntitiesOfClass(LivingEntity.class, new AABB(at, at).inflate(reach))) {
+            double distance = Math.sqrt(near.distanceToSqr(at));
+            if (distance >= reach) {
+                continue;
+            }
+            double share = 1 - distance / reach;
+            near.hurt(level.damageSources().explosion(null, null), (float) (share * power * 5));
+            Vec3 push = near.position().add(0, near.getBbHeight() / 2, 0).subtract(at).normalize().scale(share * 0.9);
+            near.push(push.x, Math.max(0.15, push.y) * 0.8, push.z);
+            near.hurtMarked = true;
+        }
     }
 
     public static void destroy(Level level, BlockPos pos, float power) {
@@ -51,7 +69,9 @@ public final class Hazard {
             return;
         }
         level.removeBlock(pos, false);
-        blast(level, Vec3.atCenterOf(pos), power);
+        Vec3 at = Vec3.atCenterOf(pos);
+        blast(level, at, power);
+        Effects.oilFire(level, at, 3f + power * 1.5f);
         fire(level, pos);
     }
 
@@ -63,12 +83,14 @@ public final class Hazard {
         }
         Vec3 middle = from.add(to).scale(0.5);
         if (flashover) {
+            Effects.arc(level, from, to, 1.6f);
             blast(level, middle, 2.0f);
         } else {
-            sparks(level, middle, 12);
+            Effects.arc(level, from, middle, 0.7f);
+            Effects.arc(level, to, middle, 0.7f);
+            Effects.pop(level, middle, 1.2f);
+            Effects.sound(level, middle, CMSounds.WIRE_SIZZLE.get(), 1.4f, 0.9f + level.random.nextFloat() * 0.2f);
         }
-        sparks(level, from, 6);
-        sparks(level, to, 6);
         if (CMConfig.ELECTRICAL_FIRES.get()) {
             beside(level, owner);
             beside(level, link.other());
@@ -98,8 +120,11 @@ public final class Hazard {
         if (kilovolts <= 0 || !CMConfig.LIVE_WORK_HURTS.get() || player.level().isClientSide) {
             return;
         }
-        sparks(player.level(), at, 16);
-        float harm = kilovolts <= Power.MOTOR_KV * Power.OVERVOLTAGE ? 8f : kilovolts <= Power.GENERATOR_KV * Power.OVERVOLTAGE ? 16f : 40f;
-        player.hurt(player.level().damageSources().lightningBolt(), harm);
+        Level level = player.level();
+        boolean low = kilovolts <= Power.MOTOR_KV * Power.OVERVOLTAGE;
+        boolean middle = kilovolts <= Power.GENERATOR_KV * Power.OVERVOLTAGE;
+        Effects.arc(level, at, player.position().add(0, player.getBbHeight() * 0.6, 0), low ? 0.8f : middle ? 1.3f : 2.0f);
+        Effects.sound(level, at, CMSounds.ARC_ZAP.get(), low ? 1.0f : 1.6f, low ? 1.1f : 0.85f);
+        player.hurt(level.damageSources().lightningBolt(), low ? 8f : middle ? 16f : 40f);
     }
 }

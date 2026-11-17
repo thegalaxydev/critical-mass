@@ -18,6 +18,9 @@ import com.criticalmass.content.fuel.ServicePortArmType;
 import com.criticalmass.content.thermal.BoilerPlateBlockEntity;
 import com.criticalmass.content.thermal.LedgerCommand;
 import com.criticalmass.content.thermal.VesselEvents;
+import com.criticalmass.content.effects.DosePacket;
+import com.criticalmass.content.effects.EffectPacket;
+import com.criticalmass.registry.CMParticles;
 import com.criticalmass.registry.CMArmorMaterials;
 import com.criticalmass.registry.CMAttachments;
 import com.criticalmass.registry.CMBlockEntities;
@@ -87,6 +90,7 @@ public class CriticalMass {
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("control_panel"), asResource("dashboard"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMSounds.SOUNDS.register(modEventBus);
+        CMParticles.PARTICLES.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
         CMFluids.TYPES.register(modEventBus);
         CMFluids.FLUIDS.register(modEventBus);
@@ -101,6 +105,8 @@ public class CriticalMass {
         modEventBus.addListener(DashPartEdit::register);
         modEventBus.addListener(DashLeverSet::register);
         modEventBus.addListener(DashOpenSettings::register);
+        modEventBus.addListener(EffectPacket::register);
+        modEventBus.addListener(DosePacket::register);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(PowerNetwork::tick);

@@ -30,6 +30,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
 | Generator, Circuit Breaker, Grid Connection, Insulator, Electric Motor, Bus Bar, Transformer, Disconnect Switch, Earthing Switch, Power Wire, Power Cable, Transmission Line | Script | `art/tools/power_texture.py` |
+| Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
+| Sounds other than the alarm | Script | `art/tools/sfx.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
 | Shielded Cask | Script | `art/tools/cask_texture.py` |
@@ -160,6 +162,24 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
 - The wires themselves have no texture: the game draws them as strips between the terminals, copper for Power Wire, thick and black for Power Cable and thin and silver for Transmission Line, turning orange as they heat.
 - Status: script-painted placeholders, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/power_model.py` then exports the models, the blockstates and the item models.
+- Date: 2026-11-16
+
+## Effect sprites
+
+- Used by: `textures/particle/steam_0.png` to `steam_3.png`, `glow.png`, `ring.png`, `spark.png`, `mote.png` and `streak.png`, through the definitions in `particles/`
+- Source: `art/tools/effect_texture.py` draws every sprite. The four steam puffs are lumps of round cloud in three steps of opacity; smoke and the tower plume are the same puffs tinted and sized by the game. The glow and ring are plain falloffs, drawn additively. The streak is the cross-section of an arc.
+- The bolts themselves are not textures: the game builds each one from a random jagged path and redraws it every two ticks.
+- Status: script-drawn, not yet approved.
+- Repainting: run the tool with `fresh`. It also rewrites the particle definitions.
+- Date: 2026-11-16
+
+## Sounds
+
+- Used by: every file in `sounds/` except `alarm.ogg`, through `sounds.json`
+- Source: `art/tools/sfx.py` synthesises each one from square, saw, triangle and sine waves and filtered noise at 22,050 Hz, reduced to 5 to 8 bits. Nothing is recorded or sampled.
+- Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss` and `reactor_thrum` are cut to whole cycles so they repeat without a click.
+- Status: script-made, not yet approved. They have been checked for level and that they load; they have not been listened to in game.
+- Remaking: run the tool with `fresh`.
 - Date: 2026-11-16
 
 ## circulation_pump

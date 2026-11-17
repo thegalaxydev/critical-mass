@@ -1,5 +1,6 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -10,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -60,7 +60,7 @@ public class EarthingBlockEntity extends SmartBlockEntity implements IHaveGoggle
         boolean closing = !closed();
         level.setBlock(worldPosition, getBlockState().setValue(BreakerBlock.CLOSED, closing), Block.UPDATE_ALL);
         PowerNetwork.changed(level);
-        level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.7f, closing ? 0.7f : 1.0f);
+        level.playSound(null, worldPosition, CMSounds.SWITCH_THROW.get(), SoundSource.BLOCKS, 0.7f, closing ? 0.7f : 1.0f);
         faultSteps = 0;
         setChanged();
         return closing ? "criticalmass.earthing.closed" : "criticalmass.earthing.open";

@@ -7,5 +7,194 @@
     "attenuation_distance": 32
    }
   ]
+ },
+ "hum": {
+  "subtitle": "criticalmass.subtitle.hum",
+  "sounds": [
+   {
+    "name": "criticalmass:hum",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "generator_run": {
+  "subtitle": "criticalmass.subtitle.generator_run",
+  "sounds": [
+   {
+    "name": "criticalmass:generator_run",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "motor_run": {
+  "subtitle": "criticalmass.subtitle.motor_run",
+  "sounds": [
+   {
+    "name": "criticalmass:motor_run",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "steam_hiss": {
+  "subtitle": "criticalmass.subtitle.steam_hiss",
+  "sounds": [
+   {
+    "name": "criticalmass:steam_hiss",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "reactor_thrum": {
+  "subtitle": "criticalmass.subtitle.reactor_thrum",
+  "sounds": [
+   {
+    "name": "criticalmass:reactor_thrum",
+    "attenuation_distance": 20
+   }
+  ]
+ },
+ "breaker_close": {
+  "subtitle": "criticalmass.subtitle.breaker_close",
+  "sounds": [
+   {
+    "name": "criticalmass:breaker_close",
+    "attenuation_distance": 32
+   }
+  ]
+ },
+ "breaker_open": {
+  "subtitle": "criticalmass.subtitle.breaker_open",
+  "sounds": [
+   {
+    "name": "criticalmass:breaker_open",
+    "attenuation_distance": 32
+   }
+  ]
+ },
+ "breaker_trip": {
+  "subtitle": "criticalmass.subtitle.breaker_trip",
+  "sounds": [
+   {
+    "name": "criticalmass:breaker_trip",
+    "attenuation_distance": 48
+   }
+  ]
+ },
+ "switch_throw": {
+  "subtitle": "criticalmass.subtitle.switch_throw",
+  "sounds": [
+   {
+    "name": "criticalmass:switch_throw",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "relay_click": {
+  "subtitle": "criticalmass.subtitle.relay_click",
+  "sounds": [
+   {
+    "name": "criticalmass:relay_click",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "arc_zap": {
+  "subtitle": "criticalmass.subtitle.arc_zap",
+  "sounds": [
+   {
+    "name": "criticalmass:arc_zap",
+    "attenuation_distance": 48
+   }
+  ]
+ },
+ "arc_blast": {
+  "subtitle": "criticalmass.subtitle.arc_blast",
+  "sounds": [
+   {
+    "name": "criticalmass:arc_blast",
+    "attenuation_distance": 96
+   }
+  ]
+ },
+ "wire_sizzle": {
+  "subtitle": "criticalmass.subtitle.wire_sizzle",
+  "sounds": [
+   {
+    "name": "criticalmass:wire_sizzle",
+    "attenuation_distance": 32
+   }
+  ]
+ },
+ "steam_vent": {
+  "subtitle": "criticalmass.subtitle.steam_vent",
+  "sounds": [
+   {
+    "name": "criticalmass:steam_vent",
+    "attenuation_distance": 48
+   }
+  ]
+ },
+ "pipe_burst": {
+  "subtitle": "criticalmass.subtitle.pipe_burst",
+  "sounds": [
+   {
+    "name": "criticalmass:pipe_burst",
+    "attenuation_distance": 64
+   }
+  ]
+ },
+ "geiger": {
+  "subtitle": "criticalmass.subtitle.geiger",
+  "sounds": [
+   {
+    "name": "criticalmass:geiger",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "order_placed": {
+  "subtitle": "criticalmass.subtitle.order_placed",
+  "sounds": [
+   {
+    "name": "criticalmass:order_placed",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "order_met": {
+  "subtitle": "criticalmass.subtitle.order_met",
+  "sounds": [
+   {
+    "name": "criticalmass:order_met",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "order_missed": {
+  "subtitle": "criticalmass.subtitle.order_missed",
+  "sounds": [
+   {
+    "name": "criticalmass:order_missed",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "wire_string": {
+  "subtitle": "criticalmass.subtitle.wire_string",
+  "sounds": [
+   {
+    "name": "criticalmass:wire_string",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "wire_cut": {
+  "subtitle": "criticalmass.subtitle.wire_cut",
+  "sounds": [
+   {
+    "name": "criticalmass:wire_cut",
+    "attenuation_distance": 16
+   }
+  ]
  }
 }

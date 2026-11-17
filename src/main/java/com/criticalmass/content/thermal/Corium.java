@@ -1,5 +1,7 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMSounds;
+import com.criticalmass.registry.CMParticles;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMConfig;
@@ -158,8 +160,9 @@ public final class Corium {
             double t = temperature();
             heat -= heat * Math.min(1, CMThermal.CORIUM_COOLING * CMThermal.CORIUM_TICKS * (wet ? CMThermal.CORIUM_WATER_BONUS : 1));
             if (wet && t > CMThermal.BOILING && level instanceof ServerLevel server) {
-                server.sendParticles(ParticleTypes.CLOUD, worldPosition.getX() + 0.5, worldPosition.getY() + 1.1, worldPosition.getZ() + 0.5, 8, 0.3, 0.2, 0.3, 0.05);
-                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 0.8f);
+                server.sendParticles(CMParticles.STEAM.get(), worldPosition.getX() + 0.5, worldPosition.getY() + 1.1, worldPosition.getZ() + 0.5, 8, 0.3, 0.2, 0.3, 0.05);
+                server.sendParticles(CMParticles.EMBER.get(), worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, 3, 0.3, 0.1, 0.3, 0.04);
+                level.playSound(null, worldPosition, CMSounds.STEAM_VENT.get(), SoundSource.BLOCKS, 0.7f, 1.2f);
             }
             boolean hot = temperature() > CMThermal.CORIUM_SOLID_TEMPERATURE;
             BlockState state = getBlockState();

@@ -1,5 +1,6 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.registry.CMComponents;
 import java.util.List;
 import net.minecraft.ChatFormatting;
@@ -7,7 +8,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -87,7 +87,7 @@ public class WireItem extends Item {
                 if (!player.isCreative()) {
                     player.getInventory().placeItemBackInInventory(new ItemStack(cut.item()));
                 }
-                level.playSound(null, pos, SoundEvents.SHEEP_SHEAR, SoundSource.BLOCKS, 0.5f, 1.4f);
+                level.playSound(null, pos, CMSounds.WIRE_CUT.get(), SoundSource.BLOCKS, 0.8f, 1.0f);
                 tell(player, "criticalmass.wire.cut");
                 touch(level, player, pos, terminal, kilovolts);
             } else {
@@ -114,7 +114,7 @@ public class WireItem extends Item {
         if (player == null || !player.isCreative()) {
             stack.shrink(1);
         }
-        level.playSound(null, pos, SoundEvents.LEASH_KNOT_PLACE, SoundSource.BLOCKS, 0.8f, 1.2f);
+        level.playSound(null, pos, CMSounds.WIRE_STRING.get(), SoundSource.BLOCKS, 0.8f, 0.95f + level.random.nextFloat() * 0.1f);
         tell(player, "criticalmass.wire.joined");
         touch(level, player, pos, terminal, kilovolts);
         return InteractionResult.SUCCESS;

@@ -300,7 +300,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         switch (part.type) {
             case BUTTON -> {
                 part.pressedUntil = level.getGameTime() + DashPart.PRESS_TICKS;
-                level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_ON, SoundSource.BLOCKS, 0.4f, 0.7f);
+                level.playSound(null, worldPosition, CMSounds.RELAY_CLICK.get(), SoundSource.BLOCKS, 0.7f, 0.9f);
                 result = act(part);
             }
             case SWITCH -> {
@@ -466,7 +466,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
                     dirty = true;
                 }
                 if (now == part.pressedUntil) {
-                    level.playSound(null, worldPosition, SoundEvents.STONE_BUTTON_CLICK_OFF, SoundSource.BLOCKS, 0.35f, 0.6f);
+                    level.playSound(null, worldPosition, CMSounds.RELAY_CLICK.get(), SoundSource.BLOCKS, 0.5f, 0.75f);
                     dirty = true;
                 }
             }

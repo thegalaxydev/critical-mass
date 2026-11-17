@@ -155,6 +155,9 @@ public class InspectionHarness {
         if (step.has("sneak")) {
             mc.options.keyShift.setDown(step.get("sneak").getAsBoolean());
         }
+        if (step.has("subtitles")) {
+            mc.options.showSubtitles().set(step.get("subtitles").getAsBoolean());
+        }
         if (step.has("holdUse")) {
             mc.options.keyUse.setDown(step.get("holdUse").getAsBoolean());
         }

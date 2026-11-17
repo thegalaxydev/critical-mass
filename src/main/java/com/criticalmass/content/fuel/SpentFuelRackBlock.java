@@ -1,5 +1,7 @@
 package com.criticalmass.content.fuel;
 
+import com.criticalmass.registry.CMParticles;
+import net.minecraft.util.RandomSource;
 import com.criticalmass.content.thermal.NodeBlocks;
 import com.criticalmass.registry.CMBlockEntities;
 import com.simibubi.create.foundation.block.IBE;
@@ -19,6 +21,28 @@ import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class SpentFuelRackBlock extends Block implements IBE<SpentFuelRackBlockEntity> {
+    @Override
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+        if (!(level.getBlockEntity(pos) instanceof SpentFuelRackBlockEntity rack) || rack.coolant().amount() < rack.coolant().capacity() * 0.3) {
+            return;
+        }
+        int spent = 0;
+        for (ItemStack stack : rack.slots()) {
+            if (stack.getItem() instanceof FuelAssemblyItem fuel && fuel.form() != FuelAssemblyItem.Form.FRESH) {
+                spent++;
+            }
+        }
+        if (spent == 0) {
+            return;
+        }
+        double x = pos.getX() + 0.5;
+        double z = pos.getZ() + 0.5;
+        level.addParticle(CMParticles.CHERENKOV.get(), true, x, pos.getY() + 0.55, z, 0.8 + spent * 0.25, 0, 0);
+        for (int i = 0; i < spent; i++) {
+            level.addParticle(CMParticles.MOTE.get(), x + (random.nextDouble() - 0.5) * 0.7, pos.getY() + 0.3 + random.nextDouble() * 0.4, z + (random.nextDouble() - 0.5) * 0.7, 0, 0.008 + random.nextDouble() * 0.012, 0);
+        }
+    }
+
     public static final int FILL_MAX = 4;
     public static final IntegerProperty FILL = IntegerProperty.create("fill", 0, FILL_MAX);
 

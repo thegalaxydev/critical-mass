@@ -1,5 +1,8 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMParticles;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
@@ -44,6 +47,26 @@ public final class ChannelBlocks {
         protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
             super.createBlockStateDefinition(builder);
             builder.add(GLOW);
+        }
+
+        @Override
+        public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
+            int glow = state.getValue(GLOW);
+            if (glow == 0) {
+                return;
+            }
+            double x = pos.getX() + 0.5;
+            double y = pos.getY() + random.nextDouble();
+            double z = pos.getZ() + 0.5;
+            if (glow == GLOW_HOT) {
+                level.addParticle(CMParticles.EMBER.get(), x + (random.nextDouble() - 0.5) * 0.9, y, z + (random.nextDouble() - 0.5) * 0.9, 0, 0.03, 0);
+                level.addParticle(CMParticles.FIREBALL.get(), true, x, y, z, 0.9, 0, 0);
+                return;
+            }
+            level.addParticle(CMParticles.CHERENKOV.get(), true, x, y, z, 1.1 + glow * 0.7, 0, 0);
+            for (int i = 0; i < glow * 2; i++) {
+                level.addParticle(CMParticles.MOTE.get(), x + (random.nextDouble() - 0.5) * 1.6, pos.getY() + random.nextDouble(), z + (random.nextDouble() - 0.5) * 1.6, 0, 0.012 + random.nextDouble() * 0.02, 0);
+            }
         }
     }
 

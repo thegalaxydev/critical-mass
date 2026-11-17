@@ -1,5 +1,8 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
+import com.criticalmass.registry.CMParticles;
 import com.criticalmass.client.VesselHighlighter;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
@@ -309,7 +312,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         coriumFloor = shape.min.getY();
         level.playSound(null, new BlockPos(x, shape.min.getY() + 1, z), net.minecraft.sounds.SoundEvents.LAVA_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
         if (level instanceof ServerLevel server) {
-            server.sendParticles(net.minecraft.core.particles.ParticleTypes.LARGE_SMOKE, x + 0.5, shape.max.getY() + 1.2, z + 0.5, 20, 0.5, 0.3, 0.5, 0.02);
+            server.sendParticles(CMParticles.OIL_SMOKE.get(), x + 0.5, shape.max.getY() + 1.2, z + 0.5, 20, 0.5, 0.3, 0.5, 0.03);
+            server.sendParticles(CMParticles.EMBER.get(), x + 0.5, shape.max.getY() + 1.2, z + 0.5, 12, 0.5, 0.3, 0.5, 0.05);
         }
         setChanged();
     }
@@ -346,6 +350,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (level instanceof ServerLevel server) {
             ContaminationData.get(server).add(floor, CMThermal.CORIUM_SPILL * c[2] * CMConfig.get(CMConfig.CORIUM_CONTAMINATION));
             server.sendParticles(net.minecraft.core.particles.ParticleTypes.LAVA, floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5, 30, 0.4, 0.2, 0.4, 0.1);
+            Effects.blast(level, net.minecraft.world.phys.Vec3.atCenterOf(floor), 2.0f);
         }
         level.playSound(null, floor, net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
         coriumFloor = Integer.MIN_VALUE;
@@ -462,7 +467,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 flashedVolume += mb;
                 now = true;
                 if (level instanceof ServerLevel server && level.getGameTime() % 10 == 0) {
-                    server.sendParticles(net.minecraft.core.particles.ParticleTypes.CLOUD, worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5, 6, 0.4, 0.2, 0.4, 0.05);
+                    server.sendParticles(CMParticles.STEAM.get(), worldPosition.getX() + 0.5, worldPosition.getY() + 1.2, worldPosition.getZ() + 0.5, 6, 0.4, 0.2, 0.4, 0.05);
                 }
             }
         }
@@ -731,6 +736,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (level.isClientSide) {
             if (!problemPos.isEmpty() || !warningPos.isEmpty()) {
                 VesselHighlighter.show(this);
+            }
+            if (clientNeutron > 0.02) {
+                Effects.loop(level, worldPosition, CMSounds.REACTOR_THRUM.get(), (float) Math.min(0.9, 0.15 + clientNeutron * 0.6), (float) (0.85 + Math.min(1.2, clientNeutron) * 0.3));
             }
             return;
         }

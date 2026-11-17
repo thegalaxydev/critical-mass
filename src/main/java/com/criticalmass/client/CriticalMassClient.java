@@ -1,5 +1,6 @@
 package com.criticalmass.client;
 
+import com.criticalmass.client.effects.ClientEffects;
 import com.criticalmass.content.fuel.CentrifugeBlockEntity;
 import com.simibubi.create.AllPartialModels;
 import com.simibubi.create.CreateClient;
@@ -46,6 +47,7 @@ public class CriticalMassClient {
         CMPartialModels.init();
         CMSpriteShifts.init();
         DashPartDraw.init();
+        ClientEffects.init(modEventBus);
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
         modEventBus.addListener(this::addSkinPack);

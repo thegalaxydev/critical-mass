@@ -1,5 +1,8 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
+import net.minecraft.world.phys.Vec3;
 import com.criticalmass.content.FacingBlock;
 import com.criticalmass.content.ReliefValveBlock;
 import net.minecraft.core.BlockPos;
@@ -76,9 +79,10 @@ public class ReliefValveBlockEntity extends SingleBufferNodeBlockEntity {
             CoolantBuffer from = worst != null && worst.pressure() > buffer.pressure() && worst.amount() > 0 ? worst : buffer;
             sinks.vent(from.take(CMThermal.RELIEF_VENT_RATE));
             Direction v = vent();
-            ThermalSafety.steamPuff(level, worldPosition, v.getStepX(), v.getStepY(), v.getStepZ());
-            if (level.getGameTime() % 10 == 0) {
-                level.playSound(null, worldPosition, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4f, 0.8f);
+            if (level.getGameTime() % 20 == 0 || !venting) {
+                Vec3 mouth = Vec3.atCenterOf(worldPosition).add(v.getStepX() * 0.6, v.getStepY() * 0.6, v.getStepZ() * 0.6);
+                Effects.steamJet(level, mouth, new Vec3(v.getStepX(), v.getStepY(), v.getStepZ()), 1.0f);
+                level.playSound(null, worldPosition, CMSounds.STEAM_VENT.get(), SoundSource.BLOCKS, 1.2f, 0.95f + level.random.nextFloat() * 0.1f);
             }
             setStatus("criticalmass.relief.venting");
         } else if (open) {

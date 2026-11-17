@@ -275,6 +275,18 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes, opens or resets it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts and the current through it, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, a bus's voltage, frequency and load, and a transformer's low-side voltage, what it carries and its oil temperature.
 - **Commands:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting. `/criticalmass breaker <breaker> close`, `open` or `reset` works a breaker with the same checks as by hand. `/criticalmass wire <from> <terminal> <to> <terminal> <wire, cable or line>` strings a wire; a breaker's terminals are 0 for line and 1 for load, a transformer's are 0 for high and 1 for low, and everything else has terminal 0.
 
+**Effects and sounds.** The plant has its own effects and its own sounds. The sounds are synthesised from square, saw and triangle waves and noise at a low sample rate, to sit with the green screens and the analog control room.
+- **Arcs:** a flashover, a short circuit, a disconnect switch worked live and a hand on a live terminal each draw a jagged blue-white bolt that forks and flickers, with a crackle.
+- **Electrical explosions:** equipment lost to a fault goes with a flash, a fireball, a ring across the ground, a spray of sparks, black smoke that hangs for seconds, a bang and a shake of the view that fades with distance.
+- **Wires:** a wire near its limit spits sparks along its length and sizzles before it burns.
+- **Switchgear:** breakers close, open and trip with their own heavy sounds, and a relay clicks when a breaker's current first passes its setting. Switches thud. Stringing and cutting wire each has a sound.
+- **Machines:** a live transformer hums at mains pitch, louder with load and sharper as its oil heats, and smokes once it is overheating. A generator drones at a pitch that follows its speed, and a motor whirrs.
+- **Steam:** a Relief Valve throws a jet from its mouth while it vents. A burst pipe and a ruptured vessel throw a cloud. A tripped turbine vents upward. Water on corium boils off in steam and embers.
+- **Reactor:** fuel channels at power give off a blue glow with motes drifting up through it, seen through the viewports, brighter with power. Overheating channels shed embers. The Reactor Controller thrums, louder and higher with neutron power. Spent fuel in a flooded rack glows blue in its water.
+- **Cooling tower:** a tower that draws by itself, with no fan on top, sends up a plume that grows with the heat it rejects.
+- **Radiation:** a Survey Meter or Dosimeter in hand clicks, faster with the dose rate. Above a rate of 10 the view picks up static, heavier as the rate climbs.
+- **Grid:** a power order arriving, met or missed each plays a short tune.
+
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).
 - **Dose rate:** in mSv/min. A player receives, from every source within 48 blocks, its strength times the shielding transmission divided by (1 + distance²).
 - **Sources:** running or cooling reactors (from fission and decay heat), spent and damaged assemblies, waste canisters and (weakly) fresh fuel, wherever they are: placed canisters, racks (flooded racks let 10% through), casks (1%), the service port, dropped items and player inventories. Positions are world-space, so sources on a moving Sable body are measured where the body is now.

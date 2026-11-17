@@ -1,5 +1,7 @@
 package com.criticalmass.content.kinetics;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantBuffer;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
@@ -234,7 +236,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (overspeed > CMThermal.OVERSPEED_TRIP && !overspeedTrip) {
             overspeedTrip = true;
             admission = 0;
-            level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.6f);
+            level.playSound(null, worldPosition, CMSounds.BREAKER_TRIP.get(), SoundSource.BLOCKS, 1.4f, 0.7f);
+            level.playSound(null, worldPosition, CMSounds.STEAM_VENT.get(), SoundSource.BLOCKS, 1.5f, 0.8f);
+            Effects.steamJet(level, net.minecraft.world.phys.Vec3.atCenterOf(worldPosition).add(0, 1.6, 0), new net.minecraft.world.phys.Vec3(0, 1, 0), 1.2f);
         }
         double target = potential * CMThermal.SU_PER_HEAT;
         if (target < CMThermal.TURBINE_MIN_SU) {

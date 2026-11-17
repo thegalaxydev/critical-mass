@@ -1,5 +1,7 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
@@ -130,7 +132,14 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) {
+        if (level == null) {
+            return;
+        }
+        if (level.isClientSide) {
+            float turning = Math.abs(getSpeed());
+            if (live && turning > 0) {
+                Effects.loop(level, worldPosition, CMSounds.MOTOR_RUN.get(), 0.3f + (float) Math.min(0.4, demand / Power.MOTOR_RATED_SU * 0.4), 0.7f + turning / MAX_SPEED * 0.7f);
+            }
             return;
         }
         if (checkIn-- <= 0) {

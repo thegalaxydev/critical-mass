@@ -1,5 +1,7 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.content.kinetics.KineticNetwork;
@@ -293,6 +295,12 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     @Override
     public void tick() {
         super.tick();
+        if (level != null && level.isClientSide && isMaster()) {
+            float turning = Math.abs(getSpeed());
+            if (turning > 0) {
+                Effects.loop(level, worldPosition, CMSounds.GENERATOR_RUN.get(), 0.35f + (float) Math.min(0.5, output / Math.max(1.0, ratedSu()) * 0.5), 0.5f + turning / Power.SYNC_RPM * 0.5f);
+            }
+        }
         if (level == null || level.isClientSide || !isMaster()) {
             return;
         }

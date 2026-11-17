@@ -1,5 +1,6 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.google.common.collect.ImmutableList;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -17,7 +18,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -119,7 +119,7 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         } else {
             missed++;
         }
-        level.playSound(null, worldPosition, met ? SoundEvents.NOTE_BLOCK_CHIME.value() : SoundEvents.NOTE_BLOCK_BASS.value(), SoundSource.BLOCKS, 1.0f, met ? 1.2f : 0.6f);
+        level.playSound(null, worldPosition, met ? CMSounds.ORDER_MET.get() : CMSounds.ORDER_MISSED.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
         order = 0;
         orderTicks = 0;
         heldTicks = 0;
@@ -150,7 +150,7 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
             if (size > 0 && idleTicks++ >= Power.ORDER_GAP_TICKS) {
                 int steps = Math.max(1, (int) Math.round(size / Power.ORDER_STEP_MW * (0.4 + 0.6 * level.random.nextDouble())));
                 placeOrder(steps * Power.ORDER_STEP_MW);
-                level.playSound(null, worldPosition, SoundEvents.NOTE_BLOCK_PLING.value(), SoundSource.BLOCKS, 1.0f, 1.0f);
+                level.playSound(null, worldPosition, CMSounds.ORDER_PLACED.get(), SoundSource.BLOCKS, 1.0f, 1.0f);
             }
         } else {
             orderTicks++;

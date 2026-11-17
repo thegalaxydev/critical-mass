@@ -1,5 +1,7 @@
 package com.criticalmass.content.radiation;
 
+import com.criticalmass.content.effects.DosePacket;
+import net.neoforged.neoforge.network.PacketDistributor;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.registry.CMAttachments;
 import com.criticalmass.registry.CMComponents;
@@ -130,6 +132,9 @@ public final class RadiationEvents {
             effects(player, data(player));
         }
         readouts(player, data(player));
+        boolean meter = player.getMainHandItem().is(CMItems.SURVEY_METER.get()) || player.getOffhandItem().is(CMItems.SURVEY_METER.get())
+                || player.getMainHandItem().is(CMItems.DOSIMETER.get()) || player.getOffhandItem().is(CMItems.DOSIMETER.get());
+        PacketDistributor.sendToPlayer(player, new DosePacket((float) (CMConfig.radiation() ? data(player).lastRate : 0), meter));
     }
 
     public static void onClone(PlayerEvent.Clone event) {

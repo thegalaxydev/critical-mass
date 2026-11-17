@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMParticles;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import java.util.ArrayList;
 import java.util.List;
@@ -290,8 +291,11 @@ public class CoolingTowerBlockEntity extends KineticBlockEntity implements Buffe
         }
         scald(draft, sum);
         if (sum > CMThermal.TOWER_PLUME_HEAT && !draft.fan() && level instanceof ServerLevel server) {
-            int puffs = (int) Math.min(12, 1 + sum / CMThermal.TOWER_PLUME_HEAT);
-            server.sendParticles(ParticleTypes.CLOUD, worldPosition.getX() + 0.5, worldPosition.getY() + 2.2, worldPosition.getZ() + 0.5, puffs, 0.3, 0.1, 0.3, 0.02 + 0.03 * flow);
+            int puffs = (int) Math.min(4, 1 + sum / (CMThermal.TOWER_PLUME_HEAT * 3));
+            for (int i = 0; i < puffs; i++) {
+                server.sendParticles(CMParticles.PLUME.get(), worldPosition.getX() + 0.5 + (level.random.nextDouble() - 0.5) * 0.8, worldPosition.getY() + 2.2, worldPosition.getZ() + 0.5 + (level.random.nextDouble() - 0.5) * 0.8,
+                        0, (level.random.nextDouble() - 0.5) * 0.25, 1.0, (level.random.nextDouble() - 0.5) * 0.25, 0.10 + 0.08 * flow);
+            }
         }
     }
 

@@ -1,5 +1,7 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -484,6 +486,15 @@ public final class PowerNetwork {
                 }
                 if (owner.wires().warm(edge.link, next)) {
                     owner.wiresChanged();
+                }
+                if (next > 0.45 && level.random.nextInt(3) == 0) {
+                    Vec3 from = terminal(level, edge.owner, edge.link.mine());
+                    Vec3 to = terminal(level, edge.link.other(), edge.link.theirs());
+                    Vec3 at = from.lerp(to, level.random.nextDouble());
+                    Effects.pop(level, at, (float) (0.2 + next * 0.5));
+                    if (level.random.nextInt(3) == 0) {
+                        Effects.sound(level, at, CMSounds.WIRE_SIZZLE.get(), 0.6f, 1.0f + level.random.nextFloat() * 0.3f);
+                    }
                 }
             }
         }

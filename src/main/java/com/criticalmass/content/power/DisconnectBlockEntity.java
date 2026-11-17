@@ -1,5 +1,6 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
@@ -12,7 +13,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -81,7 +81,7 @@ public class DisconnectBlockEntity extends SmartBlockEntity implements IHaveGogg
     private void set(boolean closed) {
         level.setBlock(worldPosition, getBlockState().setValue(BreakerBlock.CLOSED, closed), Block.UPDATE_ALL);
         PowerNetwork.changed(level);
-        level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.7f, closed ? 0.8f : 1.1f);
+        level.playSound(null, worldPosition, CMSounds.SWITCH_THROW.get(), SoundSource.BLOCKS, 0.7f, closed ? 0.8f : 1.1f);
         setChanged();
     }
 

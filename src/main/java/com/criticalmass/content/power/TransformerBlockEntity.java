@@ -1,5 +1,9 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMSounds;
+import com.criticalmass.registry.CMParticles;
+import net.minecraft.server.level.ServerLevel;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.content.thermal.ThermalTooltips;
 import com.google.common.collect.ImmutableList;
@@ -130,8 +134,17 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
     @Override
     public void tick() {
         super.tick();
-        if (level == null || level.isClientSide) {
+        if (level == null) {
             return;
+        }
+        if (level.isClientSide) {
+            if (highSide > 0 || lowSide > 0) {
+                Effects.loop(level, worldPosition, CMSounds.HUM.get(), (float) Math.min(1.0, 0.25 + 0.55 * through / Power.TRANSFORMER_MW + heat * 0.4), (float) (1.0 + heat * 0.12));
+            }
+            return;
+        }
+        if (heat > 0.35 && level.getGameTime() % 6 == 0 && level instanceof ServerLevel server) {
+            server.sendParticles(CMParticles.OIL_SMOKE.get(), worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5, 0, 0.0, 1.0, 0.0, 0.05 + heat * 0.05);
         }
         if (carriedAt < 0 || level.getGameTime() - carriedAt > STALE_TICKS) {
             through = 0;
