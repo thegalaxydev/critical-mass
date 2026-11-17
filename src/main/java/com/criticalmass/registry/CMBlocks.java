@@ -84,9 +84,10 @@ public final class CMBlocks {
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
     public static final DeferredBlock<com.criticalmass.content.radiation.FalloutAshBlock> FALLOUT_ASH = BLOCKS.register("fallout_ash", () -> new com.criticalmass.content.radiation.FalloutAshBlock(
-            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(0.1f).sound(SoundType.SAND).noCollission().replaceable().noLootTable().randomTicks().lightLevel(s -> 5)
+            BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(0.1f).sound(SoundType.SAND).noCollission().replaceable().randomTicks().lightLevel(s -> 5)
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
     public static final DeferredBlock<RotatedPillarBlock> CHARRED_LOG = register("charred_log", RotatedPillarBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0f).sound(SoundType.WOOD));
+    public static final DeferredBlock<com.criticalmass.content.radiation.WaterCannonBlock> WATER_CANNON = register("water_cannon", com.criticalmass.content.radiation.WaterCannonBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));
     public static final DeferredBlock<SteamTurbineStructuralBlock> STEAM_TURBINE_STRUCTURE = BLOCKS.register("steam_turbine_structure",
             () -> new SteamTurbineStructuralBlock(metal(4.0f).noOcclusion().noLootTable()));

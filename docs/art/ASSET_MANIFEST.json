@@ -625,15 +625,24 @@
       64
      ],
      "animated": true
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/fallout_ash.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
     }
    ],
    "borrowed_textures": [],
    "models": [
-    "src/main/resources/assets/criticalmass/models/block/fallout_ash.json"
+    "src/main/resources/assets/criticalmass/models/block/fallout_ash.json",
+    "src/main/resources/assets/criticalmass/models/item/fallout_ash.json"
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/fallout_ash.json",
-   "item": false
+   "item": true
   },
   {
    "key": "fuel_channel",
@@ -1709,6 +1718,14 @@
      "animated": false
     },
     {
+     "path": "src/main/resources/assets/criticalmass/textures/block/station_battery_cell.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
      "path": "src/main/resources/assets/criticalmass/textures/block/steel_block.png",
      "size": [
       16,
@@ -1720,6 +1737,7 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/block/station_battery.json",
+    "src/main/resources/assets/criticalmass/models/block/station_battery_cell.json",
     "src/main/resources/assets/criticalmass/models/item/station_battery.json"
    ],
    "missing": [],
@@ -1910,6 +1928,33 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/uranium_ore.json",
+   "item": true
+  },
+  {
+   "key": "water_cannon",
+   "registry_id": "criticalmass:water_cannon",
+   "type": "block",
+   "name": "Water Cannon",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/water_cannon.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/water_cannon.json",
+    "src/main/resources/assets/criticalmass/models/block/water_cannon_head.json",
+    "src/main/resources/assets/criticalmass/models/block/water_cannon_item.json",
+    "src/main/resources/assets/criticalmass/models/item/water_cannon.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/water_cannon.json",
    "item": true
   },
   {
@@ -2548,6 +2593,28 @@
    "missing": []
   },
   {
+   "key": "radioisotope_cell",
+   "registry_id": "criticalmass:radioisotope_cell",
+   "type": "item",
+   "name": "Radioisotope Cell",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/radioisotope_cell.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/radioisotope_cell.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "raw_uranium",
    "registry_id": "criticalmass:raw_uranium",
    "type": "item",
@@ -2720,6 +2787,28 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/item/steel_plate.json"
+   ],
+   "missing": []
+  },
+  {
+   "key": "strontium_90",
+   "registry_id": "criticalmass:strontium_90",
+   "type": "item",
+   "name": "Strontium-90",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/strontium_90.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/strontium_90.json"
    ],
    "missing": []
   },
@@ -3367,6 +3456,15 @@
     "src/main/resources/assets/criticalmass/sounds/fallout.ogg"
    ],
    "subtitle": "Fallout drifts",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "water_spray",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/water_spray.ogg"
+   ],
+   "subtitle": "Water cannon sprays",
    "missing": [],
    "art": "script"
   }

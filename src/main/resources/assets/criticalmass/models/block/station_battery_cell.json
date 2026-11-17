@@ -1,0 +1,74 @@
+{
+ "textures": {
+  "cell": "criticalmass:block/station_battery_cell",
+  "particle": "criticalmass:block/station_battery_cell"
+ },
+ "elements": [
+  {
+   "name": "cell_lit",
+   "from": [
+    6,
+    6,
+    0.5
+   ],
+   "to": [
+    9,
+    9,
+    1
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      0,
+      3,
+      3,
+      4
+     ],
+     "texture": "#cell"
+    },
+    "west": {
+     "uv": [
+      0,
+      3,
+      3,
+      4
+     ],
+     "texture": "#cell"
+    },
+    "up": {
+     "uv": [
+      0,
+      3,
+      3,
+      4
+     ],
+     "texture": "#cell"
+    },
+    "down": {
+     "uv": [
+      0,
+      3,
+      3,
+      4
+     ],
+     "texture": "#cell"
+    },
+    "north": {
+     "uv": [
+      0,
+      0,
+      3,
+      3
+     ],
+     "texture": "#cell"
+    }
+   },
+   "shade": false,
+   "neoforge_data": {
+    "block_light": 15,
+    "sky_light": 15,
+    "ambient_occlusion": false
+   }
+  }
+ ]
+}

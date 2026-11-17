@@ -484,6 +484,7 @@ public final class PlantScenes {
         scene.world().destroyBlock(util.grid().at(4, 1, 7));
         scene.idle(20);
         say(scene, 110, util.vector().centerOf(4, 1, 6), "Break the ash to clear a way through. Flowing water washes it off, and a Mechanical Plough on a moving contraption sweeps it up");
+        say(scene, 110, util.vector().centerOf(4, 1, 6), "Ash cleared these ways is left as Fallout Ash. A Water Cannon washes it off everything within 24 blocks and leaves nothing");
         warn(scene, 100, util.vector().centerOf(1, 2, 6), "Animals and monsters caught in the open in the thick of it sicken and die");
         scene.markAsFinished();
     }

@@ -14,6 +14,7 @@ public final class CMPartialModels {
     public static final PartialModel REINFORCED_VALVE_POINTER = block("reinforced_valve/pointer");
     public static final PartialModel CENTRIFUGE_ROTOR = block("centrifuge_rotor");
     public static final PartialModel CASK_LID = block("shielded_cask_lid");
+    public static final PartialModel WATER_CANNON_HEAD = block("water_cannon_head");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
     public static final PartialModel SERVICE_PORT_DOOR_WEST = block("reactor_service_port_door_west");
     public static final PartialModel SERVICE_PORT_DOOR_EAST = block("reactor_service_port_door_east");

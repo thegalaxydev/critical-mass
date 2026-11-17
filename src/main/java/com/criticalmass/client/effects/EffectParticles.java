@@ -342,6 +342,46 @@ public final class EffectParticles {
         }
     }
 
+    static class Jet extends TextureSheetParticle {
+        static final double GRAVITY = 0.035;
+
+        Jet(ClientLevel level, net.minecraft.world.phys.Vec3 from, net.minecraft.world.phys.Vec3 speed, int life, float size, SpriteSet sprites) {
+            super(level, from.x, from.y, from.z);
+            xd = speed.x;
+            yd = speed.y;
+            zd = speed.z;
+            lifetime = life;
+            hasPhysics = false;
+            quadSize = size;
+            roll = random.nextFloat() * Mth.TWO_PI;
+            oRoll = roll;
+            float shade = 0.88f + random.nextFloat() * 0.12f;
+            setColor(0.7f * shade, 0.87f * shade, shade);
+            alpha = 0.95f;
+            pickSprite(sprites);
+        }
+
+        @Override
+        public void tick() {
+            xo = x;
+            yo = y;
+            zo = z;
+            if (age++ >= lifetime) {
+                remove();
+                return;
+            }
+            yd -= GRAVITY;
+            move(xd, yd, zd);
+            quadSize *= 1.02f;
+            alpha = 0.95f * Math.min(1f, (lifetime - age + 2) / 4f);
+        }
+
+        @Override
+        public ParticleRenderType getRenderType() {
+            return SOFT;
+        }
+    }
+
     static class Mote extends TextureSheetParticle {
         Mote(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet sprites) {
             super(level, x, y, z);

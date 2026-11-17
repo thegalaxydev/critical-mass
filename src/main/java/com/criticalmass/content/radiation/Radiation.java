@@ -45,6 +45,8 @@ public final class Radiation {
     public static final double SPENT_DOSE = 5.0;
     public static final double RESIDUAL_DOSE = 20.0;
     public static final double CANISTER_DOSE = 3.0;
+    public static final double ASH_DOSE = 0.03;
+    public static final double STRONTIUM_DOSE = 0.25;
     public static final double CASK_TRANSMISSION = 0.01;
     public static final double OPEN_CASK_TRANSMISSION = 0.5;
     public static final double FLOODED_RACK_TRANSMISSION = 0.1;
@@ -82,6 +84,12 @@ public final class Radiation {
         }
         if (stack.is(CMItems.SEALED_WASTE_CANISTER.get())) {
             return stack.getCount() * (CANISTER_DOSE + RESIDUAL_DOSE * residual);
+        }
+        if (stack.is(CMItems.FALLOUT_ASH.get())) {
+            return stack.getCount() * ASH_DOSE;
+        }
+        if (stack.is(CMItems.STRONTIUM_90.get())) {
+            return stack.getCount() * STRONTIUM_DOSE;
         }
         if (stack.is(CMItems.INCOMPLETE_WASTE_CANISTER.get())) {
             return stack.getCount() * (s == null ? CANISTER_DOSE : 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual));

@@ -121,6 +121,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new ScreenBlockEntity(CMBlockEntities.PLANT_SCREEN.get(), pos, state), CMBlocks.PLANT_SCREEN.get()).build(null));
     public static final Supplier<BlockEntityType<CentrifugeBlockEntity>> CENTRIFUGE = BLOCK_ENTITIES.register("centrifuge",
             () -> BlockEntityType.Builder.of((pos, state) -> new CentrifugeBlockEntity(CMBlockEntities.CENTRIFUGE.get(), pos, state), CMBlocks.CENTRIFUGE.get()).build(null));
+    public static final Supplier<BlockEntityType<com.criticalmass.content.radiation.WaterCannonBlockEntity>> WATER_CANNON = BLOCK_ENTITIES.register("water_cannon",
+            () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.radiation.WaterCannonBlockEntity(CMBlockEntities.WATER_CANNON.get(), pos, state), CMBlocks.WATER_CANNON.get()).build(null));
     public static final Supplier<BlockEntityType<PressurizerBlockEntity>> PRESSURIZER = BLOCK_ENTITIES.register("pressurizer",
             () -> BlockEntityType.Builder.of((pos, state) -> new PressurizerBlockEntity(CMBlockEntities.PRESSURIZER.get(), pos, state), CMBlocks.PRESSURIZER.get()).build(null));
     public static final Supplier<BlockEntityType<Corium.Entity_>> CORIUM = BLOCK_ENTITIES.register("corium",

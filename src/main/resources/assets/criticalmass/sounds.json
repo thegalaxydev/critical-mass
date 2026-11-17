@@ -240,5 +240,14 @@
     "name": "criticalmass:fallout"
    }
   ]
+ },
+ "water_spray": {
+  "subtitle": "criticalmass.subtitle.water_spray",
+  "sounds": [
+   {
+    "name": "criticalmass:water_spray",
+    "attenuation_distance": 32
+   }
+  ]
  }
 }

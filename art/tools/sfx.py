@@ -305,7 +305,15 @@ def fallout():
     return level(crush(seamless(wave, 0.5), 7), 0.5)
 
 
+def water_spray():
+    t = clock(2.0)
+    hiss = highpass(lowpass(noise(t, 71), 3800), 500) * (0.8 + 0.2 * sine(1.5, t))
+    patter = lowpass(noise(t, 72), 900) * (0.6 + 0.4 * sine(4.0, t) ** 2) * 0.5
+    return level(crush(seamless(hiss + patter), 7), 0.4)
+
+
 SOUNDS = {
+    "water_spray": water_spray,
     "service": service,
     "fallout": fallout,
     "engine_start": engine_start, "engine_run": engine_run,
@@ -321,7 +329,10 @@ def main():
         print("left alone; pass fresh to synthesise the sound set again")
         return
     os.makedirs(OUT, exist_ok=True)
+    wanted = [name for name in sys.argv[1:] if name in SOUNDS]
     for name, make in SOUNDS.items():
+        if wanted and name not in wanted:
+            continue
         signal = make()
         sf.write(os.path.join(OUT, name + ".ogg"), signal.astype(np.float32), RATE, format="OGG", subtype="VORBIS")
         print(name, round(len(signal) / RATE, 2), "seconds")

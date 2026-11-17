@@ -25,6 +25,8 @@ public final class Effects {
 
     public static Client client = (pos, sound, volume, pitch) -> {
     };
+    public static java.util.function.BiConsumer<Vec3, Vec3> jet = (from, to) -> {
+    };
 
     private Effects() {
     }
@@ -67,6 +69,12 @@ public final class Effects {
 
     public static void sound(Level level, Vec3 at, SoundEvent sound, float volume, float pitch) {
         level.playSound(null, at.x, at.y, at.z, sound, SoundSource.BLOCKS, volume, pitch);
+    }
+
+    public static void waterJet(Level level, Vec3 from, Vec3 to) {
+        if (level != null && level.isClientSide) {
+            jet.accept(from, to);
+        }
     }
 
     public static void loop(Level level, BlockPos pos, SoundEvent sound, float volume, float pitch) {

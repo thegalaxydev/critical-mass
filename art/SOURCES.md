@@ -36,6 +36,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Sounds other than the alarm and the nuclear explosion | Script | `art/tools/sfx.py` |
 | Nuclear explosion sound | Generated | A generated sound effect, trimmed and levelled |
 | Fallout Ash | Script | `art/tools/ash_texture.py`: a grey-green ash and a sheet of green specks the game draws over it at full brightness |
+| Fallout Ash (item), Strontium-90, Radioisotope Cell and the cell marker on the Station Battery | Script | `art/tools/isotope_art.py` |
+| Water Cannon | Script | `art/tools/water_cannon_texture.py`, on `art/blockbench/water_cannon.bbmodel` |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
@@ -157,9 +159,9 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 - Used by: every file in `sounds/` except `alarm.ogg` and `nuclear_blast.ogg`, through `sounds.json`
 - Source: `art/tools/sfx.py` synthesises each one from square, saw, triangle and sine waves and filtered noise at 22,050 Hz, reduced to 5 to 8 bits. Nothing is recorded or sampled.
-- Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss` and `reactor_thrum` are cut to whole cycles so they repeat without a click.
+- Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss`, `reactor_thrum` and `water_spray` are cut to whole cycles so they repeat without a click.
 - Status: script-made, not yet approved. They have been checked for level and that they load; they have not been listened to in game.
-- Remaking: run the tool with `fresh`.
+- Remaking: run the tool with `fresh`. Naming sounds after it remakes only those, as in `sfx.py fresh water_spray`.
 - Date: 2026-11-16
 
 ## circulation_pump
@@ -524,3 +526,20 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Used by: `textures/block/reinforced_pipe.png`, `textures/block/reinforced_pipe_connected.png`
 - Source: Create's `pipes.png` and `pipes_connected.png` (Create, MIT licence), recoloured from copper to the reactor alloy's blue-grey shades by `art/tools/pipe_paint.py`, flange rims included. The pipe models parent Create's fluid pipe models (`art/tools/pipe_models.py`).
 - Date: 2026-10-19
+
+## water_cannon
+
+- Used by: `textures/block/water_cannon.png` and the models `block/water_cannon.json`, `water_cannon_head.json` and `water_cannon_item.json`
+- Source: `art/blockbench/water_cannon.bbmodel`, in two groups. `base` is the housing that stands still, 12 high so a pipe meets it on any side. `head` is the part that turns: a brass swivel, a copper body and a barrel with a brass nozzle, tilted up 22.5 degrees and pointing north. The game turns the head about the middle of the block.
+- Texture: `art/tools/water_cannon_texture.py` paints the housing from the author's Steel Block, with a copper pipe collar on each side and a brass ring round the shaft socket underneath, and the head in Create's brass and copper tones.
+- Status: script-painted placeholder, not yet approved.
+- Repainting: run the tool with `fresh`. `art/tools/water_cannon_model.py` then exports the models and the blockstate. If the barrel is moved, `NOZZLE_OUT` and `NOZZLE_UP` in `WaterCannonBlockEntity` say where the jet leaves it.
+- Date: 2026-11-17
+
+## fallout_ash (item), strontium_90, radioisotope_cell and station_battery_cell
+
+- Used by: `textures/item/fallout_ash.png`, `textures/item/strontium_90.png`, `textures/item/radioisotope_cell.png` and `textures/block/station_battery_cell.png`, the lit cell that `block/station_battery_cell.json` puts on the door of a Station Battery with a cell fitted
+- Source: drawn by `art/tools/isotope_art.py` from pixel maps in the script. The cell's casing takes its tones from the author's Reactor Alloy Ingot.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`. `art/tools/power_model.py` writes the cell model and the battery's blockstate.
+- Date: 2026-11-17

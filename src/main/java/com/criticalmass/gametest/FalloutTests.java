@@ -1,5 +1,16 @@
 package com.criticalmass.gametest;
 
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.Direction;
+import java.util.List;
+import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
+import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.AllBlocks;
+import com.criticalmass.content.radiation.WaterCannonBlockEntity;
+import com.criticalmass.registry.CMItems;
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.radiation.Fallout;
@@ -125,6 +136,124 @@ public final class FalloutTests {
                         BlockPos at = new BlockPos(x, 2, 3);
                         h.assertTrue(!h.getBlockState(at).is(CMBlocks.FALLOUT_ASH.get()), "Flowing water should wash the ash off at " + at);
                         h.assertTrue(data.get(h.absolutePos(at)) == 0, "Washed ash should leave no contamination at " + at);
+                    }
+                    h.assertItemEntityCountIs(CMItems.FALLOUT_ASH.get(), new BlockPos(4, 2, 4), 4, 4);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 100)
+    public static void clearedAshIsLeftAsFalloutAshThatGivesADose(GameTestHelper h) {
+        BlockPos at = new BlockPos(4, 2, 4);
+        h.setBlock(at.below(), Blocks.STONE);
+        h.setBlock(at, CMBlocks.FALLOUT_ASH.get());
+        h.startSequence()
+                .thenIdle(2)
+                .thenExecute(() -> h.getLevel().destroyBlock(h.absolutePos(at), true))
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.assertItemEntityPresent(CMItems.FALLOUT_ASH.get(), at, 2);
+                    double one = Radiation.itemStrength(new ItemStack(CMItems.FALLOUT_ASH.get()));
+                    h.assertTrue(one > 0 && Radiation.itemStrength(new ItemStack(CMItems.FALLOUT_ASH.get(), 64)) > 60 * one, "Fallout Ash should give a dose that grows with the stack: " + one);
+                    h.assertTrue(Radiation.itemStrength(new ItemStack(CMItems.STRONTIUM_90.get())) > one, "Strontium-90 should be stronger than the ash it came from");
+                    h.assertTrue(Radiation.itemStrength(new ItemStack(CMItems.RADIOISOTOPE_CELL.get())) == 0, "A sealed cell should give no dose");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 400, skyAccess = true)
+    public static void aWaterCannonWashesAshAndPutsOutFireWithinItsReach(GameTestHelper h) {
+        BlockPos motorPos = new BlockPos(8, 2, 8);
+        BlockPos cannonPos = motorPos.above();
+        BlockPos beyond = new BlockPos(1, 2, 8);
+        BlockPos burning = new BlockPos(5, 2, 5);
+        List<BlockPos> near = List.of(new BlockPos(12, 2, 8), new BlockPos(8, 2, 12), new BlockPos(4, 2, 8), new BlockPos(8, 2, 5), new BlockPos(11, 2, 11), new BlockPos(6, 2, 10));
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+            }
+        }
+        h.setBlock(burning.below(), Blocks.NETHERRACK);
+        h.setBlock(burning, Blocks.FIRE);
+        h.setBlock(motorPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        h.setBlock(cannonPos, CMBlocks.WATER_CANNON.get());
+        for (BlockPos at : near) {
+            h.setBlock(at, CMBlocks.FALLOUT_ASH.get());
+            data.add(h.absolutePos(at), 1.5);
+        }
+        h.setBlock(beyond, CMBlocks.FALLOUT_ASH.get());
+        CreativeMotorBlockEntity motor = h.getBlockEntity(motorPos);
+        motor.generatedSpeed.setValue(64);
+        WaterCannonBlockEntity cannon = h.getBlockEntity(cannonPos);
+        int water = WaterCannonBlockEntity.WATER_PER_BLOCK * (near.size() + 1);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(cannon.getSpeed() != 0 && cannon.status().endsWith("cannon.dry"), "A turning cannon with an empty tank should say it has no water: " + cannon.status());
+                    for (BlockPos at : near) {
+                        h.assertBlockPresent(CMBlocks.FALLOUT_ASH.get(), at);
+                    }
+                    cannon.setReach(5);
+                    cannon.tank().fill(new FluidStack(Fluids.WATER, water), IFluidHandler.FluidAction.EXECUTE);
+                })
+                .thenWaitUntil(() -> {
+                    for (BlockPos at : near) {
+                        h.assertBlockNotPresent(CMBlocks.FALLOUT_ASH.get(), at);
+                    }
+                    h.assertBlockNotPresent(Blocks.FIRE, burning);
+                })
+                .thenExecute(() -> {
+                    for (BlockPos at : near) {
+                        h.assertTrue(data.get(h.absolutePos(at)) == 0, "Washed ash should leave no contamination at " + at);
+                    }
+                    h.assertTrue(cannon.washed() == near.size() + 1 && cannon.tank().getFluidAmount() == 0, "Each block washed should cost its water: " + cannon.washed() + " for " + cannon.tank().getFluidAmount());
+                    h.assertBlockPresent(CMBlocks.FALLOUT_ASH.get(), beyond);
+                    h.assertTrue(h.getEntities(EntityType.ITEM, cannonPos, 10).isEmpty(), "Washed ash should leave no Fallout Ash behind");
+                    cannon.tank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+                })
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertBlockPresent(CMBlocks.FALLOUT_ASH.get(), beyond);
+                    h.assertTrue(cannon.status().endsWith("cannon.clear") && cannon.tank().getFluidAmount() == 1000, "With nothing left in reach it should stand by and use no water: " + cannon.status());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 400, skyAccess = true)
+    public static void aWaterCannonOnAMovingBodyWashesTheGroundBelowIt(GameTestHelper h) {
+        BlockPos motorPos = new BlockPos(8, 2, 8);
+        BlockPos cannonPos = motorPos.above();
+        List<BlockPos> near = List.of(new BlockPos(12, 2, 8), new BlockPos(8, 2, 12), new BlockPos(5, 2, 6));
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+            }
+        }
+        h.setBlock(motorPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        h.setBlock(cannonPos, CMBlocks.WATER_CANNON.get());
+        CreativeMotorBlockEntity motor = h.getBlockEntity(motorPos);
+        motor.generatedSpeed.setValue(64);
+        WaterCannonBlockEntity cannon = h.getBlockEntity(cannonPos);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    cannon.setReach(5);
+                    cannon.tank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+                    List<BlockPos> blocks = List.of(h.absolutePos(motorPos), h.absolutePos(cannonPos));
+                    dev.ryanhcode.sable.api.SubLevelAssemblyHelper.assembleBlocks(h.getLevel(), h.absolutePos(motorPos), blocks,
+                            new dev.ryanhcode.sable.companion.math.BoundingBox3i(h.absolutePos(motorPos), h.absolutePos(cannonPos)));
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertBlockNotPresent(CMBlocks.WATER_CANNON.get(), cannonPos);
+                    for (BlockPos at : near) {
+                        h.setBlock(at, CMBlocks.FALLOUT_ASH.get());
+                    }
+                })
+                .thenWaitUntil(() -> {
+                    for (BlockPos at : near) {
+                        h.assertBlockNotPresent(CMBlocks.FALLOUT_ASH.get(), at);
                     }
                 })
                 .thenSucceed();

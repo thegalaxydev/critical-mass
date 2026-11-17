@@ -37,7 +37,7 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("bypass", PlantScenes::bypass, ACCIDENTS);
         scenes.forComponents(CMBlocks.CORIUM, CMBlocks.RUINED_CHANNEL, CMBlocks.FUEL_CHANNEL, CMBlocks.REACTOR_CONTROLLER)
                 .addStoryBoard("meltdown", PlantScenes::meltdown, ACCIDENTS);
-        scenes.forComponents(CMItems.SURVEY_METER, CMBlocks.CHARRED_LOG, CMItems.PROTECTIVE_SUIT)
+        scenes.forComponents(CMItems.SURVEY_METER, CMBlocks.CHARRED_LOG, CMItems.PROTECTIVE_SUIT, CMItems.FALLOUT_ASH, CMBlocks.WATER_CANNON)
                 .addStoryBoard("fallout", PlantScenes::fallout, ACCIDENTS);
     }
 

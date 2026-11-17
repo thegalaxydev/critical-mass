@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "P": {
+      "item": "create:fluid_pipe"
+    },
+    "B": {
+      "tag": "c:plates/brass"
+    },
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "K": {
+      "item": "create:cogwheel"
+    }
+  },
+  "pattern": [
+    " P ",
+    "BPB",
+    "SKS"
+  ],
+  "result": {
+    "id": "criticalmass:water_cannon",
+    "count": 1
+  }
+}

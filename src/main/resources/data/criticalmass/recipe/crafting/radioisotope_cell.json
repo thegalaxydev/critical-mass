@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "criticalmass:reactor_alloy_sheet"
+    },
+    "S": {
+      "item": "criticalmass:strontium_90"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    }
+  },
+  "pattern": [
+    "ASA",
+    "ASA",
+    "ACA"
+  ],
+  "result": {
+    "id": "criticalmass:radioisotope_cell",
+    "count": 1
+  }
+}

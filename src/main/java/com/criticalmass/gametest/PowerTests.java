@@ -1427,4 +1427,43 @@ public final class PowerTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void aRadioisotopeCellChargesABatteryWithNoSupply(GameTestHelper h) {
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos fittedPos = new BlockPos(6, 2, 3);
+        BlockPos plainPos = new BlockPos(3, 2, 3);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(fittedPos, CMBlocks.STATION_BATTERY.get().defaultBlockState().setValue(com.criticalmass.content.power.BatteryBlock.CELL, true));
+        h.setBlock(plainPos, CMBlocks.STATION_BATTERY.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, busPos, 0, fittedPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        BatteryBlockEntity fitted = h.getBlockEntity(fittedPos);
+        BatteryBlockEntity plain = h.getBlockEntity(plainPos);
+        double draw = drawFor(pressLoad(1, 16));
+        double[] seen = new double[1];
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(draw > Power.CELL_SU, "The motor should draw more than a cell gives: " + draw);
+                    h.assertTrue(plain.charge() == 0 && plain.status().endsWith("battery.flat"), "A battery with no cell and no supply should stay flat: " + plain.status());
+                    h.assertTrue(fitted.charge() > 0 && !fitted.online() && fitted.status().endsWith("battery.cell") && !bus.live(),
+                            "A run-down battery with a cell should charge from it and stay off its bus until it has enough: " + fitted.status() + " " + fitted.charge());
+                    seen[0] = fitted.charge();
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(near((fitted.charge() - seen[0]) * BatteryBlockEntity.CAPACITY, 40 * Power.CELL_SU), "The cell should charge it at its rating: " + (fitted.charge() - seen[0]) * BatteryBlockEntity.CAPACITY);
+                    net.minecraft.nbt.CompoundTag tag = fitted.saveWithoutMetadata(h.getLevel().registryAccess());
+                    tag.putDouble("Charge", BatteryBlockEntity.CAPACITY * Power.CELL_RESTART - Power.CELL_SU * 5);
+                    fitted.loadWithComponents(tag, h.getLevel().registryAccess());
+                })
+                .thenIdle(100)
+                .thenExecute(() -> h.assertTrue(fitted.online() && fitted.status().endsWith("battery.supplying") && near(fitted.outputSu(), draw) && bus.live() && motor.live(),
+                        "Once the cell has put enough back the battery should take up its bus again: " + fitted.status() + " out " + fitted.outputSu() + " of " + draw + " bus " + bus.live() + " motor " + motor.live()))
+                .thenSucceed();
+    }
 }

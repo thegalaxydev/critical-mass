@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (56)
+## Blocks (57)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -28,7 +28,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
-| `criticalmass:fallout_ash` | Fallout Ash (no item) | script | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x64 |  | 1 |
+| `criticalmass:fallout_ash` | Fallout Ash | script | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x64<br>`item/fallout_ash.png` 16x16 |  | 2 |
 | `criticalmass:fuel_channel` | Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/fuel_channel_glow_1.png` 32x32<br>`block/fuel_channel_glow_2.png` 32x32<br>`block/fuel_channel_glow_3.png` 32x32 |  | 5 |
 | `criticalmass:generator` | Generator | script | `block/generator.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
@@ -58,7 +58,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:shielded_hatch` | Shielded Hatch | script | `block/shielded_hatch.png` 16x16 |  | 5 |
 | `criticalmass:shielding_concrete` | Shielding Concrete | author | `block/shielding_concrete.png` 16x16 |  | 2 |
 | `criticalmass:spent_fuel_rack` | Spent Fuel Rack | script | `block/spent_fuel_rack.png` 32x32<br>`block/steel_block.png` 16x16 |  | 7 |
-| `criticalmass:station_battery` | Station Battery | script | `block/station_battery.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
+| `criticalmass:station_battery` | Station Battery | script | `block/station_battery.png` 32x32<br>`block/station_battery_cell.png` 16x16<br>`block/steel_block.png` 16x16 |  | 3 |
 | `criticalmass:steam_turbine` | Steam Turbine | author's model, script texture | `block/steam_turbine.png` 128x128 |  | 4 |
 | `criticalmass:steam_turbine_structure` | Steam Turbine (no item) | author's model, script texture | `block/steam_turbine.png` 128x128 |  | 1 |
 | `criticalmass:steel_block` | Block of Steel | author | `block/steel_block.png` 16x16 |  | 2 |
@@ -66,8 +66,9 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:transfer_switch` | Transfer Switch | script | `block/steel_block.png` 16x16<br>`block/transfer_switch.png` 32x32 |  | 4 |
 | `criticalmass:transformer` | Transformer | script | `block/transformer.png` 32x32 |  | 2 |
 | `criticalmass:uranium_ore` | Uranium Ore | script | `block/uranium_ore.png` 16x16 |  | 2 |
+| `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
 
-## Items (37)
+## Items (39)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -95,6 +96,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:protective_hood` | Protective Hood | generated | `item/protective_hood.png` 16x16 |  | 1 |
 | `criticalmass:protective_leggings` | Protective Leggings | generated | `item/protective_leggings.png` 16x16 |  | 1 |
 | `criticalmass:protective_suit` | Protective Suit | generated | `item/protective_suit.png` 16x16 |  | 1 |
+| `criticalmass:radioisotope_cell` | Radioisotope Cell | script | `item/radioisotope_cell.png` 16x16 |  | 1 |
 | `criticalmass:raw_uranium` | Raw Uranium | generated | `item/raw_uranium.png` 16x16 |  | 1 |
 | `criticalmass:reactor_alloy_ingot` | Reactor Alloy Ingot | author | `item/reactor_alloy_ingot.png` 16x16 |  | 1 |
 | `criticalmass:reactor_alloy_sheet` | Reactor Alloy Sheet | author | `item/reactor_alloy_sheet.png` 16x16 |  | 1 |
@@ -103,6 +105,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:steel_ingot` | Steel Ingot | author | `item/steel_ingot.png` 16x16 |  | 1 |
 | `criticalmass:steel_nugget` | Steel Nugget | author | `item/steel_nugget.png` 16x16 |  | 1 |
 | `criticalmass:steel_plate` | Steel Plate | author | `item/steel_plate.png` 16x16 |  | 1 |
+| `criticalmass:strontium_90` | Strontium-90 | script | `item/strontium_90.png` 16x16 |  | 1 |
 | `criticalmass:survey_meter` | Survey Meter | author | `item/survey_meter.png` 16x16 |  | 1 |
 | `criticalmass:transmission_line` | Transmission Line | script | `item/transmission_line.png` 16x16 |  | 1 |
 | `criticalmass:turbine_blade` | Turbine Blade | author | `item/turbine_blade.png` 16x16 |  | 1 |
@@ -140,7 +143,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (27)
+## Sounds (28)
 
 All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
 
@@ -173,6 +176,7 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:service` | Equipment serviced | script | `sounds/service.ogg` |
 | `criticalmass:nuclear_blast` | Nuclear explosion | generated | `sounds/nuclear_blast.ogg` |
 | `criticalmass:fallout` | Fallout drifts | script | `sounds/fallout.ogg` |
+| `criticalmass:water_spray` | Water cannon sprays | script | `sounds/water_spray.ogg` |
 
 ## Problems
 

@@ -1,0 +1,45 @@
+{
+  "type": "create:mixing",
+  "heat_requirement": "heated",
+  "ingredients": [
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "item": "criticalmass:fallout_ash"
+    },
+    {
+      "type": "neoforge:single",
+      "amount": 500,
+      "fluid": "minecraft:water"
+    }
+  ],
+  "results": [
+    {
+      "id": "criticalmass:strontium_90",
+      "count": 1
+    },
+    {
+      "amount": 250,
+      "id": "criticalmass:contaminated_coolant"
+    }
+  ]
+}

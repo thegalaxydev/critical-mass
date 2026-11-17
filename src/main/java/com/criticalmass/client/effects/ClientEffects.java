@@ -35,6 +35,7 @@ public final class ClientEffects {
     private static final Map<String, Loop> LOOPS = new HashMap<>();
     private static final List<Emitter> EMITTERS = new ArrayList<>();
     private static final float GRAIN_FROM = 10f;
+    private static final double REACH_SQ = 96.0 * 96.0;
     private static final float GRAIN_FULL = 160f;
     private static SpriteSet streak;
     private static float shake;
@@ -59,6 +60,7 @@ public final class ClientEffects {
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> tick());
         NeoForge.EVENT_BUS.addListener(ClientEffects::camera);
         Effects.client = ClientEffects::loop;
+        Effects.jet = ClientEffects::waterJet;
     }
 
     private record Emitter(int kind, Vec3 at, Vec3 aim, float power, int[] left) {
@@ -126,6 +128,34 @@ public final class ClientEffects {
     private static void arc(ClientLevel level, Vec3 from, Vec3 to, float power) {
         if (streak != null) {
             Minecraft.getInstance().particleEngine.add(new ArcParticle(level, from, to, power, streak.get(RANDOM)));
+        }
+    }
+
+    private static void waterJet(Vec3 from, Vec3 to) {
+        Minecraft mc = Minecraft.getInstance();
+        if (mc.level == null || mc.player == null || EffectParticles.puffs == null || EffectParticles.motes == null || mc.player.distanceToSqr(from) > REACH_SQ) {
+            return;
+        }
+        int flight = Mth.clamp((int) Math.round(to.distanceTo(from) * 0.8), 7, 26);
+        double lift = EffectParticles.Jet.GRAVITY * (flight + 1) / 2;
+        for (int i = 0; i < 12; i++) {
+            Vec3 aim = to.add(scatter(0.35)).subtract(from);
+            Vec3 speed = new Vec3(aim.x / flight, aim.y / flight + lift, aim.z / flight);
+            Vec3 start = from.add(speed.scale(RANDOM.nextDouble()));
+            mc.particleEngine.add(new EffectParticles.Jet(mc.level, start, speed, flight, 0.2f + RANDOM.nextFloat() * 0.16f, i % 3 == 0 ? EffectParticles.puffs : EffectParticles.motes));
+        }
+        for (int i = 0; i < 4; i++) {
+            Vec3 out = scatter(0.16);
+            mc.particleEngine.add(new EffectParticles.Jet(mc.level, to.add(0, 0.15, 0), new Vec3(out.x, 0.12 + RANDOM.nextDouble() * 0.14, out.z), 8 + RANDOM.nextInt(6), 0.12f + RANDOM.nextFloat() * 0.1f, EffectParticles.motes));
+        }
+        for (int i = 0; i < 2; i++) {
+            Vec3 drift = scatter(0.06);
+            Vec3 at = to.add(scatter(0.7));
+            mc.particleEngine.add(new EffectParticles.Cloud(mc.level, at.x, to.y + 0.3, at.z, drift.x, 0.02 + RANDOM.nextDouble() * 0.04, drift.z, EffectParticles.puffs, 0.9f, 24, 1.03f, 0f, 0.6f, 0.82f, 0.93f, 1f));
+        }
+        if (RANDOM.nextInt(2) == 0) {
+            Vec3 at = to.add(scatter(0.5));
+            add(mc.level, CMParticles.FALLOUT.get(), new Vec3(at.x, to.y + 0.2, at.z), 0, 0.04, 0);
         }
     }
 

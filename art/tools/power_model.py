@@ -108,7 +108,11 @@ def emergency():
     parts, textures = bbmodel.load("station_battery")
     bbmodel.write(os.path.join(BLOCK, "station_battery.json"), bbmodel.model(parts["body"], textures, textures["1"]))
     item("station_battery", "station_battery")
-    bbmodel.write(os.path.join(STATES, "station_battery.json"), {"variants": {"facing=" + side: dict({"model": M + "station_battery"}, **turn) for side, turn in FACING.items()}})
+    cell = {"name": "cell_lit", "from": [6, 6, 0.5], "to": [9, 9, 1], "faces": dict({side: {"uv": [0, 3, 3, 4], "texture": "#cell"} for side in ("east", "west", "up", "down")}, north={"uv": [0, 0, 3, 3], "texture": "#cell"})}
+    bbmodel.write(os.path.join(BLOCK, "station_battery_cell.json"), {"textures": {"cell": M + "station_battery_cell", "particle": M + "station_battery_cell"}, "elements": lit([cell])})
+    multipart = [{"when": {"facing": side}, "apply": dict({"model": M + "station_battery"}, **turn)} for side, turn in FACING.items()]
+    multipart += [{"when": {"facing": side, "cell": "true"}, "apply": dict({"model": M + "station_battery_cell"}, **turn)} for side, turn in FACING.items()]
+    bbmodel.write(os.path.join(STATES, "station_battery.json"), {"multipart": multipart})
     parts, textures = bbmodel.load("diesel_engine")
     bbmodel.write(os.path.join(BLOCK, "diesel_engine.json"), bbmodel.model(parts["body"], textures, textures["0"]))
     item("diesel_engine", "diesel_engine")

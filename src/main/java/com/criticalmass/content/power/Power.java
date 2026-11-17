@@ -31,6 +31,8 @@ public final class Power {
     public static final int BATTERY_FULL_TICKS = 6000;
     public static final double BATTERY_CHARGE_SU = 128.0;
     public static final double BATTERY_EFFICIENCY = 0.9;
+    public static final double CELL_SU = 32.0;
+    public static final double CELL_RESTART = 0.02;
     public static final double DIESEL_RATED_SU = 4096.0;
     public static final int DIESEL_START_TICKS = 60;
     public static final double DIESEL_IDLE_MB = 0.02;

@@ -1,19 +1,78 @@
 {
- "variants": {
-  "facing=north": {
-   "model": "criticalmass:block/station_battery"
+ "multipart": [
+  {
+   "when": {
+    "facing": "north"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery"
+   }
   },
-  "facing=east": {
-   "model": "criticalmass:block/station_battery",
-   "y": 90
+  {
+   "when": {
+    "facing": "east"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery",
+    "y": 90
+   }
   },
-  "facing=south": {
-   "model": "criticalmass:block/station_battery",
-   "y": 180
+  {
+   "when": {
+    "facing": "south"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery",
+    "y": 180
+   }
   },
-  "facing=west": {
-   "model": "criticalmass:block/station_battery",
-   "y": 270
+  {
+   "when": {
+    "facing": "west"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "facing": "north",
+    "cell": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery_cell"
+   }
+  },
+  {
+   "when": {
+    "facing": "east",
+    "cell": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery_cell",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "facing": "south",
+    "cell": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery_cell",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "west",
+    "cell": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/station_battery_cell",
+    "y": 270
+   }
   }
- }
+ ]
 }

@@ -24,6 +24,7 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private double output;
     private double draw;
     private boolean online;
+    private boolean spent;
     private int lockout;
     private int syncIn;
     private String status = "criticalmass.battery.flat";
@@ -63,7 +64,12 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
     public void setCharge(double fraction) {
         charge = Math.max(0, Math.min(1, fraction)) * CAPACITY;
+        spent = false;
         setChanged();
+    }
+
+    public boolean cell() {
+        return getBlockState().getValue(BatteryBlock.CELL);
     }
 
     public String status() {
@@ -71,7 +77,7 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     }
 
     public boolean ready() {
-        return lockout <= 0 && charge > 0;
+        return lockout <= 0 && charge > 0 && !spent;
     }
 
     public int comparator() {
@@ -153,23 +159,34 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         if (lockout > 0) {
             lockout--;
         }
+        boolean cell = cell();
+        boolean topping = cell && charge < CAPACITY;
+        if (topping) {
+            charge = Math.min(CAPACITY, charge + Power.CELL_SU);
+        }
+        if (spent && charge >= CAPACITY * Power.CELL_RESTART) {
+            spent = false;
+        }
         if (others) {
             online = false;
             output = 0;
             boolean live = around.kilovoltsAt(level, worldPosition, 0) >= Power.MOTOR_KV * Power.UNDERVOLTAGE;
             draw = live && charge < CAPACITY ? Power.BATTERY_CHARGE_SU : 0;
             charge = Math.min(CAPACITY, charge + draw * Power.BATTERY_EFFICIENCY);
-            now = draw > 0 ? "criticalmass.battery.charging" : "criticalmass.battery.standby";
+            if (draw > 0) {
+                spent = false;
+            }
+            now = draw > 0 ? "criticalmass.battery.charging" : topping ? "criticalmass.battery.cell" : "criticalmass.battery.standby";
         } else if (lockout > 0) {
             online = false;
             output = 0;
             draw = 0;
             now = "criticalmass.battery.overloaded";
-        } else if (charge <= 0) {
+        } else if (charge <= 0 || spent) {
             online = false;
             output = 0;
             draw = 0;
-            now = "criticalmass.battery.flat";
+            now = cell ? "criticalmass.battery.cell" : "criticalmass.battery.flat";
         } else {
             draw = 0;
             online = true;
@@ -188,6 +205,7 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
             } else {
                 output = share;
                 charge = Math.max(0, charge - share);
+                spent = charge <= 0;
                 now = "criticalmass.battery.supplying";
             }
         }
@@ -213,6 +231,7 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         tag.putDouble("Output", output);
         tag.putDouble("Draw", draw);
         tag.putBoolean("Online", online);
+        tag.putBoolean("Spent", spent);
         tag.putInt("Lockout", lockout);
         tag.putString("Status", status);
         tag.put("Wires", wires.save());
@@ -225,6 +244,7 @@ public class BatteryBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         output = tag.getDouble("Output");
         draw = tag.getDouble("Draw");
         online = tag.getBoolean("Online");
+        spent = tag.getBoolean("Spent");
         lockout = tag.getInt("Lockout");
         status = tag.contains("Status") ? tag.getString("Status") : "criticalmass.battery.flat";
         wires.load(tag, "Wires");

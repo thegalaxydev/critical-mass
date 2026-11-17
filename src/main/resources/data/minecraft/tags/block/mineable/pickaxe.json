@@ -52,6 +52,7 @@
     "criticalmass:diesel_engine",
     "criticalmass:transfer_switch",
     "criticalmass:surge_arrester",
-    "criticalmass:burnt_equipment"
+    "criticalmass:burnt_equipment",
+    "criticalmass:water_cannon"
   ]
 }
