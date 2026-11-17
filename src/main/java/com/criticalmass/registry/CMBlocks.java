@@ -13,10 +13,13 @@ import com.criticalmass.content.control.SignalInterfaceBlock;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.GeneratorBlock;
 import com.criticalmass.content.power.BusBarBlock;
+import com.criticalmass.content.power.BatteryBlock;
+import com.criticalmass.content.power.DieselEngineBlock;
 import com.criticalmass.content.power.DisconnectBlock;
 import com.criticalmass.content.power.EarthingBlock;
 import com.criticalmass.content.power.GridTieBlock;
 import com.criticalmass.content.power.MotorBlock;
+import com.criticalmass.content.power.TransferSwitchBlock;
 import com.criticalmass.content.power.TransformerBlock;
 import com.criticalmass.content.power.InsulatorBlock;
 import com.criticalmass.content.control.ScreenBlock;
@@ -109,6 +112,9 @@ public final class CMBlocks {
     public static final DeferredBlock<TransformerBlock> TRANSFORMER = register("transformer", TransformerBlock::new, metal(5.0f).noOcclusion());
     public static final DeferredBlock<DisconnectBlock> DISCONNECT_SWITCH = register("disconnect_switch", DisconnectBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<EarthingBlock> EARTHING_SWITCH = register("earthing_switch", EarthingBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<BatteryBlock> STATION_BATTERY = register("station_battery", BatteryBlock::new, metal(4.0f));
+    public static final DeferredBlock<DieselEngineBlock> DIESEL_ENGINE = register("diesel_engine", DieselEngineBlock::new, metal(4.0f).noOcclusion());
+    public static final DeferredBlock<TransferSwitchBlock> TRANSFER_SWITCH = register("transfer_switch", TransferSwitchBlock::new, metal(4.0f));
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));

@@ -264,7 +264,28 @@ def wire_cut():
     return level(crush(edges(wave, 0.0005, 0.04), 6), 0.6)
 
 
+def chug(t, rate, seed):
+    beat = np.exp(-(turns(rate, t) % 1.0) * 5.0)
+    body = lowpass(noise(t, seed), 700) * 1.6 + 0.8 * saw(46, t) + 0.5 * sine(92, t)
+    return body * beat
+
+
+def engine_start():
+    t = clock(2.9)
+    rate = 3.5 + 11.0 * np.clip(t / 2.6, 0, 1) ** 1.6
+    whine = 0.25 * sine(300 + 500 * np.clip(t / 2.9, 0, 1), t) * np.clip(1 - t / 2.0, 0, 1)
+    wave = chug(t, rate, 51) * (0.6 + 0.4 * np.clip(t / 2.6, 0, 1)) + whine
+    return level(crush(edges(wave, 0.01, 0.1), 6), 0.7)
+
+
+def engine_run():
+    t = clock(1.0)
+    wave = chug(t, 16, 52) + 0.15 * highpass(noise(t, 53), 2500)
+    return level(crush(wave, 6), 0.5)
+
+
 SOUNDS = {
+    "engine_start": engine_start, "engine_run": engine_run,
     "hum": hum, "generator_run": generator_run, "motor_run": motor_run, "steam_hiss": steam_hiss, "reactor_thrum": reactor_thrum, "breaker_close": breaker_close,
     "breaker_open": breaker_open, "breaker_trip": breaker_trip, "switch_throw": switch_throw, "relay_click": relay_click, "arc_zap": arc_zap, "arc_blast": arc_blast,
     "wire_sizzle": wire_sizzle, "steam_vent": steam_vent, "pipe_burst": pipe_burst, "geiger": geiger, "order_placed": order_placed, "order_met": order_met,

@@ -47,6 +47,9 @@
     "criticalmass:bus_bar",
     "criticalmass:transformer",
     "criticalmass:disconnect_switch",
-    "criticalmass:earthing_switch"
+    "criticalmass:earthing_switch",
+    "criticalmass:station_battery",
+    "criticalmass:diesel_engine",
+    "criticalmass:transfer_switch"
   ]
 }

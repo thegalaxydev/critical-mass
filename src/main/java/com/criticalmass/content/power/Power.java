@@ -27,6 +27,17 @@ public final class Power {
     public static final int OVERLOAD_TICKS = 20;
     public static final int LOCKOUT_TICKS = 100;
     public static final int MAX_BUS = 8;
+    public static final double BATTERY_RATED_SU = 512.0;
+    public static final int BATTERY_FULL_TICKS = 6000;
+    public static final double BATTERY_CHARGE_SU = 128.0;
+    public static final double BATTERY_EFFICIENCY = 0.9;
+    public static final double DIESEL_RATED_SU = 4096.0;
+    public static final int DIESEL_START_TICKS = 60;
+    public static final double DIESEL_IDLE_MB = 0.02;
+    public static final double DIESEL_LOAD_MB = 0.18;
+    public static final int TRANSFER_LOSS_TICKS = 20;
+    public static final int TRANSFER_RETURN_TICKS = 100;
+    public static final int TRANSFER_PAUSE_TICKS = 10;
     public static final double RELAY_SECONDS = 2.0;
     public static final double RELAY_RESET_SECONDS = 5.0;
     public static final double RELAY_INSTANT = 8.0;

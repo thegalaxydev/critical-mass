@@ -17,6 +17,7 @@ public final class CMFluids {
     public static final Entry PRIMARY_COOLANT = entry("primary_coolant", FluidType.Properties.create().density(1100).viscosity(1200).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
     public static final Entry STEAM = entry("steam", FluidType.Properties.create().density(-500).viscosity(200).temperature(400).canPushEntity(false).canSwim(false).canDrown(false));
     public static final Entry CONTAMINATED_COOLANT = entry("contaminated_coolant", FluidType.Properties.create().density(1150).viscosity(1400).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
+    public static final Entry FUEL_OIL = entry("fuel_oil", FluidType.Properties.create().density(900).viscosity(2500).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
 
     private CMFluids() {
     }

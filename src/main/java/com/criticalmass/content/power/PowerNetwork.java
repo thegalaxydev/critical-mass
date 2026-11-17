@@ -88,6 +88,7 @@ public final class PowerNetwork {
         public final Set<BlockPos> transformers = new LinkedHashSet<>();
         public final Set<BlockPos> switches = new LinkedHashSet<>();
         public final Set<BlockPos> earths = new LinkedHashSet<>();
+        public final Set<BlockPos> sources = new LinkedHashSet<>();
         public int wires;
         private final List<Step> keys = new ArrayList<>();
         private final Map<Step, Integer> index = new HashMap<>();
@@ -107,27 +108,41 @@ public final class PowerNetwork {
             if (!grids.isEmpty()) {
                 return new Side(true, Power.GRID_HZ, 0, true);
             }
-            GeneratorBlockEntity lead = lead(level, null);
+            PowerSource lead = lead(level, null);
             return lead == null ? Side.DEAD : new Side(true, lead.frequency(), lead.phase(), false);
         }
 
-        @Nullable
-        public GeneratorBlockEntity lead(Level level, @Nullable GeneratorBlockEntity except) {
-            GeneratorBlockEntity best = null;
+        public List<PowerSource> feeders(Level level) {
+            List<PowerSource> out = new ArrayList<>();
             for (BlockPos pos : generators) {
-                if (level.getBlockEntity(pos) instanceof GeneratorBlockEntity g && g != except && g.online()
-                        && (best == null || pos.compareTo(best.getBlockPos()) < 0)) {
-                    best = g;
+                if (level.getBlockEntity(pos) instanceof PowerSource source) {
+                    out.add(source);
+                }
+            }
+            for (BlockPos pos : sources) {
+                if (level.getBlockEntity(pos) instanceof PowerSource source) {
+                    out.add(source);
+                }
+            }
+            return out;
+        }
+
+        @Nullable
+        public PowerSource lead(Level level, @Nullable PowerSource except) {
+            PowerSource best = null;
+            for (PowerSource source : feeders(level)) {
+                if (source != except && source.online() && (best == null || source.sourcePos().compareTo(best.sourcePos()) < 0)) {
+                    best = source;
                 }
             }
             return best;
         }
 
-        public double onlineRating(Level level, @Nullable GeneratorBlockEntity except) {
+        public double onlineRating(Level level, @Nullable PowerSource except) {
             double total = 0;
-            for (GeneratorBlockEntity g : machines(level)) {
-                if (g != except && g.online()) {
-                    total += g.ratedSu();
+            for (PowerSource source : feeders(level)) {
+                if (source != except && source.online()) {
+                    total += source.ratedSu();
                 }
             }
             return total;
@@ -213,10 +228,10 @@ public final class PowerNetwork {
                     kv[zone[node]] = Math.max(kv[zone[node]], Power.GRID_KV);
                 }
             }
-            for (GeneratorBlockEntity g : machines(level)) {
-                int node = node(level, g.getBlockPos(), 0);
-                if (node >= 0 && g.online()) {
-                    kv[zone[node]] = Math.max(kv[zone[node]], Power.GENERATOR_KV);
+            for (PowerSource source : feeders(level)) {
+                int node = node(level, source.sourcePos(), 0);
+                if (node >= 0 && source.online()) {
+                    kv[zone[node]] = Math.max(kv[zone[node]], source.sourceKilovolts());
                 }
             }
             boolean moved = true;
@@ -305,15 +320,15 @@ public final class PowerNetwork {
                     slack = true;
                 }
             }
-            for (GeneratorBlockEntity g : machines(level)) {
-                int node = node(level, g.getBlockPos(), 0);
-                if (node >= 0 && g.online()) {
-                    if (g.outputSu() > 0) {
-                        inject[node] += Power.megawatts(g.outputSu());
+            for (PowerSource source : feeders(level)) {
+                int node = node(level, source.sourcePos(), 0);
+                if (node >= 0 && source.online()) {
+                    if (source.outputSu() > 0) {
+                        inject[node] += Power.megawatts(source.outputSu());
                         any = true;
                     }
                     if (fault) {
-                        shunt[node] += Power.megawatts(g.ratedSu()) * Power.GENERATOR_FAULT_FACTOR;
+                        shunt[node] += Power.megawatts(source.ratedSu()) * Power.GENERATOR_FAULT_FACTOR;
                         slack = true;
                     }
                 }
@@ -519,9 +534,9 @@ public final class PowerNetwork {
                     }
                 }
                 if (grids.isEmpty()) {
-                    for (GeneratorBlockEntity g : machines(level)) {
-                        if (g.online()) {
-                            g.faultTrip();
+                    for (PowerSource source : feeders(level)) {
+                        if (source.online()) {
+                            source.faultTrip();
                         }
                     }
                 }
@@ -546,6 +561,11 @@ public final class PowerNetwork {
         if (block instanceof TransformerBlock) {
             return new Step(pos.immutable(), terminal == 1 ? 1 : 0);
         }
+        if (block instanceof TransferSwitchBlock) {
+            int joined = state.getValue(TransferSwitchBlock.POSITION).joined;
+            int at = Math.max(0, Math.min(2, terminal));
+            return new Step(pos.immutable(), joined >= 0 && (at == 2 || at == joined) ? joined : at);
+        }
         return new Step(pos.immutable(), ANY);
     }
 
@@ -559,8 +579,12 @@ public final class PowerNetwork {
     }
 
     public static Island scan(Level level, BlockPos start) {
+        return scanAt(level, start, 0);
+    }
+
+    public static Island scanAt(Level level, BlockPos start, int terminal) {
         State state = state(level);
-        Step key = canon(level, start, 0, null);
+        Step key = canon(level, start, terminal, null);
         long now = level.getGameTime();
         Island cached = state.islands.get(key);
         if (cached != null && now - cached.born < KEEP_TICKS && now >= cached.born) {
@@ -584,7 +608,7 @@ public final class PowerNetwork {
         Step key = canon(level, pos, terminal, null);
         Island island = state.islands.get(key);
         if (island == null || level.getGameTime() - island.born >= KEEP_TICKS) {
-            island = scan(level, pos);
+            island = scanAt(level, pos, terminal);
         }
         return island.kilovoltsAt(level, pos, terminal);
     }
@@ -642,6 +666,11 @@ public final class PowerNetwork {
                 } else {
                     links(level, island, key, pos, key.terminal(), queue, raws);
                 }
+            } else if (block instanceof TransferSwitchBlock) {
+                links(level, island, key, pos, key.terminal(), queue, raws);
+                if (state.getValue(TransferSwitchBlock.POSITION).joined == key.terminal()) {
+                    links(level, island, key, pos, 2, queue, raws);
+                }
             } else if (block instanceof TransformerBlock) {
                 island.transformers.add(pos);
                 links(level, island, key, pos, key.terminal(), queue, raws);
@@ -655,6 +684,9 @@ public final class PowerNetwork {
                     island.grids.add(pos);
                 } else if (level.getBlockEntity(pos) instanceof PowerLoad) {
                     island.loads.add(pos);
+                }
+                if (!(block instanceof GridTieBlock) && level.getBlockEntity(pos) instanceof PowerSource) {
+                    island.sources.add(pos);
                 }
                 WireNode simple = WireLinks.node(level, pos);
                 if (simple != null && simple.earthed()) {
@@ -703,7 +735,7 @@ public final class PowerNetwork {
                             queue.add(part);
                         }
                     }
-                } else if (!(block instanceof GeneratorBlock) && !(block instanceof GridTieBlock) && !(block instanceof TransformerBlock) && seen.add(other)) {
+                } else if (!(block instanceof GeneratorBlock) && !(block instanceof GridTieBlock) && !(block instanceof TransformerBlock) && !(block instanceof TransferSwitchBlock) && seen.add(other)) {
                     queue.add(other);
                 }
             }

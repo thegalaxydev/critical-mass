@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode {
+public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode, PowerSource {
     private final WireLinks wires = new WireLinks();
     private static final int UPDATE_TICKS = 5;
     private static final int SYNC_TICKS = 10;
@@ -190,6 +190,17 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         }
     }
 
+    @Override
+    public double sourceKilovolts() {
+        return Power.GENERATOR_KV;
+    }
+
+    @Override
+    public BlockPos sourcePos() {
+        return worldPosition;
+    }
+
+    @Override
     public void faultTrip() {
         if (lockout <= 0) {
             lockout = Power.LOCKOUT_TICKS;
@@ -348,8 +359,8 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
             frequency = 0;
             now = lockout > 0 ? faultLock ? "criticalmass.generator.fault" : "criticalmass.generator.overloaded" : "criticalmass.generator.stopped";
         } else {
-            GeneratorBlockEntity other = grid ? null : around.lead(level, this);
-            boolean leading = !grid && (other == null || (online && worldPosition.compareTo(other.getBlockPos()) < 0));
+            PowerSource other = grid ? null : around.lead(level, this);
+            boolean leading = !grid && (other == null || (online && worldPosition.compareTo(other.sourcePos()) < 0));
             if (leading) {
                 online = true;
                 synced = false;

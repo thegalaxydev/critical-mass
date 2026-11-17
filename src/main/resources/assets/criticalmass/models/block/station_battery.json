@@ -1,0 +1,228 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/station_battery",
+  "1": "criticalmass:block/steel_block",
+  "particle": "criticalmass:block/steel_block"
+ },
+ "elements": [
+  {
+   "name": "shell",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      0,
+      7,
+      8,
+      15
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "frame_top",
+   "from": [
+    0,
+    15,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ],
+     "texture": "#1"
+    },
+    "down": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_bottom",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    1,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      15,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_left",
+   "from": [
+    15,
+    1,
+    0
+   ],
+   "to": [
+    16,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      1,
+      1,
+      15
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "frame_right",
+   "from": [
+    0,
+    1,
+    0
+   ],
+   "to": [
+    1,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      15,
+      1,
+      16,
+      15
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "door",
+   "from": [
+    1,
+    1,
+    1
+   ],
+   "to": [
+    15,
+    15,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      7
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

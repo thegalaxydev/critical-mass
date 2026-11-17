@@ -1,7 +1,9 @@
 package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
+import com.criticalmass.content.power.BatteryBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.DieselEngineBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
@@ -67,7 +69,7 @@ public enum PlantChannel {
 
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
-                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity;
+                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity || be instanceof BatteryBlockEntity || be instanceof DieselEngineBlockEntity;
     }
 
     private static double scale(double kilovolts) {
@@ -148,6 +150,21 @@ public enum PlantChannel {
                 case FREQUENCY -> g.energised() ? of(g.frequency(), 45, 55) : of(0, 45, 55);
                 case SYNC -> g.synced() ? of(0, -180, 180) : g.energised() ? of(g.phase(), -180, 180) : null;
                 case DEMAND -> new Reading(Power.megawatts(g.load() * g.ratedSu()), 0, Power.megawatts(g.ratedSu()), "MW");
+                default -> null;
+            };
+        }
+        if (be instanceof BatteryBlockEntity battery) {
+            return switch (this) {
+                case LEVEL -> of(battery.charge() * 100, 0, 100);
+                case OUTPUT -> new Reading(Power.megawatts(battery.outputSu()), 0, Power.megawatts(Power.BATTERY_RATED_SU), "MW");
+                case DEMAND -> of(Power.megawatts(battery.demandSu()), 0, Power.megawatts(Power.BATTERY_RATED_SU));
+                default -> null;
+            };
+        }
+        if (be instanceof DieselEngineBlockEntity engine) {
+            return switch (this) {
+                case LEVEL -> of(engine.tank().getFluidAmount() * 100.0 / DieselEngineBlockEntity.TANK_MB, 0, 100);
+                case SPEED -> of(Math.abs(engine.getSpeed()), 0, Power.SYNC_RPM * 1.5);
                 default -> null;
             };
         }

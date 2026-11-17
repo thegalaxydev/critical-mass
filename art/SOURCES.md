@@ -29,7 +29,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
-| Generator, Circuit Breaker, Grid Connection, Insulator, Electric Motor, Bus Bar, Transformer, Disconnect Switch, Earthing Switch, Power Wire, Power Cable, Transmission Line | Script | `art/tools/power_texture.py` |
+| Generator, Circuit Breaker, Grid Connection, Insulator, Electric Motor, Bus Bar, Transformer, Disconnect Switch, Earthing Switch, Station Battery, Diesel Engine, Transfer Switch, Power Wire, Power Cable, Transmission Line | Script | `art/tools/power_texture.py` |
+| Fuel Oil | Script | `art/tools/fuel_texture.py` |
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
 | Sounds other than the alarm | Script | `art/tools/sfx.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
@@ -148,7 +149,7 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
 ## generator, circuit_breaker, grid_connection, insulator, electric_motor, bus_bar, transformer and the three wires
 
 - Used by: `textures/block/generator.png`, `circuit_breaker.png`, `grid_connection.png`, `insulator.png`, `electric_motor.png`, `bus_bar.png`, `transformer.png` and `textures/item/power_wire.png`, `power_cable.png` and `transmission_line.png`, and the models `block/generator.json`, `circuit_breaker.json`, `circuit_breaker_closed.json`, `grid_connection.json`, `insulator.json`, `electric_motor.json`, `bus_bar.json` and `transformer.json`
-- Source: one Blockbench file each in `art/blockbench/`: `generator.bbmodel`, `circuit_breaker.bbmodel`, `grid_connection.bbmodel`, `insulator.bbmodel`, `electric_motor.bbmodel`, `bus_bar.bbmodel`, `transformer.bbmodel`, `disconnect_switch.bbmodel` and `earthing_switch.bbmodel`.
+- Source: one Blockbench file each in `art/blockbench/`: `generator.bbmodel`, `circuit_breaker.bbmodel`, `grid_connection.bbmodel`, `insulator.bbmodel`, `electric_motor.bbmodel`, `bus_bar.bbmodel`, `transformer.bbmodel`, `disconnect_switch.bbmodel`, `earthing_switch.bbmodel`, `station_battery.bbmodel`, `diesel_engine.bbmodel` and `transfer_switch.bbmodel`.
   - The generator is a barrel between two flanges with a copper winding band and a terminal stud on one side. The game turns it so the stud is on top when the shaft lies flat.
   - The breaker is a steel cabinet with a door, a handle and two lamps. The groups `open` and `closed` each hold the handle and lamps for one state, so show one at a time. Its top has the two terminal rings.
   - The grid connection is a ribbed tank with three bushings. Wires land on the middle one.
@@ -158,6 +159,9 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
   - The transformer is a tank with a bank of cooling fins on its front and back, a lid, a tall bushing on the high side, a short one on the low side and a small oil tank between them.
   - The disconnect switch is two ceramic posts with copper caps on a steel base. The groups `open` and `closed` hold the blade standing up on one post or lying across both, so show one at a time. Both share the sheet `switchgear.png` with the earthing switch.
   - The earthing switch is one post beside a striped earth bar, with the blade stowed up the bar in `open` and bridging to the post in `closed`.
+  - The station battery is the breaker's cabinet with a door of nine cell caps over a charge strip, and one terminal ring on top.
+  - The diesel engine is a block on a skid with a cylinder head, an exhaust stack and a flywheel housing at the shaft end. Its shaft is Create's own half shaft, drawn by the game.
+  - The transfer switch is the same cabinet with a hub and a handle. The groups `normal`, `standby` and `off` each hold the handle and the two lamps for one position, so show one at a time: the handle points at the side whose supply is in use and hangs down between them.
 - Texture: `art/tools/power_texture.py` paints all of them. The three wire icons are one coil in three sets of tones. The dark panels take the Reactor Vessel Casing's tones, the steel is the author's Steel Block, and the copper, ceramic and lamp tones come from `docs/art/palette.json`.
 - The wires themselves have no texture: the game draws them as strips between the terminals, copper for Power Wire, thick and black for Power Cable and thin and silver for Transmission Line, turning orange as they heat.
 - Status: script-painted placeholders, not yet approved.

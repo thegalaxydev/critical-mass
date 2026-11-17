@@ -1,19 +1,24 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.power.BatteryBlockEntity;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
+import com.criticalmass.content.power.DieselEngineBlockEntity;
 import com.criticalmass.content.power.DisconnectBlockEntity;
 import com.criticalmass.content.power.EarthingBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.TransferSwitchBlock;
+import com.criticalmass.content.power.TransferSwitchBlockEntity;
 import com.criticalmass.content.power.TransformerBlockEntity;
 import com.criticalmass.content.power.WireLinks;
 import com.criticalmass.content.power.WireType;
 import com.criticalmass.registry.CMBlocks;
+import com.criticalmass.registry.CMFluids;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
@@ -26,6 +31,8 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -748,6 +755,151 @@ public final class PowerTests {
                 })
                 .thenIdle(20)
                 .thenExecute(() -> h.assertTrue(!h.getBlockState(breakerPos).is(CMBlocks.CIRCUIT_BREAKER.get()), "Three transformers side by side give more fault than one breaker can break, and it should fail"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aBatteryChargesFromItsBusAndHoldsItUpWhenTheSupplyGoes(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos batteryPos = new BlockPos(6, 2, 3);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(batteryPos, CMBlocks.STATION_BATTERY.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, busPos, 0);
+        wire(h, busPos, 0, batteryPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        BatteryBlockEntity battery = h.getBlockEntity(batteryPos);
+        double draw = drawFor(pressLoad(1, 16));
+        double[] held = new double[1];
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> breaker.close())
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(!battery.online() && battery.status().endsWith("battery.charging") && battery.charge() > 0, "A battery on a live bus should charge: " + battery.status());
+                    h.assertTrue(near(bus.loadSu(), draw + Power.BATTERY_CHARGE_SU), "Charging should show as load on the bus: " + bus.loadSu());
+                    battery.setCharge(0.5);
+                    breaker.open();
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(battery.online() && battery.status().endsWith("battery.supplying") && near(battery.outputSu(), draw), "With the supply gone the battery should carry the bus: " + battery.outputSu());
+                    h.assertTrue(bus.live() && Math.abs(bus.kilovolts() - Power.MOTOR_KV) < 0.01 && motor.live(), "The bus should stay at 6 kV and the motor keep turning");
+                    h.assertTrue(battery.charge() < 0.5, "It should be running down: " + battery.charge());
+                    held[0] = battery.charge();
+                    battery.setCharge(0.0001);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(!battery.online() && battery.status().endsWith("battery.flat") && !bus.live() && !motor.live(), "A flat battery should let the bus go dead: " + battery.status());
+                    breaker.close();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> h.assertTrue(bus.live() && battery.status().endsWith("battery.charging") && motor.live(), "The supply returning should start the motor and charge the battery again"))
+                .thenSucceed();
+    }
+
+    private static DieselEngineBlockEntity engine(GameTestHelper h, BlockPos pos, int fuel) {
+        h.setBlock(pos, CMBlocks.DIESEL_ENGINE.get().defaultBlockState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        DieselEngineBlockEntity engine = h.getBlockEntity(pos);
+        if (fuel > 0) {
+            engine.tank().fill(new FluidStack(CMFluids.FUEL_OIL.source.get(), fuel), IFluidHandler.FluidAction.EXECUTE);
+        }
+        return engine;
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 500)
+    public static void aDieselEngineStartsOnASignalBurnsFuelAndStopsWhenItRunsOut(GameTestHelper h) {
+        BlockPos enginePos = new BlockPos(1, 2, 2);
+        BlockPos generatorPos = enginePos.east();
+        DieselEngineBlockEntity engine = engine(h, enginePos, 40);
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(!engine.running() && engine.getSpeed() == 0 && !g.energised(), "An engine that is not called should stand still");
+                    h.setBlock(enginePos.above(), Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(Power.DIESEL_START_TICKS / 2)
+                .thenExecute(() -> h.assertTrue(!engine.running() && engine.status().endsWith("engine.starting"), "An engine should take time to start: " + engine.status()))
+                .thenIdle(Power.DIESEL_START_TICKS + 100)
+                .thenExecute(() -> {
+                    h.assertTrue(engine.running() && Math.abs(engine.getSpeed()) == Power.SYNC_RPM, "Once started it should turn at 64 RPM: " + engine.getSpeed());
+                    h.assertTrue(g.online() && Math.abs(g.frequency() - Power.GRID_HZ) < 1e-6, "A generator on its shaft should make 50 Hz");
+                    h.assertTrue(engine.tank().getFluidAmount() < 40, "It should be burning fuel: " + engine.tank().getFluidAmount());
+                    h.setBlock(enginePos.above(), Blocks.AIR);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(!engine.running() && engine.getSpeed() == 0, "Without its signal the engine should stop");
+                    engine.tank().drain(engine.tank().getFluidAmount() - 1, IFluidHandler.FluidAction.EXECUTE);
+                    h.setBlock(enginePos.above(), Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(Power.DIESEL_START_TICKS + 120)
+                .thenExecute(() -> h.assertTrue(!engine.running() && engine.status().endsWith("engine.no_fuel") && !g.energised(), "An engine out of fuel should stop and say so: " + engine.status()))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 700)
+    public static void aTransferSwitchStartsTheStandbySetAndMovesTheBusOver(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos switchPos = new BlockPos(4, 2, 3);
+        BlockPos enginePos = new BlockPos(5, 2, 3);
+        BlockPos generatorPos = enginePos.east();
+        BlockPos unit = new BlockPos(6, 2, 6);
+        BlockPos busPos = new BlockPos(2, 2, 5);
+        BlockPos motorPos = new BlockPos(1, 4, 3);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(switchPos, CMBlocks.TRANSFER_SWITCH.get());
+        DieselEngineBlockEntity engine = engine(h, enginePos, 2000);
+        h.setBlock(generatorPos, CMBlocks.GENERATOR.get().defaultBlockState().setValue(RotatedPillarKineticBlock.AXIS, Direction.Axis.X));
+        transformer(h, unit, UNIT);
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, switchPos, TransferSwitchBlockEntity.NORMAL);
+        wire(h, generatorPos, 0, unit, TransformerBlockEntity.HIGH);
+        wire(h, unit, TransformerBlockEntity.LOW, switchPos, TransferSwitchBlockEntity.STANDBY);
+        wire(h, switchPos, TransferSwitchBlockEntity.LOAD, busPos, 0);
+        wire(h, WireType.COPPER, busPos, 0, motorPos, 0);
+        TransferSwitchBlockEntity transfer = h.getBlockEntity(switchPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        GeneratorBlockEntity g = h.getBlockEntity(generatorPos);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(transfer.position() == TransferSwitchBlock.Position.NORMAL && !transfer.calling() && !engine.running(), "With the normal supply live the switch should sit on it and leave the engine alone: " + transfer.position());
+                    h.assertTrue(bus.live() && motor.live(), "The bus should be fed through the switch");
+                    WireLinks.cutAll(h.getLevel(), h.absolutePos(gridPos));
+                })
+                .thenIdle(40)
+                .thenExecute(() -> h.assertTrue(transfer.calling() && transfer.position() == TransferSwitchBlock.Position.OFF && !bus.live() && engine.status().endsWith("engine.starting"),
+                        "Losing the normal supply should open the switch and call the engine: " + transfer.position() + " " + engine.status()))
+                .thenIdle(Power.DIESEL_START_TICKS + 60)
+                .thenExecute(() -> {
+                    h.assertTrue(engine.running() && g.online() && transfer.position() == TransferSwitchBlock.Position.STANDBY, "Once the set is up the switch should move to it: " + transfer.position());
+                    h.assertTrue(bus.live() && motor.live() && near(g.outputSu(), motor.demandSu()), "The standby set should carry the bus: " + g.outputSu());
+                    wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+                })
+                .thenIdle(Power.TRANSFER_RETURN_TICKS + 80)
+                .thenExecute(() -> {
+                    h.assertTrue(transfer.position() == TransferSwitchBlock.Position.NORMAL && !transfer.calling(), "With the normal supply back for five seconds the switch should return to it: " + transfer.position());
+                    h.assertTrue(bus.live() && motor.live() && !engine.running(), "The bus should be back on the grid and the engine stopped: " + engine.status());
+                })
                 .thenSucceed();
     }
 }

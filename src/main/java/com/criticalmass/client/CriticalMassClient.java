@@ -101,6 +101,9 @@ public class CriticalMassClient {
         event.registerBlockEntityRenderer(CMBlockEntities.TRANSFORMER.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.DISCONNECT_SWITCH.get(), WireNodeRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.EARTHING_SWITCH.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.STATION_BATTERY.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.TRANSFER_SWITCH.get(), WireNodeRenderer::new);
+        event.registerBlockEntityRenderer(CMBlockEntities.DIESEL_ENGINE.get(), HalfShaftRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.ELECTRIC_MOTOR.get(), MotorRenderer::new);
     }
 
@@ -111,6 +114,10 @@ public class CriticalMassClient {
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.GENERATOR.get())
                 .factory(SingleAxisRotatingVisual::shaft)
+                .skipVanillaRender(be -> false)
+                .apply();
+        SimpleBlockEntityVisualizer.builder(CMBlockEntities.DIESEL_ENGINE.get())
+                .factory(OrientedRotatingVisual.of(AllPartialModels.SHAFT_HALF))
                 .skipVanillaRender(be -> false)
                 .apply();
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.ELECTRIC_MOTOR.get())
@@ -140,6 +147,7 @@ public class CriticalMassClient {
         fluid(event, CMFluids.PRIMARY_COOLANT);
         fluid(event, CMFluids.STEAM);
         fluid(event, CMFluids.CONTAMINATED_COOLANT);
+        fluid(event, CMFluids.FUEL_OIL);
         event.registerBlock(new TurbineStructureEffects(), CMBlocks.STEAM_TURBINE_STRUCTURE.get());
     }
 

@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "P": {
+      "item": "minecraft:piston"
+    },
+    "A": {
+      "item": "create:shaft"
+    },
+    "T": {
+      "item": "create:fluid_tank"
+    }
+  },
+  "pattern": [
+    "SPS",
+    "APT",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:diesel_engine",
+    "count": 1
+  }
+}

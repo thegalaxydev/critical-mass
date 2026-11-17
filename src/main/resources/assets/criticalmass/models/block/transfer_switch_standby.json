@@ -1,0 +1,474 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/transfer_switch",
+  "1": "criticalmass:block/steel_block",
+  "particle": "criticalmass:block/steel_block"
+ },
+ "elements": [
+  {
+   "name": "shell",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "east": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      0,
+      7,
+      8,
+      15
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "frame_top",
+   "from": [
+    0,
+    15,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      1
+     ],
+     "texture": "#1"
+    },
+    "down": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_bottom",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    1,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      15,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "up": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "frame_left",
+   "from": [
+    15,
+    1,
+    0
+   ],
+   "to": [
+    16,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      1,
+      1,
+      15
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "frame_right",
+   "from": [
+    0,
+    1,
+    0
+   ],
+   "to": [
+    1,
+    15,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      15,
+      1,
+      16,
+      15
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      7,
+      0,
+      14,
+      0.5
+     ],
+     "texture": "#0",
+     "rotation": 90
+    }
+   }
+  },
+  {
+   "name": "door",
+   "from": [
+    1,
+    1,
+    1
+   ],
+   "to": [
+    15,
+    15,
+    2
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      0,
+      7,
+      7
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "hub",
+   "from": [
+    7,
+    7,
+    0
+   ],
+   "to": [
+    9,
+    9,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      9,
+      1,
+      10,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      9,
+      1,
+      9.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      9.5,
+      1,
+      10,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      9,
+      1,
+      10,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      9,
+      1.5,
+      10,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "handle_standby",
+   "from": [
+    2,
+    7,
+    0
+   ],
+   "to": [
+    6,
+    9,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      7,
+      1,
+      9,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      7,
+      1,
+      7.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8.5,
+      1,
+      9,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      7,
+      1,
+      9,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      7,
+      1.5,
+      9,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "lamp_normal",
+   "from": [
+    11,
+    12,
+    0
+   ],
+   "to": [
+    13,
+    14,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      10,
+      1,
+      11,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      10,
+      1,
+      10.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      10.5,
+      1,
+      11,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      10,
+      1,
+      11,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      10,
+      1.5,
+      11,
+      2
+     ],
+     "texture": "#0"
+    }
+   }
+  },
+  {
+   "name": "lamp_standby_lit",
+   "from": [
+    3,
+    12,
+    0
+   ],
+   "to": [
+    5,
+    14,
+    1
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      13,
+      1,
+      14,
+      2
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      13,
+      1,
+      13.5,
+      2
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      13.5,
+      1,
+      14,
+      2
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      13,
+      1,
+      14,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      13,
+      1.5,
+      14,
+      2
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false,
+   "neoforge_data": {
+    "block_light": 15,
+    "sky_light": 15,
+    "ambient_occlusion": false
+   }
+  }
+ ]
+}

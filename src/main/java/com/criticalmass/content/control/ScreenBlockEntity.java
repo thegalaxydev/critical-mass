@@ -2,7 +2,9 @@ package com.criticalmass.content.control;
 
 import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
+import com.criticalmass.content.power.BatteryBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.DieselEngineBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
@@ -394,6 +396,12 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         }
         if (be instanceof TransformerBlockEntity t) {
             return t.heat() > 0.5 ? "criticalmass.transformer.hot" : t.highSide() > 0 || t.lowSide() > 0 ? "criticalmass.transformer.live" : "criticalmass.bus.dead";
+        }
+        if (be instanceof BatteryBlockEntity battery) {
+            return battery.status();
+        }
+        if (be instanceof DieselEngineBlockEntity engine) {
+            return engine.status();
         }
         if (be instanceof GridTieBlockEntity tie) {
             return tie.ordering() ? "criticalmass.grid.ordering" : "criticalmass.grid.idle";

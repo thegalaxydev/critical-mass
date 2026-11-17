@@ -59,8 +59,8 @@ public final class LedgerCommand {
                                 .executes(ctx -> steady(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "power"), DoubleArgumentType.getDouble(ctx, "coolant")))))))
                 .then(Commands.literal("generator").then(Commands.argument("generator", BlockPosArgument.blockPos()).then(Commands.argument("load", DoubleArgumentType.doubleArg(0, 1))
                         .executes(ctx -> generator(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "generator"), DoubleArgumentType.getDouble(ctx, "load"))))))
-                .then(Commands.literal("wire").then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("fromTerminal", IntegerArgumentType.integer(0, 1))
-                        .then(Commands.argument("to", BlockPosArgument.blockPos()).then(Commands.argument("toTerminal", IntegerArgumentType.integer(0, 1)).then(Commands.argument("kind", StringArgumentType.word())
+                .then(Commands.literal("wire").then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("fromTerminal", IntegerArgumentType.integer(0, 2))
+                        .then(Commands.argument("to", BlockPosArgument.blockPos()).then(Commands.argument("toTerminal", IntegerArgumentType.integer(0, 2)).then(Commands.argument("kind", StringArgumentType.word())
                                 .executes(ctx -> wire(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "from"), IntegerArgumentType.getInteger(ctx, "fromTerminal"),
                                         BlockPosArgument.getLoadedBlockPos(ctx, "to"), IntegerArgumentType.getInteger(ctx, "toTerminal"), StringArgumentType.getString(ctx, "kind")))))))))
                 .then(Commands.literal("breaker").then(Commands.argument("breaker", BlockPosArgument.blockPos())

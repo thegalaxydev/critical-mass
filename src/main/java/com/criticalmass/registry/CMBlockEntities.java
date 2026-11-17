@@ -12,10 +12,13 @@ import com.criticalmass.content.control.SignalInterfaceBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
+import com.criticalmass.content.power.BatteryBlockEntity;
+import com.criticalmass.content.power.DieselEngineBlockEntity;
 import com.criticalmass.content.power.DisconnectBlockEntity;
 import com.criticalmass.content.power.EarthingBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
+import com.criticalmass.content.power.TransferSwitchBlockEntity;
 import com.criticalmass.content.power.TransformerBlockEntity;
 import com.criticalmass.content.power.InsulatorBlockEntity;
 import com.criticalmass.CriticalMass;
@@ -75,6 +78,12 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new DisconnectBlockEntity(CMBlockEntities.DISCONNECT_SWITCH.get(), pos, state), CMBlocks.DISCONNECT_SWITCH.get()).build(null));
     public static final Supplier<BlockEntityType<EarthingBlockEntity>> EARTHING_SWITCH = BLOCK_ENTITIES.register("earthing_switch",
             () -> BlockEntityType.Builder.of((pos, state) -> new EarthingBlockEntity(CMBlockEntities.EARTHING_SWITCH.get(), pos, state), CMBlocks.EARTHING_SWITCH.get()).build(null));
+    public static final Supplier<BlockEntityType<BatteryBlockEntity>> STATION_BATTERY = BLOCK_ENTITIES.register("station_battery",
+            () -> BlockEntityType.Builder.of((pos, state) -> new BatteryBlockEntity(CMBlockEntities.STATION_BATTERY.get(), pos, state), CMBlocks.STATION_BATTERY.get()).build(null));
+    public static final Supplier<BlockEntityType<DieselEngineBlockEntity>> DIESEL_ENGINE = BLOCK_ENTITIES.register("diesel_engine",
+            () -> BlockEntityType.Builder.of((pos, state) -> new DieselEngineBlockEntity(CMBlockEntities.DIESEL_ENGINE.get(), pos, state), CMBlocks.DIESEL_ENGINE.get()).build(null));
+    public static final Supplier<BlockEntityType<TransferSwitchBlockEntity>> TRANSFER_SWITCH = BLOCK_ENTITIES.register("transfer_switch",
+            () -> BlockEntityType.Builder.of((pos, state) -> new TransferSwitchBlockEntity(CMBlockEntities.TRANSFER_SWITCH.get(), pos, state), CMBlocks.TRANSFER_SWITCH.get()).build(null));
 
     public static final Supplier<BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReactorControllerBlockEntity(CMBlockEntities.REACTOR_CONTROLLER.get(), pos, state), CMBlocks.REACTOR_CONTROLLER.get()).build(null));

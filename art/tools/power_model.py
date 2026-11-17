@@ -104,6 +104,27 @@ def switches():
         bbmodel.write(os.path.join(STATES, name + ".json"), {"variants": variants})
 
 
+def emergency():
+    parts, textures = bbmodel.load("station_battery")
+    bbmodel.write(os.path.join(BLOCK, "station_battery.json"), bbmodel.model(parts["body"], textures, textures["1"]))
+    item("station_battery", "station_battery")
+    bbmodel.write(os.path.join(STATES, "station_battery.json"), {"variants": {"facing=" + side: dict({"model": M + "station_battery"}, **turn) for side, turn in FACING.items()}})
+    parts, textures = bbmodel.load("diesel_engine")
+    bbmodel.write(os.path.join(BLOCK, "diesel_engine.json"), bbmodel.model(parts["body"], textures, textures["0"]))
+    item("diesel_engine", "diesel_engine")
+    turns = dict(FACING, up={"x": 270}, down={"x": 90})
+    bbmodel.write(os.path.join(STATES, "diesel_engine.json"), {"variants": {"facing=" + side: dict({"model": M + "diesel_engine"}, **turn) for side, turn in turns.items()}})
+    parts, textures = bbmodel.load("transfer_switch")
+    variants = {}
+    for position in ("normal", "standby", "off"):
+        name = "transfer_switch_" + position
+        bbmodel.write(os.path.join(BLOCK, name + ".json"), bbmodel.model(parts["body"] + lit(parts[position]), textures, textures["1"]))
+        for facing, turn in FACING.items():
+            variants["facing=%s,position=%s" % (facing, position)] = dict({"model": M + name}, **turn)
+    item("transfer_switch", "transfer_switch_normal")
+    bbmodel.write(os.path.join(STATES, "transfer_switch.json"), {"variants": variants})
+
+
 def main():
     insulator()
     generator()
@@ -113,10 +134,12 @@ def main():
     bus()
     transformer()
     switches()
+    emergency()
     print("exported the insulator, wires, generator, breaker, grid connection, motor, bus bar and transformer")
     if len(sys.argv) > 1:
         shots = []
-        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),)), ("disconnect_switch", ((215, 25),)), ("disconnect_switch_closed", ((215, 25),)), ("earthing_switch", ((215, 25),)), ("earthing_switch_closed", ((215, 25),))):
+        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),)), ("disconnect_switch", ((215, 25),)), ("disconnect_switch_closed", ((215, 25),)), ("earthing_switch", ((215, 25),)), ("earthing_switch_closed", ((215, 25),)), ("station_battery", ((35, 20),)), ("diesel_engine", ((215, 25),)), ("diesel_engine", ((35, 25),)), ("transfer_switch_normal", ((35, 20),)),
+                       ("transfer_switch_standby", ((35, 20),))):
             path = sys.argv[1].replace(".png", "_" + ref + ".png")
             bbmodel.preview(M + ref, path, views=views, size=260)
             with Image.open(path) as shot:

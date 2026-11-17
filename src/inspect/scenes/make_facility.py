@@ -92,22 +92,26 @@ UNIT_T = (48, 1, -6)
 OUT6, IN6 = (46, 3, -6), (44, 3, -6)
 STATION_BREAKER = (43, 1, -5)
 BUS6 = [(39, 1, -5), (40, 1, -5), (41, 1, -5)]
-STANDBY_ENGINE, STANDBY_GEN, STANDBY_T, STANDBY_BREAKER = (43, 1, 7), (42, 1, 7), (40, 1, 7), (38, 1, 7)
-C_STANDBY, C1, C2, C3, C4 = (36, 5, 2), (37, 5, -4), (30, 5, -3), (21, 5, 4), (26, 5, 1)
+STANDBY_ENGINE, STANDBY_GEN, STANDBY_T, TRANSFER = (38, 1, 7), (39, 1, 7), (41, 1, 7), (43, 1, 7)
+START_LINE = [(x, 1, 8) for x in range(38, 44)]
+BATTERY = (37, 1, -5)
+C_NORMAL, C_LOAD, C1, C2, C3, C4 = (44, 5, 1), (42, 5, 3), (37, 5, -4), (30, 5, -3), (21, 5, 4), (26, 5, 1)
 W_IN, P_IN, P_HIGH = (14, 4, 5), (9, 4, 5), (9, 9, -4)
 T_IN, T_OUT, T_FLOOR = (23, 4, -8), (23, 4, -10), (23, 1, -20)
 PRIMARY_MOTOR = (PRIMARY_PUMP[0], 2, PRIMARY_PUMP[2])
 FEED_MOTOR = (FEED_PUMP[0], 2, FEED_PUMP[2])
 COOLING_MOTOR = (COOLING_PUMP[0], 1, COOLING_PUMP[2])
-INSULATORS = [(IN20, "west"), (OUT20, "east"), (OUT6, "east"), (IN6, "west"), (C_STANDBY, "down"), (C1, "down"), (C2, "down"), (C3, "down"), (C4, "down"),
+INSULATORS = [(IN20, "west"), (OUT20, "east"), (OUT6, "east"), (IN6, "west"), (C_NORMAL, "down"), (C_LOAD, "down"), (C1, "down"), (C2, "down"), (C3, "down"), (C4, "down"),
               (W_IN, "east"), (P_IN, "west"), (P_HIGH, "west"), (T_IN, "south"), (T_OUT, "north"), (T_FLOOR, "up")]
 BUSHINGS = [(45, 7, -3), (45, 3, -6), (13, 4, 5), (23, 4, -9)]
 HIGH, LOW, LINE, LOAD = 0, 1, 0, 1
+ON_NORMAL, ON_STANDBY, TO_LOAD = 0, 1, 2
 WIRES = [
     ("cable", GENERATORS[-1], 0, GEN_BREAKER, LINE), ("cable", GEN_BREAKER, LOAD, BUS20[0], 0), ("cable", BUS20[2], 0, IN20, 0), ("cable", IN20, 0, OUT20, 0),
     ("cable", OUT20, 0, MAIN_T, LOW), ("line", MAIN_T, HIGH, GRID_BREAKER, LOAD), ("line", GRID_BREAKER, LINE, GRID, 0),
-    ("cable", OUT20, 0, UNIT_T, HIGH), ("cable", UNIT_T, LOW, OUT6, 0), ("cable", OUT6, 0, IN6, 0), ("cable", IN6, 0, STATION_BREAKER, LINE), ("cable", STATION_BREAKER, LOAD, BUS6[2], 0),
-    ("cable", STANDBY_GEN, 0, STANDBY_T, HIGH), ("cable", STANDBY_T, LOW, STANDBY_BREAKER, LINE), ("cable", STANDBY_BREAKER, LOAD, C_STANDBY, 0), ("cable", C_STANDBY, 0, BUS6[0], 0),
+    ("cable", OUT20, 0, UNIT_T, HIGH), ("cable", UNIT_T, LOW, OUT6, 0), ("cable", OUT6, 0, IN6, 0), ("cable", IN6, 0, STATION_BREAKER, LINE), ("cable", STATION_BREAKER, LOAD, C_NORMAL, 0),
+    ("cable", C_NORMAL, 0, TRANSFER, ON_NORMAL), ("cable", STANDBY_GEN, 0, STANDBY_T, HIGH), ("cable", STANDBY_T, LOW, TRANSFER, ON_STANDBY),
+    ("cable", TRANSFER, TO_LOAD, C_LOAD, 0), ("cable", C_LOAD, 0, BUS6[2], 0), ("cable", BATTERY, 0, BUS6[0], 0),
     ("wire", BUS6[1], 0, C1, 0), ("wire", C1, 0, C2, 0), ("wire", C2, 0, COOLING_MOTOR, 0), ("wire", C2, 0, C4, 0), ("wire", C4, 0, FEED_MOTOR, 0), ("wire", C2, 0, C3, 0),
     ("wire", C3, 0, W_IN, 0), ("wire", W_IN, 0, P_IN, 0), ("wire", P_IN, 0, PRIMARY_MOTOR, 0), ("wire", P_IN, 0, P_HIGH, 0), ("wire", P_HIGH, 0, DRIVE_MOTOR, 0),
     ("wire", C1, 0, T_IN, 0), ("wire", T_IN, 0, T_OUT, 0), ("wire", T_OUT, 0, T_FLOOR, 0), ("wire", T_FLOOR, 0, TOWER_MOTOR, 0), ("wire", T_FLOOR, 0, MAKEUP_MOTOR, 0),
@@ -746,12 +750,19 @@ def electrics():
         machine(pos, "criticalmass:bus_bar[axis=x]")
     post((40, 1, -4), 0, "6 kV", "Station Bus")
     post((43, 1, -4), 0, "Station", "Supply", "Breaker")
-    machine(STANDBY_ENGINE, "create:creative_motor[facing=west]{ScrollValue:64}")
+    for pos in [STANDBY_ENGINE, STANDBY_GEN, STANDBY_T, TRANSFER, BATTERY] + START_LINE:
+        assert not taken(pos), "standby set in the way at %s" % (pos,)
+    machine(STANDBY_ENGINE, "criticalmass:diesel_engine[facing=east]{Tank:{Fluid:{id:\"criticalmass:fuel_oil\",amount:4000}}}")
     machine(STANDBY_GEN, "criticalmass:generator[axis=x]")
-    machine(STANDBY_T, "criticalmass:transformer[facing=north]{ScrollValue:2}")
-    machine(STANDBY_BREAKER, "criticalmass:circuit_breaker[facing=north,closed=false]")
-    post((42, 1, 6), 8, "Standby", "Generator")
-    post((38, 1, 6), 8, "Standby", "Breaker")
+    machine(STANDBY_T, "criticalmass:transformer[facing=south]{ScrollValue:2}")
+    machine(TRANSFER, "criticalmass:transfer_switch[facing=north]")
+    machine(BATTERY, "criticalmass:station_battery[facing=south]{Charge:3072000.0d}")
+    for pos in START_LINE:
+        attach(pos, "minecraft:redstone_wire")
+    sign((38, 3, 8), "north", "Standby", "Diesel", "Engine")
+    sign((41, 3, 8), "north", "Standby", "Transformer", "20 / 6 kV")
+    sign((43, 3, 8), "north", "Transfer", "Switch")
+    post((36, 1, -5), 0, "Station", "Battery")
     for pos, facing in INSULATORS:
         assert pos not in PIPES and pos not in machines, "insulator in the way at %s" % (pos,)
         attach(pos, "criticalmass:insulator[facing=%s]" % facing)

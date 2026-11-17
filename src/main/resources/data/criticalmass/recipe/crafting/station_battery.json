@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "R": {
+      "item": "minecraft:redstone_block"
+    },
+    "W": {
+      "item": "criticalmass:power_wire"
+    }
+  },
+  "pattern": [
+    "SWS",
+    "CRC",
+    "SCS"
+  ],
+  "result": {
+    "id": "criticalmass:station_battery",
+    "count": 1
+  }
+}

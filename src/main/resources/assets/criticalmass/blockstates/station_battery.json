@@ -1,0 +1,19 @@
+{
+ "variants": {
+  "facing=north": {
+   "model": "criticalmass:block/station_battery"
+  },
+  "facing=east": {
+   "model": "criticalmass:block/station_battery",
+   "y": 90
+  },
+  "facing=south": {
+   "model": "criticalmass:block/station_battery",
+   "y": 180
+  },
+  "facing=west": {
+   "model": "criticalmass:block/station_battery",
+   "y": 270
+  }
+ }
+}
