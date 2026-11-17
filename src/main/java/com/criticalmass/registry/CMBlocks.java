@@ -13,6 +13,8 @@ import com.criticalmass.content.control.SignalInterfaceBlock;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.GeneratorBlock;
 import com.criticalmass.content.power.BusBarBlock;
+import com.criticalmass.content.power.DisconnectBlock;
+import com.criticalmass.content.power.EarthingBlock;
 import com.criticalmass.content.power.GridTieBlock;
 import com.criticalmass.content.power.MotorBlock;
 import com.criticalmass.content.power.TransformerBlock;
@@ -105,6 +107,8 @@ public final class CMBlocks {
     public static final DeferredBlock<MotorBlock> ELECTRIC_MOTOR = register("electric_motor", MotorBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<BusBarBlock> BUS_BAR = register("bus_bar", BusBarBlock::new, metal(2.0f).noOcclusion());
     public static final DeferredBlock<TransformerBlock> TRANSFORMER = register("transformer", TransformerBlock::new, metal(5.0f).noOcclusion());
+    public static final DeferredBlock<DisconnectBlock> DISCONNECT_SWITCH = register("disconnect_switch", DisconnectBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<EarthingBlock> EARTHING_SWITCH = register("earthing_switch", EarthingBlock::new, metal(3.0f).noOcclusion());
 
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));

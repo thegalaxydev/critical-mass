@@ -4,6 +4,8 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
+import com.criticalmass.content.power.DisconnectBlockEntity;
+import com.criticalmass.content.power.EarthingBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
@@ -160,6 +162,8 @@ public final class PowerTests {
                 .thenExecute(() -> {
                     h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("not_synchronised"), "Starting a machine against a live line should trip the breaker: " + breaker.tripReason());
                     h.assertTrue(g.energised() && !g.synced(), "The generator should be left running by itself");
+                    h.assertTrue(breaker.locked() && breaker.close().endsWith("refused.locked"), "A breaker tripped by its protection should lock out until it is reset");
+                    breaker.reset();
                     h.setBlock(BREAKER.north(), Blocks.REDSTONE_BLOCK);
                     g.setPhase(0);
                     breaker.close();
@@ -584,6 +588,166 @@ public final class PowerTests {
                     h.assertTrue(breaker.closed() && g.synced(), "A sagging shaft should not trip the generator off the grid: " + breaker.tripReason());
                     h.assertTrue(near(g.outputSu(), left) && !g.isOverStressed(), "It should shed load to what the shaft has left: " + g.outputSu() + " for " + left);
                 })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aBreakerSetBelowItsWireTripsBeforeTheWireBurns(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 4, 0);
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos[] motors = {new BlockPos(0, 2, 3), new BlockPos(0, 4, 3)};
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, WireType.COPPER, breakerPos, BreakerBlockEntity.LOAD, busPos, 0);
+        for (BlockPos motorPos : motors) {
+            motor(h, motorPos, (int) Power.SYNC_RPM, 4);
+            wire(h, busPos, 0, motorPos, 0);
+        }
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        breaker.setPickupKiloamps(1.0);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> h.assertTrue(breaker.close().endsWith("breaker.closed"), "The feeder breaker should close onto the dead bus"))
+                .thenIdle(120)
+                .thenExecute(() -> {
+                    h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("trip.overcurrent") && breaker.locked(), "A breaker set to its wire's limit should trip on two motors' current: " + breaker.tripReason());
+                    h.assertTrue(bus.wires().count(0) == 3 && !bus.live(), "It should open before the copper wire burns, leaving the bus dead and the wire whole");
+                    h.assertTrue(breaker.close().endsWith("refused.locked"), "A tripped breaker should not close until it is reset");
+                    h.assertTrue(breaker.reset().endsWith("breaker.reset") && breaker.close().endsWith("breaker.closed"), "Reset, it should close again");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void anEarthedLiveLineTripsItsBreakerAndUnprotectedGearIsLost(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos stepDown = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos safeEarth = new BlockPos(6, 2, 3);
+        BlockPos bareEarth = new BlockPos(2, 2, 3);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, stepDown, MAIN);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(safeEarth, CMBlocks.EARTHING_SWITCH.get());
+        h.setBlock(bareEarth, CMBlocks.EARTHING_SWITCH.get());
+        wire(h, WireType.LINE, gridPos, 0, stepDown, TransformerBlockEntity.HIGH);
+        wire(h, stepDown, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, busPos, 0);
+        wire(h, busPos, 0, safeEarth, 0);
+        wire(h, stepDown, TransformerBlockEntity.LOW, bareEarth, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        EarthingBlockEntity earth = h.getBlockEntity(safeEarth);
+        EarthingBlockEntity bare = h.getBlockEntity(bareEarth);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> h.assertTrue(breaker.close().endsWith("breaker.closed"), "The breaker should close onto the dead bus"))
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(bus.live() && Math.abs(bus.kilovolts() - Power.GENERATOR_KV) < 0.01, "The bus should be live at 20 kV: " + bus.kilovolts());
+                    earth.toggle();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(!breaker.closed() && breaker.locked(), "Earthing a live bus is a short circuit and should trip its breaker at once: " + breaker.tripReason());
+                    h.assertTrue(h.getBlockState(safeEarth).is(CMBlocks.EARTHING_SWITCH.get()) && h.getBlockState(stepDown).is(CMBlocks.TRANSFORMER.get()) && !bus.live(),
+                            "A breaker that clears the fault should save the switch and the transformer");
+                    h.assertTrue(breaker.reset().endsWith("breaker.reset") && breaker.close().endsWith("breaker.closed"), "A breaker should close onto an earthed line");
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(!breaker.closed(), "Closing onto an earthed line should trip the breaker again and hurt nothing");
+                    h.assertTrue(h.getBlockState(stepDown).is(CMBlocks.TRANSFORMER.get()), "The transformer should still stand");
+                    bare.toggle();
+                })
+                .thenIdle(40)
+                .thenExecute(() -> h.assertTrue(!h.getBlockState(stepDown).is(CMBlocks.TRANSFORMER.get()) || !h.getBlockState(bareEarth).is(CMBlocks.EARTHING_SWITCH.get()),
+                        "A short circuit with no breaker to clear it should cost equipment"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aDisconnectSwitchIsWorkedDeadOrItArcs(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos switchPos = new BlockPos(6, 2, 0);
+        BlockPos motorPos = new BlockPos(1, 2, 4);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(switchPos, CMBlocks.DISCONNECT_SWITCH.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 2);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, switchPos, 0);
+        wire(h, WireType.COPPER, switchPos, 1, motorPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        DisconnectBlockEntity isolator = h.getBlockEntity(switchPos);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(isolator.operate(null).endsWith("breaker.closed") && isolator.closed(), "A disconnect switch should close with both sides dead");
+                    breaker.close();
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live() && isolator.current() > Power.ISOLATOR_BREAK_KA && breaker.current() > Power.ISOLATOR_BREAK_KA, "The motor's current should pass the switch and the breaker: " + isolator.current());
+                    breaker.open();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(isolator.operate(null).endsWith("breaker.open") && h.getBlockState(switchPos).is(CMBlocks.DISCONNECT_SWITCH.get()), "With the breaker open the switch should open quietly");
+                    h.assertTrue(isolator.operate(null).endsWith("breaker.closed"), "And close again dead");
+                    breaker.close();
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(motor.live(), "The motor should be running again through the switch");
+                    h.assertTrue(isolator.operate(null).endsWith("isolator.arc"), "Opening a disconnect switch under load should draw an arc");
+                })
+                .thenIdle(5)
+                .thenExecute(() -> h.assertTrue(!h.getBlockState(switchPos).is(CMBlocks.DISCONNECT_SWITCH.get()) && !motor.live(), "The arc should cost the switch and leave the motor dead"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void aBreakerAskedToBreakTooLargeAFaultFails(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 3);
+        BlockPos busPos = new BlockPos(4, 2, 3);
+        BlockPos breakerPos = new BlockPos(6, 2, 3);
+        BlockPos earthPos = new BlockPos(6, 2, 6);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.Z));
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(earthPos, CMBlocks.EARTHING_SWITCH.get());
+        for (int z : new int[]{1, 3, 5}) {
+            BlockPos unit = new BlockPos(2, 2, z);
+            transformer(h, unit, MAIN);
+            wire(h, WireType.LINE, gridPos, 0, unit, TransformerBlockEntity.HIGH);
+            wire(h, unit, TransformerBlockEntity.LOW, busPos, 0);
+        }
+        wire(h, busPos, 0, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, earthPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        EarthingBlockEntity earth = h.getBlockEntity(earthPos);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(breaker.close().endsWith("breaker.closed"), "The feeder should close");
+                    earth.toggle();
+                })
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(!h.getBlockState(breakerPos).is(CMBlocks.CIRCUIT_BREAKER.get()), "Three transformers side by side give more fault than one breaker can break, and it should fail"))
                 .thenSucceed();
     }
 }

@@ -50,7 +50,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     public static final int EVENT_LIMIT = 5;
     public static final List<PlantChannel> ROWS = List.of(PlantChannel.NEUTRON, PlantChannel.POWER, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.TEMPERATURE,
             PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.RODS_A, PlantChannel.XENON, PlantChannel.BORON);
-    private static final List<PlantChannel> TREND_ORDER = List.of(PlantChannel.NEUTRON, PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.SPEED, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE,
+    private static final List<PlantChannel> TREND_ORDER = List.of(PlantChannel.NEUTRON, PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.CURRENT, PlantChannel.SPEED, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE,
             PlantChannel.SYNC, PlantChannel.FLOW, PlantChannel.PRESSURE, PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.LEVEL, PlantChannel.POWER, PlantChannel.RODS_A,
             PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.REACTIVITY, PlantChannel.PERIOD);
     private static final int SCAN_TICKS = 10;

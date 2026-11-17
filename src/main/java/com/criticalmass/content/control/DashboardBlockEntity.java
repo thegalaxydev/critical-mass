@@ -376,7 +376,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             return g.synced() ? "criticalmass.dashboard.result.generator_load" : "criticalmass.dashboard.result.generator_speed";
         }
         if (be instanceof BreakerBlockEntity b) {
-            return press == DashPart.Press.BREAKER_CLOSE ? b.close() : b.open();
+            return press == DashPart.Press.BREAKER_CLOSE ? b.close() : press == DashPart.Press.BREAKER_RESET ? b.reset() : b.open();
         }
         return part.target == null ? "criticalmass.dashboard.unbound" : "";
     }

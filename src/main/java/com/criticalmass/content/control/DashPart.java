@@ -58,7 +58,7 @@ public final class DashPart {
     }
 
     public enum Press {
-        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, GENERATOR_RAISE, GENERATOR_LOWER, BREAKER_CLOSE, BREAKER_OPEN;
+        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, GENERATOR_RAISE, GENERATOR_LOWER, BREAKER_CLOSE, BREAKER_OPEN, BREAKER_RESET;
 
         public final String key = name().toLowerCase(Locale.ROOT);
     }
@@ -109,7 +109,7 @@ public final class DashPart {
             case FLOW, OUTPUT -> 15;
             case POWER -> 22;
             case RODS_A, RODS_B, RODS_C, RODS_D -> 32;
-            case SPEED, FREQUENCY, SYNC, DEMAND, VOLTAGE -> DEFAULT_FACE;
+            case SPEED, FREQUENCY, SYNC, DEMAND, VOLTAGE, CURRENT -> DEFAULT_FACE;
             case NEUTRON -> 23;
             case PERIOD -> 33;
             case REACTIVITY -> 28;
@@ -194,7 +194,7 @@ public final class DashPart {
             return List.of(Press.GENERATOR_RAISE, Press.GENERATOR_LOWER);
         }
         if (be instanceof BreakerBlockEntity) {
-            return List.of(Press.BREAKER_CLOSE, Press.BREAKER_OPEN);
+            return List.of(Press.BREAKER_CLOSE, Press.BREAKER_OPEN, Press.BREAKER_RESET);
         }
         return List.of(Press.PULSE);
     }

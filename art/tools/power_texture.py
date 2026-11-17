@@ -19,6 +19,8 @@ TRANSFORMER = {"tank_end": (0, 0, 8, 11), "tank_top": (8, 0, 14, 8), "fins": (0,
                "bushing": (22, 0, 2, 4), "bushing_top": (24, 0, 2, 2), "tank": (26, 0, 4, 3)}
 CABLE_TONES = [(10, 12, 16), (22, 25, 31), (44, 49, 58)]
 LINE_TONES = [(92, 99, 108), (142, 150, 160), (196, 202, 210)]
+SWITCH = {"base_top": (0, 0, 14, 6), "base_side": (0, 6, 14, 1), "post": (0, 7, 4, 8), "cap": (4, 7, 4, 4), "cap_side": (4, 11, 4, 1), "blade": (8, 7, 6, 2), "blade_side": (8, 9, 6, 1),
+          "knob": (14, 7, 2, 2), "earth": (0, 15, 2, 9), "earth_top": (2, 15, 2, 2)}
 WINDING = (5, 6, 7, 8)
 
 
@@ -208,11 +210,40 @@ def transformer(steel, tone):
     return sheet
 
 
+def switchgear(steel, tone):
+    ceramic, copper, hazard, red = palette("ceramic"), palette("copper"), palette("hazard"), palette("red")
+    sheet = Sheet(32, SWITCH)
+    sheet.paste("base_top", nine(steel, 14, 6))
+    for x in range(14):
+        sheet.put("base_side", x, 0, tone[2] if x in (0, 13) else tone[4])
+    for y in range(8):
+        row = across(4, ceramic[3], ceramic[2], ceramic[1], ceramic[1]) if y in (2, 5) else across(4, ceramic[4], ceramic[3], ceramic[3], ceramic[2])
+        for x in range(4):
+            sheet.put("post", x, y, row[x])
+    sheet.fill("cap", 0, 0, 3, 3, copper[4])
+    sheet.outline("cap", 0, 0, 3, 3, copper[3])
+    sheet.put("cap", 1, 1, copper[5])
+    for x in range(4):
+        sheet.put("cap_side", x, 0, copper[2] if x == 3 else copper[4])
+    for x in range(6):
+        sheet.put("blade", x, 0, copper[5])
+        sheet.put("blade", x, 1, copper[3])
+        sheet.put("blade_side", x, 0, copper[2])
+    for x, y, c in ((0, 0, red[4]), (1, 0, red[3]), (0, 1, red[2]), (1, 1, red[1])):
+        sheet.put("knob", x, y, c)
+    for y in range(9):
+        band = hazard[-1] if (y // 2) % 2 == 0 else hazard[0]
+        sheet.put("earth", 0, y, band)
+        sheet.put("earth", 1, y, band)
+    sheet.fill("earth_top", 0, 0, 1, 1, tone[4])
+    return sheet
+
+
 def sheets():
     casing = source("reactor_vessel_casing")
     steel = source("steel_block")
     tone = ramp(steel)
-    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone)}
+    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone), "switchgear": switchgear(steel, tone)}
 
 
 def main():

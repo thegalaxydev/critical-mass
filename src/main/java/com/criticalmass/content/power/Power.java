@@ -27,6 +27,15 @@ public final class Power {
     public static final int OVERLOAD_TICKS = 20;
     public static final int LOCKOUT_TICKS = 100;
     public static final int MAX_BUS = 8;
+    public static final double RELAY_SECONDS = 2.0;
+    public static final double RELAY_RESET_SECONDS = 5.0;
+    public static final double RELAY_INSTANT = 8.0;
+    public static final double BREAKER_INTERRUPT_MW = 1500.0;
+    public static final double WIRE_STIFFNESS = 20000.0;
+    public static final double ISOLATOR_BREAK_KA = 0.02;
+    public static final double GRID_FAULT_MW = 5000.0;
+    public static final double GENERATOR_FAULT_FACTOR = 5.0;
+    public static final int EARTH_FAULT_STEPS = 3;
     public static final double SHAFT_SHARE = 0.9;
     public static final int SHED_TICKS = 10;
     public static final double GRID_KV = 220.0;

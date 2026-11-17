@@ -12,6 +12,8 @@ import com.criticalmass.content.control.SignalInterfaceBlockEntity;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
+import com.criticalmass.content.power.DisconnectBlockEntity;
+import com.criticalmass.content.power.EarthingBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.TransformerBlockEntity;
@@ -69,6 +71,10 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new BusBarBlockEntity(CMBlockEntities.BUS_BAR.get(), pos, state), CMBlocks.BUS_BAR.get()).build(null));
     public static final Supplier<BlockEntityType<TransformerBlockEntity>> TRANSFORMER = BLOCK_ENTITIES.register("transformer",
             () -> BlockEntityType.Builder.of((pos, state) -> new TransformerBlockEntity(CMBlockEntities.TRANSFORMER.get(), pos, state), CMBlocks.TRANSFORMER.get()).build(null));
+    public static final Supplier<BlockEntityType<DisconnectBlockEntity>> DISCONNECT_SWITCH = BLOCK_ENTITIES.register("disconnect_switch",
+            () -> BlockEntityType.Builder.of((pos, state) -> new DisconnectBlockEntity(CMBlockEntities.DISCONNECT_SWITCH.get(), pos, state), CMBlocks.DISCONNECT_SWITCH.get()).build(null));
+    public static final Supplier<BlockEntityType<EarthingBlockEntity>> EARTHING_SWITCH = BLOCK_ENTITIES.register("earthing_switch",
+            () -> BlockEntityType.Builder.of((pos, state) -> new EarthingBlockEntity(CMBlockEntities.EARTHING_SWITCH.get(), pos, state), CMBlocks.EARTHING_SWITCH.get()).build(null));
 
     public static final Supplier<BlockEntityType<ReactorControllerBlockEntity>> REACTOR_CONTROLLER = BLOCK_ENTITIES.register("reactor_controller",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReactorControllerBlockEntity(CMBlockEntities.REACTOR_CONTROLLER.get(), pos, state), CMBlocks.REACTOR_CONTROLLER.get()).build(null));

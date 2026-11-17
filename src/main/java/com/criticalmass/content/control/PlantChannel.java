@@ -42,7 +42,8 @@ public enum PlantChannel {
     FREQUENCY("frequency", "Hz"),
     SYNC("sync", "\u00b0"),
     DEMAND("demand", "MW"),
-    VOLTAGE("voltage", "kV");
+    VOLTAGE("voltage", "kV"),
+    CURRENT("current", "kA");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -174,7 +175,11 @@ public enum PlantChannel {
             };
         }
         if (be instanceof BreakerBlockEntity b) {
-            return this == SYNC && b.bothLive() ? of(b.angle(), -180, 180) : null;
+            return switch (this) {
+                case SYNC -> b.bothLive() ? of(b.angle(), -180, 180) : null;
+                case CURRENT -> of(b.current(), 0, b.pickupKiloamps() * 1.5);
+                default -> null;
+            };
         }
         if (be instanceof GridTieBlockEntity tie) {
             double scale = Math.max(Power.ORDER_STEP_MW, tie.contractMw());

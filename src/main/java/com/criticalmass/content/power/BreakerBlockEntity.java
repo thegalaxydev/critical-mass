@@ -4,7 +4,15 @@ import com.criticalmass.content.thermal.ThermalTooltips;
 import com.criticalmass.content.HorizontalBlock;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
+import com.google.common.collect.ImmutableList;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueBoxTransform;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsBoard;
+import com.simibubi.create.foundation.blockEntity.behaviour.ValueSettingsFormatter;
+import com.simibubi.create.foundation.blockEntity.behaviour.scrollValue.ScrollValueBehaviour;
+import net.createmod.catnip.math.VecHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.BlockHitResult;
 import java.util.List;
 import java.util.Locale;
 import net.minecraft.ChatFormatting;
@@ -25,6 +33,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     public static final int LOAD = 1;
     private final WireLinks wires = new WireLinks();
     private static final int SYNC_TICKS = 10;
+    public static final double PICKUP_STEP = 0.1;
+    public static final int PICKUP_STEPS = 60;
+    public static final int DEFAULT_PICKUP = 40;
     private String tripReason = "";
     private boolean lineLive;
     private boolean loadLive;
@@ -32,6 +43,11 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private double loadHz;
     private double lineKv;
     private double loadKv;
+    private ScrollValueBehaviour pickup;
+    private double current;
+    private double relay;
+    private double through;
+    private boolean locked;
     private double angle;
     private int syncIn;
 
@@ -41,6 +57,53 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
+        pickup = new Pickup(this);
+        behaviours.add(pickup);
+    }
+
+    public double pickupKiloamps() {
+        return pickup.getValue() * PICKUP_STEP;
+    }
+
+    public void setPickupKiloamps(double kiloamps) {
+        pickup.setValue((int) Math.round(kiloamps / PICKUP_STEP));
+    }
+
+    public double current() {
+        return closed() ? current : 0;
+    }
+
+    public boolean locked() {
+        return locked;
+    }
+
+    public boolean carry(double kiloamps, double megawatts, double seconds) {
+        if (Math.abs(kiloamps - current) > 0.005) {
+            syncIn = 0;
+        }
+        current = kiloamps;
+        through = megawatts;
+        double ratio = kiloamps / pickupKiloamps();
+        if (ratio >= Power.RELAY_INSTANT) {
+            trip("criticalmass.breaker.trip.fault");
+            return true;
+        }
+        relay = Math.max(0, relay + (ratio > 1 ? (ratio * ratio - 1) * seconds / Power.RELAY_SECONDS : -seconds / Power.RELAY_RESET_SECONDS));
+        if (relay >= 1) {
+            trip("criticalmass.breaker.trip.overcurrent");
+            return true;
+        }
+        return false;
+    }
+
+    public String reset() {
+        locked = false;
+        tripReason = "";
+        relay = 0;
+        syncIn = 0;
+        setChanged();
+        sendData();
+        return "criticalmass.breaker.reset";
     }
 
     @Override
@@ -110,6 +173,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         if (closed()) {
             return "criticalmass.breaker.closed";
         }
+        if (locked) {
+            return "criticalmass.breaker.refused.locked";
+        }
         PowerNetwork.Island above = PowerNetwork.scanSide(level, worldPosition, LINE);
         PowerNetwork.Island below = PowerNetwork.scanSide(level, worldPosition, LOAD);
         PowerNetwork.Side a = above.side(level);
@@ -148,7 +214,15 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
     public void trip(String reason) {
         if (closed()) {
+            if (through > Power.BREAKER_INTERRUPT_MW) {
+                Hazard.destroy(level, worldPosition, 3.0f);
+                return;
+            }
             tripReason = reason;
+            locked = !reason.endsWith("trip.signal");
+            relay = 0;
+            current = 0;
+            through = 0;
             set(false);
             level.playSound(null, worldPosition, SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 1.0f, 0.6f);
         }
@@ -189,6 +263,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         tag.putDouble("LineKv", lineKv);
         tag.putDouble("LoadKv", loadKv);
         tag.putDouble("Angle", angle);
+        tag.putDouble("Current", current());
+        tag.putDouble("Relay", relay);
+        tag.putBoolean("Locked", locked);
         tag.put("Wires", wires.save());
     }
 
@@ -203,6 +280,9 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         lineKv = tag.getDouble("LineKv");
         loadKv = tag.getDouble("LoadKv");
         angle = tag.getDouble("Angle");
+        current = tag.getDouble("Current");
+        relay = tag.getDouble("Relay");
+        locked = tag.getBoolean("Locked");
         wires.load(tag, "Wires");
     }
 
@@ -219,11 +299,44 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
             ThermalTooltips.status(tooltip, "criticalmass.breaker.closed", ChatFormatting.GREEN);
         } else {
             ThermalTooltips.status(tooltip, tripReason.isEmpty() ? "criticalmass.breaker.open" : tripReason, tripReason.isEmpty() ? ChatFormatting.GRAY : ChatFormatting.RED);
+            if (locked) {
+                ThermalTooltips.status(tooltip, "criticalmass.breaker.locked", ChatFormatting.GOLD);
+            }
         }
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.line_side");
         ThermalTooltips.value(tooltip, side(lineLive, lineHz, lineKv));
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.load_side");
         ThermalTooltips.value(tooltip, side(loadLive, loadHz, loadKv));
+        ThermalTooltips.label(tooltip, "criticalmass.goggles.label.carrying_current");
+        ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.kiloamps", current() > pickupKiloamps() ? ChatFormatting.RED : ChatFormatting.AQUA, String.format(Locale.ROOT, "%.2f", current()))
+                .append(ThermalTooltips.aside("criticalmass.goggles.aside.trips_at", String.format(Locale.ROOT, "%.1f", pickupKiloamps()))));
         return true;
+    }
+
+    static class Pickup extends ScrollValueBehaviour {
+        Pickup(SmartBlockEntity be) {
+            super(Component.translatable("criticalmass.breaker.pickup"), be, new PickupBox());
+            between(1, PICKUP_STEPS);
+            value = DEFAULT_PICKUP;
+            withFormatter(step -> String.format(Locale.ROOT, "%.1f", step * PICKUP_STEP));
+        }
+
+        @Override
+        public ValueSettingsBoard createBoard(Player player, BlockHitResult hitResult) {
+            return new ValueSettingsBoard(label, max, 10, ImmutableList.of(Component.translatable("criticalmass.breaker.pickup_row")),
+                    new ValueSettingsFormatter(settings -> Component.literal(String.format(Locale.ROOT, "%.1f kA", settings.value() * PICKUP_STEP))));
+        }
+    }
+
+    static class PickupBox extends ValueBoxTransform.Sided {
+        @Override
+        protected Vec3 getSouthLocation() {
+            return VecHelper.voxelSpace(4, 4, 14.05);
+        }
+
+        @Override
+        protected boolean isSideActive(BlockState state, Direction direction) {
+            return direction == state.getValue(HorizontalBlock.FACING);
+        }
     }
 }

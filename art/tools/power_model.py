@@ -91,6 +91,19 @@ def transformer():
         bbmodel.write(os.path.join(ITEMS, name + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": "criticalmass:item/" + name}})
 
 
+def switches():
+    for name in ("disconnect_switch", "earthing_switch"):
+        parts, textures = bbmodel.load(name)
+        bbmodel.write(os.path.join(BLOCK, name + ".json"), bbmodel.model(parts["body"] + parts["open"], textures, textures["0"]))
+        bbmodel.write(os.path.join(BLOCK, name + "_closed.json"), bbmodel.model(parts["body"] + parts["closed"], textures, textures["0"]))
+        item(name, name + "_closed")
+        variants = {}
+        for facing, turn in FACING.items():
+            variants["closed=false,facing=" + facing] = dict({"model": M + name}, **turn)
+            variants["closed=true,facing=" + facing] = dict({"model": M + name + "_closed"}, **turn)
+        bbmodel.write(os.path.join(STATES, name + ".json"), {"variants": variants})
+
+
 def main():
     insulator()
     generator()
@@ -99,10 +112,11 @@ def main():
     motor()
     bus()
     transformer()
+    switches()
     print("exported the insulator, wires, generator, breaker, grid connection, motor, bus bar and transformer")
     if len(sys.argv) > 1:
         shots = []
-        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),))):
+        for ref, views in (("insulator", ((215, 25),)), ("generator", ((215, 25),)), ("circuit_breaker", ((35, 20),)), ("circuit_breaker_closed", ((35, 20),)), ("grid_connection", ((215, 25),)), ("electric_motor", ((215, 25),)), ("electric_motor", ((35, 25),)), ("bus_bar", ((215, 25),)), ("transformer", ((215, 25),)), ("transformer", ((35, 25),)), ("disconnect_switch", ((215, 25),)), ("disconnect_switch_closed", ((215, 25),)), ("earthing_switch", ((215, 25),)), ("earthing_switch_closed", ((215, 25),))):
             path = sys.argv[1].replace(".png", "_" + ref + ".png")
             bbmodel.preview(M + ref, path, views=views, size=260)
             with Image.open(path) as shot:

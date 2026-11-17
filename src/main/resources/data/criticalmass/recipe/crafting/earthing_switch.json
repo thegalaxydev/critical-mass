@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "criticalmass:insulator"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "R": {
+      "item": "minecraft:lightning_rod"
+    }
+  },
+  "pattern": [
+    "C  ",
+    "I R",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:earthing_switch",
+    "count": 1
+  }
+}

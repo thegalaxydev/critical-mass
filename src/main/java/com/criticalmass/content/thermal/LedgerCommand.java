@@ -65,7 +65,8 @@ public final class LedgerCommand {
                                         BlockPosArgument.getLoadedBlockPos(ctx, "to"), IntegerArgumentType.getInteger(ctx, "toTerminal"), StringArgumentType.getString(ctx, "kind")))))))))
                 .then(Commands.literal("breaker").then(Commands.argument("breaker", BlockPosArgument.blockPos())
                         .then(Commands.literal("close").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), true)))
-                        .then(Commands.literal("open").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), false)))))
+                        .then(Commands.literal("open").executes(ctx -> breaker(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"), false)))
+                        .then(Commands.literal("reset").executes(ctx -> reset(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "breaker"))))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -316,5 +317,15 @@ public final class LedgerCommand {
             source.sendFailure(Component.translatable(result));
         }
         return done ? 1 : 0;
+    }
+
+    private static int reset(CommandSourceStack source, BlockPos pos) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof BreakerBlockEntity b)) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_breaker"));
+            return 0;
+        }
+        String result = b.reset();
+        source.sendSuccess(() -> Component.translatable(result), true);
+        return 1;
     }
 }

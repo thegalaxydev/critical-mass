@@ -12,4 +12,8 @@ public interface WireNode {
     default int terminalAt(Vec3 local) {
         return 0;
     }
+
+    default boolean earthed() {
+        return false;
+    }
 }

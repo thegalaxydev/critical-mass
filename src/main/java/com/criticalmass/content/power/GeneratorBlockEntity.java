@@ -48,6 +48,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
     private int lockout;
     private int tripIn;
     private int shedIn;
+    private boolean faultLock;
     private int sectionCount = 1;
     private String status = "criticalmass.generator.stopped";
     private int updateCooldown;
@@ -187,6 +188,13 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         }
     }
 
+    public void faultTrip() {
+        if (lockout <= 0) {
+            lockout = Power.LOCKOUT_TICKS;
+            faultLock = true;
+        }
+    }
+
     public boolean synced() {
         return synced;
     }
@@ -299,6 +307,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         float speed = Math.abs(getSpeed());
         if (lockout > 0) {
             lockout--;
+            faultLock &= lockout > 0;
         }
         boolean carrying = false;
         for (GeneratorBlockEntity part : parts) {
@@ -329,7 +338,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
             online = false;
             onGrid = false;
             frequency = 0;
-            now = lockout > 0 ? "criticalmass.generator.overloaded" : "criticalmass.generator.stopped";
+            now = lockout > 0 ? faultLock ? "criticalmass.generator.fault" : "criticalmass.generator.overloaded" : "criticalmass.generator.stopped";
         } else {
             GeneratorBlockEntity other = grid ? null : around.lead(level, this);
             boolean leading = !grid && (other == null || (online && worldPosition.compareTo(other.getBlockPos()) < 0));

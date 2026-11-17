@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "criticalmass:insulator"
+    },
+    "C": {
+      "tag": "c:plates/copper"
+    },
+    "S": {
+      "item": "criticalmass:steel_plate"
+    }
+  },
+  "pattern": [
+    " C ",
+    "I I",
+    "SSS"
+  ],
+  "result": {
+    "id": "criticalmass:disconnect_switch",
+    "count": 1
+  }
+}

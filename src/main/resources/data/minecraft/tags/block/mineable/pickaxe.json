@@ -45,6 +45,8 @@
     "criticalmass:insulator",
     "criticalmass:electric_motor",
     "criticalmass:bus_bar",
-    "criticalmass:transformer"
+    "criticalmass:transformer",
+    "criticalmass:disconnect_switch",
+    "criticalmass:earthing_switch"
   ]
 }

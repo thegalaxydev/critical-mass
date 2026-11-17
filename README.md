@@ -242,7 +242,14 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.
   - It closes onto a dead side freely. With both sides live it closes only when they are at the same voltage and within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
   - A redstone signal trips it. A comparator reads 15 while it is closed.
+  - **Overcurrent trip:** its value box sets the current it trips at, from 0.1 to 6 kA, 4 kA as built. Above that it trips, sooner the further above: in about 2 seconds at one and a half times, at once at eight times. Set it at or under the limit of the wire it feeds and it opens before the wire burns.
+  - **Lockout:** a breaker tripped by its protection locks out. Use it once to reset it, then again to close it. A redstone trip does not lock it.
+  - It can break a short circuit of up to 1,500 MW. Asked to break more, it fails and is lost. One transformer gives about 800 MW of fault, so three side by side onto one bus are too many for a single breaker behind it.
+  - Goggles show the current through it against its setting.
   - The red lamp is lit while it is closed and the green one while it is open.
+- **Disconnect Switch:** a blade between two posts, for a break you can see. It has no protection and is worked dead: open the breaker in line with it first.
+  - Opened while current flows, or closed with both sides live, it draws an arc, is lost, and hurts whoever worked it.
+- **Earthing Switch:** ties its wires to earth. Close one on a dead line before working on it. If anyone then makes the line live, that is a short circuit, and the breaker they closed trips at once, so the line cannot become live under your hands.
 - **Grid Connection:** the outside grid. It is always live at 220 kV and 50 Hz, takes whatever is delivered to it and supplies whatever is drawn from it, so a cold plant can run its pump motors from the grid before it makes any power. Goggles show which way the power is going.
 - **Synchronising:** a running generator that is not on the grid runs at 50 Hz times its RPM over 64, plus its speed trim.
   - Raise and lower change the trim by 0.02 Hz, up to 1 Hz either way.
@@ -257,6 +264,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Faults:** a mistake costs equipment.
   - **Too much current:** a wire above its current heats and glows orange. At one and a half times its limit it burns through in about 8 seconds, at twice in about 3. It cools again in 20 seconds if the load comes off. A burnt wire is lost and starts a fire at each end and under its middle.
   - **Too much voltage:** a wire on more than it is built for flashes over at once and is lost. A motor, a generator or a transformer winding on more than its voltage explodes, is lost and sets fire to what is round it. A transformer wired backwards does this to itself.
+  - **Short circuit:** a live line tied to earth draws all the current its sources can give, limited mostly by the transformers in the way. A breaker between trips at once. With no breaker to clear it, the wires burn, the transformer feeding it overheats within a second and explodes, and the Earthing Switch is lost. A generator feeding a short circuit off the grid shuts itself down for 5 seconds.
   - **Live work:** stringing or cutting a wire on a live terminal draws an arc: 4 hearts at 6 kV, 8 at 20 kV, and death at 220 kV. Open a breaker and work on the dead side.
   - A breaker protects only what is behind it. It will not close two voltages together, but closing it onto dead equipment of the wrong voltage is the operator's mistake to make.
   - In the server config, `electrical.fires` turns the fires off, `electrical.liveWorkHurts` turns the arcs off, and `electrical.blastsBreakBlocks` lets a blast break the blocks round it.
@@ -264,8 +272,8 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Thirty seconds after the last order the grid asks for between 40% and 100% of that figure.
   - Hold the delivered power within 5% of the order for 20 seconds to meet it. An order not met within 2 minutes is missed.
   - A comparator reads how far through the hold the plant is, and goggles show the order and the tally of orders met and missed.
-- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes or opens it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, a bus's voltage, frequency and load, and a transformer's low-side voltage, what it carries and its oil temperature.
-- **Commands:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting. `/criticalmass breaker <breaker> close` or `open` works a breaker with the same checks as by hand. `/criticalmass wire <from> <terminal> <to> <terminal> <wire, cable or line>` strings a wire; a breaker's terminals are 0 for line and 1 for load, a transformer's are 0 for high and 1 for low, and everything else has terminal 0.
+- **Control room:** a Dashboard Button bound to a generator raises or lowers it, and one bound to a breaker closes, opens or resets it. Gauges and Display Links read a generator's output, frequency, phase angle and load setting, a breaker's phase angle across its contacts and the current through it, a Grid Connection's order, delivered power and frequency, a motor's speed and the power it draws, a bus's voltage, frequency and load, and a transformer's low-side voltage, what it carries and its oil temperature.
+- **Commands:** `/criticalmass generator <generator> <fraction>` sets a generator's load setting. `/criticalmass breaker <breaker> close`, `open` or `reset` works a breaker with the same checks as by hand. `/criticalmass wire <from> <terminal> <to> <terminal> <wire, cable or line>` strings a wire; a breaker's terminals are 0 for line and 1 for load, a transformer's are 0 for high and 1 for low, and everything else has terminal 0.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).
 - **Dose rate:** in mSv/min. A player receives, from every source within 48 blocks, its strength times the shielding transmission divided by (1 + distance²).

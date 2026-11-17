@@ -62,13 +62,19 @@ public final class PowerNetwork {
         final BlockPos owner;
         @Nullable
         final WireLinks.Link link;
+        @Nullable
+        final BlockPos switchA;
+        @Nullable
+        final BlockPos switchB;
         double flow;
 
-        Edge(int a, int b, BlockPos owner, @Nullable WireLinks.Link link) {
+        Edge(int a, int b, BlockPos owner, @Nullable WireLinks.Link link, @Nullable BlockPos switchA, @Nullable BlockPos switchB) {
             this.a = a;
             this.b = b;
             this.owner = owner;
             this.link = link;
+            this.switchA = switchA;
+            this.switchB = switchB;
         }
     }
 
@@ -78,6 +84,8 @@ public final class PowerNetwork {
         public final Set<BlockPos> breakers = new LinkedHashSet<>();
         public final Set<BlockPos> loads = new LinkedHashSet<>();
         public final Set<BlockPos> transformers = new LinkedHashSet<>();
+        public final Set<BlockPos> switches = new LinkedHashSet<>();
+        public final Set<BlockPos> earths = new LinkedHashSet<>();
         public int wires;
         private final List<Step> keys = new ArrayList<>();
         private final Map<Step, Integer> index = new HashMap<>();
@@ -263,27 +271,49 @@ public final class PowerNetwork {
             return any;
         }
 
-        private boolean flows(Level level) {
+        private boolean faulted(Level level) {
+            for (BlockPos pos : earths) {
+                int node = node(level, pos, 0);
+                if (node >= 0 && kilovolts[zone[node]] > 0) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private boolean flows(Level level, boolean fault) {
             int n = keys.size();
             if (n < 2 || edges.isEmpty()) {
                 return false;
             }
             double[] inject = new double[n];
+            double[] shunt = new double[n];
+            double[] held = new double[n];
             boolean[] fixed = new boolean[n];
             boolean slack = false;
-            boolean any = false;
+            boolean any = fault;
             for (BlockPos pos : grids) {
                 int node = node(level, pos, 0);
                 if (node >= 0) {
-                    fixed[node] = true;
+                    if (fault) {
+                        shunt[node] += Power.GRID_FAULT_MW;
+                    } else {
+                        fixed[node] = true;
+                    }
                     slack = true;
                 }
             }
             for (GeneratorBlockEntity g : machines(level)) {
                 int node = node(level, g.getBlockPos(), 0);
-                if (node >= 0 && g.online() && g.outputSu() > 0) {
-                    inject[node] += Power.megawatts(g.outputSu());
-                    any = true;
+                if (node >= 0 && g.online()) {
+                    if (g.outputSu() > 0) {
+                        inject[node] += Power.megawatts(g.outputSu());
+                        any = true;
+                    }
+                    if (fault) {
+                        shunt[node] += Power.megawatts(g.ratedSu()) * Power.GENERATOR_FAULT_FACTOR;
+                        slack = true;
+                    }
                 }
             }
             for (BlockPos pos : loads) {
@@ -299,6 +329,15 @@ public final class PowerNetwork {
                 }
                 return true;
             }
+            if (fault) {
+                for (BlockPos pos : earths) {
+                    int node = node(level, pos, 0);
+                    if (node >= 0 && kilovolts[zone[node]] > 0) {
+                        fixed[node] = true;
+                        held[node] = -1.0;
+                    }
+                }
+            }
             if (!slack) {
                 fixed[0] = true;
             }
@@ -309,13 +348,25 @@ public final class PowerNetwork {
                 if (edge.link == null) {
                     y[i] = Power.TRANSFORMER_MW * 10.0;
                 } else {
-                    double kv = Math.max(1.0, kilovolts[zone[edge.a]]);
-                    y[i] = kv * kv * edge.link.type().kiloamps / Math.max(1.0, Math.sqrt(edge.owner.distSqr(edge.link.other())));
+                    y[i] = Power.WIRE_STIFFNESS * edge.link.type().kiloamps / Math.max(1.0, Math.sqrt(edge.owner.distSqr(edge.link.other())));
                 }
                 diagonal[edge.a] += y[i];
                 diagonal[edge.b] += y[i];
+                if (fixed[edge.a] && !fixed[edge.b]) {
+                    inject[edge.b] += y[i] * held[edge.a];
+                } else if (fixed[edge.b] && !fixed[edge.a]) {
+                    inject[edge.a] += y[i] * held[edge.b];
+                }
             }
-            double[] theta = solve(n, y, diagonal, inject, fixed);
+            for (int i = 0; i < n; i++) {
+                diagonal[i] += shunt[i];
+            }
+            double[] theta = solve(n, y, diagonal, shunt, inject, fixed);
+            for (int i = 0; i < n; i++) {
+                if (fixed[i]) {
+                    theta[i] = held[i];
+                }
+            }
             for (int i = 0; i < y.length; i++) {
                 Edge edge = edges.get(i);
                 edge.flow = y[i] * (theta[edge.a] - theta[edge.b]);
@@ -323,7 +374,7 @@ public final class PowerNetwork {
             return true;
         }
 
-        private void multiply(double[] y, double[] in, boolean[] fixed, double[] out) {
+        private void multiply(double[] y, double[] shunt, double[] in, boolean[] fixed, double[] out) {
             java.util.Arrays.fill(out, 0);
             for (int i = 0; i < y.length; i++) {
                 Edge edge = edges.get(i);
@@ -332,13 +383,11 @@ public final class PowerNetwork {
                 out[edge.b] -= d;
             }
             for (int i = 0; i < out.length; i++) {
-                if (fixed[i]) {
-                    out[i] = 0;
-                }
+                out[i] = fixed[i] ? 0 : out[i] + shunt[i] * in[i];
             }
         }
 
-        private double[] solve(int n, double[] y, double[] diagonal, double[] inject, boolean[] fixed) {
+        private double[] solve(int n, double[] y, double[] diagonal, double[] shunt, double[] inject, boolean[] fixed) {
             double[] x = new double[n];
             double[] r = new double[n];
             double[] z = new double[n];
@@ -355,7 +404,7 @@ public final class PowerNetwork {
             }
             int rounds = Math.min(600, n * 3 + 20);
             for (int round = 0; round < rounds && rz > 0; round++) {
-                multiply(y, p, fixed, ap);
+                multiply(y, shunt, p, fixed, ap);
                 double pap = 0;
                 for (int i = 0; i < n; i++) {
                     pap += p[i] * ap[i];
@@ -385,6 +434,31 @@ public final class PowerNetwork {
                 }
             }
             return x;
+        }
+
+        private boolean relays(Level level) {
+            Map<BlockPos, Double> into = new HashMap<>();
+            for (Edge edge : edges) {
+                if (edge.switchA != null) {
+                    into.merge(edge.switchA, -edge.flow, Double::sum);
+                }
+                if (edge.switchB != null) {
+                    into.merge(edge.switchB, edge.flow, Double::sum);
+                }
+            }
+            boolean opened = false;
+            for (BlockPos pos : new ArrayList<>(switches)) {
+                int node = node(level, pos, 0);
+                double kv = node < 0 ? 0 : kilovolts[zone[node]];
+                double megawatts = Math.abs(into.getOrDefault(pos, 0.0));
+                double ka = Power.kiloamps(megawatts, kv);
+                if (level.getBlockEntity(pos) instanceof BreakerBlockEntity breaker) {
+                    opened |= breaker.carry(ka, megawatts, STEP_TICKS / 20.0);
+                } else if (level.getBlockEntity(pos) instanceof DisconnectBlockEntity isolator) {
+                    isolator.carry(ka);
+                }
+            }
+            return opened;
         }
 
         private void heat(Level level) {
@@ -420,9 +494,28 @@ public final class PowerNetwork {
             if (overvoltage(level)) {
                 return;
             }
-            if (flows(level)) {
-                heat(level);
+            boolean fault = faulted(level);
+            if (!flows(level, fault)) {
+                return;
             }
+            if (relays(level)) {
+                return;
+            }
+            if (fault) {
+                for (BlockPos pos : new ArrayList<>(earths)) {
+                    if (level.getBlockEntity(pos) instanceof EarthingBlockEntity earth && kilovoltsAt(level, pos, 0) > 0) {
+                        earth.faulting();
+                    }
+                }
+                if (grids.isEmpty()) {
+                    for (GeneratorBlockEntity g : machines(level)) {
+                        if (g.online()) {
+                            g.faultTrip();
+                        }
+                    }
+                }
+            }
+            heat(level);
         }
     }
 
@@ -436,13 +529,22 @@ public final class PowerNetwork {
             List<BlockPos> run = BusBarBlock.run(level, pos);
             return new Step(run.isEmpty() ? pos.immutable() : run.get(0), ANY);
         }
-        if (block instanceof BreakerBlock) {
+        if (switching(block)) {
             return state.getValue(BreakerBlock.CLOSED) && !pos.equals(held) ? new Step(pos.immutable(), 0) : new Step(pos.immutable(), terminal == 1 ? 1 : 0);
         }
         if (block instanceof TransformerBlock) {
             return new Step(pos.immutable(), terminal == 1 ? 1 : 0);
         }
         return new Step(pos.immutable(), ANY);
+    }
+
+    private static boolean switching(Block block) {
+        return block instanceof BreakerBlock || block instanceof DisconnectBlock;
+    }
+
+    @Nullable
+    private static BlockPos firstTerminal(Level level, BlockPos pos, int terminal) {
+        return terminal == 0 && switching(level.getBlockState(pos).getBlock()) ? pos.immutable() : null;
     }
 
     public static Island scan(Level level, BlockPos start) {
@@ -518,9 +620,12 @@ public final class PowerNetwork {
                 for (BlockPos part : BusBarBlock.run(level, pos)) {
                     links(level, island, key, part, ANY, queue, raws);
                 }
-            } else if (block instanceof BreakerBlock) {
+            } else if (switching(block)) {
                 if (state.getValue(BreakerBlock.CLOSED) && !pos.equals(held)) {
-                    island.breakers.add(pos);
+                    island.switches.add(pos);
+                    if (block instanceof BreakerBlock) {
+                        island.breakers.add(pos);
+                    }
                     links(level, island, key, pos, 0, queue, raws);
                     links(level, island, key, pos, 1, queue, raws);
                 } else {
@@ -540,6 +645,10 @@ public final class PowerNetwork {
                 } else if (level.getBlockEntity(pos) instanceof PowerLoad) {
                     island.loads.add(pos);
                 }
+                WireNode simple = WireLinks.node(level, pos);
+                if (simple != null && simple.earthed()) {
+                    island.earths.add(pos);
+                }
                 links(level, island, key, pos, ANY, queue, raws);
             }
         }
@@ -547,7 +656,9 @@ public final class PowerNetwork {
             Integer a = island.index.get(raw.from());
             Integer b = island.index.get(raw.to());
             if (a != null && b != null && !a.equals(b)) {
-                island.edges.add(new Edge(a, b, raw.owner(), raw.link()));
+                WireLinks.Link link = raw.link();
+                island.edges.add(new Edge(a, b, raw.owner(), link, link == null ? null : firstTerminal(level, raw.owner(), link.mine()),
+                        link == null ? null : firstTerminal(level, link.other(), link.theirs())));
             }
         }
         island.zones();
@@ -571,6 +682,10 @@ public final class PowerNetwork {
                 Block block = level.getBlockState(other).getBlock();
                 if (block instanceof BreakerBlock) {
                     found.add(other);
+                } else if (block instanceof DisconnectBlock) {
+                    if (level.getBlockState(other).getValue(BreakerBlock.CLOSED) && seen.add(other)) {
+                        queue.add(other);
+                    }
                 } else if (block instanceof BusBarBlock) {
                     for (BlockPos part : BusBarBlock.run(level, other)) {
                         if (seen.add(part)) {

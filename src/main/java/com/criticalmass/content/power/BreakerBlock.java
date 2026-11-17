@@ -45,7 +45,7 @@ public class BreakerBlock extends HorizontalBlock implements IBE<BreakerBlockEnt
             return InteractionResult.SUCCESS;
         }
         return onBlockEntityUse(level, pos, be -> {
-            String result = state.getValue(CLOSED) ? be.open() : be.close();
+            String result = state.getValue(CLOSED) ? be.open() : be.locked() ? be.reset() : be.close();
             player.displayClientMessage(Component.translatable(result), true);
             return InteractionResult.SUCCESS;
         });
