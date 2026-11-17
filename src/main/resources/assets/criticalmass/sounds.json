@@ -214,5 +214,14 @@
     "attenuation_distance": 32
    }
   ]
+ },
+ "service": {
+  "subtitle": "criticalmass.subtitle.service",
+  "sounds": [
+   {
+    "name": "criticalmass:service",
+    "attenuation_distance": 16
+   }
+  ]
  }
 }

@@ -36,7 +36,10 @@ public class BreakerBlock extends HorizontalBlock implements IBE<BreakerBlockEnt
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        return stack.getItem() instanceof WireItem ? ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        if (stack.getItem() instanceof WireItem) {
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+        }
+        return Wear.service(stack, level, pos, player);
     }
 
     @Override

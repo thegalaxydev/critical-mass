@@ -13,6 +13,7 @@ import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.BusBarBlockEntity;
 import com.criticalmass.content.power.BatteryBlockEntity;
+import com.criticalmass.content.power.BurntBlockEntity;
 import com.criticalmass.content.power.SurgeArresterBlockEntity;
 import com.criticalmass.content.power.DieselEngineBlockEntity;
 import com.criticalmass.content.power.DisconnectBlockEntity;
@@ -83,6 +84,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new BatteryBlockEntity(CMBlockEntities.STATION_BATTERY.get(), pos, state), CMBlocks.STATION_BATTERY.get()).build(null));
     public static final Supplier<BlockEntityType<DieselEngineBlockEntity>> DIESEL_ENGINE = BLOCK_ENTITIES.register("diesel_engine",
             () -> BlockEntityType.Builder.of((pos, state) -> new DieselEngineBlockEntity(CMBlockEntities.DIESEL_ENGINE.get(), pos, state), CMBlocks.DIESEL_ENGINE.get()).build(null));
+    public static final Supplier<BlockEntityType<BurntBlockEntity>> BURNT_EQUIPMENT = BLOCK_ENTITIES.register("burnt_equipment",
+            () -> BlockEntityType.Builder.of((pos, state) -> new BurntBlockEntity(CMBlockEntities.BURNT_EQUIPMENT.get(), pos, state), CMBlocks.BURNT_EQUIPMENT.get()).build(null));
     public static final Supplier<BlockEntityType<SurgeArresterBlockEntity>> SURGE_ARRESTER = BLOCK_ENTITIES.register("surge_arrester",
             () -> BlockEntityType.Builder.of((pos, state) -> new SurgeArresterBlockEntity(CMBlockEntities.SURGE_ARRESTER.get(), pos, state), CMBlocks.SURGE_ARRESTER.get()).build(null));
     public static final Supplier<BlockEntityType<TransferSwitchBlockEntity>> TRANSFER_SWITCH = BLOCK_ENTITIES.register("transfer_switch",

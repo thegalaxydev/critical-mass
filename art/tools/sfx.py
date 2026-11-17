@@ -284,7 +284,18 @@ def engine_run():
     return level(crush(wave, 6), 0.5)
 
 
+def service():
+    t = clock(0.5)
+    wave = np.zeros_like(t)
+    for i in range(4):
+        since = np.clip(t - 0.11 * i, 0, None)
+        on = (t >= 0.11 * i).astype(float)
+        wave = wave + on * (noise(t, 60 + i) * decay(since, 0.005) + 0.5 * square(880 + 110 * i, t) * decay(since, 0.02))
+    return level(crush(edges(wave, 0.0005, 0.04), 6), 0.55)
+
+
 SOUNDS = {
+    "service": service,
     "engine_start": engine_start, "engine_run": engine_run,
     "hum": hum, "generator_run": generator_run, "motor_run": motor_run, "steam_hiss": steam_hiss, "reactor_thrum": reactor_thrum, "breaker_close": breaker_close,
     "breaker_open": breaker_open, "breaker_trip": breaker_trip, "switch_throw": switch_throw, "relay_click": relay_click, "arc_zap": arc_zap, "arc_blast": arc_blast,

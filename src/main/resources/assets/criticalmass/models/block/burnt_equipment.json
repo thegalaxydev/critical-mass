@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "side": "criticalmass:block/burnt_equipment",
+    "top": "criticalmass:block/burnt_equipment_top",
+    "bottom": "criticalmass:block/burnt_equipment_bottom"
+  }
+}

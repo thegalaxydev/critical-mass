@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode {
+public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode, Wear.Serviceable {
     public static final int HIGH = 0;
     public static final int LOW = 1;
     public static final double[][] RATIOS = {{Power.GRID_KV, Power.GENERATOR_KV}, {Power.GRID_KV, Power.MOTOR_KV}, {Power.GENERATOR_KV, Power.MOTOR_KV}};
@@ -46,6 +46,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
     private double lowSide;
     private int syncIn;
     private int tap;
+    private double wear;
 
     public TransformerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -104,6 +105,30 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
 
     public double lowKilovolts() {
         return RATIOS[ratio.getValue()][1];
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        Wear.collect(components, wear);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        wear = Wear.read(input.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY));
+    }
+
+    @Override
+    public double wear() {
+        return wear;
+    }
+
+    @Override
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        setChanged();
+        sendData();
     }
 
     public int tap() {
@@ -186,6 +211,11 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
             Hazard.destroy(level, worldPosition, 4.0f);
             return;
         }
+        wear += heat * heat / (Power.TRANSFORMER_LIFE_SECONDS * 20);
+        if (wear >= 1) {
+            Hazard.burnOut(level, worldPosition);
+            return;
+        }
         if (before != comparator()) {
             level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
         }
@@ -207,6 +237,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         tag.putDouble("HighSide", highSide);
         tag.putDouble("LowSide", lowSide);
         tag.putInt("Tap", tap);
+        tag.putDouble("Wear", wear);
         tag.put("Wires", wires.save());
     }
 
@@ -218,6 +249,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         highSide = tag.getDouble("HighSide");
         lowSide = tag.getDouble("LowSide");
         tap = tag.getInt("Tap");
+        wear = tag.getDouble("Wear");
         wires.load(tag, "Wires");
     }
 
@@ -239,6 +271,7 @@ public class TransformerBlockEntity extends SmartBlockEntity implements IHaveGog
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.loading");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(through))
                 .append(ThermalTooltips.aside("criticalmass.goggles.aside.of_rating", ThermalTooltips.number(Power.TRANSFORMER_MW))));
+        Wear.goggles(tooltip, wear);
         return true;
     }
 

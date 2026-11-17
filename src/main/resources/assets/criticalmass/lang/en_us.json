@@ -669,5 +669,18 @@
   "criticalmass.command.grid.swing": "Grid frequency swings",
   "criticalmass.command.grid.outage": "Grid lost",
   "criticalmass.command.no_wire_near": "No wire within 6 blocks of that position",
-  "criticalmass.command.struck": "Lightning strikes the wire"
+  "criticalmass.command.struck": "Lightning strikes the wire",
+  "block.criticalmass.burnt_equipment": "Burnt-Out Equipment",
+  "criticalmass.burnt.title": "Burnt-Out %s",
+  "criticalmass.burnt.status": "Needs repair",
+  "criticalmass.burnt.needs": "Needs %s Copper Sheets and %s Steel Plates",
+  "criticalmass.burnt.repaired": "Repaired. Wire it up again",
+  "criticalmass.burnt.more": "%s more",
+  "criticalmass.goggles.label.copper_sheets": "Copper Sheets:",
+  "criticalmass.goggles.label.steel_plates": "Steel Plates:",
+  "criticalmass.goggles.label.condition": "Condition:",
+  "criticalmass.service.live": "Live. Make it dead before working on it",
+  "criticalmass.service.done": "Serviced: condition %s%%",
+  "criticalmass.tooltip.condition": "Condition: %s%%",
+  "criticalmass.subtitle.service": "Equipment serviced"
 }

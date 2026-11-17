@@ -5,10 +5,12 @@ import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseFireBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
@@ -68,11 +70,28 @@ public final class Hazard {
         if (level.isClientSide || level.getBlockState(pos).isAir()) {
             return;
         }
+        BlockState was = level.getBlockState(pos);
+        CompoundTag kept = BurntBlockEntity.settings(level, pos);
         level.removeBlock(pos, false);
         Vec3 at = Vec3.atCenterOf(pos);
         blast(level, at, power);
+        BurntBlockEntity.leave(level, pos, was, kept);
         Effects.oilFire(level, at, 3f + power * 1.5f);
         fire(level, pos);
+    }
+
+    public static void burnOut(Level level, BlockPos pos) {
+        if (level.isClientSide || level.getBlockState(pos).isAir()) {
+            return;
+        }
+        BlockState was = level.getBlockState(pos);
+        CompoundTag kept = BurntBlockEntity.settings(level, pos);
+        level.removeBlock(pos, false);
+        Vec3 at = Vec3.atCenterOf(pos);
+        Effects.pop(level, at, 1.2f);
+        Effects.sound(level, at, CMSounds.WIRE_SIZZLE.get(), 1.4f, 0.8f);
+        Effects.oilFire(level, at, 2.5f);
+        BurntBlockEntity.leave(level, pos, was, kept);
     }
 
     public static void burnWire(Level level, BlockPos owner, WireLinks.Link link, boolean flashover) {

@@ -51,6 +51,7 @@
     "criticalmass:station_battery",
     "criticalmass:diesel_engine",
     "criticalmass:transfer_switch",
-    "criticalmass:surge_arrester"
+    "criticalmass:surge_arrester",
+    "criticalmass:burnt_equipment"
   ]
 }

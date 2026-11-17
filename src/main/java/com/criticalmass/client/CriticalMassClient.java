@@ -55,6 +55,12 @@ public class CriticalMassClient {
         modEventBus.addListener(this::clientSetup);
         modEventBus.addListener(this::registerClientExtensions);
         modEventBus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(CriticalMass.asResource("lever_hold"), LeverHold::render));
+        NeoForge.EVENT_BUS.addListener((net.neoforged.neoforge.event.entity.player.ItemTooltipEvent event) -> {
+            double wear = com.criticalmass.content.power.Wear.of(event.getItemStack());
+            if (wear >= 0.01) {
+                event.getToolTip().add(net.minecraft.network.chat.Component.translatable("criticalmass.tooltip.condition", com.criticalmass.content.power.Wear.percent(wear)).withStyle(net.minecraft.ChatFormatting.GRAY));
+            }
+        });
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> {
             LeverHold.tick();
             DashScreens.tick();

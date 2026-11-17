@@ -29,6 +29,12 @@ public class TransformerBlock extends HorizontalBlock implements IBE<Transformer
     }
 
     @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, net.minecraft.world.entity.player.Player player,
+            net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+        return Wear.service(stack, level, pos, player);
+    }
+
+    @Override
     protected boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }

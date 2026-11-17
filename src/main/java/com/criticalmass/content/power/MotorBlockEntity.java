@@ -22,7 +22,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public class MotorBlockEntity extends GeneratingKineticBlockEntity implements WireNode, PowerLoad {
+public class MotorBlockEntity extends GeneratingKineticBlockEntity implements WireNode, PowerLoad, Wear.Serviceable {
     public static final int DEFAULT_SPEED = 32;
     public static final int MAX_SPEED = 256;
     private static final int CHECK_TICKS = 5;
@@ -36,6 +36,8 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     private String status = DEAD;
     private int checkIn;
     private int sagTicks;
+    private int surge;
+    private double wear;
     private int syncIn;
 
     public MotorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
@@ -83,6 +85,30 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
     @Override
     public boolean weatherproof() {
         return false;
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        Wear.collect(components, wear);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        wear = Wear.read(input.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY));
+    }
+
+    @Override
+    public double wear() {
+        return wear;
+    }
+
+    @Override
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        setChanged();
+        sendData();
     }
 
     public void setSpeed(int rpm) {
@@ -157,6 +183,9 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
             String now = level.hasNeighborSignal(worldPosition) ? "criticalmass.motor.held" : !side.live() || kilovolts <= 0 ? DEAD
                     : kilovolts < Power.MOTOR_KV * Power.UNDERVOLTAGE ? "criticalmass.motor.voltage" : inBand ? RUNNING : "criticalmass.motor.frequency";
             boolean sagging = live && now.equals("criticalmass.motor.voltage") && kilovolts >= Power.MOTOR_KV * Power.RIDE_THROUGH_FLOOR;
+            if (sagging && sagTicks == 0) {
+                wear += Power.SAG_WEAR;
+            }
             sagTicks = sagging ? sagTicks + CHECK_TICKS : 0;
             if (sagging && sagTicks < Power.RIDE_THROUGH_TICKS) {
                 now = RUNNING;
@@ -168,14 +197,26 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
             }
             if (run != live) {
                 live = run;
+                surge = run ? Power.SURGE_TICKS : 0;
+                if (run) {
+                    wear += Power.START_WEAR;
+                }
                 updateGeneratedRotation();
                 syncIn = 0;
+            }
+            if (wear >= 1) {
+                Hazard.burnOut(level, worldPosition);
+                return;
             }
         }
         double draw = 0;
         if (live && speed.getValue() != 0) {
             double share = capacity > 0 ? Math.min(stress, capacity) * Math.min(1.0, Power.MOTOR_RATED_SU / capacity) : 0;
             draw = share / Power.MOTOR_EFFICIENCY + Power.MOTOR_RATED_SU * Power.MOTOR_IDLE;
+            if (surge > 0) {
+                draw += Math.max(draw, Power.MOTOR_RATED_SU * 0.1) * (Power.SURGE_FACTOR - 1) * surge / Power.SURGE_TICKS;
+                surge--;
+            }
         }
         demand += (draw - demand) * 0.25;
         if (demand < 1e-3) {
@@ -193,6 +234,7 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
         super.write(tag, registries, clientPacket);
         tag.putBoolean("Live", live);
         tag.putDouble("Demand", demand);
+        tag.putDouble("Wear", wear);
         tag.putString("Status", status);
         tag.put("Wires", wires.save());
     }
@@ -202,6 +244,7 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
         super.read(tag, registries, clientPacket);
         live = tag.getBoolean("Live");
         demand = tag.getDouble("Demand");
+        wear = tag.getDouble("Wear");
         status = tag.contains("Status") ? tag.getString("Status") : DEAD;
         wires.load(tag, "Wires");
     }
@@ -213,6 +256,7 @@ public class MotorBlockEntity extends GeneratingKineticBlockEntity implements Wi
         ThermalTooltips.status(tooltip, status, live ? ChatFormatting.GREEN : status.equals(DEAD) ? ChatFormatting.GRAY : ChatFormatting.GOLD);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.power_drawn");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.megawatts", ChatFormatting.AQUA, ThermalTooltips.number(Power.megawatts(demand))));
+        Wear.goggles(tooltip, wear);
         return true;
     }
 

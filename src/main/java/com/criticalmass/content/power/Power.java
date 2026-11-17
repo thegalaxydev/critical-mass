@@ -80,6 +80,15 @@ public final class Power {
     public static final int RAIN_STEPS = 8;
     public static final int RAIN_CHANCE = 6;
     public static final double SURGE_REACH = 32.0;
+    public static final int SURGE_TICKS = 40;
+    public static final double SURGE_FACTOR = 3.0;
+    public static final double START_WEAR = 0.004;
+    public static final double SAG_WEAR = 0.01;
+    public static final double TRANSFORMER_LIFE_SECONDS = 300.0;
+    public static final double CONTACT_WEAR = 0.34;
+    public static final double WORN_INTERRUPT = 0.1;
+    public static final double SERVICE_STEP = 0.25;
+    public static final int SMOLDER_TICKS = 1200;
     private static final double ROOT_THREE = Math.sqrt(3.0);
 
     private Power() {

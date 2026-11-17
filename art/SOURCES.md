@@ -31,6 +31,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
 | Generator, Circuit Breaker, Grid Connection, Insulator, Electric Motor, Bus Bar, Transformer, Disconnect Switch, Earthing Switch, Station Battery, Diesel Engine, Transfer Switch, Surge Arrester, Power Wire, Power Cable, Transmission Line | Script | `art/tools/power_texture.py` |
 | Fuel Oil | Script | `art/tools/fuel_texture.py` |
+| Burnt-Out Equipment | Script | `art/tools/burnt_texture.py` darkens the author's Steel Block and cuts a blown-out panel into it |
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
 | Sounds other than the alarm | Script | `art/tools/sfx.py` |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |

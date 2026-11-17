@@ -30,7 +30,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
-public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode {
+public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation, WireNode, Wear.Serviceable {
     public static final int LINE = 0;
     public static final int LOAD = 1;
     private final WireLinks wires = new WireLinks();
@@ -52,6 +52,7 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private boolean locked;
     private double angle;
     private int syncIn;
+    private double wear;
 
     public BreakerBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -61,6 +62,30 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         pickup = new Pickup(this);
         behaviours.add(pickup);
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        Wear.collect(components, wear);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        wear = Wear.read(input.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY));
+    }
+
+    @Override
+    public double wear() {
+        return wear;
+    }
+
+    @Override
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        setChanged();
+        sendData();
     }
 
     public double pickupKiloamps() {
@@ -219,10 +244,11 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
 
     public void trip(String reason) {
         if (closed()) {
-            if (through > Power.BREAKER_INTERRUPT_MW) {
+            if (through > Power.BREAKER_INTERRUPT_MW * (1 - (1 - Power.WORN_INTERRUPT) * wear)) {
                 Hazard.destroy(level, worldPosition, 3.0f);
                 return;
             }
+            wear = Math.min(1, wear + Math.min(Power.CONTACT_WEAR, Math.pow(through / Power.BREAKER_INTERRUPT_MW, 2)));
             boolean heavy = current > pickupKiloamps();
             Vec3 inside = Vec3.atCenterOf(worldPosition);
             tripReason = reason;
@@ -277,6 +303,7 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         tag.putDouble("Current", current());
         tag.putDouble("Relay", relay);
         tag.putBoolean("Locked", locked);
+        tag.putDouble("Wear", wear);
         tag.put("Wires", wires.save());
     }
 
@@ -294,6 +321,7 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         current = tag.getDouble("Current");
         relay = tag.getDouble("Relay");
         locked = tag.getBoolean("Locked");
+        wear = tag.getDouble("Wear");
         wires.load(tag, "Wires");
     }
 
@@ -321,6 +349,7 @@ public class BreakerBlockEntity extends SmartBlockEntity implements IHaveGoggleI
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.carrying_current");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.kiloamps", current() > pickupKiloamps() ? ChatFormatting.RED : ChatFormatting.AQUA, String.format(Locale.ROOT, "%.2f", current()))
                 .append(ThermalTooltips.aside("criticalmass.goggles.aside.trips_at", String.format(Locale.ROOT, "%.1f", pickupKiloamps()))));
+        Wear.goggles(tooltip, wear);
         return true;
     }
 

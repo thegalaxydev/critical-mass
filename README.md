@@ -242,6 +242,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Its speed is set on its value box, up to 256 RPM either way, and it gives up to 2,048 SU at any speed.
   - It draws what its shaft load takes, plus 5% in losses and a little for running idle. Turning a generator with a motor always costs more than it makes.
   - It runs on 6 kV, between 47 and 53 Hz. On less than 5.4 kV it runs on for a second and a half and then stands still. A redstone signal stops it.
+  - **Starting surge:** for 2 seconds after it starts it draws up to three times its load. A feeder near its limit glows at every start, a breaker set too close trips, and a battery or a small generator asked to start several motors at once is overloaded. Start them one at a time.
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.
   - It closes onto a dead side freely. With both sides live it closes only when they are at the same voltage and within 0.2 Hz and 20 degrees of each other, and says which one stopped it.
   - A redstone signal trips it. A comparator reads 15 while it is closed.
@@ -282,12 +283,19 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Trips:** the breaker nearest a generator trips when the generator is started against wires that are already live, when it stops while following the grid or another generator, when its shaft speed puts it more than 1.5 Hz from what it follows, when it is overloaded off the grid, and when it carries load off the grid below 47.5 Hz or above 52.5 Hz for 2 seconds.
 - **Where the power goes:** every quarter of a second the plant works out how much each wire and transformer carries, from what each generator makes and each motor draws. Where there are two ways round, each takes its share by how much it can carry.
 - **Faults:** a mistake costs equipment.
+  - **Burnt-out equipment:** anything lost to a fault is left as a smoking wreck where it stood. Use Copper Sheets and Steel Plates on it, 4 of each for a Transformer or a Generator section and 2 of each for anything else, and it stands again with its settings, unwired. Broken, a wreck gives one Steel Plate.
   - **Too much current:** a wire above its current heats and glows orange. At one and a half times its limit it burns through in about 8 seconds, at twice in about 3. It cools again in 20 seconds if the load comes off. A burnt wire is lost and starts a fire at each end and under its middle.
   - **Too much voltage:** a wire on more than it is built for flashes over at once and is lost. A motor, a generator or a transformer winding on more than its voltage explodes, is lost and sets fire to what is round it. A transformer wired backwards does this to itself.
   - **Short circuit:** a live line tied to earth draws all the current its sources can give, limited mostly by the transformers in the way. A breaker between trips at once. With no breaker to clear it, the wires burn, the transformer feeding it overheats within a second and explodes, and the Earthing Switch is lost. A generator feeding a short circuit off the grid shuts itself down for 5 seconds.
   - **Live work:** stringing or cutting a wire on a live terminal draws an arc: 4 hearts at 6 kV, 8 at 20 kV, and death at 220 kV. Open a breaker and work on the dead side.
   - A breaker protects only what is behind it. It will not close two voltages together, but closing it onto dead equipment of the wrong voltage is the operator's mistake to make.
   - In the server config, `electrical.fires` turns the fires off, `electrical.liveWorkHurts` turns the arcs off, and `electrical.blastsBreakBlocks` lets a blast break the blocks round it.
+- **Wear:** three kinds of equipment age. Goggles show their condition once it is below 100%.
+  - An Electric Motor loses 0.4% with every start and 1% each time it rides through low voltage. At the end of its life it burns out.
+  - A Transformer ages while its oil is hot. Five minutes close to exploding uses it up, and a milder overload does the same more slowly. Then it burns out, without a blast.
+  - A Circuit Breaker's contacts wear each time it breaks a short circuit, by up to a third, and what it can break falls with them, down to a tenth of 1,500 MW. Asked to break more than it can, it fails.
+  - **Servicing:** use a Copper Sheet on the machine to give back a quarter of its condition. It must be dead: on a live machine you get the arc. Open its breaker, open a Disconnect Switch and close an Earthing Switch first.
+  - A worn machine keeps its condition when it is broken and placed again, and its item shows it.
 - **Weather:** rain and thunder reach the plant's electrics.
   - **Rain:** Generators, Electric Motors, Station Batteries and Transfer Switches are indoor equipment. Live under open sky in the rain, one flashes over to earth every so often: the breaker nearest it trips, and with no breaker on its feeder it is lost. Put a roof over it. Transformers, breakers, switches, bus bars, insulators, arresters and wires stand the weather.
   - **Lightning:** in a thunderstorm, wires under open sky draw lightning, each about once in twelve minutes of storm. A natural bolt that lands beside a wire counts as well.

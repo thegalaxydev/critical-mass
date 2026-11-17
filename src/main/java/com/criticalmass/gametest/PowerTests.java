@@ -12,6 +12,9 @@ import com.criticalmass.content.power.GeneratorBlockEntity;
 import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.Wear;
+import com.criticalmass.content.power.Hazard;
+import com.criticalmass.content.power.BurntBlockEntity;
 import com.criticalmass.content.power.SurgeArresterBlockEntity;
 import com.criticalmass.content.power.PowerNetwork;
 import com.criticalmass.content.power.TransferSwitchBlock;
@@ -21,12 +24,15 @@ import com.criticalmass.content.power.WireLinks;
 import com.criticalmass.content.power.WireType;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
+import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.api.stress.BlockStressValues;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import com.simibubi.create.content.kinetics.motor.CreativeMotorBlockEntity;
+import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTest;
@@ -34,6 +40,10 @@ import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.GameType;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.gametest.GameTestHolder;
@@ -239,7 +249,7 @@ public final class PowerTests {
         return Math.abs(value - target) <= Math.max(4.0, target * 0.05);
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 300)
+    @GameTest(template = EMPTY, timeoutTicks = 400)
     public static void aMotorRunsOnGridPowerAndTheGridCountsWhatItDraws(GameTestHelper h) {
         BlockPos gridPos = new BlockPos(1, 2, 1);
         BlockPos stepDown = new BlockPos(3, 2, 1);
@@ -257,7 +267,7 @@ public final class PowerTests {
                     h.assertTrue(Math.abs(t.lowSide() - Power.MOTOR_KV) < 0.01 && Math.abs(t.highSide() - Power.GRID_KV) < 0.01, "A 220 / 6 kV transformer on the grid should give 6 kV: " + t.lowSide());
                     wire(h, WireType.COPPER, stepDown, TransformerBlockEntity.LOW, motorPos, 0);
                 })
-                .thenIdle(50)
+                .thenIdle(110)
                 .thenExecute(() -> {
                     h.assertTrue(motor.live() && Math.abs(motor.getSpeed()) == 16, "A motor on 6 kV should turn at its set speed: " + motor.status());
                     h.assertTrue(near(motor.demandSu(), draw), "A motor should draw what its shaft load takes, plus its losses: " + motor.demandSu() + " for " + draw);
@@ -448,7 +458,7 @@ public final class PowerTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 400)
+    @GameTest(template = EMPTY, timeoutTicks = 600)
     public static void anOverloadedWireHeatsAndBurnsThrough(GameTestHelper h) {
         BlockPos gridPos = new BlockPos(0, 2, 0);
         BlockPos startup = new BlockPos(2, 2, 0);
@@ -461,11 +471,17 @@ public final class PowerTests {
         wire(h, WireType.COPPER, startup, TransformerBlockEntity.LOW, busPos, 0);
         MotorBlockEntity[] m = new MotorBlockEntity[2];
         for (int i = 0; i < 2; i++) {
-            m[i] = motor(h, motors[i], (int) Power.SYNC_RPM, 4);
+            m[i] = motor(h, motors[i], (int) Power.SYNC_RPM, 3);
             wire(h, busPos, 0, motors[i], 0);
         }
         BusBarBlockEntity bus = h.getBlockEntity(busPos);
+        h.setBlock(motors[1].north(), Blocks.REDSTONE_BLOCK);
         h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(m[0].live() && !m[1].live(), "One motor should start and the held one wait");
+                    h.setBlock(motors[1].north(), Blocks.AIR);
+                })
                 .thenIdle(70)
                 .thenExecute(() -> {
                     h.assertTrue(m[0].live() && m[1].live() && bus.live(), "Both motors should start on the bus");
@@ -475,7 +491,7 @@ public final class PowerTests {
                     double warmth = Math.max(t.wires().heat(feed), bus.wires().heat(back));
                     h.assertTrue(warmth > 0.15 && warmth < 1, "A copper wire carrying two motors should be heating: " + warmth);
                 })
-                .thenIdle(200)
+                .thenIdle(260)
                 .thenExecute(() -> {
                     h.assertTrue(t.wires().count(TransformerBlockEntity.LOW) == 0 && bus.wires().count(0) == 2, "The overloaded wire should burn through and the others stay");
                     h.assertTrue(!bus.live() && !m[0].live() && !m[1].live(), "Losing the feed should leave the bus dead");
@@ -1163,8 +1179,142 @@ public final class PowerTests {
                 .thenExecute(() -> {
                     h.assertTrue(PowerNetwork.strikeNear(h.getLevel(), over, 4.0, false), "A strike beside a wire should find it");
                     h.assertTrue(!breaker.closed() && breaker.tripReason().endsWith("trip.surge"), "With nothing to take it the surge should trip the breaker on that line: " + breaker.tripReason());
-                    h.assertTrue(h.getBlockState(main).isAir() && breaker.wires().all().size() == 1, "It should cost the struck wire and the nearest transformer");
+                    h.assertTrue(h.getBlockState(main).is(CMBlocks.BURNT_EQUIPMENT.get()) && breaker.wires().all().size() == 1, "It should cost the struck wire and burn out the nearest transformer");
                 })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void lostEquipmentIsLeftBurntOutAndIsRepairedWithItsSettings(GameTestHelper h) {
+        BlockPos pos = new BlockPos(3, 2, 3);
+        TransformerBlockEntity t = transformer(h, pos, UNIT);
+        t.setTap(3);
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> Hazard.destroy(h.getLevel(), h.absolutePos(pos), 2.0f))
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(pos).is(CMBlocks.BURNT_EQUIPMENT.get()), "Lost equipment should leave a wreck where it stood");
+                    BurntBlockEntity wreck = h.getBlockEntity(pos);
+                    h.assertTrue(wreck.original().is(CMBlocks.TRANSFORMER.get()) && wreck.copper() == 4 && wreck.steel() == 4, "A burnt-out transformer should need 4 sheets and 4 plates: " + wreck.copper() + " " + wreck.steel());
+                    ItemStack sheets = new ItemStack(AllItems.COPPER_SHEET.get(), 8);
+                    ItemStack plates = new ItemStack(CMItems.STEEL_PLATE.get(), 8);
+                    h.assertTrue(wreck.wants(sheets) && wreck.wants(plates) && !wreck.wants(new ItemStack(Blocks.DIRT)), "It should take Copper Sheets and Steel Plates and nothing else");
+                    for (int i = 0; i < 4; i++) {
+                        wreck.supply(sheets);
+                        wreck.supply(plates);
+                    }
+                    h.assertTrue(wreck.complete() && !wreck.wants(sheets), "With everything supplied it should want no more");
+                    wreck.restore();
+                })
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(pos).is(CMBlocks.TRANSFORMER.get()), "Repaired, the transformer should stand again");
+                    TransformerBlockEntity back = h.getBlockEntity(pos);
+                    h.assertTrue(back.highKilovolts() == Power.GENERATOR_KV && back.lowKilovolts() == Power.MOTOR_KV && back.tap() == 3 && back.wires().isEmpty(),
+                            "It should come back unwired with its ratio and tap as they were: " + back.highKilovolts() + "/" + back.lowKilovolts() + " tap " + back.tap());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aMotorDrawsAStartingSurgeWearsWithStartsAndIsServicedDead(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos startup = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos motorPos = new BlockPos(1, 2, 5);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, startup, STARTUP);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        MotorBlockEntity motor = motor(h, motorPos, 16, 1);
+        wire(h, WireType.LINE, gridPos, 0, startup, TransformerBlockEntity.HIGH);
+        wire(h, startup, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, WireType.COPPER, breakerPos, BreakerBlockEntity.LOAD, motorPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        double running = drawFor(pressLoad(1, 16));
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack sheets = new ItemStack(AllItems.COPPER_SHEET.get(), 4);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> breaker.close())
+                .thenIdle(14)
+                .thenExecute(() -> h.assertTrue(motor.live() && motor.demandSu() > running * 1.5, "A motor that has just started should draw well over its running load: " + motor.demandSu() + " against " + running))
+                .thenIdle(100)
+                .thenExecute(() -> {
+                    h.assertTrue(near(motor.demandSu(), running), "The surge should be over in a few seconds: " + motor.demandSu());
+                    h.assertTrue(Math.abs(motor.wear() - Power.START_WEAR) < 1e-6, "One start should use a little of the motor's life: " + motor.wear());
+                    motor.setWear(0.5);
+                    Wear.service(sheets, h.getLevel(), h.absolutePos(motorPos), player);
+                    h.assertTrue(motor.wear() == 0.5 && sheets.getCount() == 4, "A live motor should not be serviced");
+                    breaker.open();
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    Wear.service(sheets, h.getLevel(), h.absolutePos(motorPos), player);
+                    h.assertTrue(Math.abs(motor.wear() - (0.5 - Power.SERVICE_STEP)) < 1e-6 && sheets.getCount() == 3, "Dead, a Copper Sheet should restore a quarter of its condition: " + motor.wear());
+                    List<ItemStack> drops = Block.getDrops(h.getBlockState(motorPos), h.getLevel(), h.absolutePos(motorPos), motor);
+                    h.assertTrue(drops.size() == 1 && Math.abs(Wear.of(drops.get(0)) - motor.wear()) < 1e-6, "A worn motor should keep its condition as an item");
+                    motor.setWear(1.0);
+                    breaker.close();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(motorPos).is(CMBlocks.BURNT_EQUIPMENT.get()), "A worn-out motor should burn out when it is started");
+                    BurntBlockEntity wreck = h.getBlockEntity(motorPos);
+                    h.assertTrue(wreck.original().is(CMBlocks.ELECTRIC_MOTOR.get()) && wreck.copper() == 2, "The wreck should be a motor's, needing 2 sheets");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void breakingFaultsWearsABreakersContactsUntilItFails(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(0, 2, 0);
+        BlockPos stepDown = new BlockPos(2, 2, 0);
+        BlockPos breakerPos = new BlockPos(4, 2, 0);
+        BlockPos busPos = new BlockPos(6, 2, 0);
+        BlockPos earthPos = new BlockPos(6, 2, 3);
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        transformer(h, stepDown, MAIN);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        h.setBlock(earthPos, CMBlocks.EARTHING_SWITCH.get());
+        wire(h, WireType.LINE, gridPos, 0, stepDown, TransformerBlockEntity.HIGH);
+        wire(h, stepDown, TransformerBlockEntity.LOW, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, breakerPos, BreakerBlockEntity.LOAD, busPos, 0);
+        wire(h, busPos, 0, earthPos, 0);
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        EarthingBlockEntity earth = h.getBlockEntity(earthPos);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    earth.toggle();
+                    breaker.close();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> {
+                    h.assertTrue(!breaker.closed() && breaker.wear() > 0.1 && breaker.wear() <= Power.CONTACT_WEAR, "Breaking a short circuit should wear the contacts: " + breaker.wear());
+                    breaker.setWear(1.0);
+                    breaker.reset();
+                    breaker.close();
+                })
+                .thenIdle(30)
+                .thenExecute(() -> h.assertTrue(h.getBlockState(breakerPos).is(CMBlocks.BURNT_EQUIPMENT.get()), "A breaker with worn-out contacts should fail on the next short circuit"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void aWornOutTransformerBurnsOutWithoutABlast(GameTestHelper h) {
+        BlockPos pos = new BlockPos(3, 2, 3);
+        TransformerBlockEntity t = transformer(h, pos, MAIN);
+        t.setWear(0.99);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(pos).is(CMBlocks.TRANSFORMER.get()) && t.wear() == 0.99, "A cool transformer should not age: " + t.wear());
+                    t.setWear(1.0);
+                })
+                .thenIdle(5)
+                .thenExecute(() -> h.assertTrue(h.getBlockState(pos).is(CMBlocks.BURNT_EQUIPMENT.get()), "At the end of its life it should burn out"))
                 .thenSucceed();
     }
 }
