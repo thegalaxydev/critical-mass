@@ -1394,4 +1394,37 @@ public final class PowerTests {
                 .thenExecute(() -> h.assertTrue(PlantAlarms.of(h.getLevel().getBlockEntity(h.absolutePos(breakerPos))) == bit, "Burnt-out equipment should keep the alarm up"))
                 .thenSucceed();
     }
+
+    @GameTest(template = EMPTY, timeoutTicks = 400)
+    public static void aGeneratorWearsIsServicedDeadAndBurnsOutAtTheEnd(GameTestHelper h) {
+        BlockPos breakerPos = new BlockPos(1, 4, 4);
+        GeneratorBlockEntity g = bigUnit(h, breakerPos);
+        BlockPos first = new BlockPos(1, 2, 2);
+        BlockPos last = new BlockPos(4, 2, 2);
+        CreativeMotorBlockEntity driver = h.getBlockEntity(new BlockPos(0, 2, 2));
+        net.minecraft.world.entity.player.Player fitter = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack sheets = new net.minecraft.world.item.ItemStack(com.simibubi.create.AllItems.COPPER_SHEET.get(), 4);
+        h.startSequence()
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    g.faultTrip();
+                    h.assertTrue(Math.abs(g.wear() - Power.GENERATOR_FAULT_WEAR) < 1e-6, "A fault should age the generator: " + g.wear());
+                    g.setWear(0.6);
+                    driver.generatedSpeed.setValue(0);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    Wear.service(sheets, h.getLevel(), h.absolutePos(first), fitter);
+                    h.assertTrue(Math.abs(g.wear() - 0.35) < 0.01 && sheets.getCount() == 3, "A Copper Sheet on a stopped generator should give back a quarter: " + g.wear());
+                    GeneratorBlockEntity end = h.getBlockEntity(last);
+                    end.setWear(1.0);
+                    driver.generatedSpeed.setValue((int) Power.SYNC_RPM);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(h.getBlockState(last).is(CMBlocks.BURNT_EQUIPMENT.get()), "A worn-out section should burn out: " + h.getBlockState(last));
+                    h.assertTrue(h.getBlockState(first).is(CMBlocks.GENERATOR.get()), "The other sections should stand");
+                })
+                .thenSucceed();
+    }
 }

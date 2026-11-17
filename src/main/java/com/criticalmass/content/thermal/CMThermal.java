@@ -72,6 +72,11 @@ public final class CMThermal {
     public static final double ROTOR_INERTIA_TICKS = 50.0;
     public static final double ROTOR_DAMPING = 0.02;
     public static final double OVERSPEED_TRIP = 0.1;
+    public static final double BLADE_WEAR = 1.0 / 720000.0;
+    public static final double BLADE_TRIP_WEAR = 0.02;
+    public static final double BLADE_DERATE = 0.25;
+    public static final double BLADE_STEP = 0.25;
+    public static final float BLADE_HURT = 6.0f;
     public static final int LOAD_SAMPLE_TICKS = 5;
     public static final int PUMP_FLOW_PER_RPM = 2;
     public static final int PUMP_MAX_FLOW = 256;

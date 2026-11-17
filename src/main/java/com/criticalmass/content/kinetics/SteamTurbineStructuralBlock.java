@@ -62,6 +62,12 @@ public class SteamTurbineStructuralBlock extends KineticBlock implements EntityB
     }
 
     @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+        BlockPos source = getInformationSource(level, pos, state);
+        return source != null && level.getBlockEntity(source) instanceof SteamTurbineBlockEntity turbine ? turbine.reblade(stack, player) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
     public Direction.Axis getRotationAxis(BlockState state) {
         return state.getValue(TurbineStructure.FACING).getAxis();
     }

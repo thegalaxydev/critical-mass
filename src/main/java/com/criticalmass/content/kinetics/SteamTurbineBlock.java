@@ -63,6 +63,12 @@ public class SteamTurbineBlock extends HorizontalKineticBlock implements IBE<Ste
     }
 
     @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, net.minecraft.world.entity.player.Player player,
+            net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+        return level.getBlockEntity(pos) instanceof SteamTurbineBlockEntity turbine ? turbine.reblade(stack, player) : net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+    }
+
+    @Override
     public Direction.Axis getRotationAxis(BlockState state) {
         return state.getValue(HORIZONTAL_FACING).getAxis();
     }

@@ -89,4 +89,44 @@ public final class FalloutTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void ashIsSweptByAPloughAndWashedOffByWater(GameTestHelper h) {
+        BlockPos first = new BlockPos(3, 2, 3);
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        for (int x = 2; x <= 6; x++) {
+            for (int z = 2; z <= 6; z++) {
+                h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+            }
+        }
+        for (int x = 1; x <= 7; x++) {
+            for (int z = 1; z <= 7; z++) {
+                if (x == 1 || x == 7 || z == 1 || z == 7) {
+                    h.setBlock(new BlockPos(x, 2, z), Blocks.STONE);
+                }
+            }
+        }
+        for (int x = 2; x <= 5; x++) {
+            BlockPos at = new BlockPos(x, 2, 3);
+            h.setBlock(at, CMBlocks.FALLOUT_ASH.get());
+            data.add(h.absolutePos(at), 1.5);
+        }
+        h.startSequence()
+                .thenIdle(2)
+                .thenExecute(() -> {
+                    h.assertTrue(new com.simibubi.create.content.contraptions.actors.plough.PloughMovementBehaviour().canBreak(h.getLevel(), h.absolutePos(first), h.getBlockState(first)),
+                            "A Mechanical Plough should be able to sweep ash up");
+                    h.assertTrue(data.get(h.absolutePos(first)) > 0, "The ash should be contamination");
+                    h.setBlock(new BlockPos(6, 2, 3), Blocks.WATER);
+                })
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    for (int x = 2; x <= 5; x++) {
+                        BlockPos at = new BlockPos(x, 2, 3);
+                        h.assertTrue(!h.getBlockState(at).is(CMBlocks.FALLOUT_ASH.get()), "Flowing water should wash the ash off at " + at);
+                        h.assertTrue(data.get(h.absolutePos(at)) == 0, "Washed ash should leave no contamination at " + at);
+                    }
+                })
+                .thenSucceed();
+    }
 }

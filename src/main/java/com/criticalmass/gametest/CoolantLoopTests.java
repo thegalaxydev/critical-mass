@@ -186,4 +186,50 @@ public final class CoolantLoopTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = EMPTY, timeoutTicks = 800)
+    public static void wornBladesGiveLessAndAreChangedWhileTheTurbineIsStopped(GameTestHelper h) {
+        BlockPos pos = new BlockPos(3, 2, 3);
+        h.setBlock(pos, TestVessels.turbine(Direction.EAST));
+        h.setBlock(pos.east(2), AllBlocks.SHAFT.getDefaultState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        SteamTurbineBlockEntity turbine = h.getBlockEntity(pos);
+        boolean[] steaming = {true};
+        double base = 20000;
+        double fresh = base * CMThermal.TURBINE_EXTRACTION * CMThermal.SU_PER_HEAT;
+        h.onEachTick(() -> {
+            if (steaming[0]) {
+                turbine.coolant().set(new FluidStack(Fluids.WATER, CMThermal.TURBINE_CAPACITY), CMThermal.TURBINE_CAPACITY * CMThermal.SATURATION_ENERGY + base);
+            } else {
+                turbine.coolant().set(FluidStack.EMPTY, 0);
+            }
+        });
+        net.minecraft.world.entity.player.Player fitter = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack blades = new net.minecraft.world.item.ItemStack(com.criticalmass.registry.CMItems.TURBINE_BLADE.get(), 4);
+        h.startSequence()
+                .thenIdle(150)
+                .thenExecute(() -> {
+                    h.assertTrue(Math.abs(turbine.stressCapacity() - fresh) / fresh < 0.03, "New blades should give the full capacity: " + turbine.stressCapacity());
+                    h.assertTrue(turbine.wear() > 0, "Running should wear the blades: " + turbine.wear());
+                    turbine.setWear(0.8);
+                })
+                .thenIdle(150)
+                .thenExecute(() -> {
+                    double expected = fresh * (1 - CMThermal.BLADE_DERATE * 0.8);
+                    h.assertTrue(Math.abs(turbine.stressCapacity() - expected) / expected < 0.03, "Blades at 20% should give " + expected + ": " + turbine.stressCapacity());
+                    turbine.reblade(blades, fitter);
+                    h.assertTrue(turbine.wear() >= 0.8 && blades.getCount() == 4, "Blades cannot be changed while the turbine turns: " + turbine.wear());
+                    steaming[0] = false;
+                })
+                .thenIdle(150)
+                .thenExecute(() -> {
+                    h.assertTrue(!turbine.turning(), "Without steam the turbine should stand still");
+                    turbine.reblade(blades, fitter);
+                    h.assertTrue(Math.abs(turbine.wear() - 0.55) < 0.01 && blades.getCount() == 3, "One Turbine Blade should give back a quarter: " + turbine.wear());
+                    turbine.setWear(1.0);
+                    steaming[0] = true;
+                })
+                .thenIdle(100)
+                .thenExecute(() -> h.assertTrue(turbine.stressCapacity() == 0 && turbine.status().endsWith("turbine.worn_out"), "Worn-out blades should give nothing: " + turbine.status() + " " + turbine.stressCapacity()))
+                .thenSucceed();
+    }
 }

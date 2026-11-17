@@ -16,6 +16,12 @@ public class GeneratorBlock extends RotatedPillarKineticBlock implements IBE<Gen
     }
 
     @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, net.minecraft.world.level.block.state.BlockState state, net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos,
+            net.minecraft.world.entity.player.Player player, net.minecraft.world.InteractionHand hand, net.minecraft.world.phys.BlockHitResult hit) {
+        return Wear.service(stack, level, pos, player);
+    }
+
+    @Override
     public Direction.Axis getRotationAxis(BlockState state) {
         return state.getValue(AXIS);
     }

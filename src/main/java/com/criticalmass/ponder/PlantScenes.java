@@ -483,7 +483,7 @@ public final class PlantScenes {
         scene.idle(8);
         scene.world().destroyBlock(util.grid().at(4, 1, 7));
         scene.idle(20);
-        say(scene, 90, util.vector().centerOf(4, 1, 6), "Break the ash to clear a way through");
+        say(scene, 110, util.vector().centerOf(4, 1, 6), "Break the ash to clear a way through. Flowing water washes it off, and a Mechanical Plough on a moving contraption sweeps it up");
         warn(scene, 100, util.vector().centerOf(1, 2, 6), "Animals and monsters caught in the open in the thick of it sicken and die");
         scene.markAsFinished();
     }

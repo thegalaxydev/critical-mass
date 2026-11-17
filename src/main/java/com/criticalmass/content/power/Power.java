@@ -88,6 +88,8 @@ public final class Power {
     public static final double CONTACT_WEAR = 0.34;
     public static final double WORN_INTERRUPT = 0.1;
     public static final double SERVICE_STEP = 0.25;
+    public static final double GENERATOR_WEAR = 1.0 / 576000.0;
+    public static final double GENERATOR_FAULT_WEAR = 0.02;
     public static final int SMOLDER_TICKS = 1200;
     private static final double ROOT_THREE = Math.sqrt(3.0);
 

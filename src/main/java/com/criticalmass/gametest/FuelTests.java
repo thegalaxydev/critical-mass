@@ -198,6 +198,9 @@ public final class FuelTests {
                     h.assertTrue(port.refuseReason(fuel) == null, "An open hatch on a cold vessel should take fuel: " + port.refuseReason(fuel));
                     BlockPos at = h.absolutePos(TestVessels.SERVICE);
                     h.assertTrue(ArmInteractionPointType.getPrimaryType(h.getLevel(), at, h.getLevel().getBlockState(at)) instanceof ServicePortArmType, "A Mechanical Arm should be able to pick the port as a target");
+                    for (net.minecraft.world.level.block.Block store : java.util.List.of(com.criticalmass.registry.CMBlocks.SPENT_FUEL_RACK.get(), com.criticalmass.registry.CMBlocks.SHIELDED_CASK.get())) {
+                        h.assertTrue(ArmInteractionPointType.getPrimaryType(h.getLevel(), at, store.defaultBlockState()) instanceof com.criticalmass.content.fuel.FuelStoreArmType, "A Mechanical Arm should be able to pick " + store + " as a target");
+                    }
                 })
                 .thenSucceed();
     }

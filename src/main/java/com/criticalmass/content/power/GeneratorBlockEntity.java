@@ -30,7 +30,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 
-public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode, PowerSource {
+public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode, PowerSource, Wear.Serviceable {
+    private double wear;
     private final WireLinks wires = new WireLinks();
     private static final int UPDATE_TICKS = 5;
     private static final int SYNC_TICKS = 10;
@@ -211,7 +212,32 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         if (lockout <= 0) {
             lockout = Power.LOCKOUT_TICKS;
             faultLock = true;
+            wear = Math.min(1, wear + Power.GENERATOR_FAULT_WEAR);
         }
+    }
+
+    @Override
+    public double wear() {
+        return wear;
+    }
+
+    @Override
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        setChanged();
+        sendData();
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        Wear.collect(components, wear);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        wear = Wear.read(input.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY));
     }
 
     public boolean synced() {
@@ -329,6 +355,18 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         }
         boolean resized = parts.size() != sectionCount;
         sectionCount = Math.max(1, parts.size());
+        if (online && output > 0) {
+            double aged = Power.GENERATOR_WEAR * Math.min(1.0, output / ratedSu());
+            for (GeneratorBlockEntity part : parts) {
+                part.wear = Math.min(1, part.wear + aged);
+            }
+        }
+        for (GeneratorBlockEntity part : parts) {
+            if (part.wear >= 1) {
+                Hazard.burnOut(level, part.worldPosition);
+                return;
+            }
+        }
         float speed = Math.abs(getSpeed());
         if (lockout > 0) {
             lockout--;
@@ -461,6 +499,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         tag.putInt("Lockout", lockout);
         tag.putInt("Sections", sectionCount);
         tag.putString("Status", status);
+        tag.putDouble("Wear", wear);
         tag.put("Wires", wires.save());
     }
 
@@ -479,6 +518,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         lockout = tag.getInt("Lockout");
         sectionCount = Math.max(1, tag.getInt("Sections"));
         status = tag.contains("Status") ? tag.getString("Status") : "criticalmass.generator.stopped";
+        wear = tag.getDouble("Wear");
         wires.load(tag, "Wires");
         if (setting != null) {
             setting.value = (int) Math.round(load * LOAD_STEPS);
@@ -496,6 +536,7 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
         ThermalTooltips.value(tooltip, m.onGrid ? made.append(ThermalTooltips.aside("criticalmass.goggles.aside.of_megawatts", ThermalTooltips.number(Power.megawatts(m.load * m.ratedSu())))) : made);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.frequency");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.hertz", ChatFormatting.AQUA, String.format(java.util.Locale.ROOT, "%.2f", m.frequency)));
+        Wear.goggles(tooltip, wear);
         return true;
     }
 

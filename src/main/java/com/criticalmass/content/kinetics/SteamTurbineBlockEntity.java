@@ -40,6 +40,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
     private double shaftLoad;
     private double overspeed;
     private boolean overspeedTrip;
+    private double wear;
     private int loadCooldown;
     private ScrollValueBehaviour ratedSpeed;
     private String status = "criticalmass.turbine.no_steam";
@@ -83,6 +84,41 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
 
     public boolean overspeedTripped() {
         return overspeedTrip;
+    }
+
+    public double wear() {
+        return wear;
+    }
+
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        setChanged();
+        sendData();
+    }
+
+    public boolean turning() {
+        return admission > 0 || appliedCapacity > 0 || getSpeed() != 0;
+    }
+
+    public net.minecraft.world.ItemInteractionResult reblade(net.minecraft.world.item.ItemStack stack, net.minecraft.world.entity.player.Player player) {
+        if (!stack.is(com.criticalmass.registry.CMItems.TURBINE_BLADE.get()) || wear < 0.01 || level == null) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (level.isClientSide) {
+            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        }
+        if (turning()) {
+            player.hurt(level.damageSources().generic(), CMThermal.BLADE_HURT);
+            player.displayClientMessage(Component.translatable("criticalmass.service.turning"), true);
+            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        }
+        setWear(wear - CMThermal.BLADE_STEP);
+        if (!player.getAbilities().instabuild) {
+            stack.shrink(1);
+        }
+        level.playSound(null, worldPosition, CMSounds.SERVICE.get(), SoundSource.BLOCKS, 1.0f, 0.8f);
+        player.displayClientMessage(Component.translatable("criticalmass.service.done", com.criticalmass.content.power.Wear.percent(wear)), true);
+        return net.minecraft.world.ItemInteractionResult.SUCCESS;
     }
 
     public void manualTrip() {
@@ -197,9 +233,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (overspeedTrip && governor >= 1) {
             resetTrip();
         }
-        double limit = connected && !overspeedTrip ? 1 - governor : 0;
+        double limit = connected && !overspeedTrip && wear < 1 ? 1 - governor : 0;
         double steam = coolant.steamEnergy();
-        double wideOpen = coolant.amount() == 0 ? 0 : Math.min(steam, steam / coolant.amount() * CMThermal.TURBINE_CAPACITY * CMThermal.TURBINE_EXTRACTION);
+        double wideOpen = coolant.amount() == 0 ? 0 : Math.min(steam, steam / coolant.amount() * CMThermal.TURBINE_CAPACITY * CMThermal.TURBINE_EXTRACTION) * (1 - CMThermal.BLADE_DERATE * wear);
         if (loadCooldown-- <= 0) {
             loadCooldown = CMThermal.LOAD_SAMPLE_TICKS;
             shaftLoad = measureLoad();
@@ -210,6 +246,8 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         admission = Math.max(0, Math.min(limit, admission));
         if (!connected) {
             status = "criticalmass.turbine.disconnected";
+        } else if (wear >= 1) {
+            status = "criticalmass.turbine.worn_out";
         } else if (overspeedTrip) {
             status = "criticalmass.turbine.overspeed_trip";
         } else if (steam <= 0) {
@@ -220,6 +258,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
             status = "criticalmass.turbine.ok";
         }
         double extracted = steam > 0 ? coolant.removeHeat(wideOpen * admission) : 0;
+        if (extracted > 0) {
+            wear = Math.min(1, wear + CMThermal.BLADE_WEAR * admission);
+        }
         heatExtracted += extracted;
         heatRate += (extracted - heatRate) * 0.1;
         if (heatRate < 1e-3) {
@@ -236,6 +277,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (overspeed > CMThermal.OVERSPEED_TRIP && !overspeedTrip) {
             overspeedTrip = true;
             admission = 0;
+            wear = Math.min(1, wear + CMThermal.BLADE_TRIP_WEAR);
             level.playSound(null, worldPosition, CMSounds.BREAKER_TRIP.get(), SoundSource.BLOCKS, 1.4f, 0.7f);
             level.playSound(null, worldPosition, CMSounds.STEAM_VENT.get(), SoundSource.BLOCKS, 1.5f, 0.8f);
             Effects.steamJet(level, net.minecraft.world.phys.Vec3.atCenterOf(worldPosition).add(0, 1.6, 0), new net.minecraft.world.phys.Vec3(0, 1, 0), 1.2f);
@@ -287,6 +329,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         tag.putDouble("ShaftLoad", shaftLoad);
         tag.putDouble("Overspeed", overspeed);
         tag.putBoolean("OverspeedTrip", overspeedTrip);
+        tag.putDouble("Wear", wear);
     }
 
     @Override
@@ -303,6 +346,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         shaftLoad = tag.getDouble("ShaftLoad");
         overspeed = tag.getDouble("Overspeed");
         overspeedTrip = tag.getBoolean("OverspeedTrip");
+        wear = tag.getDouble("Wear");
     }
 
     static class RatedSpeedBox extends ValueBoxTransform.Sided {
@@ -326,6 +370,7 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.rpm", Math.abs(overspeed) > CMThermal.OVERSPEED_TRIP * 0.5 ? ChatFormatting.RED : ChatFormatting.AQUA,
                 ThermalTooltips.number(ratedSpeed() * (1 + overspeed))).append(ThermalTooltips.aside("criticalmass.goggles.aside.rated", ratedSpeed())));
         ThermalTooltips.coolant(tooltip, coolant);
+        com.criticalmass.content.power.Wear.goggles(tooltip, wear);
         return true;
     }
 }

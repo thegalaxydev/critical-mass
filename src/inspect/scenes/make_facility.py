@@ -54,6 +54,10 @@ PRESSURIZER = (-5, 4, 3)
 ECCS_PORT, ECCS_PUMP, ECCS_TANK = (-HALF, 3, -2), (-5, 3, -2), (-6, 3, -2)
 ECCS_COG, ECCS_CLUTCH, ECCS_MOTOR, ECCS_LEVER = (-5, 4, -2), (-6, 4, -2), (-7, 4, -2), (-6, 5, -2)
 RI, RO = 15.5, 17.5
+UNLOAD_ARM, LOAD_ARM = (-1, 12, -2), (1, 12, -2)
+REFUEL_COGS = [(0, 12, -2)]
+REFUEL_MOTOR = (0, 13, -2)
+REFUEL_RACKS, REFUEL_DEPOT = [(-2, 10, -5), (-3, 10, -5)], (2, 10, -5)
 
 SG_X = 10
 SG_Y = range(3, 11)
@@ -184,13 +188,13 @@ WIRES = [
     ("cable", STANDBY_T, LOW, TRANSFER, ON_STANDBY), ("cable", TRANSFER, TO_LOAD, C_LOAD, 0), ("cable", C_LOAD, 0, C_L2, 0), ("cable", C_L2, 0, BUS6[2], 0), ("cable", BATTERY, 0, BUS6[0], 0), ("cable", BATTERY_B, 0, BUS6[0], 0),
     ("cable", BUS6[0], 0, FEED_REACTOR, LINE), ("cable", BUS6[1], 0, FEED_A, LINE), ("cable", BUS6[2], 0, FEED_B, LINE),
     ("wire", FEED_REACTOR, LOAD, R_UP, 0), ("wire", R_UP, 0, R2, 0), ("wire", R2, 0, H_IN, 0), ("wire", H_IN, 0, C_IN, 0), ("wire", C_IN, 0, LA.motor, 0), ("wire", C_IN, 0, LB.motor, 0),
-    ("wire", C_IN, 0, C_HI, 0), ("wire", C_HI, 0, DRIVE_MOTOR, 0),
+    ("wire", C_IN, 0, C_HI, 0), ("wire", C_HI, 0, DRIVE_MOTOR, 0), ("wire", C_HI, 0, REFUEL_MOTOR, 0),
     ("wire", FEED_A, LOAD, A_UP, 0), ("wire", A_UP, 0, A2, 0), ("wire", A2, 0, A_F, 0), ("wire", A_F, 0, TA.feed_motor, 0), ("wire", A2, 0, A3, 0), ("wire", A3, 0, TA.circ_motor, 0),
     ("wire", A3, 0, N_A_IN, 0), ("wire", N_A_IN, 0, N_A_OUT, 0), ("wire", N_A_OUT, 0, TA.makeup_motor, 0),
     ("wire", FEED_B, LOAD, B_UP, 0), ("wire", B_UP, 0, B2, 0), ("wire", B2, 0, TB.feed_motor, 0), ("wire", FEED_B, LOAD, B3_UP, 0), ("wire", B3_UP, 0, B3, 0), ("wire", B3, 0, TB.circ_motor, 0),
     ("wire", FEED_B, LOAD, N_B_IN, 0), ("wire", N_B_IN, 0, N_B_OUT, 0), ("wire", N_B_OUT, 0, TB.makeup_motor, 0),
 ]
-SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16}
+SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32}
 RAMP = ((0.3, 126), (0.6, 153), (0.9, 179))
 PART_LOAD, RUN_LOAD = 0.3, 0.6
 RUN_POWER, RUN_COOLANT = RAMP[-1]
@@ -447,6 +451,8 @@ def containment():
     sign((-15, 3, 0), "east", "Equipment", "Hatch")
     post((-6, 1, -4), 4, "Emergency", "Injection")
     post((-7, 1, 3), 4, "Pressurizer")
+    post((-4, 10, -5), 8, "Spent Fuel", "Transfer Racks")
+    post((3, 10, -5), 8, "Fresh Fuel")
     post((12, 1, -8), 12, "Steam", "Generator A")
     post((12, 1, 8), 12, "Steam", "Generator B")
     post((6, 1, -12), 0, "Loop A", "Coolant Pump")
@@ -484,7 +490,28 @@ def vessel():
     for pos in (ECCS_PUMP, ECCS_TANK):
         stand(pos)
     box(-7, 1, -2, -7, 3, -2, STEEL)
-    reserved.update([DRIVE_MOTOR, (SERVICE[0], SERVICE[1] + 1, SERVICE[2])] + [pos for pos, _ in DRIVES] + DRIVE_COGS)
+    reserved.update([DRIVE_MOTOR, REFUEL_MOTOR, (SERVICE[0], SERVICE[1] + 1, SERVICE[2])] + [pos for pos, _ in DRIVES] + DRIVE_COGS)
+    refuelling()
+
+
+def reach(arm, target):
+    return "[I;%d,%d,%d]" % tuple(target[i] - arm[i] for i in range(3))
+
+
+def refuelling():
+    for arm, targets in ((UNLOAD_ARM, [SERVICE] + REFUEL_RACKS), (LOAD_ARM, [SERVICE, REFUEL_DEPOT])):
+        assert all(math.dist(arm, target) < 5 for target in targets), "an arm cannot reach from %s" % (arm,)
+    racks = ",".join("{Type:\"criticalmass:spent_fuel_rack\",Pos:%s,Mode:\"DEPOSIT\"}" % reach(UNLOAD_ARM, rack) for rack in REFUEL_RACKS)
+    machine(UNLOAD_ARM, "create:mechanical_arm[ceiling=true]{InteractionPoints:[{Type:\"criticalmass:service_port\",Pos:%s,Mode:\"TAKE\"},%s]}" % (reach(UNLOAD_ARM, SERVICE), racks))
+    machine(LOAD_ARM, "create:mechanical_arm[ceiling=true]{InteractionPoints:[{Type:\"create:depot\",Pos:%s,Mode:\"TAKE\"},{Type:\"criticalmass:service_port\",Pos:%s,Mode:\"DEPOSIT\"}]}"
+            % (reach(LOAD_ARM, REFUEL_DEPOT), reach(LOAD_ARM, SERVICE)))
+    for pos in REFUEL_COGS:
+        machine(pos, "create:cogwheel[axis=y]")
+    for rack in REFUEL_RACKS:
+        machine(rack, "criticalmass:spent_fuel_rack")
+    machine(REFUEL_DEPOT, "create:depot")
+    box(0, 13, -5, 0, 13, -3, GIRDER_Z)
+    box(0, 10, -6, 0, 13, -6, STEEL)
 
 
 def primary(loop):
@@ -1188,7 +1215,8 @@ def start(w):
                  setblock(w, t.feed_motor, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["feed"]),
                  setblock(w, t.circ_motor, "criticalmass:electric_motor[facing=up]{ScrollValue:%d}" % SPEEDS["circ"]),
                  setblock(w, t.makeup_motor, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["makeup"])]
-    cmds += [merge(w, p, "Buffer", "minecraft:water", 4000, 0) for p in RACKS]
+    cmds += [merge(w, p, "Buffer", "minecraft:water", 4000, 0) for p in RACKS + REFUEL_RACKS]
+    cmds += [setblock(w, REFUEL_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["refuel"])]
     for x, parts in sorted(DESKS.items()):
         for slot, (_, kind, target, mode, color, label) in enumerate(parts):
             cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(x, DESK_Y, DESK_Z), slot, kind, w(*target), mode, color, label))

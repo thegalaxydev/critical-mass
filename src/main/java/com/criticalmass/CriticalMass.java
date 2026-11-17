@@ -98,6 +98,7 @@ public class CriticalMass {
         CMComponents.COMPONENTS.register(modEventBus);
         CMAttachments.ATTACHMENTS.register(modEventBus);
         PlantDisplaySources.SOURCES.register(modEventBus);
+        com.criticalmass.content.fuel.FuelStoreArmType.init();
         ServicePortArmType.TYPES.register(modEventBus);
         PlantDisplaySources.TARGETS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
