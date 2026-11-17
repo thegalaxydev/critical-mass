@@ -4,7 +4,7 @@ Inspected from the exact dependency jars this project builds against:
 Create 6.0.10-280, Create Aeronautics 1.3.2 (Simulated / Offroad / Aeronautics jars), Sable 2.0.6, Flywheel 1.0.6, NeoForge 21.1.262, Minecraft 1.21.1.
 
 Both Create and Create Aeronautics license their **code** as MIT and their **assets** as All Rights Reserved.
-No reference pixels are copied into this project's textures. References were studied for palette, density and construction, and passed to the generator only as style references.
+No reference pixels are copied into this project's textures. References were studied for palette, density and construction, and given to the image generator only as style references.
 Where our models need Create's real parts, they reference them at runtime by resource location (`create:block/axis`, `create:block/axis_top`), which is the standard addon approach and does not redistribute Create's files.
 
 | Reference (inspected file) | What we took from it | Applied to |

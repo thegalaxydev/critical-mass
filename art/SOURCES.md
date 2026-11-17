@@ -1,7 +1,7 @@
 # Generated art sources
 
-Every texture in `src/main/resources/assets/criticalmass/textures/` that came from generation is listed here.
-Model: `generator` via the image tool built-in `generate` tool (`image_tool.py --edit`). Raw outputs (downscaled to 512 px JPEG) are in `art/generated/`.
+Every texture in `src/main/resources/assets/criticalmass/textures/` that is a generated image is listed here.
+Raw outputs (downscaled to 512 px JPEG) are in `art/generated/`.
 All art is a candidate for replacement by hand-made art later.
 
 
@@ -90,53 +90,22 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 - Used by: `textures/block/alarm_siren.png`
 - Raw output: `art/generated/alarm_siren-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: alarm siren, 32x32 game pixels.
-Atlas for an alarm siren: iron mounting base with bolts, brass horn body with a dark mouth, and two small red beacon lamps (one unlit dark red, one lit bright red).
-
-```
 
 ## protective_layer_1
 
 - Used by: `textures/models/armor/protective_layer_1.png`
 - Raw output: `art/generated/armor__protective_layer_1-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod armor texture sheet in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 64x32 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-64x32 Minecraft armor texture sheet (outer layer) using the standard humanoid UV layout. Top-left 32x16 = hood (head cube: top, bottom, right, front, left, back faces): off-white rubberised canvas, the front face has a brass-rimmed open face window (keep the window transparent magenta) and a small iron respirator below it, yellow hazard strips on the sides. Top-right 32x16 region stays fully transparent magenta. Middle (x16-40, y16-32) = suit torso: canvas with a brass zip down the front, yellow hazard stripe across, brass rivets. Right block (x40-56, y16-32) = sleeves: canvas with a yellow band and black rubber gloves at the bottom. Left block (x0-16, y16-32) = boots: only the lower half is painted as black rubber boots with a yellow band; the upper half stays transparent magenta.
-
-```
 
 ## protective_layer_2
 
 - Used by: `textures/models/armor/protective_layer_2.png`
 - Raw output: `art/generated/armor__protective_layer_2-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod armor texture sheet in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 64x32 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-64x32 Minecraft armor texture sheet (inner leggings layer) using the standard humanoid UV layout. Only two areas are painted, everything else stays transparent magenta: the lower part of the torso block (x16-40, y16-32) as a canvas waist band with a brass belt and buckle, and the leg block (x0-16, y16-32) as off-white rubberised canvas trousers with a yellow knee band and black rubber ankle cuffs.
-
-```
 
 ## boiler_heating_plate
 
@@ -207,103 +176,43 @@ The FIRST attached image is a 64x32 armor UV sheet blockout drawn on a coarse gr
 
 - Used by: nothing since 2026-11-12. The block now uses the hand-painted `art/originals/cooling_tower.png` and the models in `art/blockbench/cooling_tower_packing*.bbmodel`, exported by `art/tools/tower_model.py`.
 - Raw output: `art/generated/cooling_tower_packing-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: cooling tower packing, 32x32 game pixels.
-Atlas for cooling tower fill packing: horizontal dark wooden slats with transparent gaps between them (keep gaps magenta) and thin iron edge posts; top view with vertical slats and transparent gaps.
-
-```
 
 ## emergency_coolant_tank
 
 - Used by: `textures/block/emergency_coolant_tank.png`
 - Raw output: `art/generated/emergency_coolant_tank-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: emergency coolant tank, 32x32 game pixels.
-Atlas for an emergency coolant tank: riveted dark steel tank side with two red warning bands and a vertical glass sight window showing blue coolant, top cap with a red ring and a brass fill port with a black opening.
-
-```
 
 ## contaminated_coolant
 
 - Used by: `textures/fluid/contaminated_coolant_still.png + _flow.png`
 - Raw output: `art/generated/fluid__contaminated_coolant-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod fluid texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a 16x16 tile blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE tile pixel. Repaint it in place as a finished 16x16 pixel-art tile on that same coarse grid, keeping the exact tile (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Tileable 16x16 Minecraft fluid texture for contaminated reactor coolant: murky olive yellow-green liquid with darker sludge swirls and a few sickly bright specks, seamless on all four edges.
-```
 
 ## primary_coolant
 
 - Used by: `textures/fluid/primary_coolant_still.png + _flow.png`
 - Raw output: `art/generated/fluid__primary_coolant-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod fluid texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a 16x16 tile blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE tile pixel. Repaint it in place as a finished 16x16 pixel-art tile on that same coarse grid, keeping the exact tile (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Tileable 16x16 Minecraft fluid surface texture for a pressurised primary reactor coolant: deep blue with lighter cyan ripples, like vanilla water but bluer and denser, seamless on all four edges.
-```
 
 ## steam
 
 - Used by: `textures/fluid/steam_still.png + _flow.png`
 - Raw output: `art/generated/fluid__steam-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod fluid texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a 16x16 tile blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE tile pixel. Repaint it in place as a finished 16x16 pixel-art tile on that same coarse grid, keeping the exact tile (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Tileable 16x16 Minecraft fluid texture for steam: soft pale grey-white swirling vapour wisps, low contrast, seamless on all four edges.
-```
 
 ## fuel_assembly_bench
 
 - Used by: `textures/block/fuel_assembly_bench.png`
 - Raw output: `art/generated/fuel_assembly_bench-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: fuel assembly bench, 64x64 game pixels.
-Atlas for a fuel assembly workbench: dark wooden worktop with a steel tray holding a pale ceramic part, iron legs and iron apron sides with recessed panels, front with a small brass drawer pull, and a small brass clamp jig with a hole.
-
-```
 
 ## fuel_channel, control_channel, coolant_channel and ruined_channel
 
@@ -327,19 +236,8 @@ Atlas for a fuel assembly workbench: dark wooden worktop with a steel tray holdi
 
 - Used by: `textures/block/instrumentation_panel.png`
 - Raw output: `art/generated/instrumentation_panel-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: instrumentation panel, 32x32 game pixels.
-Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark steel panel with two round analogue needle gauges in brass bezels (cream dial faces, small tick marks, black needles resting at the low end), a black horizontal bar-graph strip, and a row of three small unlit indicator lamps (green, amber, red) in brass sockets. Also brass edge strips and an iron back plate.
-
-```
 
 ## ceramic_fuel_pellet (the author's own)
 
@@ -350,181 +248,71 @@ Atlas for a wall-mounted reactor instrumentation panel. Main 14x14 face: dark st
 
 - Used by: `textures/item/crushed_uranium.png`
 - Raw output: `art/generated/item__crushed_uranium-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: crushed uranium.
-Create-style crushed ore: a small pile of yellow-green granules and grit, like Create's crushed raw ore items.
-
-```
 
 ## damaged_fuel_assembly
 
 - Used by: `textures/item/damaged_fuel_assembly.png`
 - Raw output: `art/generated/item__damaged_fuel_assembly-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: damaged fuel assembly.
-The same fuel assembly but damaged: one fuel rod bent and sticking out diagonally from the bundle, a broken spacer grid, scorched grey rods and a few sickly green contamination specks.
-
-```
 
 ## empty_fuel_assembly
 
 - Used by: `textures/item/empty_fuel_assembly.png`
 - Raw output: `art/generated/item__empty_fuel_assembly-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: empty fuel assembly.
-An empty reactor fuel assembly frame: brass top and bottom end fittings, two iron spacer grids and thin iron corner posts, with see-through gaps where fuel rods will go (keep those gaps transparent).
-
-```
 
 ## fuel_assembly
 
 - Used by: `textures/item/fuel_assembly.png`
 - Raw output: `art/generated/item__fuel_assembly-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: fuel assembly.
-A fresh sealed reactor fuel assembly: tall square bundle of pale ceramic-and-steel fuel rods held by two bright iron spacer grids, polished brass top and bottom end fittings. Clean and new.
-
-```
 
 ## fuel_cladding
 
 - Used by: `textures/item/fuel_cladding.png`
 - Raw output: `art/generated/item__fuel_cladding-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: fuel cladding.
-A long thin polished silver-grey metal tube lying diagonally from bottom-left to top-right, open dark end at the bottom.
-
-```
 
 ## protective_boots
 
 - Used by: `textures/item/protective_boots.png`
 - Raw output: `art/generated/item__protective_boots-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: protective boots.
-A pair of heavy black rubber hazard boots with thick soles, a yellow hazard band and a brass buckle.
-
-```
 
 ## protective_hood
 
 - Used by: `textures/item/protective_hood.png`
 - Raw output: `art/generated/item__protective_hood-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: protective hood.
-A protective hazard hood: off-white rubberised canvas hood with a brass-rimmed open face window, a small iron respirator filter at the mouth, and yellow hazard trim strips down the sides.
-
-```
 
 ## protective_leggings
 
 - Used by: `textures/item/protective_leggings.png`
 - Raw output: `art/generated/item__protective_leggings-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: protective leggings.
-Protective hazard trousers: off-white rubberised canvas with a brass-buckled waist belt, yellow hazard bands at the knees and black rubber ankle cuffs.
-
-```
 
 ## protective_suit
 
 - Used by: `textures/item/protective_suit.png`
 - Raw output: `art/generated/item__protective_suit-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: protective suit.
-A protective hazard suit jacket: off-white rubberised canvas with a brass zip down the middle, brass rivet buckles, a yellow hazard stripe across the chest and black rubber cuffs.
-
-```
 
 ## raw_uranium
 
 - Used by: `textures/item/raw_uranium.png`
 - Raw output: `art/generated/item__raw_uranium-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: raw uranium.
-Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yellow-green mineral chunk with dark grey flecks.
-
-```
 
 ## reactor_alloy_ingot (the author's own)
 
@@ -540,37 +328,15 @@ Raw uranium ore lump in the style of vanilla raw iron/copper: knobbly dull yello
 
 - Used by: `textures/item/spent_fuel_assembly.png`
 - Raw output: `art/generated/item__spent_fuel_assembly-v2.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: spent fuel assembly.
-The same fuel assembly after use: darkened steel rods with a few faint glowing amber hot spots, dulled fittings, and a small yellow-and-black hazard tag hanging from the side on a wire.
-
-```
 
 ## uranium_concentrate
 
 - Used by: `textures/item/uranium_concentrate.png`
 - Raw output: `art/generated/item__uranium_concentrate-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod inventory item sprite in the exact pixel-art style of the Create mod's items (references attached): a single object, chunky readable silhouette, dark outline that is a darker shade of each material (not pure black), 4 to 6 shade ramps per material, light from the top-left, crisp hand-placed square pixels, no anti-aliasing, no text or letters, no background, no drop shadow.
-
-The FIRST attached image is a 16x16 sprite blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE sprite pixel. Repaint it in place as a finished 16x16 pixel-art sprite on that same coarse grid, keeping the exact silhouette (magenta = transparent, keep it magenta) and the same parts in the same places.
-
-Item: uranium concentrate.
-A small heaped pile of bright yellow concentrate powder (stylised, game-like) on a flat base.
-
-```
 
 ## pressurizer
 
@@ -586,19 +352,8 @@ A small heaped pile of bright yellow concentrate powder (stylised, game-like) on
 
 - Used by: `textures/block/primary_coolant_port.png`
 - Raw output: `art/generated/primary_coolant_port-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: primary coolant port, 32x32 game pixels.
-Atlas with two front faces of the primary coolant port in iron casing: a copper flange with a black bore, one with a blue (inlet) collar ring and one with a red (outlet) collar ring, corner bolts.
-
-```
 
 ## radiator_panel
 
@@ -681,19 +436,8 @@ Atlas with two front faces of the primary coolant port in iron casing: a copper 
 
 - Used by: `textures/block/shielded_hatch.png`
 - Raw output: `art/generated/shielded_hatch-v1.jpg`
-- Processing: Generated edit of the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
+- Processing: generated from the UV blockout, then deterministic finalize (crop, majority sample, material-ramp quantize, locked pixels)
 - Date: 2026-10-18
-- Prompt:
-
-```
-Minecraft mod block texture in the exact pixel-art style of the Create mod and Create Aeronautics (style references attached): crisp hand-placed square pixels, 4 to 6 shade ramps per material, 1-pixel dark outlines on panel edges, a light top-left bevel and darker bottom-right edge, recessed panels, restrained edge highlights, very low noise, readable at a distance, no photorealism, no text or letters, no gradients, flat front-on orthographic texture with no perspective, no cast shadows and no directional scene lighting.
-
-The FIRST attached image is a UV texture atlas blockout drawn on a coarse grid: every square block of one flat colour is exactly ONE texture pixel. Repaint it in place as finished pixel art on that same coarse grid, so each grid cell stays one solid colour. Keep every rectangle, edge, hole and region exactly where it is and keep each region's material: dark grey/blue-grey = riveted dark steel, light grey = iron, orange-brown = copper, gold = brass, black = holes/sockets. Magenta means transparent: leave magenta areas pure magenta. Do not add a border or background around the atlas.
-
-Texture: shielded hatch, 16x16 game pixels.
-Heavy shielded hatch door texture: concrete-grey slab with an iron frame, recessed lead-grey panel, a black-and-yellow hazard stripe across the middle, a brass grab handle and four bolts.
-
-```
 
 ## shielding_concrete
 
