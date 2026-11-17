@@ -195,7 +195,7 @@ public final class SteamTests {
                 .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(valveOpen(h), "Turning the handle one way should open the valve");
-                    h.assertTrue(pump.flow() > 0 && pump.status().endsWith("running"), "An open valve should let the loop circulate: " + pump.status());
+                    h.assertTrue(pump.flow() > 0 && (pump.status().endsWith("running") || pump.cavitating()), "An open valve should let the loop circulate: " + pump.status());
                     h.assertTrue(handle.activate(!openWithSneak[0]), "Handle should turn the other way");
                 })
                 .thenIdle(40)
@@ -239,7 +239,7 @@ public final class SteamTests {
                 .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(valveOpen(h), "Turning the handle one way should open the valve");
-                    h.assertTrue(pump.flow() > 0 && pump.status().endsWith("running"), "An open valve should let the loop circulate: " + pump.status());
+                    h.assertTrue(pump.flow() > 0 && (pump.status().endsWith("running") || pump.cavitating()), "An open valve should let the loop circulate: " + pump.status());
                     h.assertTrue(handle.activate(!openWithSneak[0]), "Handle should turn the other way");
                 })
                 .thenIdle(40)

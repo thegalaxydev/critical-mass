@@ -25,10 +25,12 @@ public final class CoolantCircuit {
     public final List<Hop> passThrough;
     public final boolean closed;
     public final int pipes;
+    public final int upstream;
     public final String error;
     public final BlockPos errorAt;
 
-    private CoolantCircuit(BlockPos source, BlockPos dest, List<Hop> passThrough, boolean closed, int pipes, String error, BlockPos errorAt) {
+    private CoolantCircuit(BlockPos source, BlockPos dest, List<Hop> passThrough, boolean closed, int pipes, int upstream, String error, BlockPos errorAt) {
+        this.upstream = upstream;
         this.source = source;
         this.dest = dest;
         this.passThrough = passThrough;
@@ -43,7 +45,7 @@ public final class CoolantCircuit {
     }
 
     static CoolantCircuit failed(String key, BlockPos at) {
-        return new CoolantCircuit(null, null, List.of(), false, 0, key, at);
+        return new CoolantCircuit(null, null, List.of(), false, 0, 0, key, at);
     }
 
     public static CoolantCircuit trace(Level level, BlockPos pump, Direction outlet) {
@@ -56,7 +58,7 @@ public final class CoolantCircuit {
                 return failed("criticalmass.circuit.empty_loop", pump);
             }
             String dup = duplicate(down.hops);
-            return dup != null ? failed(dup, pump) : new CoolantCircuit(null, null, List.copyOf(down.hops), true, down.pipes, null, null);
+            return dup != null ? failed(dup, pump) : new CoolantCircuit(null, null, List.copyOf(down.hops), true, down.pipes, down.hops.size(), null, null);
         }
         Walk up = walk(level, pump, outlet.getOpposite(), false);
         if (up.error != null) {
@@ -79,7 +81,7 @@ public final class CoolantCircuit {
                 return failed("criticalmass.circuit.loop_error", pump);
             }
         }
-        return new CoolantCircuit(up.controller, down.controller, List.copyOf(order), false, up.pipes + down.pipes, null, null);
+        return new CoolantCircuit(up.controller, down.controller, List.copyOf(order), false, up.pipes + down.pipes, up.hops.size(), null, null);
     }
 
     @Nullable
@@ -210,6 +212,19 @@ public final class CoolantCircuit {
         }
         PipeCoolant pipe = PipeCoolant.at(level, pos);
         return pipe != null ? pipe : TankCoolant.at(level, pos);
+    }
+
+    public double intakeSteam(Level level) {
+        if (!ok()) {
+            return 0;
+        }
+        if (upstream <= 0) {
+            ThermalNode from = source == null ? null : node(level, source);
+            return from == null ? 0 : from.coolant().quality();
+        }
+        Hop last = passThrough.get(upstream - 1);
+        ThermalNode n = node(level, last.pos());
+        return n == null ? 0 : n.bufferFor(last.enteredFrom()).quality();
     }
 
     public Flow transfer(Level level, int requested) {

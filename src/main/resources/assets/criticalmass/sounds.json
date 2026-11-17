@@ -257,5 +257,14 @@
     "attenuation_distance": 32
    }
   ]
+ },
+ "pump_cavitation": {
+  "subtitle": "criticalmass.subtitle.pump_cavitation",
+  "sounds": [
+   {
+    "name": "criticalmass:pump_cavitation",
+    "attenuation_distance": 24
+   }
+  ]
  }
 }

@@ -171,12 +171,24 @@ def refuelling():
     return blocks, []
 
 
+def feedwater():
+    blocks = plate(9)
+    blocks += [((6, 2, 3), "criticalmass:heat_exchanger[facing=east]"), ((4, 2, 3), "criticalmass:condenser[facing=west]"), ((2, 2, 3), "create:fluid_tank"),
+               ((2, 2, 2), "create:stockpile_switch[facing=south,target=wall]"), ((3, 1, 5), "create:shaft[axis=y]"),
+               ((3, 2, 5), "criticalmass:circulation_pump[facing=east,axis_along_first=true]"), ((1, 2, 3), "create:mechanical_pump[facing=east]"),
+               ((1, 3, 3), "create:cogwheel[axis=x]"), ((0, 3, 3), "create:clutch[axis=x]")]
+    ring = [(8, 2, 3), (7, 2, 3), (5, 2, 3), (3, 2, 3), (2, 2, 4), (2, 2, 5), (4, 2, 5), (5, 2, 5), (6, 2, 5), (6, 1, 5), (6, 1, 4), (6, 1, 3), (6, 3, 3), (6, 4, 3)]
+    pipes = [(p, RPIPE) for p in ring] + [((4, 3, 3), pipe("up", "down")), ((4, 1, 3), pipe("up", "down")), ((0, 2, 3), pipe("east", "west"))]
+    return blocks + pipes, settle(pipes)
+
+
 SCENES = {"wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
-          "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon}
+          "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater}
 VIEW = {"wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
-        "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon"}
+        "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch"}
+SCROLL = {"feedwater": 1}
 
 
 def build(names=None):
@@ -199,6 +211,8 @@ def view(names, lang):
         steps.append({"ponderLang": lang, "wait": 5})
     for name in names:
         steps.append({"ponder": VIEW[name], "wait": 40})
+        if name in SCROLL:
+            steps.append({"ponderScroll": SCROLL[name], "wait": 20})
         for i, at in enumerate((60, 250, 500, 750, 1000, 1250, 1500, 1750)):
             steps += [{"ponderSeek": at, "wait": 30}, {"shot": "%s_%d" % (name, i), "wait": 2}]
         steps.append({"closeScreen": True, "wait": 5})

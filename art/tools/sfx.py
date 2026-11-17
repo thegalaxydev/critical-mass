@@ -314,7 +314,15 @@ def water_spray():
     return level(crush(seamless(hiss + patter), 7), 0.4)
 
 
+def pump_cavitation():
+    t = clock(1.6)
+    gravel = highpass(lowpass(crackle(t, 81, 260, 0.0012), 2600), 350)
+    rumble = lowpass(noise(t, 82), 220) * (0.6 + 0.4 * sine(12.5, t) ** 2)
+    return level(crush(seamless(gravel * (0.7 + 0.3 * sine(25, t) ** 2) + 0.5 * rumble), 6), 0.5)
+
+
 SOUNDS = {
+    "pump_cavitation": pump_cavitation,
     "water_spray": water_spray,
     "service": service,
     "fallout": fallout,

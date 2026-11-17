@@ -20,7 +20,7 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
 | Controls | Redstone on the controller and drives | The Reactor Alloy Dashboard with buttons, switches, levers, gauges and alarms bound straight to plant machines or to Redstone Links, each with a settings screen. Reactor Signal Interfaces do the same from redstone pulses |
 | Primary pressure | None (liquid coolant has no pressure) | Pressurizer on the primary loop: heaters, spray, relief; low pressure lets coolant boil in the core |
 | Cooling tower | Stack of packing blocks | Built tower: fill standing on its outlet pipe, the hot inlet in the side of the top block, make-up water piped into the fill, a Create Encased Fan on top, driven through the fill's own shaft; stacked fill joins into one glazed column that shows its water level; capacity from fill, water and airflow; makeup water and evaporation |
-| Feedwater | Loop pump only | A Create Fluid Tank inline in the loop, with a make-up pump |
+| Feedwater | Loop pump only | A Create Fluid Tank inline in the loop with a make-up pump on a Threshold Switch, a feed pump that cavitates on steam, and a Heat Exchanger as feedwater heater |
 | Reactivity | Rods and fuel only | Fuel-temperature and coolant-temperature feedback; operating modes with start-up permissives |
 | Accidents | Trip, cracks, breach leak | Fuel damage, clad failure, core melt, corium, burn-through, wreckage and contaminated blocks that persist |
 | Guidance | README | Ponder scenes, reference plant function |
@@ -46,8 +46,8 @@ Goal: a pressurized-water plant the player builds, wires and operates: moving ro
   - **Standby power:** a Station Battery, a Diesel Engine and a Transfer Switch.
   - **Behaviour:** synchronising, frequency and voltage that move with load, short circuits, overloads, lightning, rain and grid disturbances in storms, wear, and wrecks that are repaired where they stand.
   - **Control room:** a Plant Screen wall linked to a Bus Bar draws the network as a one-line diagram, and Dashboard Alarm lamps watch electrical equipment.
-- **Ponder:** fifteen scenes, built by `src/inspect/scenes/make_ponder.py`. The reactor plant has the vessel, control rods, the primary loop, the steam loop, rejecting heat and refuelling. The electrics have wires, the Circuit Breaker, synchronising, standby power and repair. Accidents have the protection bypass, meltdown, fallout and the Water Cannon. The control desk, the Plant Screens and the fuel factory have none yet.
-- **Not done:** Feedwater equipment is a surge tank only. Brackets do not render on Reinforced Pipe. Rod banks are set with buttons; there is no analog bank lever. Automatic rod regulation is left to player-built gauge and button wiring.
+- **Ponder:** sixteen scenes, built by `src/inspect/scenes/make_ponder.py`. The reactor plant has the vessel, control rods, the primary loop, the steam loop, the feedwater train, rejecting heat and refuelling. The electrics have wires, the Circuit Breaker, synchronising, standby power and repair. Accidents have the protection bypass, meltdown, fallout and the Water Cannon. The control desk, the Plant Screens and the fuel factory have none yet.
+- **Not done:** The reference station has a feed tank and feed pump but no feedwater heater and no make-up to its steam loops. Brackets do not render on Reinforced Pipe. Rod banks are set with buttons; there is no analog bank lever. Automatic rod regulation is left to player-built gauge and button wiring.
 
 Each phase lands with game tests and an in-game check before the next starts. Saves: existing blocks keep their ids and data; new state defaults to the old behaviour when absent.
 

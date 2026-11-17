@@ -23,6 +23,7 @@ import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
 import com.criticalmass.registry.CMParticles;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
 import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
 import net.createmod.catnip.math.Pointing;
 import net.createmod.ponder.api.PonderPalette;
@@ -37,7 +38,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public final class PlantScenes {
     private PlantScenes() {
@@ -821,6 +824,75 @@ public final class PlantScenes {
         scene.world().modifyBlockEntity(cask, ShieldedCaskBlockEntity.class, ShieldedCaskBlockEntity::toggle);
         scene.idle(25);
         warn(scene, 100, util.vector().topOf(cask), "Bolted down it lets 1%% of the dose out. With the lid up it lets out half");
+        scene.markAsFinished();
+    }
+
+    private static void level(CreateSceneBuilder scene, BlockPos tank, int amount) {
+        scene.world().modifyBlockEntity(tank, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(new FluidStack(Fluids.WATER, amount)));
+    }
+
+    public static void feedwater(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("feedwater", "The feedwater train");
+        scene.configureBasePlate(0, 0, 9);
+        scene.scaleSceneView(0.75f);
+        scene.setSceneOffsetY(-1);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos heater = util.grid().at(6, 2, 3);
+        BlockPos condenser = util.grid().at(4, 2, 3);
+        BlockPos tank = util.grid().at(2, 2, 3);
+        BlockPos reader = util.grid().at(2, 2, 2);
+        BlockPos pump = util.grid().at(3, 2, 5);
+        BlockPos makeup = util.grid().at(1, 2, 3);
+        Selection feed = util.select().fromTo(3, 1, 5, 3, 2, 5);
+        Selection topUp = util.select().fromTo(1, 2, 3, 1, 3, 3);
+        scene.world().setKineticSpeed(util.select().everywhere(), 0);
+        level(scene, tank, 6000);
+        scene.world().showSection(util.select().fromTo(7, 2, 3, 8, 2, 3).add(util.select().position(5, 2, 3)), Direction.DOWN);
+        scene.idle(5);
+        scene.world().showSection(util.select().fromTo(4, 1, 3, 4, 3, 3).add(util.select().position(3, 2, 3)), Direction.DOWN);
+        scene.idle(5);
+        scene.world().showSection(util.select().position(tank), Direction.DOWN);
+        scene.idle(20);
+        chapter(scene, 110, util.vector().blockSurface(tank, Direction.NORTH), "Condensate from the Condenser collects in a Create Fluid Tank set in the loop. That tank is the plant's reserve of feedwater");
+        say(scene, 90, util.vector().blockSurface(tank, Direction.NORTH), "It needs the loop's two pipes on it, and the water in it keeps its temperature");
+        scene.world().showSection(util.select().position(reader), Direction.SOUTH);
+        scene.idle(10);
+        scene.world().showSection(util.select().fromTo(0, 2, 3, 1, 2, 3).add(util.select().fromTo(0, 3, 3, 1, 3, 3)), Direction.EAST);
+        scene.idle(20);
+        scene.overlay().showText(140).attachKeyFrame().text("A Threshold Switch on the tank reads how full it is. Lead its signal to the Clutch on a make-up pump, and the tank is topped up whenever it runs low").pointAt(util.vector().blockSurface(reader, Direction.NORTH)).placeNearTarget();
+        for (int amount = 5500; amount >= 1500; amount -= 500) {
+            level(scene, tank, amount);
+            scene.idle(4);
+        }
+        scene.effects().indicateRedstone(reader);
+        scene.world().setKineticSpeed(topUp, 32);
+        scene.effects().rotationSpeedIndicator(makeup.above());
+        scene.idle(15);
+        for (int amount = 2000; amount <= 7000; amount += 500) {
+            level(scene, tank, amount);
+            scene.idle(5);
+        }
+        scene.effects().indicateSuccess(reader);
+        scene.world().setKineticSpeed(topUp, 0);
+        scene.idle(40);
+        scene.world().showSection(util.select().fromTo(2, 2, 4, 2, 2, 5).add(feed), Direction.NORTH);
+        scene.idle(10);
+        scene.world().setKineticSpeed(feed, 32);
+        scene.effects().rotationSpeedIndicator(pump);
+        scene.idle(15);
+        chapter(scene, 90, util.vector().topOf(pump), "The feed pump is a Circulation Pump, and it has to be fed water");
+        scene.effects().emitParticles(util.vector().blockSurface(pump, Direction.WEST), scene.effects().simpleParticleEmitter(CMParticles.STEAM.get(), new Vec3(-0.03, 0.04, 0)), 2, 90);
+        warn(scene, 120, util.vector().topOf(pump), "If what reaches it is boiling it cavitates: it loses the share of its flow that is steam, down to a tenth. Keep cooling water on the Condenser");
+        say(scene, 90, util.vector().topOf(pump), "An alarm lamp bound to a pump lights while it cavitates or stands still");
+        scene.world().showSection(util.select().fromTo(4, 2, 5, 6, 2, 5).add(util.select().fromTo(6, 1, 3, 6, 1, 5)), Direction.NORTH);
+        scene.idle(10);
+        scene.world().showSection(util.select().fromTo(6, 2, 3, 6, 4, 3), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutline(PonderPalette.GREEN, "heater", util.select().position(heater), 220);
+        chapter(scene, 130, util.vector().blockSurface(heater, Direction.NORTH), "A Heat Exchanger that the same loop crosses twice is a feedwater heater. The steam on its way to the Condenser passes through one side, and the feedwater through the other");
+        say(scene, 120, util.vector().centerOf(6, 3, 3), "It warms the feedwater back up towards boiling, so less of the reactor's heat goes on heating water and more of it makes steam");
         scene.markAsFinished();
     }
 

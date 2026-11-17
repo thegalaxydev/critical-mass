@@ -160,7 +160,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Used by: every file in `sounds/` except `alarm.ogg` and `nuclear_blast.ogg`, through `sounds.json`
 - Source: `art/tools/sfx.py` synthesises each one from square, saw, triangle and sine waves and filtered noise at 22,050 Hz, reduced to 5 to 8 bits. Nothing is recorded or sampled.
 - Takes: the Survey Meter's click is three files, `geiger.ogg`, `geiger_2.ogg` and `geiger_3.ogg`, at three pitches, so a run of clicks does not repeat one sample.
-- Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss`, `reactor_thrum` and `water_spray` are cut to whole cycles so they repeat without a click.
+- Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss`, `reactor_thrum`, `water_spray` and `pump_cavitation` are cut to whole cycles so they repeat without a click.
 - Status: script-made, not yet approved. They have been checked for level and that they load; they have not been listened to in game.
 - Remaking: run the tool with `fresh`. Naming sounds after it remakes only those, as in `sfx.py fresh water_spray`.
 - Date: 2026-11-16

@@ -80,6 +80,8 @@ public final class CMThermal {
     public static final int LOAD_SAMPLE_TICKS = 5;
     public static final int PUMP_FLOW_PER_RPM = 2;
     public static final int PUMP_MAX_FLOW = 256;
+    public static final double CAVITATION_FROM = 0.02;
+    public static final double CAVITATION_FLOOR = 0.1;
     public static final int PIPE_CAPACITY = 100;
     public static final int MAX_FLOW_STEPS = 8;
     public static final float PUMP_IDLE_STRESS = 0.25f;

@@ -1,5 +1,6 @@
 package com.criticalmass.content.kinetics;
 
+import com.criticalmass.content.effects.Effects;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.CoolantCircuit;
 import com.criticalmass.content.thermal.LoadedThermalBlocks;
@@ -7,6 +8,7 @@ import com.criticalmass.content.thermal.PipeCoolant;
 import com.criticalmass.content.thermal.TankCoolant;
 import com.criticalmass.content.thermal.ThermalNode;
 import com.criticalmass.content.thermal.ThermalTooltips;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.registry.CMStress;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
@@ -26,12 +28,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class CirculationPumpBlockEntity extends KineticBlockEntity {
+    public static final String CAVITATING = "criticalmass.circuit.cavitating";
     private CoolantCircuit circuit;
     private int retraceIn;
     private int flow;
     private int movedTotal;
     private String status = "criticalmass.circuit.idle";
     private int syncCooldown;
+    private boolean cavitating;
     private boolean syncPending;
     private final LerpedFloat wheelSpeed = LerpedFloat.linear().chase(0, 1 / 64f, LerpedFloat.Chaser.EXP);
     private float wheelAngle;
@@ -86,6 +90,10 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         return status;
     }
 
+    public boolean cavitating() {
+        return cavitating;
+    }
+
     public float wheelAngle(float partialTicks) {
         return wheelAngle + wheelSpeed.getValue(partialTicks) * 3 / 10f * partialTicks;
     }
@@ -121,6 +129,9 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
             wheelSpeed.updateChaseTarget(getSpeed());
             wheelSpeed.tickChaser();
             wheelAngle = (wheelAngle + wheelSpeed.getValue() * 3 / 10f) % 360;
+            if (getSpeed() != 0 && status.equals(CAVITATING)) {
+                Effects.loop(level, worldPosition, CMSounds.PUMP_CAVITATION.get(), 0.8f, 0.8f + Math.min(1f, Math.abs(getSpeed()) / 128f) * 0.4f);
+            }
             return;
         }
         if (circuit == null || retraceIn-- <= 0) {
@@ -128,20 +139,25 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
             retraceIn = 20;
         }
         int newFlow = 0;
+        boolean starved = false;
         String newStatus;
         if (!circuit.ok()) {
             newStatus = circuit.error;
         } else if (getSpeed() == 0) {
             newStatus = isOverStressed() ? "criticalmass.circuit.overstressed" : "criticalmass.circuit.no_rotation";
         } else {
-            CoolantCircuit.Flow result = circuit.transfer(level, CMThermal.pumpFlow(getSpeed()));
+            double steam = circuit.intakeSteam(level);
+            double share = steam <= CMThermal.CAVITATION_FROM ? 1 : Math.max(CMThermal.CAVITATION_FLOOR, 1 - steam);
+            CoolantCircuit.Flow result = circuit.transfer(level, Math.max(1, (int) Math.round(CMThermal.pumpFlow(getSpeed()) * share)));
             newFlow = result.moved();
             movedTotal += newFlow;
-            newStatus = result.error() != null ? result.error() : "criticalmass.circuit.running";
+            starved = share < 1;
+            newStatus = result.error() != null ? result.error() : starved ? CAVITATING : "criticalmass.circuit.running";
             if (result.error() != null) {
                 retraceIn = Math.min(retraceIn, 5);
             }
         }
+        cavitating = starved;
         boolean wasFlowing = flow > 0;
         if (newFlow != flow || !newStatus.equals(status)) {
             flow = newFlow;
@@ -195,7 +211,7 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
     public boolean addToGoggleTooltip(List<Component> tooltip, boolean isPlayerSneaking) {
         ThermalTooltips.kinetic(tooltip, super.addToGoggleTooltip(tooltip, isPlayerSneaking));
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
-        ThermalTooltips.status(tooltip, status, flow > 0 ? ChatFormatting.GREEN : ChatFormatting.GOLD);
+        ThermalTooltips.status(tooltip, status, flow > 0 && !status.equals(CAVITATING) ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.flow");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.flow", flow > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(flow)));
         return true;

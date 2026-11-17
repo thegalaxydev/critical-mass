@@ -143,7 +143,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (28)
+## Sounds (29)
 
 All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
 
@@ -177,6 +177,7 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:nuclear_blast` | Nuclear explosion | generated | `sounds/nuclear_blast.ogg` |
 | `criticalmass:fallout` | Fallout drifts | script | `sounds/fallout.ogg` |
 | `criticalmass:water_spray` | Water cannon sprays | script | `sounds/water_spray.ogg` |
+| `criticalmass:pump_cavitation` | Pump cavitates | script | `sounds/pump_cavitation.ogg` |
 
 ## Problems
 

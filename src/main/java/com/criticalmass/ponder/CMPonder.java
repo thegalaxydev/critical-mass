@@ -4,6 +4,7 @@ import com.criticalmass.CriticalMass;
 import com.criticalmass.content.control.DashPart;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
+import com.simibubi.create.AllBlocks;
 import net.createmod.ponder.api.registration.PonderPlugin;
 import net.createmod.ponder.api.registration.PonderSceneRegistrationHelper;
 import net.createmod.ponder.api.registration.PonderTagRegistrationHelper;
@@ -35,6 +36,10 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("steam", PlantScenes::steam, REACTOR);
         scenes.forComponents(CMBlocks.COOLING_TOWER_PACKING, CMBlocks.RADIATOR_PANEL, CMBlocks.CONDENSER)
                 .addStoryBoard("cooling", PlantScenes::cooling, REACTOR);
+        scenes.forComponents(CMBlocks.CIRCULATION_PUMP, CMBlocks.HEAT_EXCHANGER, CMBlocks.CONDENSER)
+                .addStoryBoard("feedwater", PlantScenes::feedwater, REACTOR);
+        helper.forComponents(AllBlocks.FLUID_TANK.getId(), AllBlocks.THRESHOLD_SWITCH.getId())
+                .addStoryBoard("feedwater", PlantScenes::feedwater);
         scenes.forComponents(CMBlocks.SPENT_FUEL_RACK, CMBlocks.SHIELDED_CASK, CMBlocks.REACTOR_SERVICE_PORT, CMItems.FRESH_FUEL_ASSEMBLY, CMItems.SPENT_FUEL_ASSEMBLY)
                 .addStoryBoard("refuelling", PlantScenes::refuelling, REACTOR);
         scenes.forComponents(CMBlocks.REACTOR_SERVICE_PORT)

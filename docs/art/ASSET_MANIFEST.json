@@ -3469,6 +3469,15 @@
    "subtitle": "Water cannon sprays",
    "missing": [],
    "art": "script"
+  },
+  {
+   "key": "pump_cavitation",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/pump_cavitation.ogg"
+   ],
+   "subtitle": "Pump cavitates",
+   "missing": [],
+   "art": "script"
   }
  ],
  "problems": []
