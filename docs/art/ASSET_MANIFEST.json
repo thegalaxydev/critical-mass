@@ -3363,7 +3363,9 @@
   {
    "key": "geiger",
    "files": [
-    "src/main/resources/assets/criticalmass/sounds/geiger.ogg"
+    "src/main/resources/assets/criticalmass/sounds/geiger.ogg",
+    "src/main/resources/assets/criticalmass/sounds/geiger_2.ogg",
+    "src/main/resources/assets/criticalmass/sounds/geiger_3.ogg"
    ],
    "subtitle": "Survey meter clicks",
    "missing": [],

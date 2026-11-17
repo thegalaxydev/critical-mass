@@ -165,7 +165,7 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:wire_sizzle` | Wire burns | script | `sounds/wire_sizzle.ogg` |
 | `criticalmass:steam_vent` | Steam vents | script | `sounds/steam_vent.ogg` |
 | `criticalmass:pipe_burst` | Pipe bursts | script | `sounds/pipe_burst.ogg` |
-| `criticalmass:geiger` | Survey meter clicks | script | `sounds/geiger.ogg` |
+| `criticalmass:geiger` | Survey meter clicks | script | `sounds/geiger.ogg`<br>`sounds/geiger_2.ogg`<br>`sounds/geiger_3.ogg` |
 | `criticalmass:order_placed` | Power order arrives | script | `sounds/order_placed.ogg` |
 | `criticalmass:order_met` | Power order met | script | `sounds/order_met.ogg` |
 | `criticalmass:order_missed` | Power order missed | script | `sounds/order_missed.ogg` |

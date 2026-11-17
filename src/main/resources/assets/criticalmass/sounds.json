@@ -149,6 +149,14 @@
    {
     "name": "criticalmass:geiger",
     "attenuation_distance": 16
+   },
+   {
+    "name": "criticalmass:geiger_2",
+    "attenuation_distance": 16
+   },
+   {
+    "name": "criticalmass:geiger_3",
+    "attenuation_distance": 16
    }
   ]
  },

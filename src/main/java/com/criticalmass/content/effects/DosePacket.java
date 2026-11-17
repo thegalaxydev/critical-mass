@@ -8,17 +8,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record DosePacket(float rate, boolean meter) implements CustomPacketPayload {
+public record DosePacket(float rate, float clicks) implements CustomPacketPayload {
     public static final Type<DosePacket> TYPE = new Type<>(CriticalMass.asResource("dose"));
     public static final StreamCodec<FriendlyByteBuf, DosePacket> CODEC = StreamCodec.of(DosePacket::write, DosePacket::read);
 
     private static void write(FriendlyByteBuf buf, DosePacket e) {
         buf.writeFloat(e.rate);
-        buf.writeBoolean(e.meter);
+        buf.writeFloat(e.clicks);
     }
 
     private static DosePacket read(FriendlyByteBuf buf) {
-        return new DosePacket(buf.readFloat(), buf.readBoolean());
+        return new DosePacket(buf.readFloat(), buf.readFloat());
     }
 
     @Override
@@ -31,6 +31,6 @@ public record DosePacket(float rate, boolean meter) implements CustomPacketPaylo
     }
 
     private void apply(IPayloadContext context) {
-        ClientEffects.dose(rate, meter);
+        ClientEffects.dose(rate, clicks);
     }
 }

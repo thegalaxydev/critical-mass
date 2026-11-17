@@ -226,10 +226,12 @@ def pipe_burst():
     return level(crush(np.tanh(1.3 * edges(wave, 0.0005, 0.2)), 6), 0.7)
 
 
-def geiger():
-    t = clock(0.03)
-    wave = square(3400, t) * decay(t, 0.003) + 0.7 * noise(t, 40) * decay(t, 0.0015)
-    return level(crush(edges(wave, 0.0002, 0.01), 5), 0.6)
+def geiger(tone=1.0, seed=40):
+    t = clock(0.024)
+    snap = noise(t, seed) * decay(t, 0.0004)
+    ring = sine(2300 * tone, t) * decay(t, 0.0016) + 0.6 * sine(4700 * tone, t) * decay(t, 0.0008)
+    body = 0.35 * sine(950 * tone, t) * decay(t, 0.003)
+    return level(crush(edges(snap + ring + body, 0.0001, 0.006), 6), 0.85)
 
 
 def blips(notes, each, duty=0.5, bits=5):
@@ -319,7 +321,7 @@ SOUNDS = {
     "engine_start": engine_start, "engine_run": engine_run,
     "hum": hum, "generator_run": generator_run, "motor_run": motor_run, "steam_hiss": steam_hiss, "reactor_thrum": reactor_thrum, "breaker_close": breaker_close,
     "breaker_open": breaker_open, "breaker_trip": breaker_trip, "switch_throw": switch_throw, "relay_click": relay_click, "arc_zap": arc_zap, "arc_blast": arc_blast,
-    "wire_sizzle": wire_sizzle, "steam_vent": steam_vent, "pipe_burst": pipe_burst, "geiger": geiger, "order_placed": order_placed, "order_met": order_met,
+    "wire_sizzle": wire_sizzle, "steam_vent": steam_vent, "pipe_burst": pipe_burst, "geiger": geiger, "geiger_2": lambda: geiger(0.88, 41), "geiger_3": lambda: geiger(1.13, 42), "order_placed": order_placed, "order_met": order_met,
     "order_missed": order_missed, "wire_string": wire_string, "wire_cut": wire_cut,
 }
 

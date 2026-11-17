@@ -47,6 +47,8 @@ public final class Radiation {
     public static final double CANISTER_DOSE = 3.0;
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
+    public static final double ORE_DOSE = 0.2;
+    public static final int ORE_REACH = 5;
     public static final double CASK_TRANSMISSION = 0.01;
     public static final double OPEN_CASK_TRANSMISSION = 0.5;
     public static final double FLOODED_RACK_TRANSMISSION = 0.1;
@@ -244,11 +246,32 @@ public final class Radiation {
         return rate;
     }
 
+    public static boolean ore(BlockState state) {
+        return state.is(CMBlocks.URANIUM_ORE.get()) || state.is(CMBlocks.DEEPSLATE_URANIUM_ORE.get());
+    }
+
+    public static double oreDose(Level level, Vec3 receiver) {
+        BlockPos centre = BlockPos.containing(receiver);
+        BlockPos low = centre.offset(-ORE_REACH, -ORE_REACH, -ORE_REACH);
+        BlockPos high = centre.offset(ORE_REACH, ORE_REACH, ORE_REACH);
+        if (!level.hasChunksAt(low, high)) {
+            return 0;
+        }
+        double rate = 0;
+        for (BlockPos p : BlockPos.betweenClosed(low, high)) {
+            if (ore(level.getBlockState(p))) {
+                Vec3 c = p.getCenter();
+                rate += ORE_DOSE * transmission(level, c, receiver, new AABB(p)) / (1 + c.distanceToSqr(receiver));
+            }
+        }
+        return rate;
+    }
+
     public static double fieldDose(ServerLevel level, Vec3 receiver) {
         return ContaminationData.get(level).near(receiver, 3) * FIELD_DOSE;
     }
 
     public static double ambientRate(ServerLevel level, Vec3 receiver) {
-        return fromSources(level, receiver, sourcesNear(level, receiver, blockSources(level)), null) + fieldDose(level, receiver) + Fallout.rate(level, receiver);
+        return fromSources(level, receiver, sourcesNear(level, receiver, blockSources(level)), null) + fieldDose(level, receiver) + oreDose(level, receiver) + Fallout.rate(level, receiver);
     }
 }

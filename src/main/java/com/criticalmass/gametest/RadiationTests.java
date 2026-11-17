@@ -230,6 +230,68 @@ public final class RadiationTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void aSurveyMeterClicksWithWhatItReads(GameTestHelper h) {
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 at = Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3)));
+        p.setPos(at);
+        h.assertTrue(RadiationEvents.clickRate(p, h.getLevel()) == 0, "Empty hands should not click");
+        h.assertTrue(RadiationEvents.clicks(0) == RadiationEvents.CLICK_BACKGROUND && RadiationEvents.clicks(10) > RadiationEvents.clicks(1) && RadiationEvents.clicks(1) > RadiationEvents.clicks(0)
+                && RadiationEvents.clicks(1e9) == RadiationEvents.CLICK_MAX, "Clicks should start at background, rise with the reading and stop at the limit");
+        ItemStack meter = new ItemStack(CMItems.SURVEY_METER.get());
+        p.setItemInHand(InteractionHand.OFF_HAND, meter);
+        double quiet = RadiationEvents.clickRate(p, h.getLevel());
+        h.assertTrue(quiet >= RadiationEvents.CLICK_BACKGROUND && quiet == RadiationEvents.clicks(Radiation.ambientRate(h.getLevel(), p.getEyePosition())), "A held meter should tick at background or above: " + quiet);
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        data.add(BlockPos.containing(at), 50);
+        double near = RadiationEvents.clickRate(p, h.getLevel());
+        h.assertTrue(near > quiet + 5 && near == RadiationEvents.clicks(Radiation.ambientRate(h.getLevel(), p.getEyePosition())), "The meter should click with the rate it reads: " + near + " from " + quiet);
+        p.setItemSlot(EquipmentSlot.HEAD, new ItemStack(CMItems.PROTECTIVE_HOOD.get()));
+        p.setItemSlot(EquipmentSlot.CHEST, new ItemStack(CMItems.PROTECTIVE_SUIT.get()));
+        p.setItemSlot(EquipmentSlot.LEGS, new ItemStack(CMItems.PROTECTIVE_LEGGINGS.get()));
+        p.setItemSlot(EquipmentSlot.FEET, new ItemStack(CMItems.PROTECTIVE_BOOTS.get()));
+        h.assertTrue(RadiationEvents.clickRate(p, h.getLevel()) == near, "The outfit should not quieten the meter");
+        meter.set(CMComponents.METER_MODE.get(), 1);
+        double ground = RadiationEvents.clickRate(p, h.getLevel());
+        h.assertTrue(ground == RadiationEvents.clicks(data.near(p.position().add(0, 0.5, 0), 2)) && ground > RadiationEvents.CLICK_BACKGROUND + 5, "On contamination the meter should click with the contamination: " + ground);
+        p.setItemInHand(InteractionHand.OFF_HAND, ItemStack.EMPTY);
+        p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.DOSIMETER.get()));
+        h.assertTrue(RadiationEvents.clickRate(p, h.getLevel()) == 0, "A dosimeter should be silent while its wearer takes no dose");
+        double dose = RadiationEvents.exposeOnce(p, h.getLevel(), List.of());
+        h.assertTrue(dose > RadiationEvents.DOSIMETER_FLOOR && RadiationEvents.clickRate(p, h.getLevel()) == RadiationEvents.clicks(dose), "A dosimeter should click with the dose its wearer takes: " + dose);
+        data.clear(BlockPos.containing(at));
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void uraniumOreGivesAWeakDoseThatRockCuts(GameTestHelper h) {
+        Vec3 at = h.absolutePos(new BlockPos(4, 2, 2)).getCenter();
+        BlockPos vein = new BlockPos(2, 2, 2);
+        h.setBlock(vein, Blocks.STONE);
+        double rock = Radiation.ambientRate(h.getLevel(), at);
+        h.assertTrue(Radiation.oreDose(h.getLevel(), at) == 0, "Plain rock should give nothing");
+        h.setBlock(vein, CMBlocks.URANIUM_ORE.get());
+        double open = Radiation.oreDose(h.getLevel(), at);
+        h.assertTrue(Math.abs(open - Radiation.ORE_DOSE / 5) < 1e-9, "Ore two blocks off should give a fifth of its strength: " + open);
+        h.assertTrue(Math.abs(Radiation.ambientRate(h.getLevel(), at) - rock - open) < 1e-9, "A survey should read the ore: " + (Radiation.ambientRate(h.getLevel(), at) - rock));
+        h.setBlock(new BlockPos(3, 2, 2), Blocks.STONE);
+        double behind = Radiation.oreDose(h.getLevel(), at);
+        h.assertTrue(Math.abs(behind / open - Math.exp(-CMConfig.get(CMConfig.SHIELD_SOLID))) < 1e-6, "A block of rock should cut it as it cuts any source: " + behind / open);
+        h.setBlock(new BlockPos(6, 2, 2), CMBlocks.DEEPSLATE_URANIUM_ORE.get());
+        double both = Radiation.oreDose(h.getLevel(), at);
+        h.assertTrue(Math.abs(both - behind - Radiation.ORE_DOSE / 5) < 1e-9, "Deepslate ore should give the same: " + (both - behind));
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        p.setPos(at.x, at.y - p.getEyeHeight(), at.z);
+        double dose = RadiationEvents.exposeOnce(p, h.getLevel(), List.of());
+        h.assertTrue(dose >= both - 1e-9 && both < CMConfig.get(CMConfig.RECOVERY_PER_MINUTE) / 100, "Someone beside ore should take its dose, far less than the body recovers: " + dose);
+        p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.SURVEY_METER.get()));
+        h.assertTrue(RadiationEvents.clickRate(p, h.getLevel()) > RadiationEvents.CLICK_BACKGROUND + 1, "A Survey Meter should tick faster beside ore: " + RadiationEvents.clickRate(p, h.getLevel()));
+        h.setBlock(vein, Blocks.AIR);
+        h.setBlock(new BlockPos(6, 2, 2), Blocks.AIR);
+        h.assertTrue(Radiation.oreDose(h.getLevel(), at) == 0, "With the ore gone its dose should be gone");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void dosimeterDoseLivesOnThePlayer(GameTestHelper h) {
         Player p = h.makeMockPlayer(GameType.SURVIVAL);
         p.setPos(Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3))));

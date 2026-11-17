@@ -2,6 +2,7 @@ package com.criticalmass.client.effects;
 
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.effects.Effects;
+import com.criticalmass.registry.CMItems;
 import com.criticalmass.registry.CMParticles;
 import com.criticalmass.registry.CMSounds;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import net.minecraft.Util;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,11 +24,13 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
@@ -40,8 +44,14 @@ public final class ClientEffects {
     private static SpriteSet streak;
     private static float shake;
     private static float doseRate;
-    private static boolean doseMeter;
+    private static final float CLICK_BUSY = 30f;
+    private static final double CLICK_DEAD = 0.004;
+    private static final double CLICK_LATE = 0.25;
+    private static final int CLICK_BURST = 4;
+    private static float clickRate;
+    private static double nextClick = -1;
     private static int doseAge = 1000;
+    private static int clicked;
 
     private ClientEffects() {
     }
@@ -59,6 +69,7 @@ public final class ClientEffects {
         NeoForge.EVENT_BUS.addListener(FalloutEffects::fog);
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> tick());
         NeoForge.EVENT_BUS.addListener(ClientEffects::camera);
+        NeoForge.EVENT_BUS.addListener((RenderFrameEvent.Pre event) -> clicks(Minecraft.getInstance()));
         Effects.client = ClientEffects::loop;
         Effects.jet = ClientEffects::waterJet;
     }
@@ -218,10 +229,42 @@ public final class ClientEffects {
         }
     }
 
-    public static void dose(float rate, boolean meter) {
+    public static void dose(float rate, float clicks) {
         doseRate = rate;
-        doseMeter = meter;
         doseAge = 0;
+        if (clicks != clickRate) {
+            clickRate = clicks;
+            nextClick = -1;
+        }
+    }
+
+    public static int clicked() {
+        return clicked;
+    }
+
+    private static boolean instrument(ItemStack stack) {
+        return stack.is(CMItems.SURVEY_METER.get()) || stack.is(CMItems.DOSIMETER.get());
+    }
+
+    private static double gap() {
+        return CLICK_DEAD - Math.log(1 - RANDOM.nextDouble()) / clickRate;
+    }
+
+    private static void clicks(Minecraft mc) {
+        if (clickRate <= 0 || mc.level == null || mc.player == null || mc.isPaused() || !(instrument(mc.player.getMainHandItem()) || instrument(mc.player.getOffhandItem()))) {
+            nextClick = -1;
+            return;
+        }
+        double now = Util.getNanos() / 1.0e9;
+        if (nextClick < 0 || now - nextClick > CLICK_LATE) {
+            nextClick = now + gap();
+        }
+        float volume = 0.7f - 0.3f * Math.min(1f, clickRate / CLICK_BUSY);
+        for (int i = 0; i < CLICK_BURST && nextClick <= now; i++) {
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(CMSounds.GEIGER.get(), 0.94f + RANDOM.nextFloat() * 0.12f, volume));
+            clicked++;
+            nextClick += gap();
+        }
     }
 
     private static void emit(ClientLevel level) {
@@ -267,6 +310,7 @@ public final class ClientEffects {
             FalloutEffects.clear();
             shake = 0;
             doseRate = 0;
+            clickRate = 0;
             return;
         }
         if (mc.isPaused()) {
@@ -283,13 +327,7 @@ public final class ClientEffects {
         LOOPS.values().removeIf(Loop::isStopped);
         if (doseAge++ > 60) {
             doseRate = 0;
-        }
-        if (doseMeter && doseRate > 0.05f) {
-            float perTick = Math.min(1.6f, 0.02f + doseRate * 0.012f);
-            int clicks = (int) perTick + (RANDOM.nextFloat() < perTick - (int) perTick ? 1 : 0);
-            for (int i = 0; i < clicks; i++) {
-                mc.getSoundManager().play(SimpleSoundInstance.forUI(CMSounds.GEIGER.get(), 0.9f + RANDOM.nextFloat() * 0.25f, 0.35f));
-            }
+            clickRate = 0;
         }
     }
 

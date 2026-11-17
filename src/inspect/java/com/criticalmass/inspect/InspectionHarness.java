@@ -58,6 +58,7 @@ public class InspectionHarness {
     private boolean terrain;
     private long seed = 1234L;
     private String worldName;
+    private int clicks;
     private final StringBuilder log = new StringBuilder();
 
     public InspectionHarness(IEventBus modBus) {
@@ -177,6 +178,11 @@ public class InspectionHarness {
         }
         if (step.has("sprint")) {
             mc.options.keySprint.setDown(step.get("sprint").getAsBoolean());
+        }
+        if (step.has("clicks") && step.get("clicks").getAsBoolean()) {
+            int now = com.criticalmass.client.effects.ClientEffects.clicked();
+            note("clicks " + (now - clicks) + " since the last count, holding " + mc.player.getMainHandItem().getItem() + " at " + mc.player.blockPosition().toShortString());
+            clicks = now;
         }
         if (step.has("note")) {
             note(step.get("note").getAsString());

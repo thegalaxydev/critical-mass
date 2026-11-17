@@ -8,6 +8,7 @@ import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMItems;
 import java.util.List;
+import java.util.Locale;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -16,6 +17,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -28,6 +30,12 @@ public final class RadiationEvents {
     public static final double WEAKNESS_DOSE = 500;
     public static final double NAUSEA_DOSE = 1000;
     public static final double WITHER_DOSE = 2000;
+    public static final double CLICK_BACKGROUND = 0.4;
+    public static final double CLICK_GAIN = 6;
+    public static final double CLICK_POWER = 0.5;
+    public static final double FINE_BELOW = 10;
+    public static final double CLICK_MAX = 60;
+    public static final double DOSIMETER_FLOOR = 0.05;
     private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     private RadiationEvents() {
@@ -60,7 +68,7 @@ public final class RadiationEvents {
         Vec3 eye = player.getEyePosition();
         int pieces = protectivePieces(player);
         double external = Radiation.fromSources(level, eye, Radiation.sourcesNear(level, eye, blockSources), player)
-                + Radiation.inventoryStrength(player) + Radiation.fieldDose(level, eye);
+                + Radiation.inventoryStrength(player) + Radiation.fieldDose(level, eye) + Radiation.oreDose(level, eye);
         double fallout = Fallout.rate(level, eye);
         double exposed = 1 - CMConfig.get(CMConfig.GEAR_CONTAMINATION_PROTECTION) * pieces / 4.0;
         external += fallout * Fallout.SHINE;
@@ -103,16 +111,41 @@ public final class RadiationEvents {
         }
     }
 
+    private static ItemStack held(Player player, Item item) {
+        return player.getMainHandItem().is(item) ? player.getMainHandItem() : player.getOffhandItem().is(item) ? player.getOffhandItem() : ItemStack.EMPTY;
+    }
+
+    private static boolean ratemeter(ItemStack meter) {
+        return meter.getOrDefault(CMComponents.METER_MODE.get(), 0) == 0;
+    }
+
+    private static double groundNear(Player player, ServerLevel level) {
+        return ContaminationData.get(level).near(player.position().add(0, 0.5, 0), 2);
+    }
+
+    public static double clicks(double reading) {
+        return Math.min(CLICK_MAX, CLICK_BACKGROUND + CLICK_GAIN * Math.pow(Math.max(0, reading), CLICK_POWER));
+    }
+
+    public static double clickRate(Player player, ServerLevel level) {
+        ItemStack meter = held(player, CMItems.SURVEY_METER.get());
+        if (!meter.isEmpty()) {
+            return clicks(ratemeter(meter) ? Radiation.ambientRate(level, player.getEyePosition()) : groundNear(player, level) + data(player).contamination + gearContamination(player));
+        }
+        double taken = data(player).lastRate;
+        return held(player, CMItems.DOSIMETER.get()).isEmpty() || !CMConfig.radiation() || taken <= DOSIMETER_FLOOR ? 0 : clicks(taken);
+    }
+
     private static void readouts(ServerPlayer player, RadiationData d) {
         ItemStack main = player.getMainHandItem();
         ItemStack off = player.getOffhandItem();
-        ItemStack meter = main.is(CMItems.SURVEY_METER.get()) ? main : off.is(CMItems.SURVEY_METER.get()) ? off : ItemStack.EMPTY;
+        ItemStack meter = held(player, CMItems.SURVEY_METER.get());
         if (!meter.isEmpty()) {
-            if (meter.getOrDefault(CMComponents.METER_MODE.get(), 0) == 0) {
+            if (ratemeter(meter)) {
                 double ambient = Radiation.ambientRate(player.serverLevel(), player.getEyePosition());
-                player.displayClientMessage(Component.translatable("criticalmass.meter.rate", ThermalTooltips.number(ambient)).withStyle(rateColor(ambient)), true);
+                player.displayClientMessage(Component.translatable("criticalmass.meter.rate", ambient < FINE_BELOW ? String.format(Locale.ROOT, "%.2f", ambient) : ThermalTooltips.number(ambient)).withStyle(rateColor(ambient)), true);
             } else {
-                double here = ContaminationData.get(player.serverLevel()).near(player.position().add(0, 0.5, 0), 2);
+                double here = groundNear(player, player.serverLevel());
                 player.displayClientMessage(Component.translatable("criticalmass.meter.contamination", ThermalTooltips.number(here), ThermalTooltips.number(d.contamination + gearContamination(player)))
                         .withStyle(here > 1 ? ChatFormatting.GOLD : ChatFormatting.GREEN), true);
             }
@@ -137,9 +170,7 @@ public final class RadiationEvents {
             effects(player, data(player));
         }
         readouts(player, data(player));
-        boolean meter = player.getMainHandItem().is(CMItems.SURVEY_METER.get()) || player.getOffhandItem().is(CMItems.SURVEY_METER.get())
-                || player.getMainHandItem().is(CMItems.DOSIMETER.get()) || player.getOffhandItem().is(CMItems.DOSIMETER.get());
-        PacketDistributor.sendToPlayer(player, new DosePacket((float) (CMConfig.radiation() ? data(player).lastRate : 0), meter));
+        PacketDistributor.sendToPlayer(player, new DosePacket((float) (CMConfig.radiation() ? data(player).lastRate : 0), (float) clickRate(player, player.serverLevel())));
         Vec3 eye = player.getEyePosition();
         Vec3 wind = Fallout.wind(player.serverLevel(), eye);
         Fallout.Plume plume = Fallout.nearest(player.serverLevel(), eye);
