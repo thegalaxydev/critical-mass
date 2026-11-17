@@ -79,6 +79,8 @@ public final class LedgerCommand {
                         .then(Commands.literal("outage").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
                                 .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.OUTAGE, IntegerArgumentType.getInteger(ctx, "seconds")))))))
                 .then(Commands.literal("strike").then(Commands.argument("near", BlockPosArgument.blockPos()).executes(ctx -> strike(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "near")))))
+                .then(Commands.literal("bypass").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("seconds", IntegerArgumentType.integer(1, 3600))
+                        .executes(ctx -> bypass(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), IntegerArgumentType.getInteger(ctx, "seconds"))))))
                 .then(Commands.literal("meltdown").executes(ctx -> meltdown(ctx.getSource())))
                 .then(Commands.literal("melt").then(Commands.argument("controller", BlockPosArgument.blockPos()).executes(ctx -> melt(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller")))))
                 .then(Commands.literal("detonate").then(Commands.argument("centre", BlockPosArgument.blockPos())
@@ -329,6 +331,16 @@ public final class LedgerCommand {
         }
         tie.disturb(event, seconds * 20, event == GridTieBlockEntity.Event.DIP ? Power.DIP_FLOOR : event == GridTieBlockEntity.Event.SWING ? Power.SWING_HZ : 0);
         source.sendSuccess(() -> Component.translatable("criticalmass.command.grid." + event.name().toLowerCase(java.util.Locale.ROOT)), true);
+        return 1;
+    }
+
+    private static int bypass(CommandSourceStack source, BlockPos pos, int seconds) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        c.holdBypass(seconds * 20);
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.bypassed", seconds), true);
         return 1;
     }
 

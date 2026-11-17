@@ -5,7 +5,7 @@ import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 
 public final class PlantAlarms {
     public enum Alarm {
-        TRIP("trip"), LOW_FLOW("low_flow"), CORE_HOT("core_hot"), LOW_COOLANT("low_coolant"), CASING("casing"), PRESSURE("pressure"), EQUIPMENT("equipment");
+        TRIP("trip"), LOW_FLOW("low_flow"), CORE_HOT("core_hot"), LOW_COOLANT("low_coolant"), CASING("casing"), PRESSURE("pressure"), EQUIPMENT("equipment"), BYPASS("bypass");
 
         public final String key;
 
@@ -89,6 +89,9 @@ public final class PlantAlarms {
         }
         if (c.flashing()) {
             mask |= 1 << Alarm.PRESSURE.ordinal();
+        }
+        if (c.bypassed()) {
+            mask |= 1 << Alarm.BYPASS.ordinal();
         }
         return mask;
     }

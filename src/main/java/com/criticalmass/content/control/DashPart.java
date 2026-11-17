@@ -171,7 +171,8 @@ public final class DashPart {
         return switch (type) {
             case BUTTON -> be instanceof ReactorControllerBlockEntity || be instanceof SteamTurbineBlockEntity || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity
                     || isReceiver(level, pos);
-            case SWITCH, LEVER -> isReceiver(level, pos);
+            case SWITCH -> be instanceof ReactorControllerBlockEntity || isReceiver(level, pos);
+            case LEVER -> isReceiver(level, pos);
             case GAUGE -> PlantChannel.isTarget(be);
             case ALARM -> PlantAlarms.watchable(be);
         };

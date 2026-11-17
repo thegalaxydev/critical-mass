@@ -78,6 +78,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int lastTickFlow;
     private int effectiveFlow;
     private boolean syncPending;
+    private long bypassUntil;
     private int syncCooldown;
     private int liveSync;
 
@@ -403,6 +404,16 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     public void scram() {
         trip("manual");
+    }
+
+    public void holdBypass(int ticks) {
+        if (level != null) {
+            bypassUntil = Math.max(bypassUntil, level.getGameTime() + ticks);
+        }
+    }
+
+    public boolean bypassed() {
+        return level != null && level.getGameTime() < bypassUntil;
     }
 
     public String tripReason() {
@@ -786,7 +797,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         int failures = core.takeFailures();
-        if (reacting) {
+        boolean guarded = !bypassed();
+        if (reacting && !guarded) {
+            noFlowTicks = 0;
+            if (!canRun) {
+                trip(breached ? "breach" : damaged ? "damaged" : "invalid");
+            }
+        } else if (reacting) {
             if (failures > 0) {
                 trip("fuel_failure");
             } else if (!canRun) {

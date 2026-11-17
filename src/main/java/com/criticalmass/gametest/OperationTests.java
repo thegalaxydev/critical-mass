@@ -186,6 +186,48 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = LARGE, timeoutTicks = 900)
+    public static void aBypassedReactorRunsOnWithoutFlowUntilTheBypassIsLetGo(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        drive(h, new BlockPos(3, 6, 2), 64);
+        c.setBankTarget(0, 0.0);
+        boolean[] flow = {true};
+        boolean[] bypass = {false};
+        int lamp = 1 << com.criticalmass.content.control.PlantAlarms.Alarm.BYPASS.ordinal();
+        h.onEachTick(() -> {
+            if (flow[0]) {
+                c.noteFlow(32);
+            }
+            if (bypass[0]) {
+                c.holdBypass(5);
+            }
+        });
+        h.startSequence()
+                .thenIdle(560)
+                .thenExecute(() -> {
+                    h.assertTrue(c.isReacting() && !c.bypassed(), "The reactor should be running with its protection on: " + c.status());
+                    h.assertTrue((com.criticalmass.content.control.PlantAlarms.evaluate(c) & lamp) == 0, "The bypass lamp should be dark");
+                    bypass[0] = true;
+                    flow[0] = false;
+                })
+                .thenIdle(CMThermal.LOW_FLOW_TRIP_TICKS + 15)
+                .thenExecute(() -> {
+                    h.assertTrue(c.bypassed() && !c.isTripped() && c.isReacting(), "A bypassed reactor should run on without flow: " + c.status() + " " + c.tripReason());
+                    h.assertTrue((com.criticalmass.content.control.PlantAlarms.evaluate(c) & lamp) != 0, "The bypass lamp should be lit");
+                    c.scram();
+                })
+                .thenIdle(2)
+                .thenExecute(() -> {
+                    h.assertTrue(c.isTripped() && c.tripReason().equals("manual"), "A SCRAM by hand should still work through the bypass: " + c.tripReason());
+                    bypass[0] = false;
+                })
+                .thenIdle(10)
+                .thenExecute(() -> h.assertTrue(!c.bypassed(), "The bypass should lapse once nothing holds it"))
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE, timeoutTicks = 200)
     public static void viewportCountsAsVesselWall(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);

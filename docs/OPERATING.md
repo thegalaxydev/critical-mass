@@ -55,6 +55,8 @@ The control desk is a Reactor Alloy Dashboard with Dashboard parts on it. Sneak-
 
 For redstone instead of direct binding, set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
 
+**The protection can be bypassed.** Bind a Dashboard Switch to the Reactor Controller and it becomes a protection bypass: while it is on, none of the automatic trips act and only a SCRAM by hand stops the reactor. Give it a glass cover and an alarm lamp of its own. With the trips off, a core run without cooling melts in seconds, and a core melted in every column explodes.
+
 **Protective trips are yours to build.** A comparator on the Reactor Controller reads the hottest fuel column from 0 when cold to 15 at the 1,100 °C trip, and a redstone pulse into a Signal Interface set to SCRAM trips the reactor. Compare that signal against one you set and feed the result into the interface, and you have an earlier high-temperature trip. An interface set to alarm gives a redstone signal while any alarm is active, so wiring it to the SCRAM interface trips on any alarm. If you remove the wire, the trip is gone.
 
 **Pumps and valves** use Create's parts: a clutch and lever on a pump shaft, a Valve Handle on a Reinforced Valve.
@@ -115,6 +117,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | A loop keeps losing water, or the pipes give a dose | Plain pipes or valves under pressure, or holding primary coolant | Reinforce them with a Reactor Alloy Ingot |
 | Ruined Fuel Channel | Fuel melted | Keep the vessel flooded so the corium cools inside. Then replace the ruined channels and any failed casing |
 | Corium outside the vessel | The floor failed | Stay off it. Flood it with water, wait for it to go dark, mine it and store it shielded. Decontaminate the area |
+| BYPASS lamp lit | A switch bound to the Reactor Controller is on, so the automatic trips are off | Switch it off unless you mean it. Until then only a SCRAM by hand will stop the reactor |
 | Every fuel column melted | Total meltdown | Run. Three seconds later the core goes off and leaves a crater 40 blocks in radius, with fire and blast to nearly twice that |
 
 ## Expanding safely

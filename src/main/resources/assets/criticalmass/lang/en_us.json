@@ -690,5 +690,11 @@
   "criticalmass.command.detonating": "The core goes off in three seconds, with a crater %s blocks in radius",
   "block.criticalmass.charred_log": "Charred Log",
   "criticalmass.command.melted": "Every fuel column is past its melting point",
-  "criticalmass.command.no_reactor_near": "No Reactor Controller within 256 blocks"
+  "criticalmass.command.no_reactor_near": "No Reactor Controller within 256 blocks",
+  "criticalmass.alarm.bypass": "Protection bypassed: the automatic trips are off",
+  "criticalmass.alarm.bypass.short": "BYPASS",
+  "criticalmass.dashboard.result.bypass_on": "Protection bypassed: only a SCRAM by hand will trip the reactor",
+  "criticalmass.dashboard.result.bypass_off": "Protection restored",
+  "criticalmass.dashboard.switch.bypass": "Protection bypass",
+  "criticalmass.command.bypassed": "Protection bypassed for %s seconds"
 }

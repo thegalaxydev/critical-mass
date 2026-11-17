@@ -38,6 +38,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
     public static final int SLOTS = 2;
+    private static final int BYPASS_HOLD_TICKS = 10;
     private static final int READ_TICKS = 5;
     private static final int GLASS_REPEAT_TICKS = 5;
     private static final int ALARM_SOUND_TICKS = 40;
@@ -277,6 +278,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
     }
 
     public String modeKey(DashPart part) {
+        if (part.type == DashPart.Type.SWITCH && part.targetEntity(level) instanceof ReactorControllerBlockEntity) {
+            return "criticalmass.dashboard.switch.bypass";
+        }
         return switch (part.type) {
             case BUTTON -> "criticalmass.dashboard.press." + part.press(level).key;
             case GAUGE -> {
@@ -306,7 +310,11 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             case SWITCH -> {
                 part.on = !part.on;
                 level.playSound(null, worldPosition, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.4f, part.on ? 0.7f : 0.55f);
-                result = part.on ? "criticalmass.dashboard.result.on" : "criticalmass.dashboard.result.off";
+                if (part.targetEntity(level) instanceof ReactorControllerBlockEntity) {
+                    result = part.signal(level.getGameTime()) > 0 ? "criticalmass.dashboard.result.bypass_on" : "criticalmass.dashboard.result.bypass_off";
+                } else {
+                    result = part.on ? "criticalmass.dashboard.result.on" : "criticalmass.dashboard.result.off";
+                }
             }
             case LEVER -> {
                 part.level = (int) Math.round(Math.max(0, Math.min(1, along)) * DashPart.MAX_LEVEL);
@@ -472,6 +480,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
             if (part.type == DashPart.Type.BUTTON || part.type == DashPart.Type.SWITCH || part.type == DashPart.Type.LEVER) {
                 drive(part, now);
+            }
+            if (part.type == DashPart.Type.SWITCH && part.signal(now) > 0 && part.targetEntity(level) instanceof ReactorControllerBlockEntity reactor) {
+                reactor.holdBypass(BYPASS_HOLD_TICKS);
             }
             if (!read) {
                 continue;

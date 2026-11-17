@@ -70,6 +70,30 @@ public final class DashboardTests {
         return part;
     }
 
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void aSwitchBoundToTheControllerHoldsTheProtectionBypassed(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        DashboardBlockEntity desk = desk(h, new BlockPos(8, 2, 8));
+        DashPart key = fit(h, desk, 0, DashPart.Type.SWITCH, TestVessels.CONTROLLER);
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(!c.bypassed() && desk.modeKey(key).endsWith("switch.bypass"), "A switch on the controller should read as the bypass: " + desk.modeKey(key));
+                    String said = desk.use(0, 0.5);
+                    h.assertTrue(key.on && said.endsWith("bypass_on"), "Switching it on should say the protection is bypassed: " + said);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> {
+                    h.assertTrue(c.bypassed(), "The switch should hold the protection bypassed");
+                    String said = desk.use(0, 0.5);
+                    h.assertTrue(!key.on && said.endsWith("bypass_off"), "Switching it off should say the protection is back: " + said);
+                })
+                .thenIdle(20)
+                .thenExecute(() -> h.assertTrue(!c.bypassed(), "The bypass should lapse once the switch is off"))
+                .thenSucceed();
+    }
+
     @GameTest(template = EMPTY)
     public static void dashboardsJoinIntoRunsOfFive(GameTestHelper h) {
         Player player = h.makeMockPlayer(GameType.CREATIVE);
