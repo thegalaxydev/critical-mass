@@ -682,5 +682,8 @@
   "criticalmass.service.live": "Live. Make it dead before working on it",
   "criticalmass.service.done": "Serviced: condition %s%%",
   "criticalmass.tooltip.condition": "Condition: %s%%",
-  "criticalmass.subtitle.service": "Equipment serviced"
+  "criticalmass.subtitle.service": "Equipment serviced",
+  "criticalmass.screen.mimic": "ONE-LINE DIAGRAM",
+  "criticalmass.alarm.equipment": "Electrical trouble",
+  "criticalmass.alarm.equipment.short": "ELEC"
 }

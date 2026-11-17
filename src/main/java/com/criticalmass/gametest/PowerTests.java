@@ -1,6 +1,8 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.control.DashPart;
+import com.criticalmass.content.control.PlantAlarms;
 import com.criticalmass.content.power.BatteryBlockEntity;
 import com.criticalmass.content.power.BreakerBlock;
 import com.criticalmass.content.power.BreakerBlockEntity;
@@ -1315,6 +1317,32 @@ public final class PowerTests {
                 })
                 .thenIdle(5)
                 .thenExecute(() -> h.assertTrue(h.getBlockState(pos).is(CMBlocks.BURNT_EQUIPMENT.get()), "At the end of its life it should burn out"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 100)
+    public static void anAlarmLampCanWatchElectricalEquipment(GameTestHelper h) {
+        BlockPos breakerPos = new BlockPos(2, 2, 2);
+        BlockPos switchPos = new BlockPos(4, 2, 2);
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(switchPos, CMBlocks.TRANSFER_SWITCH.get());
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        int bit = 1 << PlantAlarms.Alarm.EQUIPMENT.ordinal();
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.assertTrue(DashPart.accepts(DashPart.Type.ALARM, h.getLevel(), h.absolutePos(breakerPos)), "An alarm lamp should bind to a breaker");
+                    h.assertTrue(PlantAlarms.of(breaker) == 0, "A healthy breaker should raise nothing");
+                    breaker.close();
+                    breaker.trip("criticalmass.breaker.trip.overcurrent");
+                    h.assertTrue(PlantAlarms.of(breaker) == bit, "A breaker tripped by its protection should raise the alarm");
+                    breaker.reset();
+                    h.assertTrue(PlantAlarms.of(breaker) == 0, "Reset, it should clear");
+                    h.assertTrue(PlantAlarms.of(h.getBlockEntity(switchPos)) == bit, "A Transfer Switch off its normal supply should raise the alarm");
+                    Hazard.destroy(h.getLevel(), h.absolutePos(breakerPos), 1.0f);
+                })
+                .thenIdle(5)
+                .thenExecute(() -> h.assertTrue(PlantAlarms.of(h.getLevel().getBlockEntity(h.absolutePos(breakerPos))) == bit, "Burnt-out equipment should keep the alarm up"))
                 .thenSucceed();
     }
 }

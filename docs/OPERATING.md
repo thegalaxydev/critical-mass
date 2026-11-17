@@ -51,7 +51,7 @@ The control desk is a Reactor Alloy Dashboard with Dashboard parts on it. Sneak-
 | Dashboard Button | Steam Turbine | Trip or reset |
 | Dashboard Button, Switch, Lever | A receiving Redstone Link | A one second pulse, on or off, or any strength from 0 to 15 |
 | Dashboard Gauge | Any plant machine | One reading of that machine on a needle, chosen in its settings |
-| Dashboard Alarm | Reactor Controller | Lights while an alarm is active. A new alarm flashes and sounds until you press it |
+| Dashboard Alarm | Reactor Controller, or electrical equipment | Lights while an alarm is active, or while the equipment is in trouble. A new alarm flashes and sounds until you press it |
 
 For redstone instead of direct binding, set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
 
@@ -143,7 +143,7 @@ It clears and paves a 75 by 71 block site and builds the station on it, bound, w
 | Switchyard | Outside the east wall. The main Transformer, 220 / 20 kV, the grid breaker and the Grid Connection stand in a line, joined by Transmission Line. The unit Transformer, 20 / 6 kV, takes the plant's own supply off the 20 kV side and sends it back through the wall. A Surge Arrester stands on the 220 kV line and two Lightning Rods on the gantry over it. A mast with a Lightning Rod covers the feeder to the cooling tower |
 | Station service | In the turbine hall basement. The station supply breaker feeds the 6 kV station bus through a Transfer Switch. Power Wire runs from the bus along insulators under the deck to the feed and circulating pump motors, through the north wall to the tower fan and make-up pump, and through a containment penetration to the primary pump and the rod drive motor. A Station Battery stands at the west end of the bus. The standby set is along the south wall: a Diesel Engine with a full tank of Fuel Oil, a Generator, a 20 / 6 kV Transformer and the Transfer Switch, with a line of redstone dust behind them carrying the switch's start signal to the engine |
 | Cooling tower | Four Packing blocks under an Encased Fan, inside a concrete shell with a water basin. The make-up line stands beside the fill. The circulating water pump is in the turbine hall basement |
-| Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, with a three by three wall each side for the generator and the Grid Connection. Eleven Reactor Alloy Dashboards: the synchroscope and frequency, generator breaker open and close, turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, primary and feed flow, generator lower and raise, and generator and grid power |
+| Control room | Upstairs, behind a Shielded Glass window onto the turbine deck. A nine by five wall of Plant Screens linked to the reactor and the turbine, with a three by three wall each side for the generator and the Grid Connection. On the east wall a seven by four wall linked to the station bus draws the plant's electrics as a one-line diagram. Twelve Reactor Alloy Dashboards: the synchroscope and frequency, generator breaker open and close, turbine trip and reset, turbine speed and power, pressure and coolant temperature, heat output and the alarm, rods in and out, SCRAM and reset, primary and feed flow, generator lower and raise, generator and grid power, and alarm lamps for the grid and the station supply |
 | Service building | Entrance lobby, change room with Protective Suits, and the way through to the access corridor |
 | Fuel building | Spent fuel pool with racks, dry casks, a cascade of three Centrifuges, and a waste vault under Shielded Hatches |
 
@@ -157,7 +157,7 @@ To skip the start-up, run:
 
 That puts the reactor at 70% power with matching xenon and the rods where they hold it. From there the power sags slowly as xenon and burn-up build, and the rod buttons hold it. Thirty-five seconds later, once the turbine is up to speed, the generator breaker closes and the generator takes load.
 
-The station is small. The generator is set to 10% of its rating, 3.3 MW, which is about what its turbine can give, and the plant's own motors use about 1.8 MW of that, so the grid gets the rest. Before the generator is on, the Grid Connection shows that 1.8 MW drawn from the grid.
+The station is small. The generator is set to 10% of its rating, 3.3 MW, which is about what its turbine can give, and the plant's own motors use about 1.4 MW of that, so the grid gets the rest. Before the generator is on, the Grid Connection shows that 1.4 MW drawn from the grid. A plant this small spends a far bigger share on itself than a real one's 5%: its pumps and fan cost the same whatever the size of the core.
 
 Things to try from here:
 - Open the generator breaker from the control room, trim the generator with RAISE and LOWER, and close it again as the synchroscope passes zero.

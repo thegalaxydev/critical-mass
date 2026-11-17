@@ -36,6 +36,8 @@ VIEWS = {
     "condenser": ((30, 1, -3), (24, 3, 0), False),
     "control_room": ((27, 7, 11), (27, 10, 19), False),
     "control_desk": ((27, 7, 13), (27, 8, 16), False),
+    "mimic": ((27, 7, 14), (35, 10, 14), False),
+    "mimic_close": ((30, 7, 14), (35, 10, 14), False),
     "control_window": ((27, 7, 17), (25, 8, 0), False),
     "relay_room": ((16, 7, 11), (15, 8, 19), False),
     "lobby": ((39, 1, 11), (31, 2, 19), False),

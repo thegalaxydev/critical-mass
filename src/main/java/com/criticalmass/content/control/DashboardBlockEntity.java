@@ -487,7 +487,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
                     dirty = true;
                 }
             } else if (part.type == DashPart.Type.ALARM) {
-                int alarms = part.targetEntity(level) instanceof ReactorControllerBlockEntity r ? PlantAlarms.evaluate(r) : 0;
+                int alarms = PlantAlarms.of(part.targetEntity(level));
                 int acknowledged = part.acknowledged & alarms;
                 if (alarms != part.alarms || acknowledged != part.acknowledged) {
                     part.alarms = alarms;

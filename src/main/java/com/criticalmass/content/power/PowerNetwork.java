@@ -101,6 +101,7 @@ public final class PowerNetwork {
         private double[] kilovolts = new double[0];
         private double[] pu = new double[0];
         private int[][] incident = new int[0][];
+        private boolean settled;
         private long voltsAt = -1;
         private long born;
 
@@ -288,6 +289,12 @@ public final class PowerNetwork {
                 }
             }
             kilovolts = kv;
+            if (!settled) {
+                settled = true;
+                if (flows(level, false)) {
+                    drops(level);
+                }
+            }
         }
 
         private boolean overvoltage(Level level) {
@@ -707,6 +714,7 @@ public final class PowerNetwork {
             if (!fault) {
                 drops(level);
             }
+            settled = true;
             if (relays(level)) {
                 return;
             }

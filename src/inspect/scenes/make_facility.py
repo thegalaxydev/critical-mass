@@ -126,6 +126,8 @@ SIDE_SCREENS = [((19, 10), (21, 12), GENERATORS[0]), ((33, 10), (35, 12), GRID)]
 SIDE_COG = (22, 11, 19)
 SCREEN_COG = (32, 11, 19)
 SCREEN_MOTOR = (32, 11, 20)
+MIMIC_X, MIMIC_Y, MIMIC_Z = 35, (9, 12), (11, 17)
+MIMIC_COG, MIMIC_MOTOR = (35, 13, 14), (36, 13, 14)
 DESK_Y, DESK_Z = 7, 15
 DESKS = {
     22: [("sync", "gauge", GEN_BREAKER, 0, 4, "SYNC ANGLE"), ("hertz", "gauge", GENERATORS[0], 1, 4, "FREQUENCY")],
@@ -139,6 +141,7 @@ DESKS = {
     30: [("primary_flow", "gauge", PRIMARY_PUMP, 0, 4, "PRIMARY FLOW"), ("feed_flow", "gauge", FEED_PUMP, 0, 4, "FEED FLOW")],
     31: [("lower", "button", GENERATORS[0], 1, 4, "LOWER"), ("raise", "button", GENERATORS[0], 0, 2, "RAISE")],
     32: [("megawatts", "gauge", GENERATORS[0], 0, 4, "GENERATOR MW"), ("grid", "gauge", GRID, 0, 4, "GRID MW")],
+    33: [("grid_alarm", "alarm", GRID, 0, 0, "GRID"), ("supply_alarm", "alarm", TRANSFER, 0, 0, "STATION SUPPLY")],
 }
 RACKS = [(x, -1, z) for x in (-8, -6) for z in (21, 23)]
 RUN_POWER = 0.7
@@ -641,6 +644,11 @@ def control_room():
         for x in range(x0, x1 + 1):
             for y in range(y0, y1 + 1):
                 machine((x, y, sz), "criticalmass:plant_screen[facing=north]")
+    for z in range(MIMIC_Z[0], MIMIC_Z[1] + 1):
+        for y in range(MIMIC_Y[0], MIMIC_Y[1] + 1):
+            assert not taken((MIMIC_X, y, z)), "mimic board in the way"
+            machine((MIMIC_X, y, z), "criticalmass:plant_screen[facing=west]")
+    machine(MIMIC_COG, "create:cogwheel[axis=x]")
     for x in sorted(DESKS):
         machine((x, DESK_Y, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower()))
     for x in (25, 27, 29):
@@ -928,6 +936,8 @@ def start(w):
     cmds += bind(w, (sx1, sy1, sz), CONTROLLER, "Reactor") + bind(w, (sx1, sy1, sz), TURBINE, "Turbine")
     for _, (x1, y1), target in SIDE_SCREENS:
         cmds += bind(w, (x1, y1, sz), target, "Reactor")
+    cmds += bind(w, (MIMIC_X, MIMIC_Y[1], MIMIC_Z[0]), BUS6[1], "Reactor")
+    cmds += [setblock(w, MIMIC_MOTOR, "create:creative_motor[facing=west]")]
     cmds += [setblock(w, SCREEN_MOTOR, "create:creative_motor[facing=north]"),
              "criticalmass fuel %s fill" % w(*CONTROLLER),
              setblock(w, (5, 4, -2), AIR),

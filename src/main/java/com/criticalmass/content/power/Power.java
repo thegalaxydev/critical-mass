@@ -21,7 +21,7 @@ public final class Power {
     public static final int ORDER_MAX_STEPS = 60;
     public static final double MOTOR_RATED_SU = 2048.0;
     public static final double MOTOR_EFFICIENCY = 0.95;
-    public static final double MOTOR_IDLE = 0.01;
+    public static final double MOTOR_IDLE = 0.002;
     public static final double SUPPLY_MIN_HZ = 47.0;
     public static final double SUPPLY_MAX_HZ = 53.0;
     public static final int OVERLOAD_TICKS = 20;

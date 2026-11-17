@@ -1,5 +1,6 @@
 package com.criticalmass.client;
 
+import com.criticalmass.content.control.Mimic;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.control.ScreenBlockEntity;
@@ -120,6 +121,8 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
                 graph(2, w - side, pad, w - pad, h / 2 - pad / 2);
                 graph(3, w - side, h / 2 + pad / 2, w - pad, h - pad);
                 centre(side + pad, pad, w - side - pad, h - pad);
+            } else if (be.bigEnough() && !be.mimic().isEmpty()) {
+                mimic();
             } else if (be.bigEnough()) {
                 page();
             } else {
@@ -199,6 +202,184 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
                 text(named(rows.get(i)), x0, y, size, DIM, LEFT, width * 0.56f);
                 text(i < values.size() ? values.get(i) : "--", x1, y, size, GREEN, RIGHT, width * 0.42f);
                 y += row;
+            }
+            y += 0.08f * u;
+            if (y + 0.7f * u <= y1) {
+                line(x0, y, x1, y, 0.02f * u, DIM);
+                events(x0, y + 0.08f * u, x1, y1);
+            }
+        }
+
+        private void events(float x0, float top, float x1, float y1) {
+            float width = x1 - x0;
+            float y = top;
+            text(Component.translatable("criticalmass.screen.events").getString(), x0, y, 0.17f * u, DIM, LEFT, width);
+            y += 0.24f * u;
+            float entry = 0.16f * u;
+            long now = be.getLevel() == null ? 0 : be.getLevel().getGameTime();
+            List<ScreenBlockEntity.Event> events = be.events();
+            if (events.isEmpty()) {
+                text(Component.translatable("criticalmass.screen.events.none").getString(), x0, y, entry, DIM, LEFT, width);
+            }
+            for (ScreenBlockEntity.Event e : events) {
+                if (y + entry > y1) {
+                    break;
+                }
+                long seconds = Math.max(0, (now - e.time()) / 20);
+                String age = seconds / 60 + ":" + (seconds % 60 < 10 ? "0" : "") + seconds % 60;
+                text(age, x0, y, entry, DIM, LEFT, 0.5f * u);
+                text(e.text().getString().toUpperCase(java.util.Locale.ROOT), x0 + 0.55f * u, y, entry, tone(e.about().isEmpty() ? e.key() : "cleared"), LEFT, width - 0.55f * u);
+                y += 0.2f * u;
+            }
+        }
+
+        private void ring(float cx, float cy, float r, float thickness, int color) {
+            float lastX = cx + r;
+            float lastY = cy;
+            for (int i = 1; i <= 14; i++) {
+                double angle = Math.PI * 2 * i / 14;
+                float x = cx + (float) Math.cos(angle) * r;
+                float y = cy + (float) Math.sin(angle) * r;
+                line(lastX, lastY, x, y, thickness, color);
+                lastX = x;
+                lastY = y;
+            }
+        }
+
+        private void lettered(String letter, float cx, float cy, float s, float thin, int color) {
+            ring(cx, cy, s, thin, color);
+            text(letter, cx, cy - s * 0.5f, s * 1.1f, color, CENTRE, 0);
+        }
+
+        private void symbol(Mimic.Node node, float cx, float cy, float s, float thin, float low, float high) {
+            int color = node.state() == 2 && node.kind() != Mimic.Kind.TRANSFER ? AMBER : node.live() ? GREEN : DIM;
+            switch (node.kind()) {
+                case GRID -> {
+                    line(cx - s, cy - s, cx + s, cy - s, thin * 2, color);
+                    line(cx - s, cy - s, cx, cy + s, thin, color);
+                    line(cx + s, cy - s, cx, cy + s, thin, color);
+                }
+                case BREAKER -> {
+                    float a = s * 0.8f;
+                    if (node.state() == 1) {
+                        poly(cx - a, cy - a, cx - a, cy + a, cx + a, cy + a, cx + a, cy - a, color);
+                    } else {
+                        box(cx - a, cy - a, cx + a, cy + a, thin, color);
+                        line(cx, cy - s, cx, cy - a, thin, color);
+                        line(cx, cy + a, cx, cy + s, thin, color);
+                        if (node.state() == 2) {
+                            line(cx - a, cy - a, cx + a, cy + a, thin, color);
+                            line(cx - a, cy + a, cx + a, cy - a, thin, color);
+                        }
+                    }
+                }
+                case DISCONNECT -> {
+                    if (node.state() == 1) {
+                        line(cx, cy - s, cx, cy + s, thin * 1.5f, color);
+                    } else {
+                        line(cx, cy + s, cx + s * 0.8f, cy - s * 0.5f, thin * 1.5f, color);
+                    }
+                    line(cx - s * 0.4f, cy + s, cx + s * 0.4f, cy + s, thin, color);
+                    line(cx - s * 0.4f, cy - s, cx + s * 0.4f, cy - s, thin, color);
+                }
+                case TRANSFORMER -> {
+                    ring(cx, cy - s * 0.4f, s * 0.6f, thin, color);
+                    ring(cx, cy + s * 0.4f, s * 0.6f, thin, color);
+                }
+                case BUS -> line(Math.min(low, cx - s) - s * 0.5f, cy, Math.max(high, cx + s) + s * 0.5f, cy, thin * 3, color);
+                case GENERATOR -> lettered("G", cx, cy, s, thin, color);
+                case MOTOR -> lettered("M", cx, cy, s, thin, color);
+                case BATTERY -> lettered("B", cx, cy, s, thin, color);
+                case TRANSFER -> {
+                    line(cx, cy - s, cx + s, cy, thin, color);
+                    line(cx + s, cy, cx, cy + s, thin, color);
+                    line(cx, cy + s, cx - s, cy, thin, color);
+                    line(cx - s, cy, cx, cy - s, thin, color);
+                    text(node.state() == 0 ? "N" : node.state() == 1 ? "S" : "-", cx, cy - s * 0.4f, s * 0.9f, node.state() == 0 ? color : AMBER, CENTRE, 0);
+                }
+                case EARTH -> {
+                    line(cx, cy - s, cx, cy, thin, color);
+                    line(cx - s * 0.8f, cy, cx + s * 0.8f, cy, thin, color);
+                    line(cx - s * 0.5f, cy + s * 0.35f, cx + s * 0.5f, cy + s * 0.35f, thin, color);
+                    line(cx - s * 0.2f, cy + s * 0.7f, cx + s * 0.2f, cy + s * 0.7f, thin, color);
+                }
+            }
+        }
+
+        private void mimic() {
+            u = Math.min(1f, Math.min(w / 5f, h / 2.5f));
+            float pad = 0.16f * u;
+            float right = w - pad;
+            String status = be.status();
+            text(upper("criticalmass.screen.mimic"), pad, pad, 0.3f * u, GREEN, LEFT, (right - pad) * 0.58f);
+            text(status.isEmpty() ? "" : upper(status), right, pad + 0.03f * u, 0.25f * u, tone(status), RIGHT, (right - pad) * 0.4f);
+            float top = pad + 0.42f * u;
+            line(pad, top, right, top, 0.02f * u, DIM);
+            top += 0.06f * u;
+            List<Mimic.Node> nodes = be.mimic();
+            float columns = 1;
+            int levels = 1;
+            for (Mimic.Node node : nodes) {
+                columns = Math.max(columns, node.x() + 1);
+                levels = Math.max(levels, node.depth() + 1);
+            }
+            float cellWidth = (right - pad) / columns;
+            float cellHeight = (h - pad - top) / levels;
+            float s = Math.min(0.3f, Math.min(cellWidth * 0.3f, cellHeight * 0.28f));
+            float thin = Math.max(0.012f, s * 0.12f);
+            float label = Math.min(0.16f, Math.min(cellHeight * 0.26f, cellWidth * 0.2f));
+            int count = nodes.size();
+            float[] px = new float[count];
+            float[] py = new float[count];
+            float[] low = new float[count];
+            float[] high = new float[count];
+            boolean[] leaf = new boolean[count];
+            for (int i = 0; i < count; i++) {
+                px[i] = pad + (nodes.get(i).x() + 0.5f) * cellWidth;
+                py[i] = top + (nodes.get(i).depth() + 0.5f) * cellHeight;
+                low[i] = px[i];
+                high[i] = px[i];
+                leaf[i] = true;
+            }
+            for (int i = 0; i < count; i++) {
+                int parent = nodes.get(i).parent();
+                if (parent >= 0 && parent < count) {
+                    low[parent] = Math.min(low[parent], px[i]);
+                    high[parent] = Math.max(high[parent], px[i]);
+                    leaf[parent] = false;
+                }
+            }
+            for (int i = 0; i < count; i++) {
+                Mimic.Node node = nodes.get(i);
+                int parent = node.parent();
+                if (parent < 0 || parent >= count) {
+                    continue;
+                }
+                int color = node.live() ? GREEN : DIM;
+                float end = node.kind() == Mimic.Kind.BUS ? py[i] : py[i] - s;
+                if (nodes.get(parent).kind() == Mimic.Kind.BUS) {
+                    line(px[i], py[parent], px[i], end, thin, color);
+                } else {
+                    float mid = py[parent] + cellHeight / 2;
+                    line(px[parent], py[parent] + s, px[parent], mid, thin, color);
+                    line(px[parent], mid, px[i], mid, thin, color);
+                    line(px[i], mid, px[i], end, thin, color);
+                }
+            }
+            for (int i = 0; i < count; i++) {
+                Mimic.Node node = nodes.get(i);
+                symbol(node, px[i], py[i], s, thin, low[i], high[i]);
+                if (node.value().isEmpty()) {
+                    continue;
+                }
+                int color = node.live() ? GREEN : DIM;
+                if (node.kind() == Mimic.Kind.BUS) {
+                    text(node.value(), Math.min(low[i], px[i] - s) - s * 0.5f, py[i] - label * 1.25f, label, color, LEFT, cellWidth);
+                } else if (leaf[i]) {
+                    text(node.value(), px[i], py[i] + s * 1.2f, label, color, CENTRE, cellWidth * 0.95f);
+                } else {
+                    text(node.value(), px[i] + s * 1.3f, py[i] - label / 2, label, color, LEFT, Math.max(0.1f, cellWidth * 0.5f - s * 1.3f + cellWidth * 0.4f));
+                }
             }
         }
 
@@ -334,25 +515,7 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
             }
             y += 0.06f * u;
             line(x0, y, x1, y, 0.02f * u, DIM);
-            y += 0.08f * u;
-            text(Component.translatable("criticalmass.screen.events").getString(), x0, y, 0.17f * u, DIM, LEFT, width);
-            y += 0.24f * u;
-            float entry = 0.16f * u;
-            long now = be.getLevel() == null ? 0 : be.getLevel().getGameTime();
-            List<ScreenBlockEntity.Event> events = be.events();
-            if (events.isEmpty()) {
-                text(Component.translatable("criticalmass.screen.events.none").getString(), x0, y, entry, DIM, LEFT, width);
-            }
-            for (ScreenBlockEntity.Event e : events) {
-                if (y + entry > y1) {
-                    break;
-                }
-                long seconds = Math.max(0, (now - e.time()) / 20);
-                String age = seconds / 60 + ":" + (seconds % 60 < 10 ? "0" : "") + seconds % 60;
-                text(age, x0, y, entry, DIM, LEFT, 0.5f * u);
-                text(e.text().getString().toUpperCase(java.util.Locale.ROOT), x0 + 0.55f * u, y, entry, tone(e.about().isEmpty() ? e.key() : "cleared"), LEFT, width - 0.55f * u);
-                y += 0.2f * u;
-            }
+            events(x0, y + 0.08f * u, x1, y1);
         }
     }
 

@@ -173,7 +173,7 @@ public final class DashPart {
                     || isReceiver(level, pos);
             case SWITCH, LEVER -> isReceiver(level, pos);
             case GAUGE -> PlantChannel.isTarget(be);
-            case ALARM -> be instanceof ReactorControllerBlockEntity;
+            case ALARM -> PlantAlarms.watchable(be);
         };
     }
 

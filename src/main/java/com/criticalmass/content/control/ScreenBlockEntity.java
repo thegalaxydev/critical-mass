@@ -46,6 +46,8 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     public static final int BOARD_HEIGHT = 5;
     public static final int MIN_WIDTH = 3;
     public static final int MIN_HEIGHT = 2;
+    public static final int MIMIC_WIDTH = 5;
+    public static final int MIMIC_HEIGHT = 3;
     public static final int MAX_TRENDS = 6;
     public static final int HISTORY = 120;
     public static final int SAMPLE_TICKS = 20;
@@ -108,6 +110,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     private String output = "";
     private final List<Event> events = new ArrayList<>();
     private int lastAlarms;
+    private List<Mimic.Node> mimic = List.of();
     public ScreenBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -199,6 +202,10 @@ public class ScreenBlockEntity extends KineticBlockEntity {
 
     public List<Event> events() {
         return events;
+    }
+
+    public List<Mimic.Node> mimic() {
+        return mimic;
     }
 
     public int samples() {
@@ -301,6 +308,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         output = "";
         events.clear();
         lastAlarms = 0;
+        mimic = List.of();
     }
 
     private void adopt(ScreenBlockEntity other) {
@@ -489,6 +497,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             }
         }
         lastAlarms = alarms;
+        mimic = be instanceof BusBarBlockEntity && width >= MIMIC_WIDTH && height >= MIMIC_HEIGHT ? Mimic.build(level, reactor) : List.of();
         turbineSpeed = turbine == null ? "" : shown(PlantChannel.SPEED.read(level, turbine));
         output = turbine == null ? "" : shown(PlantChannel.OUTPUT.read(level, turbine));
         setChanged();
@@ -586,6 +595,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             }
             tag.put("Values", shown);
             tag.putString("TurbineSpeed", turbineSpeed);
+            tag.put("Mimic", Mimic.save(mimic));
             tag.putString("Output", output);
             tag.putInt("Samples", samples);
             for (int i = 0; i < trends.size(); i++) {
@@ -638,6 +648,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
                 values.add(t.getAsString());
             }
             turbineSpeed = tag.getString("TurbineSpeed");
+            mimic = Mimic.load(tag.getList("Mimic", Tag.TAG_COMPOUND));
             output = tag.getString("Output");
             samples = tag.getInt("Samples");
             title = tag.getString("Title");

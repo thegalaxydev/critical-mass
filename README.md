@@ -108,11 +108,16 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - A comparator on the Reactor Controller reads the hottest fuel column against the 1,100 °C trip temperature (0 to 15).
 - **Plant Linker:** the tool that links a Plant Screen wall to its machines. Use it on a machine to remember it, then on a screen of the wall. Sneak-use in the air to clear it.
 - **Plant Screen:** a screen with green text, built like Create's Display Board in a steel frame. A wall of them shows a display of its own for whatever machine it is linked to, or Display Link text like a Display Board.
-  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers and the Grid Connection.
+  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers, Station Batteries, Diesel Engines and the Grid Connection.
     - The wall shows the machine's name and its state, trend graphs of its readings over the last two minutes, and a table of every reading.
     - How much it shows depends on its size. Three by two is one graph. A bigger wall fits more graphs, up to six, and from 5 wide the table stands beside them. A narrow wall 4 or more high puts the table under them.
     - Readings that start at zero scale themselves to what they have seen. Frequency, phase angle and temperature are graphed on a fixed window, so 50 Hz sits in the middle of 45 to 55.
+    - Where the table stands beside the graphs and there is room under it, the wall lists the machine's latest changes of state with their age.
     - Linking another machine to the same wall replaces the first and starts the graphs again.
+  - **One-line diagram:** a wall at least 5 wide and 3 high linked to a Bus Bar draws everything wired to that bar, however far, as a diagram. The Grid Connection or a generator is at the top, and each breaker, switch, transformer, bus, generator, motor and battery hangs from what feeds it. Insulators and arresters are left out.
+    - A filled square is a closed breaker, an empty one is open and a crossed amber one has tripped. A Transfer Switch is a diamond with N, S or a dash. Live parts are bright, dead ones dim, and trouble is amber.
+    - Beside each part is its reading: megawatts through a transformer, made by a generator or drawn by a motor, kiloamps through a breaker, kilovolts on a bus and the charge of a battery.
+    - A smaller wall linked to a Bus Bar shows the bar as a machine display.
   - **Reactor display:** a wall at least 9 wide and 5 high linked to a Reactor Controller shows the whole reactor by itself. A smaller one shows the reactor as a machine display.
     - Four trend graphs cover the last two minutes: neutron power, pressure, coolant temperature and xenon. Each scales itself to what it has seen.
     - The centre panel shows the status, with trips in red, and every reading: neutron power, heat output, period, reactivity, fuel and coolant temperature, pressure, flow, rod position, xenon and boron.
@@ -127,7 +132,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Button:** on a Reactor Controller it is SCRAM, reset, rods in or rods out; on a Steam Turbine it is trip or reset; on a receiving Redstone Link it sends a full signal for one second. A redstone pulse into the desk presses its buttons.
   - **Switch and Lever:** bind to a receiving Redstone Link. The switch holds it on or off. Hold use on the lever and move the mouse up or down to set any strength from 0 to 15; a bar beside the crosshair shows it, as Loconautics' lever does. Two controls on one link do not fight: the strongest wins.
   - **Gauge:** binds to any plant machine and shows one of its readings on a needle; using it shows the number.
-  - **Alarm:** a caged lamp. It binds to a Reactor Controller and watches one alarm or all of them. A new alarm flashes the lamp, sounds a klaxon and makes the desk give a redstone signal until you press the lamp; it then stays lit until the fault clears. A comparator counts the active alarms.
+  - **Alarm:** a caged lamp. It binds to a Reactor Controller and watches one alarm or all of them, or to a piece of electrical equipment, where it lights for trouble there: a breaker tripped by its protection, a disturbed or lost grid, a hot or worn transformer, a generator shut down by a fault, a battery holding up its bus or flat, an engine out of fuel, a Transfer Switch off its normal supply, a motor stopped by its supply, a dead bus, or anything burnt out. A new alarm flashes the lamp, sounds a klaxon and makes the desk give a redstone signal until you press the lamp; it then stays lit until the fault clears. A comparator counts the active alarms.
   - **Settings:** use a wrench on a part to open its settings. Pick the body (steel, red, dark, brass or reactor alloy), the cap, knob, lamp or needle colour, the style where there is one (large button, ball lever), the dial face of a gauge, the backplate, an inverted signal, a label, and what the part does: a button's action, a gauge's reading, the alarm it watches. A gauge opens its settings as soon as it is fitted.
     - **Indicator light:** a small bulb on a button, switch, lever or gauge that lights with the part's output or reading.
     - **Glass cover:** a hinged cover over a button or switch. Sneak-use the part to lift or shut it; while it is shut the part cannot be used by hand.
@@ -240,7 +245,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - Goggles show whether it is live, its voltage and frequency and the load on its network. A comparator reads 15 while it is live.
 - **Electric Motor:** turns electricity back into rotation, with a shaft on its front and a terminal box on top.
   - Its speed is set on its value box, up to 256 RPM either way, and it gives up to 2,048 SU at any speed.
-  - It draws what its shaft load takes, plus 5% in losses and a little for running idle. Turning a generator with a motor always costs more than it makes.
+  - It draws what its shaft load takes, plus 5% in losses and 16 kW for running idle. Turning a generator with a motor always costs more than it makes.
   - It runs on 6 kV, between 47 and 53 Hz. On less than 5.4 kV it runs on for a second and a half and then stands still. A redstone signal stops it.
   - **Starting surge:** for 2 seconds after it starts it draws up to three times its load. A feeder near its limit glows at every start, a breaker set too close trips, and a battery or a small generator asked to start several motors at once is overloaded. Start them one at a time.
 - **Circuit Breaker:** has two terminals on top, the line side ringed in brass and the load side in copper. Use it to close or open it.

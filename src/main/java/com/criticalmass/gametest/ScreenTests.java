@@ -1,12 +1,18 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.control.Mimic;
 import com.criticalmass.content.control.PlantAlarms;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.control.ScreenBlockEntity;
+import com.criticalmass.content.power.BreakerBlockEntity;
+import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
+import com.criticalmass.content.power.TransformerBlockEntity;
+import com.criticalmass.content.power.WireLinks;
+import com.criticalmass.content.power.WireType;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
@@ -226,6 +232,87 @@ public final class ScreenTests {
                     h.assertTrue(main.trends().equals(List.of(PlantChannel.DEMAND, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE)) && main.samples() >= 2, "A bus should graph its load, frequency and voltage: " + main.trends());
                     main.unlink();
                     h.assertTrue(!main.linked() && main.trends().isEmpty() && main.title().isEmpty(), "Unlinking should clear the page");
+                })
+                .thenSucceed();
+    }
+
+    private static void wire(GameTestHelper h, WireType type, BlockPos a, int ta, BlockPos b, int tb) {
+        String problem = WireLinks.connect(h.getLevel(), h.absolutePos(a), ta, h.absolutePos(b), tb, type);
+        h.assertTrue(problem.isEmpty(), "A wire should string between two terminals in reach: " + problem);
+    }
+
+    private static int find(List<Mimic.Node> nodes, Mimic.Kind kind, int from) {
+        for (int i = from; i < nodes.size(); i++) {
+            if (nodes.get(i).kind() == kind) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 300)
+    public static void aWallLinkedToABusDrawsTheNetworkAsAOneLineDiagram(GameTestHelper h) {
+        BlockPos gridPos = new BlockPos(1, 2, 1);
+        BlockPos breakerPos = new BlockPos(3, 2, 1);
+        BlockPos startup = new BlockPos(5, 2, 1);
+        BlockPos post = new BlockPos(7, 3, 1);
+        BlockPos busPos = new BlockPos(7, 2, 4);
+        BlockPos[] motors = {new BlockPos(2, 2, 5), new BlockPos(4, 2, 5)};
+        h.setBlock(gridPos, CMBlocks.GRID_CONNECTION.get());
+        h.setBlock(breakerPos, CMBlocks.CIRCUIT_BREAKER.get());
+        h.setBlock(startup, CMBlocks.TRANSFORMER.get());
+        TransformerBlockEntity t = h.getBlockEntity(startup);
+        t.setRatio(1);
+        h.setBlock(post.below(), Blocks.SMOOTH_STONE);
+        h.setBlock(post, CMBlocks.INSULATOR.get());
+        h.setBlock(busPos, CMBlocks.BUS_BAR.get().defaultBlockState().setValue(RotatedPillarBlock.AXIS, Direction.Axis.X));
+        for (BlockPos motor : motors) {
+            h.setBlock(motor, CMBlocks.ELECTRIC_MOTOR.get().defaultBlockState().setValue(DirectionalKineticBlock.FACING, Direction.EAST));
+        }
+        wire(h, WireType.LINE, gridPos, 0, breakerPos, BreakerBlockEntity.LINE);
+        wire(h, WireType.LINE, breakerPos, BreakerBlockEntity.LOAD, startup, TransformerBlockEntity.HIGH);
+        wire(h, WireType.CABLE, startup, TransformerBlockEntity.LOW, post, 0);
+        wire(h, WireType.CABLE, post, 0, busPos, 0);
+        for (BlockPos motor : motors) {
+            wire(h, WireType.COPPER, busPos, 0, motor, 0);
+        }
+        BreakerBlockEntity breaker = h.getBlockEntity(breakerPos);
+        List<ScreenBlockEntity> all = new ArrayList<>();
+        ScreenBlockEntity main = wall(h, new BlockPos(6, 2, 8), ScreenBlockEntity.MIMIC_WIDTH, ScreenBlockEntity.MIMIC_HEIGHT, all);
+        ScreenBlockEntity small = wall(h, new BlockPos(12, 2, 8), ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT, all);
+        h.onEachTick(() -> all.forEach(ScreenBlockEntity::charge));
+        h.startSequence()
+                .thenIdle(15)
+                .thenExecute(() -> {
+                    breaker.close();
+                    h.assertTrue(main.link(h.absolutePos(busPos)) && small.link(h.absolutePos(busPos)), "Both walls should link to the bus");
+                })
+                .thenIdle(70)
+                .thenExecute(() -> {
+                    List<Mimic.Node> nodes = main.mimic();
+                    h.assertTrue(nodes.size() == 6, "The diagram should have the grid, breaker, transformer, bus and two motors, and no insulator: " + nodes);
+                    int at = find(nodes, Mimic.Kind.BREAKER, 0);
+                    int transformer = find(nodes, Mimic.Kind.TRANSFORMER, 0);
+                    int bus = find(nodes, Mimic.Kind.BUS, 0);
+                    int first = find(nodes, Mimic.Kind.MOTOR, 0);
+                    int second = find(nodes, Mimic.Kind.MOTOR, first + 1);
+                    h.assertTrue(nodes.get(0).kind() == Mimic.Kind.GRID && nodes.get(0).parent() == -1 && nodes.get(0).depth() == 0, "The grid should head the diagram");
+                    h.assertTrue(nodes.get(at).parent() == 0 && nodes.get(at).state() == 1 && nodes.get(at).live(), "The breaker should hang from the grid, closed and live");
+                    h.assertTrue(nodes.get(transformer).parent() == at && nodes.get(bus).parent() == transformer && nodes.get(bus).depth() == 3, "The bus should hang from the transformer, straight through the insulator");
+                    h.assertTrue(nodes.get(first).parent() == bus && nodes.get(second).parent() == bus && nodes.get(first).live() && nodes.get(second).live(), "Both motors should hang from the bus, running");
+                    h.assertTrue(Math.abs(nodes.get(bus).x() - (nodes.get(first).x() + nodes.get(second).x()) / 2) < 1e-4 && nodes.get(first).x() != nodes.get(second).x(), "The bus should sit over its feeders");
+                    h.assertTrue(nodes.get(bus).value().startsWith("6.0"), "The bus should show its voltage: " + nodes.get(bus).value());
+                    h.assertTrue(small.mimic().isEmpty() && !small.trends().isEmpty(), "A wall under five by three should keep the bus's page");
+                    h.assertTrue(main.getUpdateTag(h.getLevel().registryAccess()).getList("Mimic", 10).size() == 6, "The diagram should be sent to the client");
+                    breaker.open();
+                })
+                .thenIdle(50)
+                .thenExecute(() -> {
+                    List<Mimic.Node> nodes = main.mimic();
+                    int at = find(nodes, Mimic.Kind.BREAKER, 0);
+                    int first = find(nodes, Mimic.Kind.MOTOR, 0);
+                    h.assertTrue(nodes.get(at).state() == 0 && !nodes.get(first).live() && !nodes.get(find(nodes, Mimic.Kind.BUS, 0)).live(), "With the breaker open the diagram should show it open and everything behind it dead");
+                    h.assertTrue(!main.events().isEmpty() && main.events().get(0).key().endsWith("bus.dead"), "The bus going dead should be logged");
                 })
                 .thenSucceed();
     }
