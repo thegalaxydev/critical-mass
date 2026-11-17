@@ -79,18 +79,116 @@ def fallout():
     return blocks, []
 
 
-SCENES = {"wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout}
+def pipe(*open_sides):
+    return "create:fluid_pipe[%s]" % ",".join("%s=%s" % (side, "true" if side in open_sides else "false") for side in ("north", "south", "east", "west", "up", "down"))
+
+
+def water_cannon():
+    blocks = plate(9, "minecraft:grass_block")
+    blocks += [((4, 1, 4), "create:gearbox[axis=x]"), ((4, 2, 4), "criticalmass:water_cannon")]
+    blocks += [((4, 1, z), "create:shaft[axis=z]") for z in (5, 6, 7, 8)]
+    blocks += [((4, 2, z), pipe("north", "south")) for z in (0, 1, 2)] + [((4, 2, 3), "create:mechanical_pump[facing=south]")]
+    return blocks, []
+
+
+RPIPE = "criticalmass:reinforced_pipe"
+KIND = {"f": "criticalmass:fuel_channel", "r": "criticalmass:control_channel", "c": "criticalmass:coolant_channel"}
+
+
+def settle(pipes):
+    return ["setblock %d %d %d minecraft:air" % p for p, _ in pipes] + ["setblock %d %d %d %s" % (p[0], p[1], p[2], b) for p, b in pipes]
+
+
+def vessel(o, rows, parts):
+    blocks = []
+    for x in range(5):
+        for y in range(5):
+            for z in range(5):
+                pos = (o[0] + x, o[1] + y, o[2] + z)
+                if pos in parts:
+                    blocks.append((pos, parts[pos]))
+                elif x in (0, 4) or y in (0, 4) or z in (0, 4):
+                    blocks.append((pos, CASING))
+                elif rows[z - 1][x - 1] in KIND:
+                    blocks.append((pos, KIND[rows[z - 1][x - 1]]))
+    return blocks
+
+
+def reactor_vessel():
+    parts = {(1, 3, 3): "criticalmass:reactor_controller[facing=west]", (3, 5, 3): "criticalmass:reactor_service_port[facing=up]",
+             (2, 3, 1): "criticalmass:primary_coolant_port[facing=north,mode=inlet]", (4, 3, 1): "criticalmass:primary_coolant_port[facing=north,mode=outlet]"}
+    parts.update({(3, y, 1): "criticalmass:reactor_viewport" for y in (2, 3, 4)})
+    return plate(7) + vessel((1, 1, 1), ["cfc", "frf", "cfc"], parts), []
+
+
+def rods():
+    parts = {(1, 3, 3): "criticalmass:reactor_controller[facing=west]", (3, 5, 3): "criticalmass:reactor_service_port[facing=up]",
+             (5, 3, 3): "criticalmass:primary_coolant_port[facing=east,mode=inlet]", (3, 3, 5): "criticalmass:primary_coolant_port[facing=south,mode=outlet]"}
+    blocks = plate(7) + vessel((1, 1, 1), [".rf", "..c", "..."], parts)
+    blocks += [((3, 6, 2), "criticalmass:control_rod_drive[facing=north]"), ((2, 6, 2), "create:cogwheel[axis=y]")]
+    return blocks, []
+
+
+def primary_loop():
+    parts = {(6, 3, 4): "criticalmass:reactor_controller[facing=north]", (6, 5, 6): "criticalmass:reactor_service_port[facing=up]",
+             (4, 2, 6): "criticalmass:primary_coolant_port[facing=west,mode=outlet]", (5, 2, 4): "criticalmass:primary_coolant_port[facing=north,mode=inlet]"}
+    blocks = plate(9) + vessel((4, 1, 4), ["cfc", "frf", "cfc"], parts)
+    blocks += [((2, 1, 6), "create:shaft[axis=y]"), ((2, 2, 6), "criticalmass:circulation_pump[facing=west,axis_along_first=true]"),
+               ((1, 2, 4), "criticalmass:heat_exchanger[facing=north]"), ((1, 3, 4), "criticalmass:heat_exchanger[facing=north]"),
+               ((7, 1, 3), "create:blaze_burner[blaze=kindled]"), ((7, 2, 3), "criticalmass:pressurizer")]
+    pipes = [((p), RPIPE) for p in ((3, 2, 6), (1, 2, 6), (1, 2, 5), (1, 2, 3), (1, 2, 2), (2, 2, 2), (3, 2, 2), (4, 2, 2), (5, 2, 2), (5, 2, 3))]
+    pipes += [((1, 1, 4), pipe("up", "down")), ((1, 4, 4), pipe("up", "down"))]
+    return blocks + pipes, settle(pipes)
+
+
+def steam():
+    blocks = plate(9)
+    blocks += [((4, 6, 4), "minecraft:air"), ((4, 5, 4), "criticalmass:steam_turbine[facing=west]"), ((2, 5, 4), "create:shaft[axis=x]"), ((1, 5, 4), "create:shaft[axis=x]"),
+               ((7, 3, 4), "criticalmass:heat_exchanger[facing=east]"), ((7, 5, 4), "criticalmass:relief_valve[facing=north]"),
+               ((1, 2, 4), "criticalmass:condenser[facing=west]"), ((5, 1, 2), "create:shaft[axis=y]"),
+               ((5, 2, 2), "criticalmass:circulation_pump[facing=east,axis_along_first=true]")]
+    ring = [(7, 4, 4), (6, 5, 4), (4, 3, 4), (4, 2, 4), (3, 2, 4), (2, 2, 4), (0, 2, 4), (0, 2, 3), (0, 2, 2), (1, 2, 2), (2, 2, 2), (3, 2, 2), (4, 2, 2),
+            (6, 2, 2), (7, 2, 2), (7, 2, 3), (7, 2, 4), (6, 3, 4), (8, 3, 4)]
+    pipes = [(p, RPIPE) for p in ring] + [((1, 3, 4), pipe("up", "down")), ((1, 1, 4), pipe("up", "down"))]
+    return blocks + pipes, settle(pipes)
+
+
+def cooling():
+    blocks = plate(7)
+    blocks += [((3, y, 3), "criticalmass:cooling_tower_packing") for y in (2, 3, 4, 5)]
+    blocks += [((3, 6, 3), "create:encased_fan[facing=down]"), ((3, 7, 3), "create:shaft[axis=y]"), ((5, 2, 1), "criticalmass:radiator_panel[facing=north]")]
+    pipes = [((3, 1, 3), pipe("up", "north"))] + [((3, 1, z), pipe("north", "south")) for z in (0, 1, 2)]
+    pipes += [((3, 5, z), pipe("north", "south")) for z in (0, 1, 2)] + [((5, 3, 1), pipe("up", "down")), ((5, 1, 1), pipe("up", "down"))]
+    water = ["data merge block 3 %d 3 {Buffer:{Fluid:{id:\"minecraft:water\",amount:%d},Heat:0.0d}}" % (y, 300) for y in (2, 3, 4, 5)]
+    return blocks + pipes, settle(pipes) + water
+
+
+def refuelling():
+    blocks = plate(7)
+    blocks += [((x, y, z), CASING) for x in (3, 4, 5) for y in (1, 2) for z in (3, 4, 5) if (x, y, z) != (4, 2, 4)]
+    blocks += [((4, 2, 4), "criticalmass:reactor_service_port[facing=up]"), ((4, 3, 4), "create:copper_valve_handle[facing=up]"),
+               ((1, 1, 4), "criticalmass:spent_fuel_rack"), ((4, 1, 1), "criticalmass:shielded_cask")]
+    return blocks, []
+
+
+SCENES = {"wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
+          "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon}
 VIEW = {"wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
-        "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter"}
+        "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
+        "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
+        "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon"}
 
 
-def build():
+def build(names=None):
     steps = [{"cmds": ["/gamemode creative", "/gamerule doTileDrops false", "/forceload add -16 -16 31 31", "/tp @p 4 6 12"], "wait": 60, "gui": False}]
     for name, make in SCENES.items():
+        if names and name not in names:
+            continue
         blocks, extra = make()
         size = [max(p[i] for p, _ in blocks) + 1 for i in range(3)]
-        steps.append({"cmds": ["/fill -1 0 -1 15 8 15 minecraft:air"], "wait": 10})
-        steps.append({"cmds": ["/setblock %d %d %d %s" % (p[0], p[1], p[2], b) for p, b in blocks] + ["/" + c for c in extra], "wait": 30})
+        steps.append({"cmds": ["/fill -1 0 -1 15 10 15 minecraft:air"], "wait": 10})
+        steps.append({"cmds": ["/setblock %d %d %d %s" % (p[0], p[1], p[2], b) for p, b in blocks], "wait": 10})
+        steps.append({"cmds": ["/" + c for c in extra], "wait": 30})
         steps.append({"structure": {"from": [0, 0, 0], "size": size, "file": "src/main/resources/assets/criticalmass/ponder/%s.nbt" % name}, "wait": 10})
     return steps
 
@@ -101,7 +199,7 @@ def view(names, lang):
         steps.append({"ponderLang": lang, "wait": 5})
     for name in names:
         steps.append({"ponder": VIEW[name], "wait": 40})
-        for i, at in enumerate((60, 200, 400, 600, 800, 1100)):
+        for i, at in enumerate((60, 250, 500, 750, 1000, 1250, 1500, 1750)):
             steps += [{"ponderSeek": at, "wait": 30}, {"shot": "%s_%d" % (name, i), "wait": 2}]
         steps.append({"closeScreen": True, "wait": 5})
     return steps
@@ -123,7 +221,7 @@ if __name__ == "__main__":
         lang(sys.argv[2])
         sys.exit()
     if mode == "build":
-        steps, name = build(), "ponder_build"
+        steps, name = build([n for n in sys.argv[2].split(",") if n] if len(sys.argv) > 2 and sys.argv[2] != "all" else None), "ponder_build"
     else:
         names = [n for n in sys.argv[2].split(",") if n] if len(sys.argv) > 2 and sys.argv[2] != "all" else list(SCENES)
         steps, name = view(names, sys.argv[3] if len(sys.argv) > 3 else None), "ponder"

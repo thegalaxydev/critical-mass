@@ -239,7 +239,7 @@ public class InspectionHarness {
             JsonArray size = spec.getAsJsonArray("size");
             BlockPos corner = new BlockPos(from.get(0).getAsInt(), from.get(1).getAsInt(), from.get(2).getAsInt());
             net.minecraft.core.Vec3i extent = new net.minecraft.core.Vec3i(size.get(0).getAsInt(), size.get(1).getAsInt(), size.get(2).getAsInt());
-            Path file = mc.gameDirectory.getAbsoluteFile().getParentFile().toPath().resolve(spec.get("file").getAsString());
+            Path file = mc.gameDirectory.toPath().toAbsolutePath().normalize().getParent().resolve(spec.get("file").getAsString());
             MinecraftServer server = mc.getSingleplayerServer();
             server.execute(() -> {
                 try {
@@ -259,7 +259,7 @@ public class InspectionHarness {
             JsonObject out = new JsonObject();
             lines.forEach(out::addProperty);
             try {
-                Files.writeString(mc.gameDirectory.getAbsoluteFile().getParentFile().toPath().resolve(step.get("ponderLang").getAsString()), new com.google.gson.GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(out), StandardCharsets.UTF_8);
+                Files.writeString(mc.gameDirectory.toPath().toAbsolutePath().normalize().getParent().resolve(step.get("ponderLang").getAsString()), new com.google.gson.GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create().toJson(out), StandardCharsets.UTF_8);
                 note("ponderLang " + lines.size() + " lines");
             } catch (IOException ex) {
                 note("ponderLang failed " + ex);

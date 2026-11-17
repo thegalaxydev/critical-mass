@@ -22,7 +22,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -30,7 +30,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -38,7 +38,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -46,7 +46,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -54,11 +54,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "wires_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "wires_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "wires_7",
    "wait": 2
   },
   {
@@ -78,7 +94,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -86,7 +102,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -94,7 +110,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -102,7 +118,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -110,11 +126,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "breaker_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "breaker_7",
    "wait": 2
   },
   {
@@ -134,7 +166,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -142,7 +174,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -150,7 +182,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -158,7 +190,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -166,11 +198,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "synchronising_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "synchronising_7",
    "wait": 2
   },
   {
@@ -190,7 +238,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -198,7 +246,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -206,7 +254,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -214,7 +262,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -222,11 +270,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "standby_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "standby_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "standby_7",
    "wait": 2
   },
   {
@@ -246,7 +310,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -254,7 +318,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -262,7 +326,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -270,7 +334,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -278,11 +342,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "repair_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "repair_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "repair_7",
    "wait": 2
   },
   {
@@ -302,7 +382,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -310,7 +390,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -318,7 +398,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -326,7 +406,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -334,11 +414,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "bypass_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "bypass_7",
    "wait": 2
   },
   {
@@ -358,7 +454,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -366,7 +462,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -374,7 +470,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -382,7 +478,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -390,11 +486,27 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "meltdown_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "meltdown_7",
    "wait": 2
   },
   {
@@ -414,7 +526,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 200,
+   "ponderSeek": 250,
    "wait": 30
   },
   {
@@ -422,7 +534,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 400,
+   "ponderSeek": 500,
    "wait": 30
   },
   {
@@ -430,7 +542,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 600,
+   "ponderSeek": 750,
    "wait": 30
   },
   {
@@ -438,7 +550,7 @@
    "wait": 2
   },
   {
-   "ponderSeek": 800,
+   "ponderSeek": 1000,
    "wait": 30
   },
   {
@@ -446,11 +558,531 @@
    "wait": 2
   },
   {
-   "ponderSeek": 1100,
+   "ponderSeek": 1250,
    "wait": 30
   },
   {
    "shot": "fallout_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "fallout_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:reactor_vessel_casing",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "reactor_vessel_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:control_rod_drive",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "rods_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "rods_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "rods_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "rods_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "rods_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "rods_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "rods_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "rods_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:circulation_pump",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "primary_loop_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:steam_turbine",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "steam_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "steam_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "steam_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "steam_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "steam_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "steam_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "steam_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "steam_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:cooling_tower_packing",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "cooling_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:spent_fuel_rack",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "refuelling_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:water_cannon",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "water_cannon_7",
    "wait": 2
   },
   {

@@ -13,6 +13,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 public class CMPonder implements PonderPlugin {
     public static final ResourceLocation ELECTRICS = CriticalMass.asResource("electrics");
     public static final ResourceLocation ACCIDENTS = CriticalMass.asResource("accidents");
+    public static final ResourceLocation REACTOR = CriticalMass.asResource("reactor");
 
     @Override
     public String getModId() {
@@ -22,6 +23,24 @@ public class CMPonder implements PonderPlugin {
     @Override
     public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
         PonderSceneRegistrationHelper<DeferredHolder<?, ?>> scenes = helper.withKeyFunction(DeferredHolder::getId);
+        scenes.forComponents(CMBlocks.REACTOR_VESSEL_CASING, CMBlocks.REACTOR_CONTROLLER, CMBlocks.REACTOR_VIEWPORT, CMBlocks.FUEL_CHANNEL, CMBlocks.COOLANT_CHANNEL, CMBlocks.CONTROL_CHANNEL)
+                .addStoryBoard("reactor_vessel", PlantScenes::vessel, REACTOR);
+        scenes.forComponents(CMBlocks.CONTROL_ROD_DRIVE, CMBlocks.CONTROL_CHANNEL, CMBlocks.REACTOR_CONTROLLER)
+                .addStoryBoard("rods", PlantScenes::rods, REACTOR);
+        scenes.forComponents(CMBlocks.CIRCULATION_PUMP, CMBlocks.PRIMARY_COOLANT_PORT, CMBlocks.REINFORCED_PIPE, CMBlocks.HEAT_EXCHANGER, CMBlocks.PRESSURIZER)
+                .addStoryBoard("primary_loop", PlantScenes::primaryLoop, REACTOR);
+        scenes.forComponents(CMBlocks.PRIMARY_COOLANT_PORT)
+                .addStoryBoard("reactor_vessel", PlantScenes::vessel);
+        scenes.forComponents(CMBlocks.STEAM_TURBINE, CMBlocks.CONDENSER, CMBlocks.RELIEF_VALVE, CMItems.TURBINE_BLADE, CMBlocks.HEAT_EXCHANGER, CMBlocks.CIRCULATION_PUMP)
+                .addStoryBoard("steam", PlantScenes::steam, REACTOR);
+        scenes.forComponents(CMBlocks.COOLING_TOWER_PACKING, CMBlocks.RADIATOR_PANEL, CMBlocks.CONDENSER)
+                .addStoryBoard("cooling", PlantScenes::cooling, REACTOR);
+        scenes.forComponents(CMBlocks.SPENT_FUEL_RACK, CMBlocks.SHIELDED_CASK, CMBlocks.REACTOR_SERVICE_PORT, CMItems.FRESH_FUEL_ASSEMBLY, CMItems.SPENT_FUEL_ASSEMBLY)
+                .addStoryBoard("refuelling", PlantScenes::refuelling, REACTOR);
+        scenes.forComponents(CMBlocks.REACTOR_SERVICE_PORT)
+                .addStoryBoard("reactor_vessel", PlantScenes::vessel);
+        scenes.forComponents(CMBlocks.WATER_CANNON)
+                .addStoryBoard("water_cannon", PlantScenes::waterCannon, ACCIDENTS);
         scenes.forComponents(CMItems.POWER_WIRE, CMItems.POWER_CABLE, CMItems.TRANSMISSION_LINE, CMBlocks.INSULATOR, CMBlocks.BUS_BAR)
                 .addStoryBoard("wires", PlantScenes::wires, ELECTRICS);
         scenes.forComponents(CMBlocks.CIRCUIT_BREAKER)
@@ -39,11 +58,19 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("meltdown", PlantScenes::meltdown, ACCIDENTS);
         scenes.forComponents(CMItems.SURVEY_METER, CMBlocks.CHARRED_LOG, CMItems.PROTECTIVE_SUIT, CMItems.FALLOUT_ASH, CMBlocks.WATER_CANNON)
                 .addStoryBoard("fallout", PlantScenes::fallout, ACCIDENTS);
+        scenes.forComponents(CMItems.FALLOUT_ASH)
+                .addStoryBoard("water_cannon", PlantScenes::waterCannon);
     }
 
     @Override
     public void registerTags(PonderTagRegistrationHelper<ResourceLocation> helper) {
         PonderTagRegistrationHelper<DeferredHolder<?, ?>> tags = helper.withKeyFunction(DeferredHolder::getId);
+        helper.registerTag(REACTOR)
+                .addToIndex()
+                .item(CMBlocks.REACTOR_CONTROLLER.get(), true, false)
+                .title("Reactor Plant")
+                .description("The reactor, the loops that carry its heat and the steam plant that turns that heat into rotation")
+                .register();
         helper.registerTag(ELECTRICS)
                 .addToIndex()
                 .item(CMBlocks.GENERATOR.get(), true, false)
@@ -56,12 +83,17 @@ public class CMPonder implements PonderPlugin {
                 .title("Reactor Accidents")
                 .description("What a reactor does when its protection is taken away, and what it leaves behind")
                 .register();
+        tags.addToTag(REACTOR)
+                .add(CMBlocks.REACTOR_CONTROLLER).add(CMBlocks.REACTOR_VESSEL_CASING).add(CMBlocks.REACTOR_VIEWPORT).add(CMBlocks.FUEL_CHANNEL).add(CMBlocks.COOLANT_CHANNEL)
+                .add(CMBlocks.CONTROL_CHANNEL).add(CMBlocks.CONTROL_ROD_DRIVE).add(CMBlocks.PRIMARY_COOLANT_PORT).add(CMBlocks.REACTOR_SERVICE_PORT).add(CMBlocks.CIRCULATION_PUMP)
+                .add(CMBlocks.REINFORCED_PIPE).add(CMBlocks.HEAT_EXCHANGER).add(CMBlocks.PRESSURIZER).add(CMBlocks.STEAM_TURBINE).add(CMBlocks.CONDENSER).add(CMBlocks.RELIEF_VALVE)
+                .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK);
         tags.addToTag(ELECTRICS)
                 .add(CMBlocks.GENERATOR).add(CMBlocks.TRANSFORMER).add(CMBlocks.CIRCUIT_BREAKER).add(CMBlocks.BUS_BAR).add(CMBlocks.INSULATOR)
                 .add(CMItems.POWER_WIRE).add(CMItems.POWER_CABLE).add(CMItems.TRANSMISSION_LINE).add(CMBlocks.GRID_CONNECTION)
                 .add(CMBlocks.TRANSFER_SWITCH).add(CMBlocks.STATION_BATTERY).add(CMBlocks.DIESEL_ENGINE).add(CMBlocks.ELECTRIC_MOTOR);
         tags.addToTag(ACCIDENTS)
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.SWITCH)).add(CMBlocks.FUEL_CHANNEL)
-                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER);
+                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER).add(CMItems.FALLOUT_ASH).add(CMBlocks.WATER_CANNON);
     }
 }
