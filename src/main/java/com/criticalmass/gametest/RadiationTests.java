@@ -292,6 +292,37 @@ public final class RadiationTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void uraniumInHandReadsOnASurveyMeter(GameTestHelper h) {
+        double raw = Radiation.itemStrength(new ItemStack(CMItems.RAW_URANIUM.get()));
+        h.assertTrue(raw == Radiation.URANIUM_DOSE && Radiation.itemStrength(new ItemStack(CMItems.RAW_URANIUM.get(), 64)) == 64 * raw, "Raw Uranium should give a weak dose that grows with the stack: " + raw);
+        for (ItemStack same : List.of(new ItemStack(CMItems.URANIUM_CONCENTRATE.get()), new ItemStack(com.simibubi.create.AllItems.CRUSHED_URANIUM.get()), new ItemStack(CMBlocks.URANIUM_ORE.get()), new ItemStack(CMBlocks.DEEPSLATE_URANIUM_ORE.get()))) {
+            h.assertTrue(Radiation.itemStrength(same) == raw, same.getItem() + " should give what Raw Uranium gives");
+        }
+        double enriched = Radiation.itemStrength(new ItemStack(CMItems.ENRICHED_URANIUM.get()));
+        double depleted = Radiation.itemStrength(new ItemStack(CMItems.DEPLETED_URANIUM.get()));
+        h.assertTrue(enriched > raw && depleted > 0 && depleted < raw && Radiation.itemStrength(new ItemStack(CMItems.CERAMIC_FUEL_PELLET.get())) == enriched, "Enriched should give more than raw and depleted less: " + enriched + ", " + depleted);
+        h.assertTrue(8 * enriched < Radiation.FRESH_DOSE, "The pellets in an assembly should give less than the assembly");
+        Player p = h.makeMockPlayer(GameType.SURVIVAL);
+        Vec3 feet = Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3)));
+        p.setPos(feet);
+        p.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.SURVEY_METER.get()));
+        double empty = Radiation.ambientRate(h.getLevel(), p.getEyePosition());
+        double quiet = RadiationEvents.clickRate(p, h.getLevel());
+        net.minecraft.world.entity.item.ItemEntity dropped = new net.minecraft.world.entity.item.ItemEntity(h.getLevel(), feet.x + 1, feet.y, feet.z, new ItemStack(CMItems.RAW_URANIUM.get(), 64), 0, 0, 0);
+        dropped.setNoGravity(true);
+        h.getLevel().addFreshEntity(dropped);
+        double lying = Radiation.ambientRate(h.getLevel(), p.getEyePosition()) - empty;
+        h.assertTrue(lying > 0.1 && RadiationEvents.clickRate(p, h.getLevel()) > quiet + 1, "A meter should read a dropped stack of Raw Uranium: " + lying);
+        dropped.discard();
+        for (int slot = 9; slot < 36; slot++) {
+            p.getInventory().setItem(slot, new ItemStack(CMItems.RAW_URANIUM.get(), 64));
+        }
+        double dose = RadiationEvents.exposeOnce(p, h.getLevel(), List.of());
+        h.assertTrue(dose >= 27 * 64 * raw - 1e-9 && dose < CMConfig.get(CMConfig.RECOVERY_PER_MINUTE) && RadiationEvents.data(p).body == 0, "27 stacks of Raw Uranium should give a dose, and less than the body recovers: " + dose);
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void dosimeterDoseLivesOnThePlayer(GameTestHelper h) {
         Player p = h.makeMockPlayer(GameType.SURVIVAL);
         p.setPos(Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3))));

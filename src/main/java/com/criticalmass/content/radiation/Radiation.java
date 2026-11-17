@@ -19,6 +19,7 @@ import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMItems;
+import com.simibubi.create.AllItems;
 import dev.ryanhcode.sable.companion.SableCompanion;
 import dev.ryanhcode.sable.companion.SubLevelAccess;
 import java.util.ArrayList;
@@ -48,6 +49,9 @@ public final class Radiation {
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
     public static final double ORE_DOSE = 0.2;
+    public static final double URANIUM_DOSE = 0.01;
+    public static final double ENRICHED_DOSE = 0.02;
+    public static final double DEPLETED_DOSE = 0.005;
     public static final int ORE_REACH = 5;
     public static final double CASK_TRANSMISSION = 0.01;
     public static final double OPEN_CASK_TRANSMISSION = 0.5;
@@ -92,6 +96,16 @@ public final class Radiation {
         }
         if (stack.is(CMItems.STRONTIUM_90.get())) {
             return stack.getCount() * STRONTIUM_DOSE;
+        }
+        if (stack.is(CMItems.RAW_URANIUM.get()) || stack.is(CMItems.URANIUM_CONCENTRATE.get()) || stack.is(AllItems.CRUSHED_URANIUM.get())
+                || stack.is(CMBlocks.URANIUM_ORE.get().asItem()) || stack.is(CMBlocks.DEEPSLATE_URANIUM_ORE.get().asItem())) {
+            return stack.getCount() * URANIUM_DOSE;
+        }
+        if (stack.is(CMItems.ENRICHED_URANIUM.get()) || stack.is(CMItems.CERAMIC_FUEL_PELLET.get())) {
+            return stack.getCount() * ENRICHED_DOSE;
+        }
+        if (stack.is(CMItems.DEPLETED_URANIUM.get())) {
+            return stack.getCount() * DEPLETED_DOSE;
         }
         if (stack.is(CMItems.INCOMPLETE_WASTE_CANISTER.get())) {
             return stack.getCount() * (s == null ? CANISTER_DOSE : 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual));
