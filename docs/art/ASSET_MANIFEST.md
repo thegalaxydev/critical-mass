@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (54)
+## Blocks (55)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -14,6 +14,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:burnt_equipment` | Burnt-Out Equipment (no item) | script | `block/burnt_equipment.png` 16x16<br>`block/burnt_equipment_bottom.png` 16x16<br>`block/burnt_equipment_top.png` 16x16 |  | 1 |
 | `criticalmass:bus_bar` | Bus Bar | script | `block/bus_bar.png` 16x16 |  | 2 |
 | `criticalmass:centrifuge` | Centrifuge | script | `block/centrifuge.png` 32x32 |  | 4 |
+| `criticalmass:charred_log` | Charred Log | script | `block/charred_log.png` 16x16<br>`block/charred_log_top.png` 16x16 |  | 3 |
 | `criticalmass:circuit_breaker` | Circuit Breaker | script | `block/circuit_breaker.png` 32x32<br>`block/steel_block.png` 16x16 |  | 3 |
 | `criticalmass:circulation_pump` | Circulation Pump | author | `block/circulation_pump.png` 32x32 |  | 5 |
 | `criticalmass:condenser` | Condenser | script | `block/condenser.png` 32x32<br>`block/reinforced_pipe.png` 32x32 |  | 3 |
@@ -138,37 +139,38 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (25)
+## Sounds (26)
 
-All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`.
+All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
 
-| Sound | Subtitle | File |
-|---|---|---|
-| `criticalmass:alarm` | Reactor alarm sounds | `sounds/alarm.ogg` |
-| `criticalmass:hum` | Transformer hums | `sounds/hum.ogg` |
-| `criticalmass:generator_run` | Generator drones | `sounds/generator_run.ogg` |
-| `criticalmass:motor_run` | Motor whirrs | `sounds/motor_run.ogg` |
-| `criticalmass:steam_hiss` | Steam hisses | `sounds/steam_hiss.ogg` |
-| `criticalmass:reactor_thrum` | Reactor thrums | `sounds/reactor_thrum.ogg` |
-| `criticalmass:breaker_close` | Breaker closes | `sounds/breaker_close.ogg` |
-| `criticalmass:breaker_open` | Breaker opens | `sounds/breaker_open.ogg` |
-| `criticalmass:breaker_trip` | Breaker trips | `sounds/breaker_trip.ogg` |
-| `criticalmass:switch_throw` | Switch thrown | `sounds/switch_throw.ogg` |
-| `criticalmass:relay_click` | Relay clicks | `sounds/relay_click.ogg` |
-| `criticalmass:arc_zap` | Electricity arcs | `sounds/arc_zap.ogg` |
-| `criticalmass:arc_blast` | Electrical explosion | `sounds/arc_blast.ogg` |
-| `criticalmass:wire_sizzle` | Wire burns | `sounds/wire_sizzle.ogg` |
-| `criticalmass:steam_vent` | Steam vents | `sounds/steam_vent.ogg` |
-| `criticalmass:pipe_burst` | Pipe bursts | `sounds/pipe_burst.ogg` |
-| `criticalmass:geiger` | Survey meter clicks | `sounds/geiger.ogg` |
-| `criticalmass:order_placed` | Power order arrives | `sounds/order_placed.ogg` |
-| `criticalmass:order_met` | Power order met | `sounds/order_met.ogg` |
-| `criticalmass:order_missed` | Power order missed | `sounds/order_missed.ogg` |
-| `criticalmass:wire_string` | Wire strung | `sounds/wire_string.ogg` |
-| `criticalmass:wire_cut` | Wire cut | `sounds/wire_cut.ogg` |
-| `criticalmass:engine_start` | Engine cranks | `sounds/engine_start.ogg` |
-| `criticalmass:engine_run` | Engine runs | `sounds/engine_run.ogg` |
-| `criticalmass:service` | Equipment serviced | `sounds/service.ogg` |
+| Sound | Subtitle | Art | File |
+|---|---|---|---|
+| `criticalmass:alarm` | Reactor alarm sounds | script | `sounds/alarm.ogg` |
+| `criticalmass:hum` | Transformer hums | script | `sounds/hum.ogg` |
+| `criticalmass:generator_run` | Generator drones | script | `sounds/generator_run.ogg` |
+| `criticalmass:motor_run` | Motor whirrs | script | `sounds/motor_run.ogg` |
+| `criticalmass:steam_hiss` | Steam hisses | script | `sounds/steam_hiss.ogg` |
+| `criticalmass:reactor_thrum` | Reactor thrums | script | `sounds/reactor_thrum.ogg` |
+| `criticalmass:breaker_close` | Breaker closes | script | `sounds/breaker_close.ogg` |
+| `criticalmass:breaker_open` | Breaker opens | script | `sounds/breaker_open.ogg` |
+| `criticalmass:breaker_trip` | Breaker trips | script | `sounds/breaker_trip.ogg` |
+| `criticalmass:switch_throw` | Switch thrown | script | `sounds/switch_throw.ogg` |
+| `criticalmass:relay_click` | Relay clicks | script | `sounds/relay_click.ogg` |
+| `criticalmass:arc_zap` | Electricity arcs | script | `sounds/arc_zap.ogg` |
+| `criticalmass:arc_blast` | Electrical explosion | script | `sounds/arc_blast.ogg` |
+| `criticalmass:wire_sizzle` | Wire burns | script | `sounds/wire_sizzle.ogg` |
+| `criticalmass:steam_vent` | Steam vents | script | `sounds/steam_vent.ogg` |
+| `criticalmass:pipe_burst` | Pipe bursts | script | `sounds/pipe_burst.ogg` |
+| `criticalmass:geiger` | Survey meter clicks | script | `sounds/geiger.ogg` |
+| `criticalmass:order_placed` | Power order arrives | script | `sounds/order_placed.ogg` |
+| `criticalmass:order_met` | Power order met | script | `sounds/order_met.ogg` |
+| `criticalmass:order_missed` | Power order missed | script | `sounds/order_missed.ogg` |
+| `criticalmass:wire_string` | Wire strung | script | `sounds/wire_string.ogg` |
+| `criticalmass:wire_cut` | Wire cut | script | `sounds/wire_cut.ogg` |
+| `criticalmass:engine_start` | Engine cranks | script | `sounds/engine_start.ogg` |
+| `criticalmass:engine_run` | Engine runs | script | `sounds/engine_run.ogg` |
+| `criticalmass:service` | Equipment serviced | script | `sounds/service.ogg` |
+| `criticalmass:nuclear_blast` | Nuclear explosion | generated | `sounds/nuclear_blast.ogg` |
 
 ## Problems
 

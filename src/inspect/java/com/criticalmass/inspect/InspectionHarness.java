@@ -55,6 +55,8 @@ public class InspectionHarness {
     private boolean worldRequested = false;
     private int inWorldTicks = 0;
     private String scriptName = "inspect";
+    private boolean terrain;
+    private long seed = 1234L;
     private String worldName;
     private final StringBuilder log = new StringBuilder();
 
@@ -67,6 +69,8 @@ public class InspectionHarness {
         try {
             JsonObject root = JsonParser.parseString(Files.readString(Path.of(path), StandardCharsets.UTF_8)).getAsJsonObject();
             scriptName = root.has("name") ? root.get("name").getAsString() : "inspect";
+            terrain = root.has("world") && root.get("world").getAsString().equals("normal");
+            seed = root.has("seed") ? root.get("seed").getAsLong() : 1234L;
             for (JsonElement e : root.getAsJsonArray("steps")) {
                 steps.add(e.getAsJsonObject());
             }
@@ -92,6 +96,10 @@ public class InspectionHarness {
             return;
         }
         inWorldTicks++;
+        if (mc.screen instanceof net.minecraft.client.gui.screens.PauseScreen) {
+            mc.setScreen(null);
+            note("closed a pause screen opened by stray input");
+        }
         if (inWorldTicks < 60) {
             KeyMapping.releaseAll();
             return;
@@ -123,9 +131,9 @@ public class InspectionHarness {
         String name = "ccm_inspect_" + System.currentTimeMillis();
         worldName = name;
         LevelSettings settings = new LevelSettings(name, GameType.CREATIVE, false, Difficulty.PEACEFUL, true, rules, WorldDataConfiguration.DEFAULT);
-        WorldOptions options = new WorldOptions(1234L, false, false);
+        WorldOptions options = new WorldOptions(seed, false, false);
         mc.createWorldOpenFlows().createFreshLevel(name, settings, options,
-                access -> access.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(WorldPresets.FLAT).value().createWorldDimensions(),
+                access -> access.registryOrThrow(Registries.WORLD_PRESET).getHolderOrThrow(terrain ? WorldPresets.NORMAL : WorldPresets.FLAT).value().createWorldDimensions(),
                 mc.screen);
         LOGGER.info("[inspect] creating world {}", name);
     }

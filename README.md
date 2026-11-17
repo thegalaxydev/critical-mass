@@ -164,7 +164,12 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   4. **Breach:** when that floor block fails, the corium leaves the vessel as a hot Corium block and contaminates the ground around it.
   5. **Outside:** hot Corium glows, burns whoever stands on it, is a strong radiation source and melts down through up to 3 solid blocks (configurable). Shielding Concrete and obsidian stop it. Water beside it cools it six times faster.
 - **Afterwards:** the vessel is invalid until every Ruined Fuel Channel and the holed casing are replaced. Corium cools to dark slag that can be mined, but the slag and ruined channels stay radioactive as blocks and as items, so they need shielded storage. Breaking the controller of a melted core drops its corium.
-- **Config:** `accidents.meltdown` turns melting off, `accidents.coriumDepth` limits burn-through, and `accidents.coriumContamination` scales the release.
+- **Total meltdown:** a core whose every fuel column has melted goes off as a nuclear explosion three seconds later.
+  - **Crater:** a 15-block core leaves a bowl 40 blocks in radius and about 18 deep, lined with basalt, blackstone and magma, with a pool of hot Corium at the bottom. Bigger cores leave bigger craters, up to 64 blocks.
+  - **Blast:** everything living inside the crater's radius dies, and out to nearly twice that it is burnt and thrown. Leaves, plants and timber there are stripped, tree trunks are left standing as Charred Logs, grass is scorched to dirt and fires start.
+  - **Cloud:** a flash whites out the view, then a fireball rises on a stem and rolls into a mushroom cloud that stands for over a minute. The blast is heard when its wave arrives, later the further away you are.
+  - **How to get one:** not easily. The automatic trip and the fuel's own feedback stop a loss of cooling and a sudden loss of xenon and boron well short of melting. `/criticalmass meltdown` melts the nearest core to test it, and `/criticalmass melt <controller>` and `/criticalmass detonate <position> [radius]` do the two halves on their own.
+- **Config:** `accidents.meltdown` turns melting off, `accidents.coriumDepth` limits burn-through, and `accidents.coriumContamination` scales the release. `accidents.nuclearExplosion` turns the explosion off, so a total meltdown only leaves corium, and `accidents.explosionRadius` sets the crater of a 15-block core.
   - Repair with the Welding Torch: hold use for 2 seconds; each weld restores 50%.
   - Welding is refused on a breached reactor until residual heat falls below 20 HU/t.
 
@@ -329,6 +334,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Cooling tower:** a tower that draws by itself, with no fan on top, sends up a plume that grows with the heat it rejects.
 - **Radiation:** a Survey Meter or Dosimeter in hand clicks, faster with the dose rate. Above a rate of 10 the view picks up static, heavier as the rate climbs.
 - **Grid:** a power order arriving, met or missed each plays a short tune.
+- **Nuclear explosion:** the flash, fireball, stem, rolling cap, ground surge and shock rings of a mushroom cloud, seen from up to a thousand blocks away. Its sound is the one sound that is not synthesised.
 
 **Radiation.** On by default with gentle values; everything below is in the server config (`radiation.*`).
 - **Dose rate:** in mSv/min. A player receives, from every source within 48 blocks, its strength times the shielding transmission divided by (1 + distance²).

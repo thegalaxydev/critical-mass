@@ -861,8 +861,13 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         if (failures > 0) {
             coolant.contaminate();
         }
-        for (long k : core.takeMelts()) {
+        List<Long> melted = core.takeMelts();
+        for (long k : melted) {
             ruinColumn(k, shape);
+        }
+        if (!melted.isEmpty() && shape != null && core.coriumColumns().size() >= core.fuelColumns() && CMConfig.nuclearExplosion() && level instanceof ServerLevel server) {
+            BlockPos heart = new BlockPos((shape.min.getX() + shape.max.getX()) / 2, (shape.min.getY() + shape.max.getY()) / 2, (shape.min.getZ() + shape.max.getZ()) / 2);
+            Detonation.arm(server, heart, Detonation.radiusFor(core.coriumMass()), Detonation.FUSE_TICKS, true);
         }
         flashCoolant();
         if (breached && coolant.amount() > 0) {

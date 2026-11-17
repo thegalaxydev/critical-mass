@@ -685,5 +685,10 @@
   "criticalmass.subtitle.service": "Equipment serviced",
   "criticalmass.screen.mimic": "ONE-LINE DIAGRAM",
   "criticalmass.alarm.equipment": "Electrical trouble",
-  "criticalmass.alarm.equipment.short": "ELEC"
+  "criticalmass.alarm.equipment.short": "ELEC",
+  "criticalmass.subtitle.nuclear_blast": "Nuclear explosion",
+  "criticalmass.command.detonating": "The core goes off in three seconds, with a crater %s blocks in radius",
+  "block.criticalmass.charred_log": "Charred Log",
+  "criticalmass.command.melted": "Every fuel column is past its melting point",
+  "criticalmass.command.no_reactor_near": "No Reactor Controller within 256 blocks"
 }

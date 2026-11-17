@@ -5,6 +5,8 @@ import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.radiation.Radiation;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.Corium;
+import com.criticalmass.content.thermal.Detonation;
+import com.criticalmass.content.thermal.ReactorCore;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
 import com.criticalmass.registry.CMBlocks;
 import net.minecraft.core.BlockPos;
@@ -20,6 +22,7 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class MeltdownTests {
     private static final String EMPTY = "empty";
+    private static final String LARGE = "empty_large";
     private static final BlockPos FLOOR = new BlockPos(3, 1, 3);
     private static final double MOLTEN = (2000 - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3;
 
@@ -52,6 +55,71 @@ public final class MeltdownTests {
                     h.assertTrue(floor > 0 && floor < 1, "The floor should be scarred but hold: " + floor);
                     h.assertBlockPresent(CMBlocks.REACTOR_VESSEL_CASING.get(), FLOOR);
                     h.assertTrue(c.flashedVolume() > 0 || c.coolant().temperature() > CMThermal.AMBIENT + 20, "The corium's heat should end up in the coolant");
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 200)
+    public static void aCoreMeltedInEveryColumnIsArmedToGoOff(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        c.coolant().set(CoolantLoopTests.coolant(6000), 0);
+        BlockPos heart = h.absolutePos(new BlockPos(3, 3, 3));
+        h.startSequence()
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    c.core().setColumnHeat(2, 0, MOLTEN);
+                })
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    h.assertTrue(!Detonation.armed(h.getLevel(), heart, 4), "One melted column of five should not arm the core");
+                    for (ReactorCore.FuelColumn f : c.core().columns()) {
+                        c.core().setColumnHeat(f.dx(), f.dz(), MOLTEN);
+                    }
+                })
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    h.assertTrue(c.core().coriumMass() == 15 && c.core().assemblies().isEmpty(), "Every assembly should be corium: mass " + c.core().coriumMass());
+                    h.assertTrue(Detonation.armed(h.getLevel(), heart, 4), "A core melted in every column should be armed");
+                    h.assertTrue(Detonation.radiusFor(15) == 40 && Detonation.radiusFor(120) == 64, "The crater should grow with the molten mass: " + Detonation.radiusFor(120));
+                    h.assertTrue(Detonation.cancel(h.getLevel(), heart, 4) && !Detonation.armed(h.getLevel(), heart, 4), "The fuse should be cancellable while it burns");
+                })
+                .thenIdle(80)
+                .thenExecute(() -> h.assertBlockPresent(CMBlocks.REACTOR_CONTROLLER.get(), TestVessels.CONTROLLER))
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void aDetonationCarvesACraterLinesItAndCharsLogs(GameTestHelper h) {
+        BlockPos centre = new BlockPos(8, 4, 8);
+        for (int x = 2; x <= 14; x++) {
+            for (int z = 2; z <= 14; z++) {
+                for (int y = 1; y <= 5; y++) {
+                    h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+                }
+            }
+        }
+        BlockPos log = new BlockPos(8, 4, 13);
+        BlockPos leaves = new BlockPos(13, 4, 8);
+        BlockPos planks = new BlockPos(3, 4, 8);
+        h.setBlock(log, Blocks.OAK_LOG);
+        h.setBlock(leaves, Blocks.OAK_LEAVES.defaultBlockState().setValue(net.minecraft.world.level.block.LeavesBlock.PERSISTENT, true));
+        h.setBlock(planks, Blocks.OAK_PLANKS);
+        Detonation.arm(h.getLevel(), h.absolutePos(centre), 4, 1, false);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertBlockPresent(Blocks.AIR, centre);
+                    h.assertBlockPresent(Blocks.AIR, centre.east(3));
+                    h.assertBlockPresent(Blocks.AIR, centre.above(3));
+                    h.assertBlockPresent(CMBlocks.CHARRED_LOG.get(), log);
+                    h.assertBlockPresent(Blocks.AIR, leaves);
+                    h.assertBlockPresent(Blocks.AIR, planks);
+                    net.minecraft.world.level.block.state.BlockState lining = h.getBlockState(new BlockPos(8, 4, 3));
+                    h.assertTrue(lining.is(Blocks.SMOOTH_BASALT) || lining.is(Blocks.BLACKSTONE) || lining.is(Blocks.MAGMA_BLOCK) || lining.is(Blocks.TUFF), "The crater wall should be slag: " + lining);
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(2, 1, 2));
+                    h.assertBlockPresent(CMBlocks.CORIUM.get(), new BlockPos(8, 3, 8));
+                    h.assertTrue(!Detonation.armed(h.getLevel(), h.absolutePos(centre), 2), "A finished detonation should be gone");
                 })
                 .thenSucceed();
     }

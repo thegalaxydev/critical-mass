@@ -52,6 +52,7 @@ public final class ClientEffects {
             return (type, level, x, y, z, xd, yd, zd) -> new ArcParticle(level, new Vec3(x, y, z), new Vec3(x + xd, y + yd, z + zd), 1f, sprites.get(RANDOM));
         }));
         modBus.addListener((RegisterGuiLayersEvent event) -> event.registerBelowAll(CriticalMass.asResource("radiation_grain"), ClientEffects::grain));
+        modBus.addListener((RegisterGuiLayersEvent event) -> event.registerAboveAll(CriticalMass.asResource("blast_flash"), ClientEffects::flash));
         NeoForge.EVENT_BUS.addListener((ClientTickEvent.Post event) -> tick());
         NeoForge.EVENT_BUS.addListener(ClientEffects::camera);
         Effects.client = ClientEffects::loop;
@@ -178,6 +179,7 @@ public final class ClientEffects {
                 shake = Math.max(shake, (float) (power * 0.6 * Math.max(0, 1 - distance / 24.0)));
             }
             case Effects.OIL_FIRE -> EMITTERS.add(new Emitter(kind, from, from, 1f, new int[]{Math.round(power * 20)}));
+            case Effects.NUKE -> MushroomCloud.start(level, from, power);
             default -> {
             }
         }
@@ -228,6 +230,7 @@ public final class ClientEffects {
         if (mc.level == null || mc.player == null) {
             LOOPS.clear();
             EMITTERS.clear();
+            MushroomCloud.clear();
             shake = 0;
             doseRate = 0;
             return;
@@ -240,6 +243,8 @@ public final class ClientEffects {
             shake = 0;
         }
         emit(mc.level);
+        MushroomCloud.tick(mc.level);
+        shake = Math.max(shake, MushroomCloud.rumble());
         LOOPS.values().removeIf(Loop::isStopped);
         if (doseAge++ > 60) {
             doseRate = 0;
@@ -261,6 +266,13 @@ public final class ClientEffects {
         event.setPitch(event.getPitch() + (float) (Math.sin(time * 2.7) * shake));
         event.setYaw(event.getYaw() + (float) (Math.sin(time * 3.9 + 1.3) * shake * 0.7));
         event.setRoll(event.getRoll() + (float) (Math.sin(time * 3.1 + 2.1) * shake * 0.8));
+    }
+
+    private static void flash(GuiGraphics graphics, DeltaTracker delta) {
+        float strength = MushroomCloud.flash(delta.getGameTimeDeltaPartialTick(false));
+        if (strength > 0.004f) {
+            graphics.fill(0, 0, graphics.guiWidth(), graphics.guiHeight(), Math.round(Mth.clamp(strength, 0f, 1f) * 255) << 24 | 0xFFF6E0);
+        }
     }
 
     private static void grain(GuiGraphics graphics, DeltaTracker delta) {

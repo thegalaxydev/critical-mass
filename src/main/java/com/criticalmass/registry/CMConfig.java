@@ -22,6 +22,8 @@ public final class CMConfig {
     public static final ModConfigSpec.BooleanValue MELTDOWN;
     public static final ModConfigSpec.IntValue CORIUM_DEPTH;
     public static final ModConfigSpec.DoubleValue CORIUM_CONTAMINATION;
+    public static final ModConfigSpec.BooleanValue NUCLEAR_EXPLOSION;
+    public static final ModConfigSpec.IntValue EXPLOSION_RADIUS;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_FIRES;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_BLASTS_BREAK_BLOCKS;
     public static final ModConfigSpec.BooleanValue LIVE_WORK_HURTS;
@@ -41,6 +43,8 @@ public final class CMConfig {
         MELTDOWN = b.comment("Whether fuel above 1800 C melts into corium and ruins its channel").define("meltdown", true);
         CORIUM_DEPTH = b.comment("How many solid blocks hot corium can melt down through after leaving the vessel").defineInRange("coriumDepth", 3, 0, 64);
         CORIUM_CONTAMINATION = b.comment("Multiplier on the contamination released when corium breaches the vessel").defineInRange("coriumContamination", 1.0, 0.0, 100.0);
+        NUCLEAR_EXPLOSION = b.comment("Whether a core whose every fuel column has melted goes off as a nuclear explosion; turned off, a full melt only leaves corium").define("nuclearExplosion", true);
+        EXPLOSION_RADIUS = b.comment("Radius in blocks of the crater a 15-block core leaves; bigger cores leave bigger ones, and fire and blast reach about twice as far").defineInRange("explosionRadius", 40, 4, 96);
         b.pop();
         b.push("electrical");
         ELECTRICAL_FIRES = b.comment("Whether electrical faults start fires").define("fires", true);
@@ -81,6 +85,14 @@ public final class CMConfig {
 
     public static boolean meltdown() {
         return !SPEC.isLoaded() || MELTDOWN.get();
+    }
+
+    public static boolean nuclearExplosion() {
+        return !SPEC.isLoaded() || NUCLEAR_EXPLOSION.get();
+    }
+
+    public static int explosionRadius() {
+        return SPEC.isLoaded() ? EXPLOSION_RADIUS.get() : 40;
     }
 
     public static int coriumDepth() {

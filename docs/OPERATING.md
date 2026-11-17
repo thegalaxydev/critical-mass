@@ -115,6 +115,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | A loop keeps losing water, or the pipes give a dose | Plain pipes or valves under pressure, or holding primary coolant | Reinforce them with a Reactor Alloy Ingot |
 | Ruined Fuel Channel | Fuel melted | Keep the vessel flooded so the corium cools inside. Then replace the ruined channels and any failed casing |
 | Corium outside the vessel | The floor failed | Stay off it. Flood it with water, wait for it to go dark, mine it and store it shielded. Decontaminate the area |
+| Every fuel column melted | Total meltdown | Run. Three seconds later the core goes off and leaves a crater 40 blocks in radius, with fire and blast to nearly twice that |
 
 ## Expanding safely
 

@@ -72,18 +72,31 @@ public final class EffectParticles {
         }
     };
 
+    static SpriteSet puffs;
+    static SpriteSet glows;
+    static SpriteSet rings;
+
     private EffectParticles() {
     }
 
     public static void register(RegisterParticleProvidersEvent event) {
-        event.registerSpriteSet(CMParticles.STEAM.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 0.5f, 34, 1.022f, 0.004f, 0.62f, 1f, 1f, 1f));
+        event.registerSpriteSet(CMParticles.STEAM.get(), sprites -> {
+            puffs = sprites;
+            return (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 0.5f, 34, 1.022f, 0.004f, 0.62f, 1f, 1f, 1f);
+        });
         event.registerSpriteSet(CMParticles.PLUME.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 2.4f, 190, 1.011f, 0.0015f, 0.5f, 1f, 1f, 1f));
         event.registerSpriteSet(CMParticles.OIL_SMOKE.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 1.1f, 110, 1.014f, 0.003f, 0.85f, 0.13f, 0.12f, 0.12f));
         event.registerSpriteSet(CMParticles.ARC_SPARK.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Spark(level, x, y, z, xd, yd, zd, sprites, 0.75f, 0.9f, 1f, 0.05f));
         event.registerSpriteSet(CMParticles.EMBER.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Spark(level, x, y, z, xd, yd, zd, sprites, 1f, 0.55f, 0.15f, -0.012f));
-        event.registerSpriteSet(CMParticles.GLOW.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Glow(level, x, y, z, sprites, (float) Math.max(0.5, xd), 5, 0.8f, 0.9f, 1f, false));
+        event.registerSpriteSet(CMParticles.GLOW.get(), sprites -> {
+            glows = sprites;
+            return (type, level, x, y, z, xd, yd, zd) -> new Glow(level, x, y, z, sprites, (float) Math.max(0.5, xd), 5, 0.8f, 0.9f, 1f, false);
+        });
         event.registerSpriteSet(CMParticles.FIREBALL.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Glow(level, x, y, z, sprites, (float) Math.max(0.5, xd), 16, 1f, 0.62f, 0.2f, true));
-        event.registerSpriteSet(CMParticles.SHOCKWAVE.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Ring(level, x, y, z, sprites, (float) Math.max(1.0, xd)));
+        event.registerSpriteSet(CMParticles.SHOCKWAVE.get(), sprites -> {
+            rings = sprites;
+            return (type, level, x, y, z, xd, yd, zd) -> new Ring(level, x, y, z, sprites, (float) Math.max(1.0, xd));
+        });
         event.registerSpriteSet(CMParticles.CHERENKOV.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Halo(level, x, y, z, sprites, (float) Math.max(0.2, xd)));
         event.registerSpriteSet(CMParticles.MOTE.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Mote(level, x, y, z, xd, yd, zd, sprites));
     }

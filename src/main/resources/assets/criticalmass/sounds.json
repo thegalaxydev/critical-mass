@@ -223,5 +223,14 @@
     "attenuation_distance": 16
    }
   ]
+ },
+ "nuclear_blast": {
+  "subtitle": "criticalmass.subtitle.nuclear_blast",
+  "sounds": [
+   {
+    "name": "criticalmass:nuclear_blast",
+    "attenuation_distance": 512
+   }
+  ]
  }
 }

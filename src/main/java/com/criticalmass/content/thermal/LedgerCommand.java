@@ -79,6 +79,12 @@ public final class LedgerCommand {
                         .then(Commands.literal("outage").then(Commands.argument("seconds", IntegerArgumentType.integer(1, 600))
                                 .executes(ctx -> grid(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tie"), GridTieBlockEntity.Event.OUTAGE, IntegerArgumentType.getInteger(ctx, "seconds")))))))
                 .then(Commands.literal("strike").then(Commands.argument("near", BlockPosArgument.blockPos()).executes(ctx -> strike(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "near")))))
+                .then(Commands.literal("meltdown").executes(ctx -> meltdown(ctx.getSource())))
+                .then(Commands.literal("melt").then(Commands.argument("controller", BlockPosArgument.blockPos()).executes(ctx -> melt(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller")))))
+                .then(Commands.literal("detonate").then(Commands.argument("centre", BlockPosArgument.blockPos())
+                        .executes(ctx -> detonate(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "centre"), com.criticalmass.registry.CMConfig.explosionRadius()))
+                        .then(Commands.argument("radius", IntegerArgumentType.integer(4, 96))
+                                .executes(ctx -> detonate(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "centre"), IntegerArgumentType.getInteger(ctx, "radius"))))))
                 .then(Commands.literal("xenon").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("level", DoubleArgumentType.doubleArg(0, 3))
                         .executes(ctx -> xenon(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "level"))))))
                 .then(Commands.literal("fuel").then(Commands.argument("controller", BlockPosArgument.blockPos())
@@ -323,6 +329,43 @@ public final class LedgerCommand {
         }
         tie.disturb(event, seconds * 20, event == GridTieBlockEntity.Event.DIP ? Power.DIP_FLOOR : event == GridTieBlockEntity.Event.SWING ? Power.SWING_HZ : 0);
         source.sendSuccess(() -> Component.translatable("criticalmass.command.grid." + event.name().toLowerCase(java.util.Locale.ROOT)), true);
+        return 1;
+    }
+
+    private static int meltdown(CommandSourceStack source) {
+        ReactorControllerBlockEntity nearest = null;
+        double best = 256.0 * 256.0;
+        for (BlockEntity be : LoadedThermalBlocks.snapshot()) {
+            if (be instanceof ReactorControllerBlockEntity c && c.getLevel() == source.getLevel()) {
+                double distance = c.getBlockPos().distToCenterSqr(source.getPosition());
+                if (distance < best) {
+                    best = distance;
+                    nearest = c;
+                }
+            }
+        }
+        if (nearest == null) {
+            source.sendFailure(Component.translatable("criticalmass.command.no_reactor_near"));
+            return 0;
+        }
+        return melt(source, nearest.getBlockPos());
+    }
+
+    private static int melt(CommandSourceStack source, BlockPos pos) {
+        if (!(source.getLevel().getBlockEntity(pos) instanceof ReactorControllerBlockEntity c)) {
+            source.sendFailure(Component.literal("No reactor controller at " + pos.toShortString()));
+            return 0;
+        }
+        for (ReactorCore.FuelColumn f : c.core().columns()) {
+            c.core().setColumnHeat(f.dx(), f.dz(), (CMThermal.MELT_TEMPERATURE + 200 - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * Math.max(1, f.height));
+        }
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.melted"), true);
+        return 1;
+    }
+
+    private static int detonate(CommandSourceStack source, BlockPos pos, int radius) {
+        Detonation.arm(source.getLevel(), pos, radius, Detonation.FUSE_TICKS, true);
+        source.sendSuccess(() -> Component.translatable("criticalmass.command.detonating", radius), true);
         return 1;
     }
 

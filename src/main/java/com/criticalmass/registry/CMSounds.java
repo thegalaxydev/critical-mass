@@ -34,6 +34,7 @@ public final class CMSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> ENGINE_START = sound("engine_start");
     public static final DeferredHolder<SoundEvent, SoundEvent> ENGINE_RUN = sound("engine_run");
     public static final DeferredHolder<SoundEvent, SoundEvent> SERVICE = sound("service");
+    public static final DeferredHolder<SoundEvent, SoundEvent> NUCLEAR_BLAST = sound("nuclear_blast");
 
     private CMSounds() {
     }

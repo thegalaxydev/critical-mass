@@ -33,7 +33,9 @@ This table is the current state and overrides anything further down. Only the ro
 | Fuel Oil | Script | `art/tools/fuel_texture.py` |
 | Burnt-Out Equipment | Script | `art/tools/burnt_texture.py` darkens the author's Steel Block and cuts a blown-out panel into it |
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
-| Sounds other than the alarm | Script | `art/tools/sfx.py` |
+| Sounds other than the alarm and the nuclear explosion | Script | `art/tools/sfx.py` |
+| Nuclear explosion sound | Generated | A generated sound effect, trimmed and levelled |
+| Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
 | Shielded Cask | Script | `art/tools/cask_texture.py` |
@@ -152,7 +154,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 ## Sounds
 
-- Used by: every file in `sounds/` except `alarm.ogg`, through `sounds.json`
+- Used by: every file in `sounds/` except `alarm.ogg` and `nuclear_blast.ogg`, through `sounds.json`
 - Source: `art/tools/sfx.py` synthesises each one from square, saw, triangle and sine waves and filtered noise at 22,050 Hz, reduced to 5 to 8 bits. Nothing is recorded or sampled.
 - Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss` and `reactor_thrum` are cut to whole cycles so they repeat without a click.
 - Status: script-made, not yet approved. They have been checked for level and that they load; they have not been listened to in game.

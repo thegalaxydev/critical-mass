@@ -112,6 +112,7 @@ public class CriticalMass {
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
         NeoForge.EVENT_BUS.addListener(PowerNetwork::tick);
         NeoForge.EVENT_BUS.addListener(Storms::onJoin);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.Detonation::tick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }

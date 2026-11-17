@@ -15,7 +15,9 @@ public final class Effects {
     public static final int STEAM_JET = 3;
     public static final int STEAM_BURST = 4;
     public static final int OIL_FIRE = 5;
+    public static final int NUKE = 6;
     private static final double REACH = 96.0;
+    private static final double FAR_REACH = 1024.0;
 
     public interface Client {
         void loop(BlockPos pos, SoundEvent sound, float volume, float pitch);
@@ -55,6 +57,12 @@ public final class Effects {
 
     public static void oilFire(Level level, Vec3 at, float seconds) {
         send(level, OIL_FIRE, at, at, seconds);
+    }
+
+    public static void nuke(Level level, Vec3 at, float radius) {
+        if (level instanceof ServerLevel server) {
+            PacketDistributor.sendToPlayersNear(server, null, at.x, at.y, at.z, FAR_REACH, new EffectPacket(NUKE, at, at, radius));
+        }
     }
 
     public static void sound(Level level, Vec3 at, SoundEvent sound, float volume, float pitch) {

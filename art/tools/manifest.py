@@ -31,7 +31,7 @@ ART = {
     "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
     "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": SCRIPT,
     "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
-    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own",
+    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "charred_log": SCRIPT,
     "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,
     "welding_torch": AUTHOR, "dosimeter": AUTHOR, "survey_meter": AUTHOR, "decontamination_compound": AUTHOR, "ceramic_fuel_pellet": AUTHOR,
     "reactor_alloy_ingot": AUTHOR, "reactor_alloy_sheet": AUTHOR,
@@ -196,7 +196,7 @@ def build():
     for key, node in read(os.path.join(RES, "sounds.json")).items():
         files = [s if isinstance(s, str) else s.get("name") for s in node.get("sounds", [])]
         sounds.append({"key": key, "files": [REL + "sounds/" + f.split(":")[-1] + ".ogg" for f in files], "subtitle": lang.get(node.get("subtitle", ""), ""),
-                       "missing": [f for f in files if not os.path.exists(os.path.join(RES, "sounds", f.split(":")[-1] + ".ogg"))], "art": SCRIPT})
+                       "missing": [f for f in files if not os.path.exists(os.path.join(RES, "sounds", f.split(":")[-1] + ".ogg"))], "art": GENERATED if key == "nuclear_blast" else SCRIPT})
     problems = [r["registry_id"] + ": " + m for r in records for m in r["missing"]] + ["missing " + m for m in sorted(parts.missing)]
     problems += ["no name in en_us.json: " + u for u in unnamed] + ["sound file missing: " + f for s in sounds for f in s["missing"]]
     problems += ["texture nothing uses: " + o["path"].split("/textures/")[-1] for o in others if not o["used"]]
@@ -229,8 +229,8 @@ def write_md(manifest):
         out.append("")
     out += ["## Other textures (%d)" % len(manifest["other_textures"]), "", "Dashboard part sheets, the dashboard screen, the worn suit layers and effect sprites.", "", "| Texture | Art |", "|---|---|"]
     out += ["| %s | %s |" % (sized(t), t["art"]) for t in manifest["other_textures"]]
-    out += ["", "## Sounds (%d)" % len(manifest["sounds"]), "", "All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`.", "", "| Sound | Subtitle | File |", "|---|---|---|"]
-    out += ["| `%s%s` | %s | %s |" % (NS, s["key"], s["subtitle"], "<br>".join("`%s`" % f.split("/assets/criticalmass/")[-1] for f in s["files"])) for s in manifest["sounds"]]
+    out += ["", "## Sounds (%d)" % len(manifest["sounds"]), "", "All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.", "", "| Sound | Subtitle | Art | File |", "|---|---|---|---|"]
+    out += ["| `%s%s` | %s | %s | %s |" % (NS, s["key"], s["subtitle"], s["art"], "<br>".join("`%s`" % f.split("/assets/criticalmass/")[-1] for f in s["files"])) for s in manifest["sounds"]]
     out += ["", "## Problems", ""]
     out += ["- " + p for p in manifest["problems"]] or ["None: every model and texture a blockstate, item or sound points at exists, every texture is used, and everything has a name and an art record."]
     open(os.path.join(DOCS, "ASSET_MANIFEST.md"), "w", encoding="utf8", newline="\n").write("\n".join(out) + "\n")
