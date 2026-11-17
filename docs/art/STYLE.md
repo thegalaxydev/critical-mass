@@ -12,13 +12,18 @@
 - Warning stripes only on hazard-bearing objects (hatch, cask, waste canister, suit trim). Lamps are drawn unlit unless a real blockstate lights them (a block state such as `powered=true`).
 - No baked directional scene lighting, no text, low noise, discrete pixels.
 
-## Pipeline (reproducible; scripts in `art/tools/`)
+## How the generated textures were made
 
-1. `modelgen.py` + `specs*.py`: each block model is defined as elements; face sizes give region sizes; regions are packed into an atlas and the model JSON gets exact UVs.
-2. `paint*.py`, `items_paint.py`, `armor_paint.py`: draw a blockout at game resolution per region (functional pixels such as holes, outlines and transparency are "locked").
-3. `template_fit`: the blockout is centred in a 1024 px canvas at about 30 px per texel. This matches the image generator's pixel size, so its pixels line up with ours.
-4. An image generator repaints the template, with the Create/Aeronautics style board attached.
-5. `finalize`: crop the template area, take the majority colour of a 5x5 sample per texel, quantize to the texture's own material ramps, copy locked pixels and alpha from the blockout, remove single-pixel speckles.
-6. `iso.py` renders the real model JSON with the final textures for review; the `inspect` run renders them in game.
+The generated textures in `art/SOURCES.md` came from a pipeline whose scripts are no longer kept in this project:
 
-Raw generated outputs (downscaled) are kept in `art/generated/`, and `art/SOURCES.md` records how each texture was made.
+1. Each block model was defined as elements. Face sizes gave region sizes, the regions were packed into an atlas and the model JSON got exact UVs.
+2. A blockout was drawn at game resolution for each region, with functional pixels such as holes, outlines and transparency locked.
+3. The blockout was centred in a 1024 px canvas at about 30 px per texel, which matches the image generator's pixel size.
+4. An image generator repainted that template, with the Create and Aeronautics style board attached.
+5. The result was cropped to the template, reduced to the majority colour of a 5x5 sample per texel and quantized to the texture's own material ramps. Locked pixels and alpha were copied from the blockout and single-pixel speckles removed.
+
+Raw generated outputs (downscaled) are kept in `art/generated/`.
+
+## Current tools
+
+Blocks made since have a Blockbench file in `art/blockbench/` and scripts in `art/tools/` that paint the texture sheet and export the models. `iso.py` renders a model JSON with its textures for review, and the `inspect` run renders it in game. `art/SOURCES.md` records how each texture was made, and `manifest.py` rebuilds `ASSET_MANIFEST.md`.

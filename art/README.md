@@ -1,3 +1,3 @@
 # Art pipeline
 
-`tools/` holds the exact scripts used to produce this mod's art (see `docs/art/STYLE.md`). They expect a working directory containing `refs/` (assets extracted from the Create and Aeronautics jars, for local study only) and write to `art/`. `generated/` keeps downscaled raw generated outputs; `SOURCES.md` lists how each texture was made.
+`tools/` holds the scripts that paint this mod's script-made textures, export its Blockbench models and synthesise its sounds (see `docs/art/STYLE.md`). `blockbench/` holds the models and `originals/` the author's own art. `generated/` keeps downscaled raw generated outputs; `SOURCES.md` lists how each texture was made.
