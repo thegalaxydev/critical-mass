@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -38,6 +39,8 @@ public class WaterCannonBlockEntity extends KineticBlockEntity {
     public static final int RISE = 12;
     public static final int TANK_MB = 4000;
     public static final int WATER_PER_BLOCK = 10;
+    public static final double WASH_KEEP = 0.5;
+    public static final double WASH_FLOOR = 0.1;
     public static final int PER_TICK = 3;
     public static final float TURN = 0.075f;
     public static final double NOZZLE_OUT = 0.77;
@@ -74,7 +77,7 @@ public class WaterCannonBlockEntity extends KineticBlockEntity {
     }
 
     public int reach() {
-        return reach.getValue();
+        return Math.max(MIN_REACH, Math.min(REACH, reach.getValue()));
     }
 
     public void setReach(int blocks) {
@@ -127,6 +130,7 @@ public class WaterCannonBlockEntity extends KineticBlockEntity {
         int rays = Math.max(1, Mth.ceil(Math.abs(Math.toRadians(sweep)) * far / ARC_STEP));
         int budget = Math.min(PER_TICK, tank.getFluidAmount() / WATER_PER_BLOCK);
         BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        ContaminationData soil = level instanceof ServerLevel server ? ContaminationData.get(server) : null;
         boolean any = false;
         for (int ray = 1; ray <= rays && budget > 0; ray++) {
             double a = Math.toRadians(lastAngle + sweep * ray / rays);
@@ -148,12 +152,13 @@ public class WaterCannonBlockEntity extends KineticBlockEntity {
                 cursor.set(x, y, z);
                 BlockState here = level.getBlockState(cursor);
                 boolean fire = here.is(BlockTags.FIRE);
-                if (!fire && !here.is(CMBlocks.FALLOUT_ASH.get())) {
+                if (fire || here.is(CMBlocks.FALLOUT_ASH.get())) {
+                    level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
+                    if (fire) {
+                        level.playSound(null, cursor, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.4f);
+                    }
+                } else if (soil == null || soil.wash(cursor, WASH_KEEP, WASH_FLOOR) + soil.wash(cursor.below(), WASH_KEEP, WASH_FLOOR) <= 0) {
                     continue;
-                }
-                level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
-                if (fire) {
-                    level.playSound(null, cursor, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.4f);
                 }
                 tank.drain(WATER_PER_BLOCK, IFluidHandler.FluidAction.EXECUTE);
                 target = Vec3.atBottomCenterOf(cursor);

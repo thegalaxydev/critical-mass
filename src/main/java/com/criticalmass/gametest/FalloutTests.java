@@ -220,6 +220,47 @@ public final class FalloutTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = LARGE, timeoutTicks = 1200, skyAccess = true)
+    public static void aWaterCannonWashesHalfTheContaminationOffOpenGroundAtEachPass(GameTestHelper h) {
+        BlockPos motorPos = new BlockPos(8, 2, 8);
+        BlockPos cannonPos = motorPos.above();
+        BlockPos ground = new BlockPos(11, 1, 8);
+        BlockPos roofed = new BlockPos(8, 1, 12);
+        ContaminationData data = ContaminationData.get(h.getLevel());
+        for (int x = 0; x < 16; x++) {
+            for (int z = 0; z < 16; z++) {
+                h.setBlock(new BlockPos(x, 1, z), Blocks.STONE);
+            }
+        }
+        h.setBlock(roofed.above(3), Blocks.STONE);
+        h.setBlock(motorPos, AllBlocks.CREATIVE_MOTOR.getDefaultState().setValue(DirectionalKineticBlock.FACING, Direction.UP));
+        h.setBlock(cannonPos, CMBlocks.WATER_CANNON.get());
+        CreativeMotorBlockEntity motor = h.getBlockEntity(motorPos);
+        motor.generatedSpeed.setValue(64);
+        WaterCannonBlockEntity cannon = h.getBlockEntity(cannonPos);
+        cannon.setReach(5);
+        cannon.tank().fill(new FluidStack(Fluids.WATER, 1000), IFluidHandler.FluidAction.EXECUTE);
+        data.add(h.absolutePos(ground), 8.0);
+        data.add(h.absolutePos(ground.above()), 4.0);
+        data.add(h.absolutePos(roofed), 5.0);
+        h.startSequence()
+                .thenWaitUntil(() -> h.assertTrue(cannon.washed() >= 1, "The cannon should wash contaminated ground"))
+                .thenExecute(() -> {
+                    h.assertTrue(cannon.washed() == 1 && data.get(h.absolutePos(ground)) == 4.0 && data.get(h.absolutePos(ground.above())) == 2.0, "One pass should take half of what is on the ground and just above it: "
+                            + data.get(h.absolutePos(ground)) + " and " + data.get(h.absolutePos(ground.above())));
+                    h.assertTrue(cannon.tank().getFluidAmount() == 1000 - WaterCannonBlockEntity.WATER_PER_BLOCK, "A wash should cost its water: " + cannon.tank().getFluidAmount());
+                })
+                .thenWaitUntil(() -> h.assertTrue(data.get(h.absolutePos(ground)) == 0 && data.get(h.absolutePos(ground.above())) == 0, "Pass after pass should wash the ground clean"))
+                .thenIdle(160)
+                .thenExecute(() -> {
+                    h.assertTrue(cannon.washed() == 7 && cannon.tank().getFluidAmount() == 1000 - 7 * WaterCannonBlockEntity.WATER_PER_BLOCK, "8 on the ground should take seven passes and no more water after: " + cannon.washed());
+                    h.assertTrue(cannon.status().endsWith("cannon.clear"), "With the ground clean it should stand by: " + cannon.status());
+                    h.assertTrue(data.get(h.absolutePos(roofed)) == 5.0, "Contamination under a roof is out of its reach: " + data.get(h.absolutePos(roofed)));
+                    data.clear(h.absolutePos(roofed));
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE, timeoutTicks = 400, skyAccess = true)
     public static void aWaterCannonOnAMovingBodyWashesTheGroundBelowIt(GameTestHelper h) {
         BlockPos motorPos = new BlockPos(8, 2, 8);

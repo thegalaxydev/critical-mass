@@ -964,6 +964,7 @@ public final class PlantScenes {
         scene.idle(20);
         say(scene, 90, util.vector().blockSurface(cannon, Direction.NORTH), "Its value box sets the reach, from 4 to 24 blocks. Each block washed takes 10 mB of water");
         chapter(scene, 100, util.vector().topOf(util.grid().at(2, 0, 2)), "Washed ash is gone and leaves nothing to collect. Clear ash by hand, with flowing water or with a Mechanical Plough to keep it");
+        say(scene, 120, util.vector().topOf(util.grid().at(6, 0, 2)), "It also washes contamination off open ground and roofs, half of what is there at each pass. What lies under cover it cannot reach: that takes Decontamination Compound");
         say(scene, 90, util.vector().topOf(cannon), "With nothing left in reach it stops by itself and keeps its water");
         say(scene, 100, util.vector().topOf(cannon), "On a moving Sable body it washes the ground under where the body is now");
         scene.markAsFinished();

@@ -39,6 +39,22 @@ public final class ContaminationData extends SavedData {
         return v;
     }
 
+    public double wash(BlockPos pos, double keep, double floor) {
+        double held = cells.get(pos.asLong());
+        if (held <= 0) {
+            return 0;
+        }
+        double left = held * keep;
+        if (left < floor) {
+            cells.remove(pos.asLong());
+            left = 0;
+        } else {
+            cells.put(pos.asLong(), left);
+        }
+        setDirty();
+        return held - left;
+    }
+
     public double total() {
         double t = 0;
         for (double v : cells.values()) {
