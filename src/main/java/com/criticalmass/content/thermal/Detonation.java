@@ -8,8 +8,6 @@ import com.criticalmass.registry.CMSounds;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -40,7 +38,7 @@ public final class Detonation {
     private static final int CARVE_BUDGET = 9000;
     private static final int SCORCH_COLUMNS = 700;
     private static final int QUIET = Block.UPDATE_CLIENTS | Block.UPDATE_KNOWN_SHAPE;
-    private static final Map<Level, List<Detonation>> ACTIVE = new WeakHashMap<>();
+    private static final String NAME = "criticalmass_detonations";
     private final BlockPos centre;
     private final int radius;
     private final boolean scorch;
@@ -62,17 +60,83 @@ public final class Detonation {
     }
 
     public static void arm(ServerLevel level, BlockPos centre, int radius, int fuse, boolean scorch) {
-        List<Detonation> list = ACTIVE.computeIfAbsent(level, k -> new ArrayList<>());
-        for (Detonation d : list) {
+        Store store = Store.get(level);
+        for (Detonation d : store.list) {
             if (d.centre.equals(centre)) {
                 return;
             }
         }
-        list.add(new Detonation(centre.immutable(), Math.max(2, radius), fuse, scorch));
+        store.list.add(new Detonation(centre.immutable(), Math.max(2, radius), fuse, scorch));
+        store.setDirty();
+    }
+
+    private static List<Detonation> held(Level level) {
+        return level instanceof ServerLevel server ? Store.get(server).list : List.of();
+    }
+
+    public static net.minecraft.nbt.CompoundTag saved(ServerLevel level) {
+        return Store.get(level).write(new net.minecraft.nbt.CompoundTag());
+    }
+
+    public static void restore(ServerLevel level, net.minecraft.nbt.CompoundTag tag) {
+        Store store = Store.get(level);
+        store.list.clear();
+        store.read(tag);
+        store.setDirty();
+    }
+
+    private static final class Store extends net.minecraft.world.level.saveddata.SavedData {
+        private final List<Detonation> list = new ArrayList<>();
+
+        static Store get(ServerLevel level) {
+            return level.getDataStorage().computeIfAbsent(new net.minecraft.world.level.saveddata.SavedData.Factory<>(Store::new, (tag, registries) -> {
+                Store store = new Store();
+                store.read(tag);
+                return store;
+            }, null), NAME);
+        }
+
+        void read(net.minecraft.nbt.CompoundTag tag) {
+            net.minecraft.nbt.ListTag all = tag.getList("Detonations", net.minecraft.nbt.Tag.TAG_COMPOUND);
+            for (int i = 0; i < all.size(); i++) {
+                net.minecraft.nbt.CompoundTag one = all.getCompound(i);
+                int[] at = one.getIntArray("Centre");
+                if (at.length != 3) {
+                    continue;
+                }
+                Detonation d = new Detonation(new BlockPos(at[0], at[1], at[2]), one.getInt("Radius"), one.getInt("Fuse"), one.getBoolean("Scorch"));
+                d.front = one.getDouble("Front");
+                d.ring = one.getInt("Ring");
+                d.carved = one.getBoolean("Carved");
+                list.add(d);
+            }
+        }
+
+        net.minecraft.nbt.CompoundTag write(net.minecraft.nbt.CompoundTag tag) {
+            net.minecraft.nbt.ListTag all = new net.minecraft.nbt.ListTag();
+            for (Detonation d : list) {
+                net.minecraft.nbt.CompoundTag one = new net.minecraft.nbt.CompoundTag();
+                one.putIntArray("Centre", new int[] {d.centre.getX(), d.centre.getY(), d.centre.getZ()});
+                one.putInt("Radius", d.radius);
+                one.putInt("Fuse", d.fuse);
+                one.putBoolean("Scorch", d.scorch);
+                one.putDouble("Front", d.front);
+                one.putInt("Ring", d.ring);
+                one.putBoolean("Carved", d.carved);
+                all.add(one);
+            }
+            tag.put("Detonations", all);
+            return tag;
+        }
+
+        @Override
+        public net.minecraft.nbt.CompoundTag save(net.minecraft.nbt.CompoundTag tag, net.minecraft.core.HolderLookup.Provider registries) {
+            return write(tag);
+        }
     }
 
     public static boolean armed(Level level, BlockPos near, double reach) {
-        for (Detonation d : ACTIVE.getOrDefault(level, List.of())) {
+        for (Detonation d : held(level)) {
             if (d.centre.closerThan(near, reach)) {
                 return true;
             }
@@ -81,18 +145,27 @@ public final class Detonation {
     }
 
     public static boolean cancel(Level level, BlockPos near, double reach) {
-        List<Detonation> list = ACTIVE.get(level);
-        return list != null && list.removeIf(d -> d.fuse > 0 && d.centre.closerThan(near, reach));
+        if (!(level instanceof ServerLevel server)) {
+            return false;
+        }
+        Store store = Store.get(server);
+        boolean stopped = store.list.removeIf(d -> d.fuse > 0 && d.centre.closerThan(near, reach));
+        if (stopped) {
+            store.setDirty();
+        }
+        return stopped;
     }
 
     public static void tick(LevelTickEvent.Post event) {
         if (!(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
-        List<Detonation> list = ACTIVE.get(level);
-        if (list == null || list.isEmpty()) {
+        Store store = Store.get(level);
+        List<Detonation> list = store.list;
+        if (list.isEmpty()) {
             return;
         }
+        store.setDirty();
         Iterator<Detonation> all = new ArrayList<>(list).iterator();
         while (all.hasNext()) {
             Detonation d = all.next();
@@ -108,6 +181,9 @@ public final class Detonation {
     }
 
     private boolean step(ServerLevel level) {
+        if (!level.isLoaded(centre)) {
+            return false;
+        }
         Vec3 core = Vec3.atCenterOf(centre);
         if (fuse > 0) {
             if (fuse % 10 == 0) {

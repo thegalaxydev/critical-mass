@@ -163,4 +163,16 @@ public final class MeltdownTests {
                 })
                 .thenSucceed();
     }
+
+    @GameTest(template = "empty", timeoutTicks = 100)
+    public static void anArmedDetonationIsKeptWhenTheWorldIsSaved(GameTestHelper h) {
+        net.minecraft.core.BlockPos at = h.absolutePos(new net.minecraft.core.BlockPos(2, 3, 2));
+        com.criticalmass.content.thermal.Detonation.arm(h.getLevel(), at, 3, 4000, false);
+        net.minecraft.nbt.CompoundTag kept = com.criticalmass.content.thermal.Detonation.saved(h.getLevel());
+        h.assertTrue(com.criticalmass.content.thermal.Detonation.cancel(h.getLevel(), at, 1) && !com.criticalmass.content.thermal.Detonation.armed(h.getLevel(), at, 1), "The fuse should be stopped");
+        com.criticalmass.content.thermal.Detonation.restore(h.getLevel(), kept);
+        h.assertTrue(com.criticalmass.content.thermal.Detonation.armed(h.getLevel(), at, 1), "A saved detonation should be armed again when the world loads");
+        h.assertTrue(com.criticalmass.content.thermal.Detonation.cancel(h.getLevel(), at, 1), "It should still be on its fuse");
+        h.succeed();
+    }
 }

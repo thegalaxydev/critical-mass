@@ -194,7 +194,8 @@ public class InspectionHarness {
             JsonArray u = step.getAsJsonArray("use");
             BlockPos p = new BlockPos(u.get(0).getAsInt(), u.get(1).getAsInt(), u.get(2).getAsInt());
             Direction face = u.size() > 3 ? Direction.byName(u.get(3).getAsString()) : Direction.UP;
-            BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(p).relative(face, 0.5), face, p, false);
+            Vec3 where = u.size() > 6 ? new Vec3(u.get(4).getAsDouble(), u.get(5).getAsDouble(), u.get(6).getAsDouble()) : Vec3.atCenterOf(p).relative(face, 0.5);
+            BlockHitResult hit = new BlockHitResult(where, face, p, false);
             InteractionResult r = mc.gameMode.useItemOn(mc.player, InteractionHand.MAIN_HAND, hit);
             note("use " + p.toShortString() + " " + face + " -> " + r);
         }

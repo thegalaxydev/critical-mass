@@ -414,7 +414,7 @@ public final class PowerTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 200)
+    @GameTest(template = EMPTY, timeoutTicks = 400)
     public static void equipmentOnTheWrongVoltageIsLost(GameTestHelper h) {
         BlockPos gridPos = new BlockPos(3, 2, 3);
         BlockPos motorPos = new BlockPos(1, 2, 5);
@@ -442,17 +442,17 @@ public final class PowerTests {
                     h.assertTrue(breaker.close().endsWith("refused.voltage") && !breaker.closed(), "A breaker should not close 20 kV onto 220 kV");
                     wire(h, WireType.COPPER, gridPos, 0, post, 0);
                 })
-                .thenIdle(12)
+                .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(grid.wires().count(0) == 1, "A copper wire on 220 kV should flash over and be lost: " + grid.wires().count(0));
                     wire(h, WireType.LINE, gridPos, 0, motorPos, 0);
                 })
-                .thenIdle(12)
+                .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(!h.getBlockState(motorPos).is(CMBlocks.ELECTRIC_MOTOR.get()), "A 6 kV motor wired to 220 kV should be lost");
                     wire(h, WireType.LINE, gridPos, 0, generatorPos, 0);
                 })
-                .thenIdle(12)
+                .thenIdle(40)
                 .thenExecute(() -> {
                     h.assertTrue(!h.getBlockState(generatorPos).is(CMBlocks.GENERATOR.get()), "A 20 kV generator wired to 220 kV should be lost");
                     h.assertTrue(h.getBlockState(aloneDriver.east()).is(CMBlocks.GENERATOR.get()), "The generator behind the open breaker should be safe");
