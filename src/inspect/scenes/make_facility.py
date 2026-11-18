@@ -199,6 +199,13 @@ WATER_TANK = [(-3, 2, CELL_Z + 1), (-3, 3, CELL_Z + 1)]
 PUMP_COG, PUMP_MOTOR = (-2, 1, CELL_Z + 1), (-3, 1, CELL_Z + 1)
 HALL_OUT, AUX_IN, AUX_OUT, YARD_OUT, CELL_OUT, CELL_IN = (19, 5, 16), (19, 5, 18), (19, 5, 32), (19, 5, 34), (12, 5, CELL_Z + 2), (10, 5, CELL_Z + 2)
 CELL_MID, CELL_WEST = (0, 5, CELL_Z + 4), (-4, 5, CELL_Z + 4)
+BENCH_Z = CELL_Z - 1
+BENCH_BELT = [(x, 1, BENCH_Z) for x in (-5, -6, -7, -8, -9)]
+BENCH_DEPOT = (-10, 1, BENCH_Z)
+BENCH_SPOUT, BENCH_DEPLOYER, BENCH_PRESS, BENCH_GEARBOX = (-6, 3, BENCH_Z), (-7, 3, BENCH_Z), (-8, 3, BENCH_Z), (-9, 3, BENCH_Z)
+BENCH_COGS = [(-9, y, CELL_Z) for y in (1, 2, 3)]
+BENCH_MOTOR = (-9, 3, CELL_Z + 1)
+CANNING_PUMP, CANNING_PIPE, CANNING_COG, CANNING_MOTOR = (-5, 3, CELL_Z), (-6, 3, CELL_Z), (-5, 3, CELL_Z + 1), (-4, 3, CELL_Z + 1)
 INSULATORS = [(IN20, "west"), (OUT20, "east"), (P_A, "up"), (P_B, "up"), (OUT6, "east"), (IN6, "west"), (C_NORMAL, "down"), (C_D, "down"), (C_LOAD, "down"), (C_L2, "down"),
               (R_UP, "down"), (R2, "down"), (H_IN, "east"), (C_IN, "west"), (C_HI, "west"),
               (A_UP, "down"), (A2, "down"), (A_F, "down"), (A3, "down"), (N_A_IN, "south"), (N_A_OUT, "north"),
@@ -223,12 +230,12 @@ WIRES = [
     ("wire", FEED_B, LOAD, B_UP, 0), ("wire", B_UP, 0, B2, 0), ("wire", B2, 0, TB.feed_motor, 0), ("wire", FEED_B, LOAD, B3_UP, 0), ("wire", B3_UP, 0, B3, 0), ("wire", B3, 0, TB.circ_motor, 0),
     ("wire", FEED_B, LOAD, N_B_IN, 0), ("wire", N_B_IN, 0, N_B_OUT, 0), ("wire", N_B_OUT, 0, TB.makeup_motor, 0),
     ("wire", A_F, 0, TA.fill_drop, 0), ("wire", TA.fill_drop, 0, TA.fill_motor, 0), ("wire", B2, 0, TB.fill_drop, 0), ("wire", TB.fill_drop, 0, TB.fill_motor, 0),
-    ("cable", BUS6[2], 0, FEED_FUEL, LINE), ("wire", FEED_FUEL, LOAD, FUEL_UP, 0), ("wire", FUEL_UP, 0, FUEL_2, 0), ("wire", FUEL_2, 0, FUEL_3, 0),
-    ("wire", FUEL_3, 0, HALL_OUT, 0), ("wire", HALL_OUT, 0, AUX_IN, 0), ("wire", AUX_IN, 0, AUX_OUT, 0), ("wire", AUX_OUT, 0, YARD_OUT, 0), ("wire", YARD_OUT, 0, CELL_OUT, 0),
-    ("wire", CELL_OUT, 0, CELL_IN, 0), ("wire", CELL_IN, 0, SAW_MOTOR, 0), ("wire", CELL_IN, 0, CELL_MID, 0), ("wire", CELL_MID, 0, DISSOLVER_MOTOR, 0), ("wire", CELL_MID, 0, CELL_WEST, 0),
-    ("wire", CELL_WEST, 0, PUMP_MOTOR, 0),
+    ("cable", BUS6[2], 0, FEED_FUEL, LINE), ("cable", FEED_FUEL, LOAD, FUEL_UP, 0), ("cable", FUEL_UP, 0, FUEL_2, 0), ("cable", FUEL_2, 0, FUEL_3, 0),
+    ("cable", FUEL_3, 0, HALL_OUT, 0), ("cable", HALL_OUT, 0, AUX_IN, 0), ("cable", AUX_IN, 0, AUX_OUT, 0), ("cable", AUX_OUT, 0, YARD_OUT, 0), ("cable", YARD_OUT, 0, CELL_OUT, 0),
+    ("cable", CELL_OUT, 0, CELL_IN, 0), ("wire", CELL_IN, 0, SAW_MOTOR, 0), ("wire", CELL_IN, 0, CELL_MID, 0), ("wire", CELL_MID, 0, DISSOLVER_MOTOR, 0), ("wire", CELL_MID, 0, CELL_WEST, 0),
+    ("wire", CELL_WEST, 0, PUMP_MOTOR, 0), ("wire", CELL_WEST, 0, BENCH_MOTOR, 0), ("wire", CELL_WEST, 0, CANNING_MOTOR, 0),
 ]
-SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32, "fill": 16, "shear": 32, "dissolver": 32, "process": 16}
+SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32, "fill": 16, "shear": 32, "dissolver": 32, "process": 16, "bench": -32, "canning": 16}
 RAMP = ((0.3, 126), (0.6, 153), (0.9, 179))
 PART_LOAD, RUN_LOAD = 0.3, 0.6
 RUN_POWER, RUN_COOLANT = RAMP[-1]
@@ -1100,7 +1107,7 @@ def reprocessing():
     box(x0 + 1, 1, CELL_Z, x1 - 1, 7, CELL_Z, SC)
     box(-8, 2, CELL_Z, 9, 3, CELL_Z, SG)
     carve(PRODUCT[0], PRODUCT[1] + 1, CELL_Z, PRODUCT[0], PRODUCT[1] + 1, CELL_Z)
-    door(-9, 1, CELL_Z, "north")
+    door(9, 1, CELL_Z, "north")
     for x in range(x0 + 1, x1):
         put(x, 0, CELL_Z - 1, YELLOW if x % 2 == 0 else BLACK)
     for x in (-8, -3, 2, 7):
@@ -1129,14 +1136,29 @@ def reprocessing():
         machine(pos, "create:fluid_tank")
     for xa, xb in ((-3, -1), (1, 3)):
         box(xa, 5, CELL_Z + 1, xb, 5, CELL_Z + 1, GIRDER_X)
-    reserved.update([SAW_MOTOR, DISSOLVER_MOTOR, PUMP_MOTOR])
+    for i, pos in enumerate(BENCH_BELT):
+        machine(pos, "create:belt[facing=west,part=%s,slope=horizontal]" % ("start" if i == 0 else "end" if i == len(BENCH_BELT) - 1 else "middle"))
+    machine(BENCH_DEPOT, "create:depot")
+    machine(BENCH_SPOUT, "create:spout")
+    machine(BENCH_DEPLOYER, "create:deployer[facing=down,axis_along_first=true]{Mode:\"USE\",Inventory:[{Slot:0b,id:\"criticalmass:sealing_gasket\",count:64}]}")
+    machine(BENCH_PRESS, "create:mechanical_press[facing=east]")
+    machine(BENCH_GEARBOX, "create:gearbox[axis=y]")
+    for pos in BENCH_COGS:
+        machine(pos, "create:cogwheel[axis=z]")
+    machine(CANNING_PUMP, "create:mechanical_pump[facing=west]")
+    machine(CANNING_PIPE, "create:fluid_pipe")
+    machine(CANNING_COG, "create:cogwheel[axis=x]")
+    for pos in (BENCH_MOTOR, CANNING_MOTOR):
+        stand(pos)
+    reserved.update([SAW_MOTOR, DISSOLVER_MOTOR, PUMP_MOTOR, BENCH_MOTOR, CANNING_MOTOR])
+    sign((-7, 4, BENCH_Z), "north", "Canning Bench", "Open canisters", "on the belt")
     machine((9, 1, 35), "criticalmass:shielded_cask")
-    sign((9, 2, 37), "north", "Transfer", "Cask")
+    sign((8, 2, 35), "south", "Transfer", "Cask")
     sign((6, 4, CELL_Z - 1), "north", "Feed Port", "Cooled spent", "fuel only")
     sign((3, 4, CELL_Z - 1), "north", "Shear Line")
     sign((-1, 4, CELL_Z - 1), "north", "Dissolver", "Product in the", "basin below")
     sign((-4, 4, CELL_Z - 1), "north", "Liquid", "Waste")
-    sign((-9, 3, CELL_Z - 1), "north", "Hot Cell", "Survey before", "entry")
+    sign((8, 4, CELL_Z - 1), "north", "Hot Cell", "Survey before", "entry")
     box(16, 1, CELL_Z, 16, 9, CELL_Z, STEEL)
     put(16, 10, CELL_Z, ROD)
 
@@ -1352,7 +1374,9 @@ def start(w):
              "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:16000}}}" % w(*WATER_TANK[0]),
              setblock(w, SAW_MOTOR, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["shear"]),
              setblock(w, DISSOLVER_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["dissolver"]),
-             setblock(w, PUMP_MOTOR, "criticalmass:electric_motor[facing=east]{ScrollValue:%d}" % SPEEDS["process"])]
+             setblock(w, PUMP_MOTOR, "criticalmass:electric_motor[facing=east]{ScrollValue:%d}" % SPEEDS["process"]),
+             setblock(w, BENCH_MOTOR, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["bench"]),
+             setblock(w, CANNING_MOTOR, "criticalmass:electric_motor[facing=west]{ScrollValue:%d}" % SPEEDS["canning"])]
     for _, (sx1, sy1), target, turbine in SCREENS:
         cmds += bind(w, (sx1, sy1, SCREEN_Z), target, "Reactor")
         if turbine:

@@ -52,6 +52,7 @@ VIEWS = {
     "desk_rods": ((30, 7, 22), (30, 7, 25), False),
     "desk_feeders": ((22, 7, 20), (19, 7, 20), False),
     "reprocessing": ((7, 1, 35), (0, 2, 39), False),
+    "canning": ((-5, 1, 35), (-8, 2, 37), False),
     "hot_cell": ((8, 1, 41), (0, 2, 39), False),
     "reprocessing_outside": ((22, 3, 45), (4, 4, 40), False),
 }
