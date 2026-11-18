@@ -96,6 +96,82 @@ public final class RadiationTests {
         h.succeed();
     }
 
+    private static double strengthAt(GameTestHelper h, List<Radiation.Source> sources, BlockPos... blocks) {
+        double sum = 0;
+        for (Radiation.Source s : sources) {
+            for (BlockPos b : blocks) {
+                if (s.pos().distanceTo(Vec3.atCenterOf(h.absolutePos(b))) < 0.1) {
+                    sum += s.strength();
+                }
+            }
+        }
+        return sum;
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void fuelInAChestOrACreateMachineGivesADose(GameTestHelper h) {
+        BlockPos left = new BlockPos(3, 2, 3);
+        BlockPos right = new BlockPos(4, 2, 3);
+        BlockPos depot = new BlockPos(8, 2, 3);
+        BlockPos basin = new BlockPos(12, 2, 3);
+        BlockPos barrel = new BlockPos(3, 2, 12);
+        BlockPos rack = new BlockPos(8, 2, 12);
+        BlockPos empty = new BlockPos(12, 2, 12);
+        BlockPos wall = new BlockPos(8, 2, 5);
+        BlockState chest = Blocks.CHEST.defaultBlockState().setValue(net.minecraft.world.level.block.ChestBlock.FACING, Direction.NORTH);
+        h.setBlock(left, chest.setValue(net.minecraft.world.level.block.ChestBlock.TYPE, net.minecraft.world.level.block.state.properties.ChestType.LEFT));
+        h.setBlock(right, chest.setValue(net.minecraft.world.level.block.ChestBlock.TYPE, net.minecraft.world.level.block.state.properties.ChestType.RIGHT));
+        h.setBlock(depot, AllBlocks.DEPOT.get());
+        h.setBlock(basin, AllBlocks.BASIN.get());
+        h.setBlock(barrel, Blocks.BARREL);
+        h.setBlock(rack, CMBlocks.SPENT_FUEL_RACK.get());
+        h.setBlock(empty, Blocks.BARREL);
+        h.setBlock(wall, CMBlocks.SHIELDING_CONCRETE.get());
+        net.minecraft.world.level.block.entity.ChestBlockEntity half = h.getBlockEntity(left);
+        half.setItem(5, spent(0));
+        for (BlockPos machine : List.of(depot, basin)) {
+            ItemStack left0 = h.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, h.absolutePos(machine), null).insertItem(0, spent(0), false);
+            h.assertTrue(left0.isEmpty(), "The machine at " + machine + " should take a fuel assembly");
+        }
+        ItemStack box = new ItemStack(Blocks.SHULKER_BOX);
+        box.set(net.minecraft.core.component.DataComponents.CONTAINER, net.minecraft.world.item.component.ItemContainerContents.fromItems(List.of(spent(0))));
+        net.minecraft.world.level.block.entity.BarrelBlockEntity cask = h.getBlockEntity(barrel);
+        cask.setItem(0, box);
+        net.minecraft.world.level.block.entity.BarrelBlockEntity clean = h.getBlockEntity(empty);
+        clean.setItem(0, new ItemStack(net.minecraft.world.item.Items.IRON_INGOT, 64));
+        SpentFuelRackBlockEntity held = h.getBlockEntity(rack);
+        held.insert(spent(0));
+        double one = Radiation.itemStrength(spent(0));
+        Vec3 middle = Vec3.atCenterOf(h.absolutePos(new BlockPos(8, 2, 8)));
+        Vec3 open = Vec3.atCenterOf(h.absolutePos(depot)).add(0, 3, 0);
+        Vec3 behind = Vec3.atCenterOf(h.absolutePos(depot)).add(0, 0, 3);
+        h.assertTrue(one > 0 && Radiation.itemStrength(box) == one && Radiation.itemStrength(new ItemStack(CMBlocks.SHIELDED_CASK.get())) == 0, "A box of fuel should be as strong as the fuel in it: " + Radiation.itemStrength(box));
+        h.startSequence()
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, local(h));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, left, right) - one) < 1e-6, "Fuel in a double chest should be one source, counted once: " + strengthAt(h, sources, left, right));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, depot) - one) < 1e-6, "Fuel on a Depot should be a source: " + strengthAt(h, sources, depot));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, basin) - one) < 1e-6, "Fuel in a Basin should be a source: " + strengthAt(h, sources, basin));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, barrel) - one) < 1e-6, "Fuel in a shulker box in a barrel should be a source: " + strengthAt(h, sources, barrel));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, rack) - one) < 1e-6, "A rack should still be counted once: " + strengthAt(h, sources, rack));
+                    h.assertTrue(strengthAt(h, sources, empty) == 0, "A barrel of iron should not be a source");
+                    List<Radiation.Source> only = sources.stream().filter(s -> s.pos().distanceTo(Vec3.atCenterOf(h.absolutePos(depot))) < 0.1).toList();
+                    double clear = Radiation.fromSources(h.getLevel(), open, only, null);
+                    double shielded = Radiation.fromSources(h.getLevel(), behind, only, null);
+                    h.assertTrue(Math.abs(clear - one / 10) < 1e-6, "The Depot should not shield its own fuel: " + clear);
+                    h.assertTrue(shielded < clear * 0.1 && shielded > 0, "Shielding Concrete should cut the dose from fuel on a Depot: " + shielded + " vs " + clear);
+                    h.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, h.absolutePos(depot), null).extractItem(0, 64, false);
+                })
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, local(h));
+                    h.assertTrue(strengthAt(h, sources, depot) == 0, "An emptied Depot should stop being a source: " + strengthAt(h, sources, depot));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, basin) - one) < 1e-6, "The Basin should still be one");
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE)
     public static void caskAndFloodedRackCutTheDose(GameTestHelper h) {
         BlockPos rackPos = new BlockPos(2, 1, 2);
