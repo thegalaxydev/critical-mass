@@ -1,0 +1,77 @@
+{
+ "textures": {
+  "0": "criticalmass:block/meltdown_siren",
+  "particle": "criticalmass:block/meltdown_siren"
+ },
+ "elements": [
+  {
+   "name": "spindle",
+   "from": [
+    7,
+    9,
+    11
+   ],
+   "to": [
+    9,
+    11,
+    17
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      15.5,
+      9.25,
+      16,
+      9.75
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      0,
+      9.75,
+      1.5,
+      10.25
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      12,
+      9.75,
+      12.5,
+      10.25
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      1.5,
+      9.75,
+      3,
+      10.25
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      5.5,
+      5.5,
+      6,
+      7
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      6,
+      5.5,
+      6.5,
+      7
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

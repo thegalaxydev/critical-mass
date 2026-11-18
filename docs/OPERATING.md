@@ -52,6 +52,7 @@ The control desk is a Reactor Alloy Dashboard with Dashboard parts on it. Sneak-
 | Dashboard Button, Switch, Lever | A receiving Redstone Link | A one second pulse, on or off, or any strength from 0 to 15 |
 | Dashboard Gauge | Any plant machine | One reading of that machine on a needle, chosen in its settings |
 | Dashboard Alarm | Reactor Controller, or electrical equipment | Lights while an alarm is active, or while the equipment is in trouble. A new alarm flashes and sounds until you press it |
+| Meltdown Siren | Reactor Controller, with the Plant Linker | Growls once the hottest fuel passes 1,100 °C, higher as it nears melting, and wails once fuel has melted or the vessel is breached. Use it to silence it. A redstone signal sounds it too |
 
 For redstone instead of direct binding, set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
 

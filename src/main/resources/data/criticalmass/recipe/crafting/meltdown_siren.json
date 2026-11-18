@@ -1,0 +1,27 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "key": {
+  "B": {
+   "tag": "c:plates/brass"
+  },
+  "W": {
+   "item": "create:steam_whistle"
+  },
+  "S": {
+   "item": "criticalmass:steel_plate"
+  },
+  "E": {
+   "item": "create:electron_tube"
+  }
+ },
+ "pattern": [
+  " B ",
+  "BWB",
+  "SES"
+ ],
+ "result": {
+  "id": "criticalmass:meltdown_siren",
+  "count": 1
+ }
+}

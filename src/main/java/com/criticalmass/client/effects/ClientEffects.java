@@ -112,12 +112,12 @@ public final class ClientEffects {
         }
     }
 
-    private static void loop(BlockPos pos, SoundEvent sound, float volume, float pitch) {
+    private static void loop(BlockPos pos, SoundEvent sound, float volume, float pitch, double reach) {
         String key = pos.asLong() + ":" + sound.getLocation();
         Loop playing = LOOPS.get(key);
         if (playing == null || playing.isStopped()) {
             Minecraft mc = Minecraft.getInstance();
-            if (mc.player == null || mc.player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > 48 * 48) {
+            if (mc.player == null || mc.player.distanceToSqr(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5) > reach * reach) {
                 return;
             }
             playing = new Loop(sound, pos, volume, pitch);

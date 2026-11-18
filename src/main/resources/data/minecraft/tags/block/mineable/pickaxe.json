@@ -53,6 +53,7 @@
     "criticalmass:transfer_switch",
     "criticalmass:surge_arrester",
     "criticalmass:burnt_equipment",
-    "criticalmass:water_cannon"
+    "criticalmass:water_cannon",
+    "criticalmass:meltdown_siren"
   ]
 }

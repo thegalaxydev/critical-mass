@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (57)
+## Blocks (58)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -34,6 +34,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:heat_exchanger` | Heat Exchanger | script | `block/heat_exchanger.png` 32x32<br>`block/reinforced_pipe.png` 32x32 |  | 3 |
 | `criticalmass:insulator` | Insulator | script | `block/insulator.png` 16x16 |  | 2 |
+| `criticalmass:meltdown_siren` | Meltdown Siren | author's model, script texture edited by the author | `block/meltdown_siren.png` 64x64 |  | 5 |
 | `criticalmass:open_waste_canister` | Open Waste Canister | author | `block/open_waste_canister.png` 32x32<br>`block/sealed_waste_canister.png` 32x32 |  | 3 |
 | `criticalmass:part_panel` | Dashboard Parts (no item) | none of its own | `block/steel_block.png` 16x16 |  | 1 |
 | `criticalmass:plant_screen` | Plant Screen | script | `block/plant_screen.png` 16x16<br>`block/plant_screen_back.png` 16x16<br>`block/plant_screen_inside.png` 16x16<br>`block/plant_screen_side.png` 16x16<br>`block/plant_screen_top.png` 16x16 |  | 2 |
@@ -145,7 +146,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (29)
+## Sounds (30)
 
 All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
 
@@ -180,6 +181,7 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:fallout` | Fallout drifts | script | `sounds/fallout.ogg` |
 | `criticalmass:water_spray` | Water cannon sprays | script | `sounds/water_spray.ogg` |
 | `criticalmass:pump_cavitation` | Pump cavitates | script | `sounds/pump_cavitation.ogg` |
+| `criticalmass:siren` | Meltdown Siren wails | script | `sounds/siren.ogg` |
 
 ## Problems
 

@@ -497,6 +497,13 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Used by: `models/block/dashboard_part/alarm_lamp.json`, `alarm_cage.json`, `models/item/dashboard_alarm.json`, `textures/block/dashboard_part/alarm_atlas.png`, `alarm_atlas_lit.png`
 - Source: `art/blockbench/alarm.bbmodel`, hand-made. `art/tools/alarm_model.py` exports it. The lamp and cage sheets are `art/originals/alarm_atlas.png` and `alarm_atlas_lit.png`: 35 lamp colours in cells of 9 by 8 pixels (side 4 by 7, top 4 by 4), with the cage pieces from x 46. The script paints the sheets only when they are missing or when run with `paint`, and re-maps the model's UVs only when run with `map`.
 
+## meltdown_siren
+
+- Used by: `textures/block/meltdown_siren.png`, `models/block/meltdown_siren.json`, `meltdown_siren_wall.json`, `meltdown_siren_spindle.json`, `meltdown_siren_item.json` and the block's blockstates
+- Model: `art/blockbench/meltdown_siren.bbmodel` for the standing siren and `meltdown_siren_mounted.bbmodel` for the one on a wall, both made by the author in Blockbench. The cubes have no groups: `art/tools/siren_model.py` reads them by name, and the cube called `spindle` becomes the part that turns.
+- Texture: `art/blockbench/meltdown_siren.png`, shared by both models. The UV layout and the first painting were made by script in the shading of `art/tools/create_style.py`, and the author then edited the sheet by hand. The script is not kept, so the sheet is the source: `siren_model.py` copies it into the mod and never paints it. `meltdown_siren_uv_guide.png` numbers each island and names its cube face.
+- Sound: `sounds/siren.ogg` is synthesised by `art/tools/sfx.py`: two chopped tones a minor third apart over a breath of noise, two seconds long so it loops. The game changes its pitch with the siren's speed.
+
 ## alarm sound
 
 - Used by: `sounds/alarm.ogg`, played by a desk with an unacknowledged Dashboard Alarm.

@@ -822,6 +822,34 @@
    "item": true
   },
   {
+   "key": "meltdown_siren",
+   "registry_id": "criticalmass:meltdown_siren",
+   "type": "block",
+   "name": "Meltdown Siren",
+   "art": "author's model, script texture edited by the author",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/meltdown_siren.png",
+     "size": [
+      64,
+      64
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/meltdown_siren.json",
+    "src/main/resources/assets/criticalmass/models/block/meltdown_siren_item.json",
+    "src/main/resources/assets/criticalmass/models/block/meltdown_siren_spindle.json",
+    "src/main/resources/assets/criticalmass/models/block/meltdown_siren_wall.json",
+    "src/main/resources/assets/criticalmass/models/item/meltdown_siren.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/meltdown_siren.json",
+   "item": true
+  },
+  {
    "key": "open_waste_canister",
    "registry_id": "criticalmass:open_waste_canister",
    "type": "block",
@@ -3520,6 +3548,15 @@
     "src/main/resources/assets/criticalmass/sounds/pump_cavitation.ogg"
    ],
    "subtitle": "Pump cavitates",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "siren",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/siren.ogg"
+   ],
+   "subtitle": "Meltdown Siren wails",
    "missing": [],
    "art": "script"
   }

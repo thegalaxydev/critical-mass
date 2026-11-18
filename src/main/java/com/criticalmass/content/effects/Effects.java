@@ -19,11 +19,13 @@ public final class Effects {
     private static final double REACH = 96.0;
     private static final double FAR_REACH = 1024.0;
 
+    public static final double LOOP_REACH = 48.0;
+
     public interface Client {
-        void loop(BlockPos pos, SoundEvent sound, float volume, float pitch);
+        void loop(BlockPos pos, SoundEvent sound, float volume, float pitch, double reach);
     }
 
-    public static Client client = (pos, sound, volume, pitch) -> {
+    public static Client client = (pos, sound, volume, pitch, reach) -> {
     };
     public static java.util.function.BiConsumer<Vec3, Vec3> jet = (from, to) -> {
     };
@@ -78,8 +80,12 @@ public final class Effects {
     }
 
     public static void loop(Level level, BlockPos pos, SoundEvent sound, float volume, float pitch) {
+        loop(level, pos, sound, volume, pitch, LOOP_REACH);
+    }
+
+    public static void loop(Level level, BlockPos pos, SoundEvent sound, float volume, float pitch, double reach) {
         if (level != null && level.isClientSide && volume > 0.01f) {
-            client.loop(pos, sound, volume, pitch);
+            client.loop(pos, sound, volume, pitch, reach);
         }
     }
 }
