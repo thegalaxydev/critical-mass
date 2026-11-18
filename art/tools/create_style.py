@@ -13,9 +13,12 @@ TUBE = (0.36, 0.55, 0.73, 0.91, 0.91, 0.82, 0.73, 0.64, 0.55, 0.36)
 CASING = rgb("#171f26", "#1c242c", "#1f272e", "#232b33", "#2a333d", "#333e49", "#3f4d5b")
 PLATE_STEEL = rgb("#868e97", "#929aa1", "#9ea5ac", "#a6aeb6")
 FUEL_YELLOW = rgb("#d19e27", "#edb832", "#f2c842")
-FAMILIES = (CASING, PLATE_STEEL, FUEL_YELLOW, COPPER, BRASS)
+CASING_LIGHT = rgb("#566370", "#65717c", "#72808e", "#858d9b", "#9ea8b2", "#b7c1cc", "#d0d9e2")
+FAMILIES = (CASING, CASING_LIGHT, PLATE_STEEL, FUEL_YELLOW, COPPER, BRASS)
 SHEEN_AREA = 20
-SHEEN_SIDE = 3
+SHEEN_SIDE = 5
+BEVEL_AREA = 9
+BEVEL_SIDE = 3
 SHEEN_FILL = 0.6
 SHEEN_EVERY = 12
 
@@ -144,9 +147,13 @@ def regions(img):
 def sheen(u, v, w, h):
     centre = (w + h) / 2.0 - 1
     d = min(abs(u + v - centre - SHEEN_EVERY * k) for k in (-2, -1, 0, 1, 2)) if w > 2 * h or h > 2 * w else abs(u + v - centre)
-    if min(w, h) < 5:
-        return 1 if d < 1.0 else 0
-    return 2 if d < 1.0 else 1 if d < 2.5 else 0
+    rim = u in (0, w - 1) or v in (0, h - 1)
+    return (2 if d < 1.0 else 1 if d < 2.5 else 0) - (1 if rim else 0)
+
+
+def bevel(u, v, w, h):
+    at, size = (v, h) if h <= w else (u, w)
+    return 1 if at == 0 else -1 if at == size - 1 else 0
 
 
 def enliven(img):
@@ -154,16 +161,19 @@ def enliven(img):
     changed = 0
     for colour, cells in list(regions(img)):
         family = next((f for f in FAMILIES if colour[:3] in f), None)
-        if family is None or len(cells) < SHEEN_AREA:
+        if family is None or len(cells) < BEVEL_AREA:
             continue
         x0, y0 = min(c[0] for c in cells), min(c[1] for c in cells)
         w, h = max(c[0] for c in cells) - x0 + 1, max(c[1] for c in cells) - y0 + 1
-        if min(w, h) < SHEEN_SIDE or len(cells) < SHEEN_FILL * w * h:
+        if min(w, h) >= SHEEN_SIDE and len(cells) >= max(SHEEN_AREA, SHEEN_FILL * w * h):
+            shade = sheen
+        elif min(w, h) >= BEVEL_SIDE and len(cells) == w * h:
+            shade = bevel
+        else:
             continue
         base = family.index(colour[:3])
         for x, y in cells:
-            rim = min(w, h) >= 5 and (x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1))
-            lift = max(0, min(len(family) - 1, base + sheen(x - x0, y - y0, w, h) - (1 if rim else 0)))
+            lift = max(0, min(len(family) - 1, base + shade(x - x0, y - y0, w, h)))
             if lift != base:
                 px[x, y] = family[lift] + (colour[3],)
                 changed += 1

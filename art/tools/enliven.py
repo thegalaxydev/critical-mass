@@ -7,7 +7,8 @@ import create_style
 from plant_style import BLOCK
 
 SHEETS = ("spent_fuel_rack", "reactor_controller", "control_channel", "coolant_channel", "fuel_channel", "fuel_channel_glow_1", "fuel_channel_glow_2", "fuel_channel_glow_3",
-          "reactor_signal_interface", "pressurizer", "electric_motor", "shielded_cask", "generator", "diesel_engine", "circuit_breaker", "transfer_switch")
+          "reactor_signal_interface", "pressurizer", "electric_motor", "shielded_cask", "generator", "diesel_engine", "circuit_breaker", "transfer_switch",
+          "centrifuge", "boiler_heating_plate", "water_cannon", "control_rod_drive", "transformer", "reactor_service_port")
 
 
 def main():
