@@ -5,6 +5,7 @@ import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMConfig;
 import com.criticalmass.registry.CMSounds;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,6 +50,13 @@ public final class Detonation {
     private double front;
     private int ring;
     private boolean carved;
+    private LongOpenHashSet shields;
+    private final Solid shield = (x, y, z) -> shields.contains(BlockPos.asLong(x, y, z));
+
+    @FunctionalInterface
+    public interface Solid {
+        boolean at(int x, int y, int z);
+    }
 
     private Detonation(BlockPos centre, int radius, int fuse, boolean scorch) {
         this.centre = centre;
@@ -182,6 +190,98 @@ public final class Detonation {
         return state.is(BLAST_PROOF) || state.getDestroySpeed(level, pos) < 0;
     }
 
+    public static boolean shadowed(Solid solid, BlockPos from, int dx, int dy, int dz) {
+        int sx = Integer.signum(dx);
+        int sy = Integer.signum(dy);
+        int sz = Integer.signum(dz);
+        double stepX = dx == 0 ? Double.MAX_VALUE : 1.0 / Math.abs(dx);
+        double stepY = dy == 0 ? Double.MAX_VALUE : 1.0 / Math.abs(dy);
+        double stepZ = dz == 0 ? Double.MAX_VALUE : 1.0 / Math.abs(dz);
+        double nextX = dx == 0 ? Double.MAX_VALUE : stepX / 2;
+        double nextY = dy == 0 ? Double.MAX_VALUE : stepY / 2;
+        double nextZ = dz == 0 ? Double.MAX_VALUE : stepZ / 2;
+        int x = 0;
+        int y = 0;
+        int z = 0;
+        int ox = from.getX();
+        int oy = from.getY();
+        int oz = from.getZ();
+        while (true) {
+            double t = Math.min(nextX, Math.min(nextY, nextZ));
+            if (t >= 1) {
+                return false;
+            }
+            boolean ax = nextX - t < 1e-9;
+            boolean ay = nextY - t < 1e-9;
+            boolean az = nextZ - t < 1e-9;
+            if ((ax && ay || ax && az || ay && az)
+                    && (ax && solid.at(ox + x + sx, oy + y, oz + z) || ay && solid.at(ox + x, oy + y + sy, oz + z) || az && solid.at(ox + x, oy + y, oz + z + sz)
+                    || ax && ay && az && (solid.at(ox + x + sx, oy + y + sy, oz + z) || solid.at(ox + x + sx, oy + y, oz + z + sz) || solid.at(ox + x, oy + y + sy, oz + z + sz)))) {
+                return true;
+            }
+            if (ax) {
+                x += sx;
+                nextX += stepX;
+            }
+            if (ay) {
+                y += sy;
+                nextY += stepY;
+            }
+            if (az) {
+                z += sz;
+                nextZ += stepZ;
+            }
+            if (x == dx && y == dy && z == dz) {
+                return false;
+            }
+            if (solid.at(ox + x, oy + y, oz + z)) {
+                return true;
+            }
+        }
+    }
+
+    public static boolean sheltered(Level level, BlockPos from, BlockPos to) {
+        BlockPos.MutableBlockPos probe = new BlockPos.MutableBlockPos();
+        return CMConfig.blastShelter() && shadowed((x, y, z) -> level.isLoaded(probe.set(x, y, z)) && survives(level.getBlockState(probe), level, probe), from, to.getX() - from.getX(), to.getY() - from.getY(), to.getZ() - from.getZ());
+    }
+
+    private void gather(ServerLevel level, double from, double to) {
+        if (shields == null) {
+            shields = new LongOpenHashSet();
+            if (from > 0) {
+                gather(level, 0, from);
+            }
+        }
+        int reach = (int) Math.ceil(to);
+        int down = (int) Math.ceil(to / DEPTH_SQUASH);
+        BlockPos.MutableBlockPos cursor = new BlockPos.MutableBlockPos();
+        for (int dx = -reach; dx <= reach; dx++) {
+            for (int dz = -reach; dz <= reach; dz++) {
+                if (dx * dx + dz * dz >= to * to || !level.hasChunk((centre.getX() + dx) >> 4, (centre.getZ() + dz) >> 4)) {
+                    continue;
+                }
+                for (int dy = -down; dy <= reach; dy++) {
+                    double m = measure(dx, dy, dz);
+                    if (m < from || m >= to) {
+                        continue;
+                    }
+                    cursor.set(centre.getX() + dx, centre.getY() + dy, centre.getZ() + dz);
+                    if (level.isOutsideBuildHeight(cursor)) {
+                        continue;
+                    }
+                    BlockState state = level.getBlockState(cursor);
+                    if (!state.isAir() && survives(state, level, cursor)) {
+                        shields.add(cursor.asLong());
+                    }
+                }
+            }
+        }
+    }
+
+    private boolean sheltered(int dx, int dy, int dz) {
+        return !shields.isEmpty() && CMConfig.blastShelter() && shadowed(shield, centre, dx, dy, dz);
+    }
+
     private double measure(int dx, int dy, int dz) {
         double v = dy < 0 ? dy * DEPTH_SQUASH : dy;
         return Math.sqrt(dx * dx + v * v + dz * dz);
@@ -222,7 +322,7 @@ public final class Detonation {
         double reach = radius * REACH;
         for (Entity entity : level.getEntities((Entity) null, new AABB(centre).inflate(reach), e -> true)) {
             double distance = Math.sqrt(entity.distanceToSqr(core));
-            if (distance > reach) {
+            if (distance > reach || sheltered(level, centre, BlockPos.containing(entity.getBoundingBox().getCenter()))) {
                 continue;
             }
             if (entity instanceof ItemEntity) {
@@ -250,6 +350,7 @@ public final class Detonation {
         double shell = 4 * Math.PI * Math.max(1, from * from) * 0.75;
         double to = Math.min(outer, from + Mth.clamp(CARVE_BUDGET / shell, 0.35, 3.0));
         RandomSource random = level.random;
+        gather(level, from, to);
         int reach = (int) Math.ceil(to);
         int down = (int) Math.ceil(to / DEPTH_SQUASH);
         int floor = level.getMinBuildHeight();
@@ -271,7 +372,7 @@ public final class Detonation {
                     }
                     cursor.set(centre.getX() + dx, y, centre.getZ() + dz);
                     BlockState state = level.getBlockState(cursor);
-                    if (state.isAir() || survives(state, level, cursor)) {
+                    if (state.isAir() || survives(state, level, cursor) || sheltered(dx, dy, dz)) {
                         continue;
                     }
                     if (level.getBlockState(cursor.above()).is(CMBlocks.FALLOUT_ASH.get())) {
@@ -317,7 +418,7 @@ public final class Detonation {
             if (survives(level.getBlockState(at), level, at)) {
                 continue;
             }
-            while (at.getY() > bottom && !survives(level.getBlockState(at.below()), level, at.below())) {
+            while (at.getY() > bottom && level.getBlockState(at.below()).canBeReplaced()) {
                 at = at.below();
             }
             level.setBlock(at, CMBlocks.CORIUM.get().defaultBlockState().setValue(Corium.CoriumBlock.HOT, true), Block.UPDATE_ALL);
@@ -328,6 +429,9 @@ public final class Detonation {
     }
 
     private boolean scorch(ServerLevel level) {
+        if (shields == null) {
+            gather(level, radius + LINING, radius + LINING);
+        }
         int reach = (int) Math.ceil(radius * REACH);
         int side = 2 * reach + 1;
         int total = side * side;
@@ -353,7 +457,7 @@ public final class Detonation {
                 if (state.isAir()) {
                     continue;
                 }
-                if (!state.getFluidState().isEmpty()) {
+                if (!state.getFluidState().isEmpty() || sheltered(dx, y - centre.getY(), dz)) {
                     break;
                 }
                 if (state.is(BlockTags.LOGS)) {

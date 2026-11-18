@@ -24,6 +24,7 @@ public final class CMConfig {
     public static final ModConfigSpec.DoubleValue CORIUM_CONTAMINATION;
     public static final ModConfigSpec.BooleanValue NUCLEAR_EXPLOSION;
     public static final ModConfigSpec.IntValue EXPLOSION_RADIUS;
+    public static final ModConfigSpec.BooleanValue BLAST_SHELTER;
     public static final ModConfigSpec.BooleanValue FALLOUT;
     public static final ModConfigSpec.DoubleValue FALLOUT_HALF_LIFE;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_FIRES;
@@ -47,6 +48,7 @@ public final class CMConfig {
         CORIUM_CONTAMINATION = b.comment("Multiplier on the contamination released when corium breaches the vessel").defineInRange("coriumContamination", 1.0, 0.0, 100.0);
         NUCLEAR_EXPLOSION = b.comment("Whether a core whose every fuel column has melted goes off as a nuclear explosion; turned off, a full melt only leaves corium").define("nuclearExplosion", true);
         EXPLOSION_RADIUS = b.comment("Radius in blocks of the crater a 15-block core leaves; bigger cores leave bigger ones, and fire and blast reach about twice as far").defineInRange("explosionRadius", 40, 4, 96);
+        BLAST_SHELTER = b.comment("Whether blast-proof blocks shelter what is behind them from a nuclear explosion; turned off, they only survive it themselves").define("blastShelter", true);
         FALLOUT = b.comment("Whether a nuclear explosion leaves a plume of fallout downwind").define("fallout", true);
         FALLOUT_HALF_LIFE = b.comment("Minutes for the fallout in the air to lose half its strength; the ash on the ground stays until it is cleared").defineInRange("falloutHalfLifeMinutes", 5.0, 0.5, 600.0);
         b.pop();
@@ -101,6 +103,10 @@ public final class CMConfig {
 
     public static double falloutHalfLife() {
         return SPEC.isLoaded() ? FALLOUT_HALF_LIFE.get() : 5.0;
+    }
+
+    public static boolean blastShelter() {
+        return !SPEC.isLoaded() || BLAST_SHELTER.get();
     }
 
     public static int explosionRadius() {

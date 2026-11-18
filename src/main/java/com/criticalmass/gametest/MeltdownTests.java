@@ -122,12 +122,61 @@ public final class MeltdownTests {
                     h.assertBlockPresent(CMBlocks.SHIELDED_HATCH.get(), hatch);
                     h.assertBlockPresent(Blocks.CRYING_OBSIDIAN, crying);
                     h.assertBlockPresent(CMBlocks.SHIELDING_CONCRETE.get(), basemat);
-                    h.assertBlockPresent(Blocks.AIR, centre.east(1));
-                    h.assertBlockPresent(Blocks.AIR, centre.east(3));
+                    h.assertBlockPresent(Blocks.AIR, centre.above(1));
+                    h.assertBlockPresent(CMBlocks.CORIUM.get(), centre.east(1));
+                    h.assertBlockPresent(Blocks.STONE, centre.east(3));
                     h.assertBlockPresent(Blocks.AIR, centre.west(2));
                     h.assertBlockPresent(Blocks.AIR, obsidian.below());
                     h.assertBlockPresent(CMBlocks.CORIUM.get(), centre);
-                    h.assertBlockPresent(CMBlocks.CORIUM.get(), basemat.north());
+                    h.assertBlockPresent(CMBlocks.CORIUM.get(), centre.north());
+                    h.assertBlockPresent(Blocks.STONE, basemat.north());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void blastProofWallsShelterWhatIsBehindThem(GameTestHelper h) {
+        BlockPos centre = new BlockPos(8, 4, 8);
+        for (int x = 2; x <= 14; x++) {
+            for (int z = 2; z <= 14; z++) {
+                for (int y = 1; y <= 5; y++) {
+                    h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+                }
+            }
+        }
+        BlockPos door = new BlockPos(6, 4, 8);
+        for (int y = 3; y <= 5; y++) {
+            for (int z = 7; z <= 9; z++) {
+                h.setBlock(new BlockPos(10, y, z), Blocks.OBSIDIAN);
+                if (!new BlockPos(6, y, z).equals(door)) {
+                    h.setBlock(new BlockPos(6, y, z), CMBlocks.SHIELDING_CONCRETE.get());
+                }
+            }
+        }
+        net.minecraft.world.entity.animal.Cow kept = h.spawnWithNoFreeWill(net.minecraft.world.entity.EntityType.COW, new BlockPos(11, 6, 8));
+        net.minecraft.world.entity.animal.Cow lost = h.spawnWithNoFreeWill(net.minecraft.world.entity.EntityType.COW, new BlockPos(8, 6, 11));
+        h.assertTrue(Detonation.sheltered(h.getLevel(), h.absolutePos(centre), h.absolutePos(new BlockPos(12, 4, 8))) && !Detonation.sheltered(h.getLevel(), h.absolutePos(centre), h.absolutePos(new BlockPos(8, 4, 12))),
+                "A point behind the wall should be sheltered and one in the open should not");
+        h.assertTrue(Detonation.sheltered(h.getLevel(), h.absolutePos(centre), h.absolutePos(new BlockPos(11, 4, 12))) == false && Detonation.sheltered(h.getLevel(), h.absolutePos(centre), h.absolutePos(new BlockPos(11, 4, 7))),
+                "The wall should shelter only what is behind it");
+        Detonation.arm(h.getLevel(), h.absolutePos(centre), 4, 1, false);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertBlockPresent(Blocks.OBSIDIAN, new BlockPos(10, 4, 8));
+                    h.assertBlockPresent(Blocks.AIR, new BlockPos(9, 4, 8));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(11, 4, 8));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(12, 4, 8));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(11, 3, 7));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(11, 5, 8));
+                    h.assertBlockPresent(Blocks.AIR, new BlockPos(9, 4, 5));
+                    h.assertBlockPresent(Blocks.AIR, new BlockPos(8, 4, 11));
+                    h.assertBlockPresent(Blocks.AIR, door);
+                    h.assertBlockPresent(Blocks.AIR, new BlockPos(5, 4, 8));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(5, 4, 7));
+                    h.assertBlockPresent(Blocks.STONE, new BlockPos(5, 5, 8));
+                    h.assertTrue(kept.isAlive() && kept.getHealth() == kept.getMaxHealth() && !kept.isOnFire(), "A cow behind the wall should be untouched: " + kept.getHealth());
+                    h.assertTrue(!lost.isAlive(), "A cow in the open should be killed");
                 })
                 .thenSucceed();
     }
