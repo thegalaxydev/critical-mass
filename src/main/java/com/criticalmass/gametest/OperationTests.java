@@ -157,6 +157,57 @@ public final class OperationTests {
                 .thenSucceed();
     }
 
+    private static com.criticalmass.content.control.DashPart deskButton(GameTestHelper h, com.criticalmass.content.control.DashboardBlockEntity desk, int slot, com.criticalmass.content.control.DashPart.Press press) {
+        com.criticalmass.content.control.DashPart part = new com.criticalmass.content.control.DashPart(com.criticalmass.content.control.DashPart.Type.BUTTON);
+        h.assertTrue(desk.install(slot, part) && desk.bind(slot, h.absolutePos(TestVessels.CONTROLLER)), "A button should bind to a Reactor Controller");
+        for (int i = 0; i < 8 && part.press(h.getLevel()) != press; i++) {
+            desk.cycle(slot);
+        }
+        h.assertTrue(part.press(h.getLevel()) == press && desk.modeKey(part).endsWith(press.key), "A button on the controller should offer " + press.key);
+        return part;
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 400)
+    public static void deskButtonsWorkTheRegulatorAndABoundRodLeverStartsAtHold(GameTestHelper h) {
+        ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);
+        ControlRodDriveBlockEntity d = drive(h, DRIVE_B, 64);
+        d.setBank(CMThermal.REGULATING_BANK);
+        BlockPos buttons = new BlockPos(10, 1, 10);
+        BlockPos others = new BlockPos(12, 1, 10);
+        h.setBlock(buttons, CMBlocks.REACTOR_ALLOY_DASHBOARD.get());
+        h.setBlock(others, CMBlocks.REACTOR_ALLOY_DASHBOARD.get());
+        com.criticalmass.content.control.DashboardBlockEntity desk = h.getBlockEntity(buttons);
+        com.criticalmass.content.control.DashboardBlockEntity side = h.getBlockEntity(others);
+        deskButton(h, desk, 0, com.criticalmass.content.control.DashPart.Press.REGULATOR_RAISE);
+        deskButton(h, desk, 1, com.criticalmass.content.control.DashPart.Press.REGULATOR_LOWER);
+        com.criticalmass.content.control.DashPart lever = new com.criticalmass.content.control.DashPart(com.criticalmass.content.control.DashPart.Type.LEVER);
+        h.assertTrue(lever.level == 0 && side.install(0, lever) && side.bind(0, h.absolutePos(TestVessels.CONTROLLER)), "A lever should bind to a Reactor Controller");
+        h.assertTrue(lever.level == com.criticalmass.content.control.DashPart.MAX_LEVEL / 2 && lever.rodShift(0) == 0, "A lever bound to a controller should start in the middle, holding: " + lever.level);
+        com.criticalmass.content.control.PlantChannel setpoint = com.criticalmass.content.control.PlantChannel.SETPOINT;
+        BlockPos controller = h.absolutePos(TestVessels.CONTROLLER);
+        h.startSequence()
+                .thenIdle(60)
+                .thenExecute(() -> {
+                    h.assertTrue(desk.use(1, 0.5).endsWith("regulator_off") && c.regulatorSetpoint() == 0, "LOWER should leave a regulator that is off alone");
+                    TestVessels.atPower(c, 0.2);
+                    h.assertTrue(desk.use(0, 0.5).endsWith("regulator_on") && c.regulatorSetpoint() == 20, "RAISE should switch the regulator on at the present power: " + c.regulatorSetpoint());
+                    h.assertTrue(desk.use(0, 0.5).endsWith("regulator_raised") && c.regulatorSetpoint() == 25, "RAISE should then move the setpoint up a notch: " + c.regulatorSetpoint());
+                    com.criticalmass.content.control.PlantChannel.Reading shown = setpoint.read(h.getLevel(), controller);
+                    h.assertTrue(shown != null && shown.value() == 25 && shown.max() == 100, "The setpoint channel should read the regulator: " + shown);
+                })
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    h.assertTrue(c.regulatorSetpoint() == 25 && !c.isTripped(), "The regulator should stay on: " + c.regulatorSetpoint() + " " + c.tripReason());
+                    for (int want = 20; want >= 5; want -= 5) {
+                        h.assertTrue(desk.use(1, 0.5).endsWith("regulator_lowered") && c.regulatorSetpoint() == want, "LOWER should move the setpoint down a notch: " + c.regulatorSetpoint());
+                    }
+                    h.assertTrue(desk.use(1, 0.5).endsWith("regulator_off") && c.regulatorSetpoint() == 0, "LOWER below the last notch should switch it off: " + c.regulatorSetpoint());
+                    c.scram();
+                    h.assertTrue(desk.use(0, 0.5).endsWith("regulator_tripped") && c.regulatorSetpoint() == 0, "RAISE should be refused while the reactor is tripped");
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE, timeoutTicks = 2600)
     public static void theRegulatorHoldsPowerWithBankDAndATripSwitchesItOff(GameTestHelper h) {
         ReactorControllerBlockEntity c = runningLoop(h, TestVessels.STANDARD);

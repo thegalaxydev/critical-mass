@@ -160,6 +160,7 @@ public final class CMThermal {
     public static final double REGULATOR_GAIN = REGULATOR_STEP / 0.05;
     public static final double REGULATOR_BAND = 0.005;
     public static final double REGULATOR_QUIET = 0.002;
+    public static final int REGULATOR_NOTCH = 5;
     public static final double LOW_COOLANT_ALARM = 0.5;
     public static final int ROD_LINK_TICKS = 20;
     public static final double PIPE_LEAK_PER_BAR = 0.004;

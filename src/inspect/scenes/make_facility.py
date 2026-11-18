@@ -58,6 +58,11 @@ UNLOAD_ARM, LOAD_ARM = (-1, 12, -2), (1, 12, -2)
 REFUEL_COGS = [(0, 12, -2)]
 REFUEL_MOTOR = (0, 13, -2)
 REFUEL_RACKS, REFUEL_DEPOT = [(-2, 10, -5), (-3, 10, -5)], (2, 10, -5)
+BANKS = {-2: 0, 0: 3, 2: 1}
+ALL_BANKS = 4
+CHANNELS = ["temperature", "coolant_temperature", "pressure", "level", "flow", "power"] + ["rods_" + "abcd"[b] for b in sorted(set(BANKS.values()))] \
+    + ["neutron", "period", "reactivity", "xenon", "boron", "setpoint"]
+PRESSES = ["scram", "reset", "rod_in", "rod_out", "regulator_raise", "regulator_lower"]
 
 SG_X = 10
 SG_Y = range(3, 11)
@@ -113,6 +118,10 @@ class Train:
         self.feed_tank = [(42, y, z0) for y in (1, 2, 3)]
         self.feed_pump = (40, 1, z0 + 3)
         self.feed_motor = (40, 2, z0 + 3)
+        self.heater = (30, 4, z0)
+        self.fill_pump, self.fill_cog, self.fill_clutch, self.fill_switch, self.fill_motor = (43, 1, z0), (43, 1, z0 - 1), (42, 1, z0 - 1), (42, 2, z0 - 1), (41, 1, z0 - 1)
+        self.fill_tank = [(44, 1, z0)]
+        self.fill_drop = (41, 5, z0 - 1 if z0 < 0 else z0 - 2)
         columns = [tx + 4, tx, tx - 4]
         self.fills = [[(x, y, tz) for y in range(2, 14)] for x in columns]
         self.fill = [cell for column in self.fills for cell in column]
@@ -120,8 +129,9 @@ class Train:
         self.makeup_pipe, self.makeup_pump, self.makeup_tank = (last, 3, tz + 1), (last, 3, tz + 2), (last, 3, tz + 3)
         self.makeup_cog, self.makeup_motor = (last, 4, tz + 2), (last, 4, tz + 3)
         self.steam = route((SG_X, 11, z0), (12, 11, z0), (12, 8, z0), (20, 8, z0)) + route((22, 8, z0), (23, 8, z0)) + route((25, 8, z0), (28, 8, z0)) \
-            + route((30, 6, z0), (30, 3, z0), (31, 3, z0)) + route((40, 3, z0), (41, 3, z0)) \
-            + route((42, 1, z0 + 1), (42, 1, z0 + 3), (41, 1, z0 + 3)) + route((39, 1, z0 + 3), (SG_X, 1, z0 + 3), (SG_X, 1, z0), (SG_X, 2, z0))
+            + route((30, 6, z0), (30, 5, z0)) + route((30, 3, z0), (31, 3, z0)) + route((40, 3, z0), (41, 3, z0)) \
+            + route((42, 1, z0 + 1), (42, 1, z0 + 3), (41, 1, z0 + 3)) + route((39, 1, z0 + 3), (30, 1, z0 + 3), (30, 4, z0 + 3), (30, 4, z0 + 1)) \
+            + route((30, 4, z0 - 1), (28, 4, z0 - 1), (28, 4, z0 + 3), (28, 1, z0 + 3), (SG_X, 1, z0 + 3), (SG_X, 1, z0), (SG_X, 2, z0))
         out, hot = tx - 6, tx + 6
         between = []
         for x in columns[:-1]:
@@ -165,18 +175,37 @@ BATTERY = (49, 1, -5)
 BATTERY_B = (49, 1, -7)
 STANDBY_ENGINE, STANDBY_GEN, STANDBY_T, TRANSFER = (50, 1, 7), (51, 1, 7), (53, 1, 7), (55, 1, 7)
 START_LINE = [(x, 1, 8) for x in range(50, 56)]
-FEED_REACTOR, FEED_A, FEED_B = (50, 1, -9), (52, 1, -9), (54, 1, -9)
-FEEDERS = [FEED_REACTOR, FEED_A, FEED_B]
+FEED_REACTOR, FEED_A, FEED_B, FEED_FUEL = (50, 1, -9), (52, 1, -9), (54, 1, -9), (56, 1, -9)
+FEEDERS = [FEED_REACTOR, FEED_A, FEED_B, FEED_FUEL]
+FUEL_UP, FUEL_2, FUEL_3 = (56, 5, -9), (40, 5, 3), (20, 5, 3)
 C_NORMAL, C_D, C_LOAD, C_L2 = (55, 5, -4), (55, 5, 6), (53, 5, 6), (53, 5, -4)
 R_UP, R2, H_IN, C_IN, C_HI = (48, 5, -3), (30, 5, 0), (19, 5, 0), (15, 5, 0), (15, 12, 0)
 A_UP, A2, A_F, A3, N_A_IN, N_A_OUT = (48, 5, -11), (43, 5, -11), (41, 5, -4), (22, 5, -13), (22, 2, -16), (22, 2, -18)
 B3 = (42, 5, -16)
 B_UP, B2, B3_UP, N_B_IN, N_B_OUT = (50, 5, -3), (43, 5, 13), (48, 5, -14), (48, 3, -16), (48, 3, -18)
+CELL_Z = 38
+SAWS = [(x, 1, CELL_Z + 1) for x in (3, 4, 5, 6)]
+SAW_DRIVES = [(x, 1, CELL_Z + 2) for x in (3, 4, 5, 6)]
+SAW_MOTOR = (6, 1, CELL_Z + 3)
+FEED_PORT = (6, 1, CELL_Z)
+SHEAR_DEPOT = (2, 1, CELL_Z + 1)
+DISSOLVER_BURNER, DISSOLVER, DISSOLVER_MIXER = (-1, 1, CELL_Z + 1), (-1, 2, CELL_Z + 1), (-1, 4, CELL_Z + 1)
+DISSOLVER_COG, DISSOLVER_ARM, DISSOLVER_MOTOR = (0, 4, CELL_Z + 1), (1, 4, CELL_Z + 1), (0, 5, CELL_Z + 1)
+PRODUCT = (-1, 1, CELL_Z)
+WASTE_PUMP, WASTE_PIPE = (-2, 1, CELL_Z), (-3, 1, CELL_Z)
+WASTE_TANK = [(-4, y, CELL_Z) for y in (1, 2, 3)]
+WATER_PUMP = (-2, 2, CELL_Z + 1)
+WATER_TANK = [(-3, 2, CELL_Z + 1), (-3, 3, CELL_Z + 1)]
+PUMP_COG, PUMP_MOTOR = (-2, 1, CELL_Z + 1), (-3, 1, CELL_Z + 1)
+HALL_OUT, AUX_IN, AUX_OUT, YARD_OUT, CELL_OUT, CELL_IN = (19, 5, 16), (19, 5, 18), (19, 5, 32), (19, 5, 34), (12, 5, CELL_Z + 2), (10, 5, CELL_Z + 2)
+CELL_MID, CELL_WEST = (0, 5, CELL_Z + 4), (-4, 5, CELL_Z + 4)
 INSULATORS = [(IN20, "west"), (OUT20, "east"), (P_A, "up"), (P_B, "up"), (OUT6, "east"), (IN6, "west"), (C_NORMAL, "down"), (C_D, "down"), (C_LOAD, "down"), (C_L2, "down"),
               (R_UP, "down"), (R2, "down"), (H_IN, "east"), (C_IN, "west"), (C_HI, "west"),
               (A_UP, "down"), (A2, "down"), (A_F, "down"), (A3, "down"), (N_A_IN, "south"), (N_A_OUT, "north"),
-              (B_UP, "down"), (B2, "down"), (B3_UP, "down"), (B3, "down"), (N_B_IN, "south"), (N_B_OUT, "north")]
-BUSHINGS = [(58, 10, 0), (58, 3, -6), (16, 5, 0), (17, 5, 0), (18, 5, 0), (22, 2, -17), (48, 3, -17)]
+              (B_UP, "down"), (B2, "down"), (B3_UP, "down"), (B3, "down"), (N_B_IN, "south"), (N_B_OUT, "north"),
+              (TA.fill_drop, "down"), (TB.fill_drop, "down"), (HALL_OUT, "north"), (AUX_IN, "south"), (AUX_OUT, "north"), (YARD_OUT, "south"), (CELL_OUT, "east"), (CELL_IN, "west"),
+              (CELL_MID, "north"), (CELL_WEST, "north"), (FUEL_UP, "down"), (FUEL_2, "down"), (FUEL_3, "down")]
+BUSHINGS = [(58, 10, 0), (58, 3, -6), (16, 5, 0), (17, 5, 0), (18, 5, 0), (22, 2, -17), (48, 3, -17), (19, 5, 17), (19, 5, 33), (11, 5, CELL_Z + 2)]
 SLOTS = [(47, 4, -23)]
 HIGH, LOW, LINE, LOAD = 0, 1, 0, 1
 ON_NORMAL, ON_STANDBY, TO_LOAD = 0, 1, 2
@@ -193,8 +222,13 @@ WIRES = [
     ("wire", A3, 0, N_A_IN, 0), ("wire", N_A_IN, 0, N_A_OUT, 0), ("wire", N_A_OUT, 0, TA.makeup_motor, 0),
     ("wire", FEED_B, LOAD, B_UP, 0), ("wire", B_UP, 0, B2, 0), ("wire", B2, 0, TB.feed_motor, 0), ("wire", FEED_B, LOAD, B3_UP, 0), ("wire", B3_UP, 0, B3, 0), ("wire", B3, 0, TB.circ_motor, 0),
     ("wire", FEED_B, LOAD, N_B_IN, 0), ("wire", N_B_IN, 0, N_B_OUT, 0), ("wire", N_B_OUT, 0, TB.makeup_motor, 0),
+    ("wire", A_F, 0, TA.fill_drop, 0), ("wire", TA.fill_drop, 0, TA.fill_motor, 0), ("wire", B2, 0, TB.fill_drop, 0), ("wire", TB.fill_drop, 0, TB.fill_motor, 0),
+    ("cable", BUS6[2], 0, FEED_FUEL, LINE), ("wire", FEED_FUEL, LOAD, FUEL_UP, 0), ("wire", FUEL_UP, 0, FUEL_2, 0), ("wire", FUEL_2, 0, FUEL_3, 0),
+    ("wire", FUEL_3, 0, HALL_OUT, 0), ("wire", HALL_OUT, 0, AUX_IN, 0), ("wire", AUX_IN, 0, AUX_OUT, 0), ("wire", AUX_OUT, 0, YARD_OUT, 0), ("wire", YARD_OUT, 0, CELL_OUT, 0),
+    ("wire", CELL_OUT, 0, CELL_IN, 0), ("wire", CELL_IN, 0, SAW_MOTOR, 0), ("wire", CELL_IN, 0, CELL_MID, 0), ("wire", CELL_MID, 0, DISSOLVER_MOTOR, 0), ("wire", CELL_MID, 0, CELL_WEST, 0),
+    ("wire", CELL_WEST, 0, PUMP_MOTOR, 0),
 ]
-SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32}
+SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32, "fill": 16, "shear": 32, "dissolver": 32, "process": 16}
 RAMP = ((0.3, 126), (0.6, 153), (0.9, 179))
 PART_LOAD, RUN_LOAD = 0.3, 0.6
 RUN_POWER, RUN_COOLANT = RAMP[-1]
@@ -223,19 +257,25 @@ def breaker_desk(pos, tag):
     return [("open", "button", pos, 1, 1, tag + " OPEN"), ("close", "button", pos, 0, 2, tag + " CLOSE")]
 
 
-BENCH = [breaker_desk(FEED_REACTOR, "RX FEEDER"), breaker_desk(FEED_A, "A FEEDER"), breaker_desk(FEED_B, "B FEEDER"),
-         [("supply", "alarm", TRANSFER, 0, 0, "STATION SUPPLY"), ("battery", "alarm", BATTERY, 0, 0, "BATTERY")]] \
+BENCH = [[("supply", "alarm", TRANSFER, 0, 0, "STATION SUPPLY"), ("battery", "alarm", BATTERY, 0, 0, "BATTERY")]] \
     + turbine_desk(TA, "A") \
     + [[("flow_a", "gauge", LA.pump, 0, 4, "LOOP A FLOW"), ("flow_b", "gauge", LB.pump, 0, 4, "LOOP B FLOW")],
        [("pressure", "gauge", CONTROLLER, 2, 4, "PRESSURE"), ("coolant", "gauge", CONTROLLER, 1, 4, "COOLANT")],
        [("power", "gauge", CONTROLLER, 5, 4, "HEAT OUTPUT"), ("alarm", "alarm", CONTROLLER, 0, 0, "ALARM")],
-       [("rod_out", "button", CONTROLLER, 3, 2, "RODS OUT"), ("rod_in", "button", CONTROLLER, 2, 4, "RODS IN")],
+       [("rods_all", "lever", CONTROLLER, ALL_BANKS, 7, "ROD LEVER ALL"), ("rods_d", "lever", CONTROLLER, 3, 7, "ROD LEVER D")],
+       [("rod_out", "button", CONTROLLER, PRESSES.index("rod_out"), 2, "RODS OUT"), ("rod_in", "button", CONTROLLER, PRESSES.index("rod_in"), 4, "RODS IN")],
+       [("reg_lower", "button", CONTROLLER, PRESSES.index("regulator_lower"), 4, "REG LOWER"), ("reg_raise", "button", CONTROLLER, PRESSES.index("regulator_raise"), 2, "REG RAISE")],
+       [("setpoint", "gauge", CONTROLLER, CHANNELS.index("setpoint"), 4, "REG SETPOINT"), ("neutron", "gauge", CONTROLLER, CHANNELS.index("neutron"), 4, "NEUTRON POWER")],
        [("reset", "button", CONTROLLER, 1, 7, "RESET"), ("scram", "button", CONTROLLER, 0, 0, "SCRAM")],
        [("bypass", "switch", CONTROLLER, 0, 1, "TRIP BYPASS"), ("level", "gauge", CONTROLLER, 3, 4, "LEVEL")]] \
     + turbine_desk(TB, "B") \
     + [[("grid", "gauge", GRID, 0, 4, "GRID MW"), ("grid_alarm", "alarm", GRID, 0, 0, "GRID")],
        breaker_desk(GRID_BREAKER, "GRID BKR"), breaker_desk(STATION_BREAKER, "STN SUPPLY")]
 DESKS = {19 + i: parts for i, parts in enumerate(BENCH)}
+SIDE_X = 19
+SIDE_DESKS = {18 + i: parts for i, parts in enumerate([breaker_desk(FEED_REACTOR, "RX FEEDER"), breaker_desk(FEED_A, "A FEEDER"), breaker_desk(FEED_B, "B FEEDER"),
+                                                       breaker_desk(FEED_FUEL, "FUEL FEEDER")])}
+FILL_BELOW, FILL_ABOVE = 10000, 12000
 RACKS = [(x, -1, z) for x in (-8, -6) for z in (26, 28)]
 
 blocks = {}
@@ -543,6 +583,13 @@ def train(t):
     for pos in t.feed_tank:
         machine(pos, "create:fluid_tank")
     machine(t.feed_pump, "criticalmass:circulation_pump[facing=west,axis_along_first=true]")
+    machine(t.heater, "criticalmass:heat_exchanger[facing=north]")
+    for pos in t.fill_tank:
+        machine(pos, "create:fluid_tank")
+    machine(t.fill_pump, "create:mechanical_pump[facing=west]")
+    machine(t.fill_cog, "create:cogwheel[axis=x]")
+    machine(t.fill_clutch, "create:clutch[axis=x]")
+    machine(t.fill_switch, "create:stockpile_switch[facing=south,target=wall]{OnAboveAmount:%d.0f,OffBelowAmount:%d.0f}" % (FILL_ABOVE, FILL_BELOW))
     machine(t.circ_pump, "criticalmass:circulation_pump[facing=south,axis_along_first=false]")
     tx, ty, tz = t.turbine
     for dx, b in ((2, "create:shaft[axis=x]"), (3, "create:stressometer[facing=south,axis_along_first=true]"), (4, "create:speedometer[facing=south,axis_along_first=true]"), (5, "create:shaft[axis=x]")):
@@ -566,7 +613,12 @@ def train(t):
     put(t.makeup_motor[0], t.makeup_motor[1] + 1, t.makeup_motor[2], STEEL)
     put(t.makeup_cog[0], t.makeup_cog[1] + 1, t.makeup_cog[2], STEEL)
     stand(t.circ_motor)
-    reserved.update([t.feed_motor, t.circ_motor, t.makeup_motor])
+    reserved.update([t.feed_motor, t.circ_motor, t.makeup_motor, t.fill_motor])
+    hx, hy, hz = t.heater
+    join((hx, hy + 1, hz), t.heater)
+    join((hx, hy - 1, hz), t.heater)
+    join((hx, hy, hz + 1), t.heater)
+    join((hx, hy, hz - 1), t.heater)
     join((SG_X, 11, z0), t.exchangers[-1])
     join((SG_X, 2, z0), t.exchangers[0])
     join((20, 8, z0), t.relief)
@@ -694,6 +746,8 @@ def turbine_hall():
         post((34, 1, t.z0 + 2), 0, "Condenser " + tag)
         post((43, 1, t.z0 + 2), 0, "Feedwater", "Tank " + tag)
         post((37, 1, t.z0 + 4), 0, "Feedwater", "Pump " + tag)
+        post((29, 1, t.z0 + 4), 0, "Feedwater", "Heater " + tag)
+        post((45, 1, t.z0 + 1), 0, "Make-up", "Water " + tag)
         post((t.circ_pump[0] + 1, 1, t.circ_pump[2] + 2), 0, "Circulating", "Water Pump " + tag)
     post((47, 7, 3), 4, "20 kV", "Unit Bus")
     for x in (55, 56):
@@ -741,6 +795,7 @@ def rooms():
     post((51, 1, -9), 12, "Reactor", "Feeder")
     post((53, 1, -9), 12, "Train A", "Feeder")
     post((55, 1, -9), 12, "Train B", "Feeder")
+    post((57, 1, -9), 12, "Fuel", "Building", "Feeder")
     sign((50, 3, 16), "north", "Standby", "Diesel", "Engine")
     sign((53, 3, 16), "north", "Standby", "Transformer", "20 / 6 kV")
     sign((55, 3, 16), "north", "Transfer", "Switch")
@@ -931,6 +986,9 @@ def control_room():
         reserved.add((MIMIC_X + 1, y, z))
     for x in sorted(DESKS):
         machine((x, DESK_Y, DESK_Z), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in DESKS).lower(), str(x - 1 in DESKS).lower()))
+    for z in sorted(SIDE_DESKS):
+        machine((SIDE_X, DESK_Y, z), "criticalmass:reactor_alloy_dashboard[facing=east,join_cw=%s,join_ccw=%s]" % (str(z + 1 in SIDE_DESKS).lower(), str(z - 1 in SIDE_DESKS).lower()))
+    sign((SIDE_X, 9, 20), "east", "6 kV", "Feeders")
     for x in (20, 25, 31, 37, 42):
         put(x, 7, 22, "create:gray_seat")
     box(19, 6, 22, 43, 6, 23, CLEAN)
@@ -1021,6 +1079,64 @@ def fuel_building():
     box(-11, 3, 26, -11, 5, 29, SG)
 
 
+def reprocessing():
+    x0, x1, z0, z1 = -12, 11, 34, 43
+    box(x0, 0, z0 + 1, x1, 0, z1, CLEAN)
+    for b, ya, yb in ((SHELL, 1, 7), (PLINTH, 1, 2), (BAND, 7, 7)):
+        box(x0, ya, z1, x1, yb, z1, b)
+        box(x0, ya, z0 + 1, x0, yb, z1, b)
+        box(x1, ya, z0 + 1, x1, yb, z1, b)
+    box(x0, 8, z0 + 1, x1, 8, z1, PLINTH)
+    carve(-1, 1, z0 - 1, -1, 2, z0)
+    door(-1, 1, z0, "south")
+    door(x1, 1, 36, "west")
+    sign((0, 3, z0 - 2), "north", "Reprocessing")
+    sign((x1 + 1, 3, 37), "east", "Reprocessing", "Hall")
+    box(x0, 3, 35, x0, 4, 36, WINDOW)
+    box(x0 + 1, 1, CELL_Z, x1 - 1, 7, CELL_Z, SC)
+    box(-8, 2, CELL_Z, 9, 3, CELL_Z, SG)
+    carve(PRODUCT[0], PRODUCT[1] + 1, CELL_Z, PRODUCT[0], PRODUCT[1] + 1, CELL_Z)
+    door(-9, 1, CELL_Z, "north")
+    for x in range(x0 + 1, x1):
+        put(x, 0, CELL_Z - 1, YELLOW if x % 2 == 0 else BLACK)
+    for x in (-8, -3, 2, 7):
+        for z in (36, 41):
+            put(x, 8, z, LAMP)
+    machine(FEED_PORT, "create:andesite_funnel[facing=north,extracting=false]")
+    for pos in SAWS:
+        machine(pos, "create:mechanical_saw[facing=up,axis_along_first=false]")
+    for pos in SAW_DRIVES:
+        machine(pos, "create:encased_chain_drive[axis=z]")
+    machine(SHEAR_DEPOT, "create:depot")
+    machine(DISSOLVER_BURNER, "create:blaze_burner[blaze=kindled]{isCreative:1b}")
+    machine(DISSOLVER, "create:basin[facing=north]")
+    machine(DISSOLVER_MIXER, "create:mechanical_mixer")
+    machine(DISSOLVER_COG, "create:cogwheel[axis=y]")
+    for target in (SHEAR_DEPOT, DISSOLVER):
+        assert math.dist(DISSOLVER_ARM, target) < 5, "the dissolver arm cannot reach %s" % (target,)
+    machine(DISSOLVER_ARM, "create:mechanical_arm[ceiling=true]{InteractionPoints:[{Type:\"create:depot\",Pos:%s,Mode:\"TAKE\"},{Type:\"create:basin\",Pos:%s,Mode:\"DEPOSIT\"}]}"
+            % (reach(DISSOLVER_ARM, SHEAR_DEPOT), reach(DISSOLVER_ARM, DISSOLVER)))
+    machine(PRODUCT, "create:basin")
+    machine(WASTE_PUMP, "create:mechanical_pump[facing=west]")
+    machine(WASTE_PIPE, "create:fluid_pipe")
+    machine(WATER_PUMP, "create:mechanical_pump[facing=east]")
+    machine(PUMP_COG, "create:cogwheel[axis=x]")
+    for pos in WASTE_TANK + WATER_TANK:
+        machine(pos, "create:fluid_tank")
+    for xa, xb in ((-3, -1), (1, 3)):
+        box(xa, 5, CELL_Z + 1, xb, 5, CELL_Z + 1, GIRDER_X)
+    reserved.update([SAW_MOTOR, DISSOLVER_MOTOR, PUMP_MOTOR])
+    machine((9, 1, 35), "criticalmass:shielded_cask")
+    sign((9, 2, 37), "north", "Transfer", "Cask")
+    sign((6, 4, CELL_Z - 1), "north", "Feed Port", "Cooled spent", "fuel only")
+    sign((3, 4, CELL_Z - 1), "north", "Shear Line")
+    sign((-1, 4, CELL_Z - 1), "north", "Dissolver", "Product in the", "basin below")
+    sign((-4, 4, CELL_Z - 1), "north", "Liquid", "Waste")
+    sign((-9, 3, CELL_Z - 1), "north", "Hot Cell", "Survey before", "entry")
+    box(16, 1, CELL_Z, 16, 9, CELL_Z, STEEL)
+    put(16, 10, CELL_Z, ROD)
+
+
 def stack():
     for y in range(1, 34):
         put(15, y, 29, "minecraft:red_concrete" if (y // 4) % 2 == 0 else WHITE)
@@ -1077,6 +1193,14 @@ def validate():
             for x, y, z in column:
                 for q in ((x + 1, y, z), (x - 1, y, z), (x, y, z + 1), (x, y, z - 1)):
                     faces[q] = (x, y, z)
+        x, y, z = t.heater
+        for q in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)):
+            faces[q] = t.heater
+    for pos, b in machines.items():
+        if "fluid_tank" in b:
+            x, y, z = pos
+            for q in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)):
+                faces[q] = pos
     for cell, target in faces.items():
         assert cell not in owner or (cell, target) in ports, "pipe %s would join %s by accident" % (cell, target)
     for cell, index in owner.items():
@@ -1095,6 +1219,7 @@ def design():
     corridor()
     aux()
     fuel_building()
+    reprocessing()
     turbine_hall()
     containment()
     towers()
@@ -1207,6 +1332,9 @@ def start(w):
                  "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*t.makeup_tank),
                  tank(w, t.feed_tank[0], "minecraft:water", 16000, 16000 * 80.0)]
         cmds += [merge(w, p, "Secondary", "minecraft:water", 1000, 1000 * 80.0) for p in t.exchangers]
+        cmds += [merge(w, t.heater, key, "minecraft:water", 1000, 1000 * 80.0) for key in ("Primary", "Secondary")]
+        cmds += ["data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:8000}}}" % w(*t.fill_tank[0]),
+                 setblock(w, t.fill_motor, "criticalmass:electric_motor[facing=east]{ScrollValue:%d}" % SPEEDS["fill"])]
         for p in t.condensers:
             cmds += [merge(w, p, "Primary", "minecraft:water", 1000, 1000 * 80.0), merge(w, p, "Secondary", "minecraft:water", 1000, 0)]
         cmds += [merge(w, p, "Buffer", "minecraft:water", 500, 0) for p in t.fill]
@@ -1216,10 +1344,11 @@ def start(w):
                  setblock(w, t.circ_motor, "criticalmass:electric_motor[facing=up]{ScrollValue:%d}" % SPEEDS["circ"]),
                  setblock(w, t.makeup_motor, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["makeup"])]
     cmds += [merge(w, p, "Buffer", "minecraft:water", 4000, 0) for p in RACKS + REFUEL_RACKS]
-    cmds += [setblock(w, REFUEL_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["refuel"])]
-    for x, parts in sorted(DESKS.items()):
-        for slot, (_, kind, target, mode, color, label) in enumerate(parts):
-            cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(x, DESK_Y, DESK_Z), slot, kind, w(*target), mode, color, label))
+    cmds += [setblock(w, REFUEL_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["refuel"]),
+             "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:16000}}}" % w(*WATER_TANK[0]),
+             setblock(w, SAW_MOTOR, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["shear"]),
+             setblock(w, DISSOLVER_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["dissolver"]),
+             setblock(w, PUMP_MOTOR, "criticalmass:electric_motor[facing=east]{ScrollValue:%d}" % SPEEDS["process"])]
     for _, (sx1, sy1), target, turbine in SCREENS:
         cmds += bind(w, (sx1, sy1, SCREEN_Z), target, "Reactor")
         if turbine:
@@ -1234,13 +1363,19 @@ def start(w):
         cmds += [setblock(w, (valve[0] - 1, valve[1], valve[2]), AIR),
                  setblock(w, (valve[0] + 1, valve[1], valve[2]), "create:copper_valve_handle[facing=east]"),
                  setblock(w, loop.motor, "criticalmass:electric_motor[facing=up]{ScrollValue:%d}" % SPEEDS["primary"])]
-    cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]" % facing) for pos, facing in DRIVES]
+    cmds += [setblock(w, pos, "criticalmass:control_rod_drive[facing=%s]{Bank:%d,ScrollValue:%d}" % (facing, BANKS[pos[0]], BANKS[pos[0]])) for pos, facing in DRIVES]
     cmds += [setblock(w, pos, "create:cogwheel[axis=y]") for pos in DRIVE_COGS]
     cmds += [setblock(w, DRIVE_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["drive"]),
              setblock(w, (SERVICE[0], SERVICE[1] + 1, SERVICE[2]), "create:copper_valve_handle[facing=up]"),
              "data merge block %s {GaugeFace:\"west\"}" % w(*PRESSURIZER)]
+    for x, parts in sorted(DESKS.items()):
+        for slot, (_, kind, target, mode, color, label) in enumerate(parts):
+            cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(x, DESK_Y, DESK_Z), slot, kind, w(*target), mode, color, label))
+    for z, parts in sorted(SIDE_DESKS.items()):
+        for slot, (_, kind, target, mode, color, label) in enumerate(parts):
+            cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(SIDE_X, DESK_Y, z), slot, kind, w(*target), mode, color, label))
     cmds += ["criticalmass wire %s %d %s %d %s" % (w(*a), ta, w(*b), tb, kind) for kind, a, ta, b, tb in WIRES]
-    cmds += ["criticalmass breaker %s close" % w(*pos) for pos in [GRID_BREAKER, STATION_BREAKER] + FEEDERS]
+    cmds += ["criticalmass breaker %s close" % w(*pos) for pos in [GRID_BREAKER, STATION_BREAKER] + FEEDERS if pos != FEED_FUEL]
     return cmds
 
 
@@ -1320,4 +1455,4 @@ if __name__ == "__main__":
     for target in sys.argv[1:]:
         write(target)
         print("wrote", target)
-    print(len(blocks), "blocks,", len(machines), "machines,", len(PIPES), "pipes,", len(place(relative)), "commands,", len(WIRES), "wires,", len(DESKS), "desks")
+    print(len(blocks), "blocks,", len(machines), "machines,", len(PIPES), "pipes,", len(place(relative)), "commands,", len(WIRES), "wires,", len(DESKS) + len(SIDE_DESKS), "desks")

@@ -59,7 +59,7 @@ public final class DashPart {
     }
 
     public enum Press {
-        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, GENERATOR_RAISE, GENERATOR_LOWER, BREAKER_CLOSE, BREAKER_OPEN, BREAKER_RESET;
+        PULSE, SCRAM, REACTOR_RESET, ROD_IN, ROD_OUT, TURBINE_TRIP, TURBINE_RESET, GENERATOR_RAISE, GENERATOR_LOWER, BREAKER_CLOSE, BREAKER_OPEN, BREAKER_RESET, REGULATOR_RAISE, REGULATOR_LOWER;
 
         public final String key = name().toLowerCase(Locale.ROOT);
     }
@@ -109,7 +109,7 @@ public final class DashPart {
             case LEVEL -> 2;
             case FLOW, OUTPUT -> 15;
             case POWER -> 22;
-            case RODS_A, RODS_B, RODS_C, RODS_D -> 32;
+            case RODS_A, RODS_B, RODS_C, RODS_D, SETPOINT -> 32;
             case SPEED, FREQUENCY, SYNC, DEMAND, VOLTAGE, CURRENT -> DEFAULT_FACE;
             case NEUTRON -> 23;
             case PERIOD -> 33;
@@ -187,7 +187,7 @@ public final class DashPart {
     public List<Press> presses(@Nullable Level level) {
         BlockEntity be = targetEntity(level);
         if (be instanceof ReactorControllerBlockEntity) {
-            return List.of(Press.SCRAM, Press.REACTOR_RESET, Press.ROD_IN, Press.ROD_OUT);
+            return List.of(Press.SCRAM, Press.REACTOR_RESET, Press.ROD_IN, Press.ROD_OUT, Press.REGULATOR_RAISE, Press.REGULATOR_LOWER);
         }
         if (be instanceof SteamTurbineBlockEntity) {
             return List.of(Press.TURBINE_TRIP, Press.TURBINE_RESET);

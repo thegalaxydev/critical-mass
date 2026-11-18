@@ -45,6 +45,13 @@ VIEWS = {
     "corridor": ((16, 1, 19), (-10, 2, 19), False),
     "fuel_pool": ((6, 1, 23), (-7, 0, 28), False),
     "fuel_east": ((-2, 1, 29), (6, 1, 28), False),
+    "feed_heater": ((25, 1, -7), (30, 3, -8), False),
+    "feed_makeup": ((46, 1, -6), (43, 1, -8), False),
+    "desk_rods": ((30, 7, 22), (30, 7, 25), False),
+    "desk_feeders": ((22, 7, 20), (19, 7, 20), False),
+    "reprocessing": ((7, 1, 35), (0, 2, 39), False),
+    "hot_cell": ((8, 1, 41), (0, 2, 39), False),
+    "reprocessing_outside": ((22, 3, 45), (4, 4, 40), False),
 }
 
 

@@ -45,7 +45,8 @@ public enum PlantChannel {
     SYNC("sync", "\u00b0"),
     DEMAND("demand", "MW"),
     VOLTAGE("voltage", "kV"),
-    CURRENT("current", "kA");
+    CURRENT("current", "kA"),
+    SETPOINT("setpoint", "%");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -111,6 +112,7 @@ public enum PlantChannel {
                 case REACTIVITY -> of(c.core().reactivity() * 1.0e5, -10000, 1000);
                 case XENON -> of(c.core().xenon() * 100, 0, 200);
                 case BORON -> of(c.boron(), 0, 2500);
+                case SETPOINT -> of(c.regulatorSetpoint(), 0, 100);
                 default -> buffer(c.coolant());
             };
         }

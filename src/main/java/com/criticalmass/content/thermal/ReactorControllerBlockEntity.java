@@ -178,6 +178,23 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         regulator.setValue(Math.max(0, Math.min(100, percent)));
     }
 
+    public String stepRegulator(int by) {
+        int now = regulatorSetpoint();
+        if (now <= 0) {
+            if (by <= 0) {
+                return "criticalmass.dashboard.result.regulator_off";
+            }
+            if (tripped) {
+                return "criticalmass.dashboard.result.regulator_tripped";
+            }
+            setRegulator(Math.max(1, (int) Math.round(core.neutronPower() * 100)));
+            return "criticalmass.dashboard.result.regulator_on";
+        }
+        int next = now + by;
+        setRegulator(next < 1 ? 0 : next);
+        return next < 1 ? "criticalmass.dashboard.result.regulator_off" : by > 0 ? "criticalmass.dashboard.result.regulator_raised" : "criticalmass.dashboard.result.regulator_lowered";
+    }
+
     public void rodLever(int bank, int shift) {
         if (level == null) {
             return;

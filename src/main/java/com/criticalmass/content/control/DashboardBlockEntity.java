@@ -212,6 +212,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
         release(part);
         part.target = pos.immutable();
         part.mode = 0;
+        if (part.type == DashPart.Type.LEVER && level.getBlockEntity(pos) instanceof ReactorControllerBlockEntity) {
+            part.level = DashPart.MAX_LEVEL / 2;
+        }
         if (part.type == DashPart.Type.GAUGE) {
             part.face = DashPart.face(part.channel(level));
         }
@@ -363,6 +366,9 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
                         r.jogBank(bank, press == DashPart.Press.ROD_IN ? CMThermal.ROD_JOG : -CMThermal.ROD_JOG);
                     }
                     return "criticalmass.dashboard.result.jog";
+                }
+                case REGULATOR_RAISE, REGULATOR_LOWER -> {
+                    return r.stepRegulator(press == DashPart.Press.REGULATOR_RAISE ? CMThermal.REGULATOR_NOTCH : -CMThermal.REGULATOR_NOTCH);
                 }
                 default -> {
                     return "";
