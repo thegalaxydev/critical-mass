@@ -49,6 +49,7 @@ public final class Radiation {
     public static final double SPENT_DOSE = 5.0;
     public static final double RESIDUAL_DOSE = 20.0;
     public static final double CANISTER_DOSE = 3.0;
+    public static final double LIQUID_WASTE_DOSE = 3.0;
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
     public static final double ORE_DOSE = 0.2;

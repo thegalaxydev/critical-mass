@@ -1152,6 +1152,9 @@ def reprocessing():
         stand(pos)
     reserved.update([SAW_MOTOR, DISSOLVER_MOTOR, PUMP_MOTOR, BENCH_MOTOR, CANNING_MOTOR])
     sign((-7, 4, BENCH_Z), "north", "Canning Bench", "Open canisters", "on the belt")
+    for x, y in ((-5, 2), (-5, 3), (-4, 1), (-4, 2), (-4, 3), (-3, 1), (-3, 2), (-3, 3)):
+        assert not taken((x, y, BENCH_Z)), "the waste tank's shield pier is in the way at %d %d" % (x, y)
+        put(x, y, BENCH_Z, SC)
     machine((9, 1, 35), "criticalmass:shielded_cask")
     sign((8, 2, 35), "south", "Transfer", "Cask")
     sign((6, 4, CELL_Z - 1), "north", "Feed Port", "Cooled spent", "fuel only")

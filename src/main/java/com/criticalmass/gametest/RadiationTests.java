@@ -172,6 +172,60 @@ public final class RadiationTests {
                 .thenSucceed();
     }
 
+    private static void pour(GameTestHelper h, BlockPos pos, net.minecraft.world.level.material.Fluid fluid, int amount) {
+        int taken = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(pos), null).fill(new FluidStack(fluid, amount), IFluidHandler.FluidAction.EXECUTE);
+        h.assertTrue(taken == amount, "The block at " + pos + " should take " + amount + " mB: " + taken);
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void contaminatedCoolantInATankGivesADose(GameTestHelper h) {
+        BlockPos low = new BlockPos(3, 2, 3);
+        BlockPos high = low.above();
+        BlockPos basin = new BlockPos(8, 2, 3);
+        BlockPos water = new BlockPos(12, 2, 3);
+        BlockPos plain = new BlockPos(3, 2, 12);
+        BlockPos own = new BlockPos(8, 2, 12);
+        for (BlockPos tank : List.of(low, high, water, plain)) {
+            h.setBlock(tank, AllBlocks.FLUID_TANK.get());
+        }
+        h.setBlock(basin, AllBlocks.BASIN.get());
+        h.setBlock(own, CMBlocks.SPENT_FUEL_RACK.get());
+        double bucket = Radiation.LIQUID_WASTE_DOSE;
+        Vec3 middle = Vec3.atCenterOf(h.absolutePos(new BlockPos(8, 2, 8)));
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    com.simibubi.create.content.fluids.tank.FluidTankBlockEntity tall = h.getBlockEntity(low);
+                    h.assertTrue(tall.isController() && tall.getHeight() == 2, "The two tanks should have joined: " + tall.getHeight());
+                    pour(h, high, CMFluids.CONTAMINATED_COOLANT.source.get(), 6000);
+                    pour(h, basin, CMFluids.CONTAMINATED_COOLANT.source.get(), 500);
+                    pour(h, water, Fluids.WATER, 4000);
+                    pour(h, plain, CMFluids.PRIMARY_COOLANT.source.get(), 4000);
+                    SpentFuelRackBlockEntity rack = h.getBlockEntity(own);
+                    rack.coolant().set(new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), 1000), 0);
+                })
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, List.of());
+                    Vec3 centre = Vec3.atCenterOf(h.absolutePos(low)).add(0, 0.5, 0);
+                    double tank = sources.stream().filter(s -> s.pos().distanceTo(centre) < 1.2).mapToDouble(Radiation.Source::strength).sum();
+                    h.assertTrue(Math.abs(tank - 6 * bucket) < 1e-6, "A tank two blocks high should be one source for all its Contaminated Coolant: " + tank);
+                    h.assertTrue(sources.stream().anyMatch(s -> s.pos().distanceTo(centre) < 0.01), "The source should sit in the middle of the tank");
+                    h.assertTrue(Math.abs(strengthAt(h, sources, basin) - bucket / 2) < 1e-6, "Half a bucket in a Basin should be a source: " + strengthAt(h, sources, basin));
+                    h.assertTrue(strengthAt(h, sources, water) == 0 && strengthAt(h, sources, plain) == 0, "Water and clean Primary Coolant in a tank should give no dose");
+                    h.assertTrue(strengthAt(h, sources, own) == 0, "This mod's own blocks keep their own rules");
+                    double beside = Radiation.fromSources(h.getLevel(), centre.add(2, 0, 0), sources.stream().filter(s -> s.pos().distanceTo(centre) < 0.01).toList(), null);
+                    h.assertTrue(Math.abs(beside - 6 * bucket / 5) < 1e-6, "The tank should not shield its own liquid: " + beside);
+                    h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(low), null).drain(6000, IFluidHandler.FluidAction.EXECUTE);
+                })
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, List.of());
+                    h.assertTrue(strengthAt(h, sources, low, high) == 0 && sources.stream().noneMatch(s -> s.pos().distanceTo(Vec3.atCenterOf(h.absolutePos(low)).add(0, 0.5, 0)) < 0.01), "A drained tank should stop being a source");
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE)
     public static void caskAndFloodedRackCutTheDose(GameTestHelper h) {
         BlockPos rackPos = new BlockPos(2, 1, 2);
