@@ -415,7 +415,7 @@
    "registry_id": "criticalmass:corium",
    "type": "block",
    "name": "Corium",
-   "art": "script",
+   "art": "author's texture, script glow",
    "textures": [
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/corium.png",

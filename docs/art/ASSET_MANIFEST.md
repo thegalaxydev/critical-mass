@@ -22,7 +22,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:control_rod_drive` | Control Rod Drive | script | `block/control_rod_drive.png` 32x32<br>`block/control_rod_shaft.png` 16x16 | `create:block/cogwheel` | 5 |
 | `criticalmass:coolant_channel` | Coolant Channel | script | `block/coolant_channel.png` 32x32 |  | 2 |
 | `criticalmass:cooling_tower_packing` | Cooling Tower Packing | author | `block/cooling_tower_packing.png` 32x32<br>`block/cooling_tower_packing_bottom.png` 32x32<br>`block/cooling_tower_packing_middle.png` 32x32<br>`block/cooling_tower_packing_top.png` 32x32 |  | 5 |
-| `criticalmass:corium` | Corium | script | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
+| `criticalmass:corium` | Corium | author's texture, script glow | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |

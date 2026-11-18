@@ -4,80 +4,53 @@ import sys
 
 from PIL import Image
 
-from plant_style import BLOCK, CRUST, EMBER
+from plant_style import BLOCK
 
-CRACKS = (
-    "......#.........",
-    "......#.........",
-    ".....#..........",
-    ".....#..........",
-    "....##..........",
-    "+++.#.....++++++",
-    "...+#....+......",
-    "....#...+.......",
-    "....#++++.......",
-    ".....#..........",
-    ".....#..........",
-    "......#.........",
-    "......#....-....",
-    ".......-----....",
-    "......#.........",
-    "......#.........",
-)
-PULSE = (1.0, 0.86, 0.72, 0.86)
+COOLING = (0.0, 0.4, 0.8, 0.4)
 FRAME_TIME = 14
-HOT = {"#": 2, "+": 1, "-": 0}
-LIT = {"#": 4, "+": 2}
+BRIGHT = 200
+COLDEST = (190, 40, 24)
 
 
-def crack(x, y):
-    return CRACKS[y % 16][x % 16]
+def veins():
+    cold = Image.open(os.path.join(BLOCK, "corium.png")).convert("RGBA")
+    hot = Image.open(os.path.join(BLOCK, "corium_hot.png")).convert("RGBA")
+    assert cold.size == hot.size and hot.width == hot.height, "corium and corium_hot should be the same square size"
+    lit = {}
+    for y in range(hot.height):
+        for x in range(hot.width):
+            c = hot.getpixel((x, y))
+            if c != cold.getpixel((x, y)) and max(c[:3]) >= BRIGHT:
+                lit[x, y] = c[:3]
+    return hot.width, lit
 
 
-def split(x, y):
-    return crack(x, y) != "."
-
-
-def crust(hot):
-    img = Image.new("RGBA", (16, 16))
-    for y in range(16):
-        for x in range(16):
-            kind = crack(x, y)
-            if kind != ".":
-                c = EMBER[HOT[kind]] if hot else CRUST[0]
-            elif split(x - 1, y) or split(x, y - 1):
-                c = CRUST[3]
-            elif split(x + 1, y) or split(x, y + 1):
-                c = CRUST[1]
-            else:
-                c = CRUST[2]
-            img.putpixel((x, y), c + (255,))
-    return img
+def cooler(colour, tones):
+    at = tones.index(colour)
+    return tones[at + 1] if at + 1 < len(tones) else COLDEST
 
 
 def glow():
-    sheet = Image.new("RGBA", (16, 16 * len(PULSE)))
-    for i, level in enumerate(PULSE):
-        for y in range(16):
-            for x in range(16):
-                kind = crack(x, y)
-                if kind in LIT:
-                    sheet.putpixel((x, y + 16 * i), tuple(round(v * level) for v in EMBER[LIT[kind]]) + (255,))
-    return sheet
+    size, lit = veins()
+    tones = sorted(set(lit.values()), key=lambda c: -(c[0] + c[1] + c[2]))
+    sheet = Image.new("RGBA", (size, size * len(COOLING)))
+    for i, share in enumerate(COOLING):
+        for (x, y), c in lit.items():
+            to = cooler(c, tones)
+            sheet.putpixel((x, y + size * i), tuple(round(c[k] + (to[k] - c[k]) * share) for k in range(3)) + (255,))
+    return sheet, len(lit)
 
 
 def main():
-    cold = os.path.join(BLOCK, "corium.png")
-    if "fresh" not in sys.argv and os.path.exists(os.path.join(BLOCK, "corium_glow.png")):
-        print("left alone; pass fresh to repaint the corium textures")
+    if "fresh" not in sys.argv:
+        print("left alone; pass fresh to make the corium glow again from the author's corium and corium_hot sheets")
         return
-    crust(False).save(cold)
-    crust(True).save(os.path.join(BLOCK, "corium_hot.png"))
-    glow().save(os.path.join(BLOCK, "corium_glow.png"))
+    sheet, count = glow()
+    sheet.save(os.path.join(BLOCK, "corium_glow.png"))
     with open(os.path.join(BLOCK, "corium_glow.png.mcmeta"), "w", encoding="utf8", newline="\n") as f:
         json.dump({"animation": {"frametime": FRAME_TIME, "interpolate": True}}, f, indent=1)
         f.write("\n")
-    print("painted the corium textures")
+    print("made the corium glow from", count, "lit pixels")
 
 
 if __name__ == "__main__":

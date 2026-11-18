@@ -29,7 +29,7 @@ ART = {
     "insulator": SCRIPT, "electric_motor": SCRIPT, "bus_bar": SCRIPT, "transformer": SCRIPT, "disconnect_switch": SCRIPT, "earthing_switch": SCRIPT,
     "station_battery": SCRIPT, "diesel_engine": SCRIPT, "transfer_switch": SCRIPT, "surge_arrester": SCRIPT, "burnt_equipment": SCRIPT,
     "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
-    "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": SCRIPT,
+    "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": "author's texture, script glow",
     "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
     "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "charred_log": SCRIPT, "fallout_ash": SCRIPT, "water_cannon": SCRIPT, "meltdown_siren": "author's model, script texture edited by the author", "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
     "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,

@@ -46,7 +46,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Pressurizer | Script | `art/tools/pressurizer_texture.py`; the dial on it is the Dashboard Gauge |
 | Centrifuge | Script | `art/tools/centrifuge_texture.py` |
 | Reactor Viewport and its cracked stages | Script | `art/tools/viewport_texture.py`: the frame is the author's Reactor Vessel Casing, the pane is in the tones of the author's Shielded Glass and the cracks are the author's casing cracks |
-| Corium | Script | `art/tools/corium_texture.py` |
+| Corium | Author's crust and hot sheets; the glow by script | `art/tools/corium_texture.py` |
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla's iron ore with its ore pixels in the Raw Uranium icon's greens |
@@ -470,7 +470,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 ## Reactor Viewport, Corium, Ruined Fuel Channel, Uranium Ores and Plant Linker
 
 - Reactor Viewport: `art/blockbench/reactor_viewport.bbmodel`, in two groups. `frame` is twelve bars two pixels thick round the edges of the block, and `glass` is a pane set two pixels back on every side. `art/tools/viewport_texture.py` paints the sheet and its three cracked stages, and `art/tools/viewport_model.py` exports the models.
-- Corium: a plain cube. `art/tools/corium_texture.py` paints a crust of plates split by one fissure and two branches, a hot version with the fissure lit, and `corium_glow.png`, which the hot model draws over the crust at full brightness and which pulses over four frames. The blockstate turns each block one of four ways so a pool does not repeat.
+- Corium: a plain cube. `corium.png`, the crust, and `corium_hot.png`, the crust with a net of molten veins, are the author's and replaced the script-painted ones on 2026-11-17. `art/tools/corium_texture.py`, run with `fresh`, makes `corium_glow.png` from them and paints neither: the glow is every pixel of the hot sheet that differs from the crust and is bright, which leaves the veins' dark edges out. The hot model draws it over the crust at full brightness. It has four frames, in which each vein colour cools part of the way to the next colour down and comes back, so the veins pulse by heat and not by dimming. The blockstate turns each block one of four ways so a pool does not repeat.
 - Ruined Fuel Channel: `art/blockbench/ruined_channel.bbmodel`, in three groups: `plates`, `rods` (stumps standing on the bottom plate and stubs hanging from the top one, with one rod left whole) and `slag`. `art/tools/channel_texture.py` paints its sheet in the Corium's crust tones and `art/tools/channel_model.py` exports it.
 - Uranium Ore and Deepslate Uranium Ore: `art/tools/ore_paint.py` takes vanilla's iron ore and deepslate iron ore and repaints only their ore pixels.
 - Plant Linker: `art/tools/linker_texture.py` draws a handset with a screen, two buttons and an aerial.
