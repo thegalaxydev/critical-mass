@@ -187,6 +187,9 @@ public class MeltdownSirenBlockEntity extends SmartBlockEntity implements IHaveG
             angle -= 360;
             lastAngle -= 360;
         }
+        if (isVirtual()) {
+            return;
+        }
         float loudness = Mth.clamp((spin - STOPPED) / 0.1f, 0, 1) * (0.55f + 0.45f * spin);
         float upper = Mth.clamp((spin - SPLIT + SPLIT_BLEND) / (2 * SPLIT_BLEND), 0, 1);
         Effects.loop(level, worldPosition, CMSounds.SIREN.get(), loudness * upper, Mth.clamp(spin, 0.5f, 2f), HEARD);

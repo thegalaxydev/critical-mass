@@ -2,6 +2,7 @@ package com.criticalmass.ponder;
 
 import com.criticalmass.content.control.DashPart;
 import com.criticalmass.content.control.DashboardBlockEntity;
+import com.criticalmass.content.control.MeltdownSirenBlockEntity;
 import com.criticalmass.content.control.PlantAlarms;
 import com.criticalmass.content.fuel.ServicePortBlockEntity;
 import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
@@ -967,6 +968,67 @@ public final class PlantScenes {
         say(scene, 120, util.vector().topOf(util.grid().at(6, 0, 2)), "It also washes contamination off open ground and roofs, half of what is there at each pass. What lies under cover it cannot reach: that takes Decontamination Compound");
         say(scene, 90, util.vector().topOf(cannon), "With nothing left in reach it stops by itself and keeps its water");
         say(scene, 100, util.vector().topOf(cannon), "On a moving Sable body it washes the ground under where the body is now");
+        scene.markAsFinished();
+    }
+
+    private static void sound(CreateSceneBuilder scene, Selection sirens, float demand, String state) {
+        scene.world().modifyBlockEntityNBT(sirens, MeltdownSirenBlockEntity.class, nbt -> {
+            nbt.putFloat("Demand", demand);
+            nbt.putString("Status", state);
+        });
+    }
+
+    public static void siren(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("siren", "Warning of a meltdown with a Meltdown Siren");
+        scene.configureBasePlate(0, 0, 7);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos standing = util.grid().at(3, 1, 2);
+        BlockPos hung = util.grid().at(5, 2, 4);
+        BlockPos controller = util.grid().at(1, 1, 4);
+        BlockPos lever = util.grid().at(4, 1, 2);
+        Selection one = util.select().position(standing);
+        Selection both = one.copy().add(util.select().position(hung));
+        ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
+        scene.world().showSection(one, Direction.DOWN);
+        scene.idle(15);
+        chapter(scene, 70, util.vector().topOf(standing), "A Meltdown Siren stands on a floor");
+        scene.world().showSection(util.select().fromTo(5, 1, 5, 5, 2, 5), Direction.DOWN);
+        scene.idle(10);
+        scene.world().showSection(util.select().position(hung), Direction.SOUTH);
+        scene.idle(15);
+        say(scene, 70, util.vector().centerOf(hung), "or hangs on a wall");
+        scene.world().showSection(util.select().fromTo(1, 1, 3, 1, 2, 5), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showControls(util.vector().blockSurface(controller, Direction.WEST), Pointing.RIGHT, 30).rightClick().withItem(linker);
+        scene.idle(40);
+        scene.overlay().showControls(util.vector().topOf(standing), Pointing.DOWN, 30).rightClick().withItem(linker);
+        scene.idle(10);
+        chapter(scene, 100, util.vector().topOf(standing), "Use a Plant Linker on a Reactor Controller and then on the siren. The siren now watches that reactor");
+        status(scene, controller, ReactorControllerBlock.Display.RUNNING);
+        sound(scene, both, 0.6f, MeltdownSirenBlockEntity.WARNING);
+        chapter(scene, 120, util.vector().blockSurface(controller, Direction.WEST), "When the hottest fuel passes its trip temperature of 1,100 °C the siren starts to growl, and the note climbs as the fuel nears melting");
+        status(scene, controller, ReactorControllerBlock.Display.TRIPPED);
+        sound(scene, both, 1f, MeltdownSirenBlockEntity.MELTDOWN);
+        scene.overlay().showText(120).attachKeyFrame().colored(PonderPalette.RED).text("Once fuel has melted or the vessel is breached it wails, rising and falling, and is heard 96 blocks away").pointAt(util.vector().topOf(standing)).placeNearTarget();
+        scene.idle(130);
+        scene.overlay().showControls(util.vector().topOf(standing), Pointing.DOWN, 30).rightClick();
+        scene.idle(15);
+        sound(scene, one, 0f, MeltdownSirenBlockEntity.SILENCED);
+        chapter(scene, 120, util.vector().topOf(standing), "Use it with an empty hand to silence it. A silenced warning stays quiet until the reactor is safe, but a meltdown sets it off again");
+        status(scene, controller, ReactorControllerBlock.Display.STANDBY);
+        sound(scene, both, 0f, MeltdownSirenBlockEntity.SILENT);
+        say(scene, 100, util.vector().centerOf(hung), "With the danger past it coasts down, fast at first and then slowly, over about seventeen seconds");
+        scene.world().showSection(util.select().position(lever), Direction.DOWN);
+        scene.idle(20);
+        scene.world().toggleRedstonePower(util.select().position(lever));
+        scene.effects().indicateRedstone(lever);
+        sound(scene, one, 1f, MeltdownSirenBlockEntity.POWERED);
+        chapter(scene, 110, util.vector().topOf(standing), "A redstone signal sounds it at full cry too, whether it is linked or not, and that cannot be silenced by hand");
+        scene.world().toggleRedstonePower(util.select().position(lever));
+        sound(scene, one, 0f, MeltdownSirenBlockEntity.SILENT);
+        scene.idle(40);
         scene.markAsFinished();
     }
 

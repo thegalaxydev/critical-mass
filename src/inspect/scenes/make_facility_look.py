@@ -46,6 +46,8 @@ VIEWS = {
     "fuel_pool": ((6, 1, 23), (-7, 0, 28), False),
     "fuel_east": ((-2, 1, 29), (6, 1, 28), False),
     "feed_heater": ((25, 1, -7), (30, 3, -8), False),
+    "siren_yard": ((40, 2, 42), (37, 12, 34), False),
+    "siren_control": ((24, 7, 20), (19, 11, 20), False),
     "feed_makeup": ((46, 1, -6), (43, 1, -8), False),
     "desk_rods": ((30, 7, 22), (30, 7, 25), False),
     "desk_feeders": ((22, 7, 20), (19, 7, 20), False),

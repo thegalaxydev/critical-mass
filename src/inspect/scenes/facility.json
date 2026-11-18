@@ -6149,6 +6149,8 @@
     "/setblock 342 -54 317 create:andesite_door[facing=north,half=lower,hinge=left,open=false,visible=true]",
     "/setblock 342 -53 317 create:andesite_door[facing=north,half=upper,hinge=left,open=false,visible=true]",
     "/setblock 319 -52 320 minecraft:birch_wall_sign[facing=east]{front_text:{messages:['{\"text\":\"6 kV\"}','{\"text\":\"Feeders\"}','{\"text\":\"\"}','{\"text\":\"\"}']}}",
+    "/setblock 337 -49 334 criticalmass:meltdown_siren[facing=south,wall=true]",
+    "/setblock 319 -50 320 criticalmass:meltdown_siren[facing=east,wall=true]",
     "/setblock 320 -53 330 minecraft:lever[face=wall,facing=north,powered=false]",
     "/setblock 322 -53 330 minecraft:lever[face=wall,facing=north,powered=true]",
     "/setblock 324 -53 330 minecraft:lever[face=wall,facing=north,powered=false]",
@@ -6619,6 +6621,18 @@
     "/criticalmass desk 319 -54 320 1 button 354 -60 291 0 2 B FEEDER CLOSE",
     "/criticalmass desk 319 -54 321 0 button 356 -60 291 1 1 FUEL FEEDER OPEN",
     "/criticalmass desk 319 -54 321 1 button 356 -60 291 0 2 FUEL FEEDER CLOSE",
+    "/data merge block 337 -49 334 {Reactor:[I;0,0,0]}",
+    "/summon minecraft:marker 296 -56 300 {Tags:[\"cm_facility_bind\"]}",
+    "/execute store result block 337 -49 334 Reactor[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[0]",
+    "/execute store result block 337 -49 334 Reactor[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[1]",
+    "/execute store result block 337 -49 334 Reactor[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[2]",
+    "/kill @e[type=minecraft:marker,tag=cm_facility_bind]",
+    "/data merge block 319 -50 320 {Reactor:[I;0,0,0]}",
+    "/summon minecraft:marker 296 -56 300 {Tags:[\"cm_facility_bind\"]}",
+    "/execute store result block 319 -50 320 Reactor[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[0]",
+    "/execute store result block 319 -50 320 Reactor[1] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[1]",
+    "/execute store result block 319 -50 320 Reactor[2] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[2]",
+    "/kill @e[type=minecraft:marker,tag=cm_facility_bind]",
     "/criticalmass wire 336 -53 292 0 340 -54 292 0 cable",
     "/criticalmass wire 340 -54 292 1 343 -51 295 0 cable",
     "/criticalmass wire 343 -51 295 0 346 -54 299 0 cable",
@@ -7184,6 +7198,28 @@
   },
   {
    "shot": "run_feed_heater",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 340.50 -59.00 342.50 facing 337.50 -50.12 334.50"
+   ],
+   "wait": 30,
+   "gui": false
+  },
+  {
+   "shot": "run_siren_yard",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 324.50 -54.00 320.50 facing 319.50 -51.12 320.50"
+   ],
+   "wait": 30,
+   "gui": false
+  },
+  {
+   "shot": "run_siren_control",
    "wait": 2
   },
   {

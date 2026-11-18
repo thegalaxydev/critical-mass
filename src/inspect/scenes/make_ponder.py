@@ -182,9 +182,18 @@ def feedwater():
     return blocks + pipes, settle(pipes)
 
 
-SCENES = {"wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
+def siren():
+    blocks = plate(7)
+    blocks += [((1, y, z), "criticalmass:reactor_vessel_casing") for y in (1, 2) for z in (3, 4, 5) if (y, z) != (1, 4)]
+    blocks += [((1, 1, 4), "criticalmass:reactor_controller[facing=west]"), ((5, 1, 5), "criticalmass:shielding_concrete"), ((5, 2, 5), "criticalmass:shielding_concrete")]
+    blocks += [((5, 2, 4), "criticalmass:meltdown_siren[facing=north,wall=true]"), ((3, 1, 2), "criticalmass:meltdown_siren[facing=north,wall=false]"),
+               ((4, 1, 2), "minecraft:lever[face=floor,facing=north,powered=false]")]
+    return blocks, []
+
+
+SCENES = {"siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
           "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater}
-VIEW = {"wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
+VIEW = {"siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
         "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch"}

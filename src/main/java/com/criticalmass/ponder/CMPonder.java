@@ -46,6 +46,8 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("reactor_vessel", PlantScenes::vessel);
         scenes.forComponents(CMBlocks.WATER_CANNON)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon, ACCIDENTS);
+        scenes.forComponents(CMBlocks.MELTDOWN_SIREN)
+                .addStoryBoard("siren", PlantScenes::siren, ACCIDENTS);
         scenes.forComponents(CMItems.POWER_WIRE, CMItems.POWER_CABLE, CMItems.TRANSMISSION_LINE, CMBlocks.INSULATOR, CMBlocks.BUS_BAR)
                 .addStoryBoard("wires", PlantScenes::wires, ELECTRICS);
         scenes.forComponents(CMBlocks.CIRCUIT_BREAKER)
@@ -99,6 +101,6 @@ public class CMPonder implements PonderPlugin {
                 .add(CMBlocks.TRANSFER_SWITCH).add(CMBlocks.STATION_BATTERY).add(CMBlocks.DIESEL_ENGINE).add(CMBlocks.ELECTRIC_MOTOR);
         tags.addToTag(ACCIDENTS)
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.SWITCH)).add(CMBlocks.FUEL_CHANNEL)
-                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER).add(CMItems.FALLOUT_ASH).add(CMBlocks.WATER_CANNON);
+                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER).add(CMItems.FALLOUT_ASH).add(CMBlocks.WATER_CANNON).add(CMBlocks.MELTDOWN_SIREN);
     }
 }

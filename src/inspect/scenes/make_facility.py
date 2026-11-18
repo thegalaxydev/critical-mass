@@ -273,6 +273,7 @@ BENCH = [[("supply", "alarm", TRANSFER, 0, 0, "STATION SUPPLY"), ("battery", "al
        breaker_desk(GRID_BREAKER, "GRID BKR"), breaker_desk(STATION_BREAKER, "STN SUPPLY")]
 DESKS = {19 + i: parts for i, parts in enumerate(BENCH)}
 SIDE_X = 19
+SIRENS = [((37, 12, AUX[3] + 1), "south", True), ((SIDE_X, 11, 20), "east", True)]
 SIDE_DESKS = {18 + i: parts for i, parts in enumerate([breaker_desk(FEED_REACTOR, "RX FEEDER"), breaker_desk(FEED_A, "A FEEDER"), breaker_desk(FEED_B, "B FEEDER"),
                                                        breaker_desk(FEED_FUEL, "FUEL FEEDER")])}
 FILL_BELOW, FILL_ABOVE = 10000, 12000
@@ -989,6 +990,9 @@ def control_room():
     for z in sorted(SIDE_DESKS):
         machine((SIDE_X, DESK_Y, z), "criticalmass:reactor_alloy_dashboard[facing=east,join_cw=%s,join_ccw=%s]" % (str(z + 1 in SIDE_DESKS).lower(), str(z - 1 in SIDE_DESKS).lower()))
     sign((SIDE_X, 9, 20), "east", "6 kV", "Feeders")
+    for pos, facing, mounted in SIRENS:
+        assert not taken(pos), "a siren is in the way at %s" % (pos,)
+        attach(pos, "criticalmass:meltdown_siren[facing=%s,wall=%s]" % (facing, str(mounted).lower()))
     for x in (20, 25, 31, 37, 42):
         put(x, 7, 22, "create:gray_seat")
     box(19, 6, 22, 43, 6, 23, CLEAN)
@@ -1374,6 +1378,8 @@ def start(w):
     for z, parts in sorted(SIDE_DESKS.items()):
         for slot, (_, kind, target, mode, color, label) in enumerate(parts):
             cmds.append("criticalmass desk %s %d %s %s %d %d %s" % (w(SIDE_X, DESK_Y, z), slot, kind, w(*target), mode, color, label))
+    for pos, _, _ in SIRENS:
+        cmds += bind(w, pos, CONTROLLER, "Reactor")
     cmds += ["criticalmass wire %s %d %s %d %s" % (w(*a), ta, w(*b), tb, kind) for kind, a, ta, b, tb in WIRES]
     cmds += ["criticalmass breaker %s close" % w(*pos) for pos in [GRID_BREAKER, STATION_BREAKER] + FEEDERS if pos != FEED_FUEL]
     return cmds

@@ -26,7 +26,7 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
 
 - Blocks, items, fluids and the protective outfit are registered and textured. Status per asset: `docs/art/ASSET_MANIFEST.md` (and `.json`).
 - Operating manual (circuits, a minimal plant, control room wiring, start-up, shutdown, faults, expansion): `docs/OPERATING.md`. Overhaul plan and status: `docs/OVERHAUL.md`.
-- Ponder scenes: there are sixteen, listed in the Ponder index under Reactor Plant, Plant Electrics and Reactor Accidents. Hold the Ponder key on a part to open its scene.
+- Ponder scenes: there are seventeen, listed in the Ponder index under Reactor Plant, Plant Electrics and Reactor Accidents. Hold the Ponder key on a part to open its scene.
   - **Reactor Plant:** building a vessel (casing, the controller, the channels, the ports and the viewport), control rods (the Control Rod Drive), the primary loop (the Circulation Pump, Reinforced Pipe, the Heat Exchanger and the Pressurizer), the steam loop (the Steam Turbine, the Condenser and the Relief Valve), the feedwater train (the feed tank, the Threshold Switch, the feed pump and the feedwater heater, also reached from Create's Fluid Tank and Threshold Switch), rejecting heat (Cooling Tower Packing and the Radiator), and refuelling (the Service Port, the Spent Fuel Rack and the Shielded Cask).
   - **Plant Electrics:** wires, the Circuit Breaker, the Generator, the Transfer Switch and the Transformer.
   - **Reactor Accidents:** the Dashboard Switch as a bypass, Corium, the Survey Meter and Fallout Ash, and the Water Cannon.
@@ -141,6 +141,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Sound:** the note is a real siren's, two tones a minor third apart, and its pitch follows the speed of the rotor through two octaves.
   - **Silencing:** use the siren with an empty hand. A silenced warning stays quiet until the reactor is safe again, but a meltdown sets it off again and has to be silenced by itself.
   - **Redstone:** any redstone signal sounds it at full cry, linked or not, and that cannot be silenced by hand.
+  - **Ponder:** its scene is under Reactor Accidents.
 - **Control desk:** the Reactor Alloy Dashboard and its parts. The desk and part models and the part textures come from Create: Loconautics, used with its authors' permission; the desk has its own reactor alloy colours. Loconautics does not need to be installed.
   - **Reactor Alloy Dashboard:** a sloped desk. Desks placed side by side join into one run of up to 5, and each holds two parts, one in each half. Craft it from a Display Board, two Reactor Alloy Ingots and a Block of Industrial Iron.
   - **Parts:** Dashboard Button, Switch, Lever, Gauge and Alarm. Sneak-use a part on its target to bind it, then use it on the half of a desk you want it in. Used on any other surface it mounts there instead, as Loconautics' parts do: on a floor, a wall or a ceiling, up to four to a block in a two by two grid, or one in the middle of the face if you aim at the middle. They can sit under water. Mounted parts work the same as on a desk and come off when the block behind them goes. A part named in an anvil keeps that name as its label. The Plant Linker re-binds a part already on a desk.
