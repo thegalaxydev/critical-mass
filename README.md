@@ -406,6 +406,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Dose and effects:** dose is kept on the player, never on an item.
   - Body dose recovers 30 mSv per minute.
   - Effects start at 250 mSv (hunger), 500 (weakness), 1,000 (nausea, weakness II) and 2,000 (wither). Death clears the body dose but not the lifetime total.
+  - A player in creative or spectator takes none of it: no dose, no contamination on skin or suit, no sickness and no grain on the screen. A dose already stored is kept as it is, without recovering, and counts again in survival. The Survey Meter still reads and ticks, and a Dosimeter reads a rate of zero.
 - **Survey Meter:** hold it to read the dose rate in the action bar, to two decimal places below 10. Use it to switch to contamination (around you and on you). It clicks with whichever it is reading.
 - **Dosimeter:** hold it for your dose. Use it for a summary, and sneak-use to reset its reading (the lifetime dose stays).
 - **Contamination:**

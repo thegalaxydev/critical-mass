@@ -323,6 +323,38 @@ public final class RadiationTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void aCreativePlayerTakesNoDoseContaminationOrSickness(GameTestHelper h) {
+        Vec3 feet = Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3)));
+        Player builder = h.makeMockPlayer(GameType.CREATIVE);
+        Player worker = h.makeMockPlayer(GameType.SURVIVAL);
+        for (Player p : List.of(builder, worker)) {
+            p.setPos(feet);
+            for (int slot = 9; slot < 18; slot++) {
+                p.getInventory().setItem(slot, new ItemStack(CMItems.SPENT_FUEL_ASSEMBLY.get()));
+            }
+            RadiationData d = RadiationEvents.data(p);
+            d.body = RadiationEvents.WITHER_DOSE + 500;
+            d.lastRate = 7;
+            p.setData(com.criticalmass.registry.CMAttachments.RADIATION.get(), d);
+        }
+        ContaminationData.get(h.getLevel()).add(h.absolutePos(new BlockPos(3, 1, 3)), 50);
+        h.assertTrue(RadiationEvents.takesDose(worker) && !RadiationEvents.takesDose(builder), "Only a player who is not in creative should take a dose");
+        double taken = RadiationEvents.second(worker, h.getLevel(), List.of());
+        double spared = RadiationEvents.second(builder, h.getLevel(), List.of());
+        RadiationData hurt = RadiationEvents.data(worker);
+        RadiationData safe = RadiationEvents.data(builder);
+        h.assertTrue(taken > 1 && hurt.lastRate == taken && hurt.contamination > 0 && worker.hasEffect(net.minecraft.world.effect.MobEffects.WITHER) && worker.hasEffect(net.minecraft.world.effect.MobEffects.CONFUSION),
+                "Carrying spent fuel over contaminated ground in survival should give a dose, contamination and sickness: " + taken + " " + hurt.contamination);
+        h.assertTrue(spared == 0 && safe.lastRate == 0 && safe.contamination == 0 && safe.total == 0 && safe.body == RadiationEvents.WITHER_DOSE + 500,
+                "The same in creative should give no dose and no contamination, and leave the stored dose alone: " + spared + " " + safe.contamination + " " + safe.body);
+        h.assertTrue(builder.getActiveEffects().isEmpty(), "A creative player should get no sickness even with a dose stored: " + builder.getActiveEffects());
+        builder.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.SURVEY_METER.get()));
+        h.assertTrue(RadiationEvents.clickRate(builder, h.getLevel()) > 0, "A Survey Meter should still tick in a creative player's hand");
+        ContaminationData.get(h.getLevel()).wash(h.absolutePos(new BlockPos(3, 1, 3)), 0, 1);
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void dosimeterDoseLivesOnThePlayer(GameTestHelper h) {
         Player p = h.makeMockPlayer(GameType.SURVIVAL);
         p.setPos(Vec3.atBottomCenterOf(h.absolutePos(new BlockPos(3, 1, 3))));

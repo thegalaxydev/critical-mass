@@ -93,7 +93,25 @@ public final class RadiationEvents {
         return rate;
     }
 
-    private static void effects(ServerPlayer player, RadiationData d) {
+    public static boolean takesDose(Player player) {
+        return CMConfig.radiation() && !player.isCreative() && !player.isSpectator();
+    }
+
+    public static double second(Player player, ServerLevel level, List<Radiation.Source> blockSources) {
+        if (!takesDose(player)) {
+            RadiationData d = data(player);
+            if (d.lastRate != 0) {
+                d.lastRate = 0;
+                player.setData(CMAttachments.RADIATION.get(), d);
+            }
+            return 0;
+        }
+        double rate = exposeOnce(player, level, blockSources);
+        effects(player, data(player));
+        return rate;
+    }
+
+    private static void effects(Player player, RadiationData d) {
         if (!CMConfig.effects()) {
             return;
         }
@@ -165,12 +183,9 @@ public final class RadiationEvents {
         if (!(event.getEntity() instanceof ServerPlayer player) || player.tickCount % 20 != 0 || player.isSpectator()) {
             return;
         }
-        if (CMConfig.radiation()) {
-            exposeOnce(player, player.serverLevel(), Radiation.blockSources(player.serverLevel()));
-            effects(player, data(player));
-        }
+        second(player, player.serverLevel(), takesDose(player) ? Radiation.blockSources(player.serverLevel()) : List.of());
         readouts(player, data(player));
-        PacketDistributor.sendToPlayer(player, new DosePacket((float) (CMConfig.radiation() ? data(player).lastRate : 0), (float) clickRate(player, player.serverLevel())));
+        PacketDistributor.sendToPlayer(player, new DosePacket((float) data(player).lastRate, (float) clickRate(player, player.serverLevel())));
         Vec3 eye = player.getEyePosition();
         Vec3 wind = Fallout.wind(player.serverLevel(), eye);
         Fallout.Plume plume = Fallout.nearest(player.serverLevel(), eye);
