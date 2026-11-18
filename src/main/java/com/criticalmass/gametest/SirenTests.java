@@ -35,7 +35,7 @@ public final class SirenTests {
         return (temperature - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3;
     }
 
-    @GameTest(template = EMPTY, timeoutTicks = 500)
+    @GameTest(template = EMPTY, timeoutTicks = 900)
     public static void aSirenWindsUpOnRedstoneAndCoastsDown(GameTestHelper h) {
         MeltdownSirenBlockEntity siren = standing(h, SIREN);
         float[] seen = new float[1];
@@ -50,13 +50,13 @@ public final class SirenTests {
                         "A redstone signal should start it winding up: " + siren.spin()))
                 .thenIdle(80)
                 .thenExecute(() -> {
-                    h.assertTrue(siren.spin() >= MeltdownSirenBlockEntity.WAIL_LOW && siren.spin() <= 1, "At full cry it should wail between its low note and full speed: " + siren.spin());
+                    h.assertTrue(siren.spin() >= 0.55f && siren.spin() <= 1, "At full cry it should wail between its low note and full speed: " + siren.spin());
                     seen[0] = siren.spin();
                     h.setBlock(SIREN.east(), Blocks.AIR);
                 })
                 .thenIdle(40)
                 .thenExecute(() -> h.assertTrue(siren.demand() == 0 && siren.spin() > 0.2f && siren.spin() < seen[0], "With the signal gone it should coast down slowly: " + siren.spin() + " from " + seen[0]))
-                .thenIdle(200)
+                .thenIdle(500)
                 .thenExecute(() -> h.assertTrue(siren.spin() == 0, "It should come to rest: " + siren.spin()))
                 .thenSucceed();
     }
@@ -104,7 +104,7 @@ public final class SirenTests {
                 })
                 .thenIdle(3)
                 .thenExecute(() -> {
-                    h.assertTrue(siren.status().equals(MeltdownSirenBlockEntity.WARNING) && siren.demand() > MeltdownSirenBlockEntity.WARN_LOW && siren.demand() < MeltdownSirenBlockEntity.WARN_HIGH,
+                    h.assertTrue(siren.status().equals(MeltdownSirenBlockEntity.WARNING) && siren.demand() > MeltdownSirenBlockEntity.WARN_LOW && siren.demand() < MeltdownSirenBlockEntity.WARN_HIGH && siren.spin() > 0,
                             "Fuel halfway from the trip to melting should make it growl: " + siren.status() + " " + siren.demand() + " at " + c.core().maxTemperature());
                     h.assertTrue(siren.canSilence(), "A sounding siren should be able to be silenced");
                     siren.silence();

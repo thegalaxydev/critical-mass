@@ -321,17 +321,7 @@ def pump_cavitation():
     return level(crush(seamless(gravel * (0.7 + 0.3 * sine(25, t) ** 2) + 0.5 * rumble), 6), 0.5)
 
 
-def siren():
-    t = clock(2.08)
-    low, high = 465.0, 558.0
-    chopped = 0.6 * lowpass(square(low, t, 0.45), 3400) + 0.5 * lowpass(square(high, t, 0.45), 3400)
-    body = 0.25 * sine(low / 3, t) + 0.15 * sine(high / 3, t)
-    air = 0.2 * highpass(lowpass(noise(t, 91), 5200), 1300) * (0.55 + 0.45 * square(low, t, 0.45))
-    return level(crush(seamless(chopped + body + air), 8), 0.6)
-
-
 SOUNDS = {
-    "siren": siren,
     "pump_cavitation": pump_cavitation,
     "water_spray": water_spray,
     "service": service,

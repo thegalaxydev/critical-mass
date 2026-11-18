@@ -20,13 +20,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 public class MeltdownSirenBlockEntity extends SmartBlockEntity implements IHaveGoggleInformation {
-    public static final float WARN_LOW = 0.35f;
+    public static final float WARN_LOW = 0.5f;
     public static final float WARN_HIGH = 0.8f;
-    public static final float WIND_UP = 0.02f;
-    public static final float WIND_DOWN = 0.006f;
-    public static final int WAIL_TICKS = 100;
-    public static final int WAIL_RISE_TICKS = 40;
-    public static final float WAIL_LOW = 0.5f;
+    public static final float RISE = 0.008f;
+    public static final float RISE_SHARE = 0.015f;
+    public static final float COAST = 0.0064f;
+    public static final float COAST_DRAG = 0.0004f;
+    public static final float STOPPED = 0.25f;
+    public static final int WAIL_TICKS = 220;
+    public static final int WAIL_DRIVEN_TICKS = 130;
+    public static final float SPLIT = 0.5f;
+    public static final float SPLIT_BLEND = 0.03f;
     public static final double HEARD = 96.0;
     public static final String SILENT = "criticalmass.siren.silent";
     public static final String UNLINKED = "criticalmass.siren.unlinked";
@@ -44,6 +48,7 @@ public class MeltdownSirenBlockEntity extends SmartBlockEntity implements IHaveG
     private int quiet;
     private String status = UNLINKED;
     private float spin;
+    private int wailing;
     private float angle;
     private float lastAngle;
 
@@ -163,8 +168,16 @@ public class MeltdownSirenBlockEntity extends SmartBlockEntity implements IHaveG
         if (!level.isClientSide) {
             decide();
         }
-        float target = demand <= 0 ? 0 : demand < 1 ? demand : level.getGameTime() % WAIL_TICKS < WAIL_RISE_TICKS ? 1 : WAIL_LOW;
-        spin += Mth.clamp(target - spin, -WIND_DOWN, WIND_UP);
+        wailing = demand >= 1 ? wailing + 1 : 0;
+        float target = demand <= 0 ? 0 : demand < 1 ? demand : (wailing - 1) % WAIL_TICKS < WAIL_DRIVEN_TICKS ? 1 : 0;
+        if (target > spin) {
+            spin = Math.min(target, spin + RISE + RISE_SHARE * (target - spin));
+        } else if (target < spin) {
+            spin = Math.max(target, spin - COAST * spin * spin - COAST_DRAG);
+            if (target <= 0 && spin < STOPPED) {
+                spin = 0;
+            }
+        }
         if (!level.isClientSide) {
             return;
         }
@@ -174,9 +187,10 @@ public class MeltdownSirenBlockEntity extends SmartBlockEntity implements IHaveG
             angle -= 360;
             lastAngle -= 360;
         }
-        if (spin > 0.03f) {
-            Effects.loop(level, worldPosition, CMSounds.SIREN.get(), Math.min(1f, spin * 1.6f), 0.5f + 0.7f * spin, HEARD);
-        }
+        float loudness = Mth.clamp((spin - STOPPED) / 0.1f, 0, 1) * (0.55f + 0.45f * spin);
+        float upper = Mth.clamp((spin - SPLIT + SPLIT_BLEND) / (2 * SPLIT_BLEND), 0, 1);
+        Effects.loop(level, worldPosition, CMSounds.SIREN.get(), loudness * upper, Mth.clamp(spin, 0.5f, 2f), HEARD);
+        Effects.loop(level, worldPosition, CMSounds.SIREN_LOW.get(), loudness * (1 - upper), Mth.clamp(2 * spin, 0.5f, 2f), HEARD);
     }
 
     @Override

@@ -136,8 +136,9 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Meltdown Siren:** a brass horn on a steel body that stands on a floor or hangs on a wall. Craft it from a Steam Whistle, three Brass Sheets, two Steel Plates and an Electron Tube.
   - **Linking:** use a Plant Linker on a Reactor Controller, then on the siren. Used on the siren with nothing stored, the linker unlinks it.
   - **Warning:** once the reactor's hottest fuel passes the 1,100 °C trip temperature the siren starts to growl, and the note climbs as the fuel nears 1,800 °C, where it melts.
-  - **Meltdown:** once fuel has melted or the vessel is breached it wails at full cry, rising for two seconds and falling for three.
-  - **Winding:** it takes a few seconds to wind up and much longer to coast down, and it is heard 96 blocks away.
+  - **Meltdown:** once fuel has melted or the vessel is breached it wails at full cry: it is driven for six and a half seconds, climbing and then holding its top note, and let coast for four and a half, an eleven second cycle.
+  - **Winding:** it climbs to its top note in about five seconds and takes about seventeen to coast down to silence, falling fast at first and then slowly. It is heard 96 blocks away.
+  - **Sound:** the note is a real siren's, two tones a minor third apart, and its pitch follows the speed of the rotor through two octaves.
   - **Silencing:** use the siren with an empty hand. A silenced warning stays quiet until the reactor is safe again, but a meltdown sets it off again and has to be silenced by itself.
   - **Redstone:** any redstone signal sounds it at full cry, linked or not, and that cannot be silenced by hand.
 - **Control desk:** the Reactor Alloy Dashboard and its parts. The desk and part models and the part textures come from Create: Loconautics, used with its authors' permission; the desk has its own reactor alloy colours. Loconautics does not need to be installed.

@@ -3558,7 +3558,16 @@
    ],
    "subtitle": "Meltdown Siren wails",
    "missing": [],
-   "art": "script"
+   "art": "recording supplied by the author"
+  },
+  {
+   "key": "siren_low",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/siren_low.ogg"
+   ],
+   "subtitle": "Meltdown Siren wails",
+   "missing": [],
+   "art": "recording supplied by the author"
   }
  ],
  "problems": []

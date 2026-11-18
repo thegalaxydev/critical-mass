@@ -196,7 +196,7 @@ def build():
     for key, node in read(os.path.join(RES, "sounds.json")).items():
         files = [s if isinstance(s, str) else s.get("name") for s in node.get("sounds", [])]
         sounds.append({"key": key, "files": [REL + "sounds/" + f.split(":")[-1] + ".ogg" for f in files], "subtitle": lang.get(node.get("subtitle", ""), ""),
-                       "missing": [f for f in files if not os.path.exists(os.path.join(RES, "sounds", f.split(":")[-1] + ".ogg"))], "art": GENERATED if key == "nuclear_blast" else SCRIPT})
+                       "missing": [f for f in files if not os.path.exists(os.path.join(RES, "sounds", f.split(":")[-1] + ".ogg"))], "art": GENERATED if key == "nuclear_blast" else "recording supplied by the author" if key.startswith("siren") else SCRIPT})
     problems = [r["registry_id"] + ": " + m for r in records for m in r["missing"]] + ["missing " + m for m in sorted(parts.missing)]
     problems += ["no name in en_us.json: " + u for u in unnamed] + ["sound file missing: " + f for s in sounds for f in s["missing"]]
     problems += ["texture nothing uses: " + o["path"].split("/textures/")[-1] for o in others if not o["used"]]
@@ -229,7 +229,7 @@ def write_md(manifest):
         out.append("")
     out += ["## Other textures (%d)" % len(manifest["other_textures"]), "", "Dashboard part sheets, the dashboard screen, the worn suit layers and effect sprites.", "", "| Texture | Art |", "|---|---|"]
     out += ["| %s | %s |" % (sized(t), t["art"]) for t in manifest["other_textures"]]
-    out += ["", "## Sounds (%d)" % len(manifest["sounds"]), "", "All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.", "", "| Sound | Subtitle | Art | File |", "|---|---|---|---|"]
+    out += ["", "## Sounds (%d)" % len(manifest["sounds"]), "", "All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, the nuclear explosion, which is a generated sound effect, and the two siren sounds, which `art/tools/siren_sound.py` cuts from a recording the author supplied.", "", "| Sound | Subtitle | Art | File |", "|---|---|---|---|"]
     out += ["| `%s%s` | %s | %s | %s |" % (NS, s["key"], s["subtitle"], s["art"], "<br>".join("`%s`" % f.split("/assets/criticalmass/")[-1] for f in s["files"])) for s in manifest["sounds"]]
     out += ["", "## Problems", ""]
     out += ["- " + p for p in manifest["problems"]] or ["None: every model and texture a blockstate, item or sound points at exists, every texture is used, and everything has a name and an art record."]

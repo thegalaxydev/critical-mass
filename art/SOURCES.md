@@ -157,7 +157,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 ## Sounds
 
-- Used by: every file in `sounds/` except `alarm.ogg` and `nuclear_blast.ogg`, through `sounds.json`
+- Used by: every file in `sounds/` except `alarm.ogg`, `nuclear_blast.ogg`, `siren.ogg` and `siren_low.ogg`, through `sounds.json`
 - Source: `art/tools/sfx.py` synthesises each one from square, saw, triangle and sine waves and filtered noise at 22,050 Hz, reduced to 5 to 8 bits. Nothing is recorded or sampled.
 - Takes: the Survey Meter's click is three files, `geiger.ogg`, `geiger_2.ogg` and `geiger_3.ogg`, at three pitches, so a run of clicks does not repeat one sample.
 - Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss`, `reactor_thrum`, `water_spray` and `pump_cavitation` are cut to whole cycles so they repeat without a click.
@@ -508,7 +508,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Used by: `textures/block/meltdown_siren.png`, `models/block/meltdown_siren.json`, `meltdown_siren_wall.json`, `meltdown_siren_spindle.json`, `meltdown_siren_item.json` and the block's blockstates
 - Model: `art/blockbench/meltdown_siren.bbmodel` for the standing siren and `meltdown_siren_mounted.bbmodel` for the one on a wall, both made by the author in Blockbench. The cubes have no groups: `art/tools/siren_model.py` reads them by name, and the cube called `spindle` becomes the part that turns.
 - Texture: `art/blockbench/meltdown_siren.png`, shared by both models. The UV layout and the first painting were made by script in the shading of `art/tools/create_style.py`, and the author then edited the sheet by hand. The script is not kept, so the sheet is the source: `siren_model.py` copies it into the mod and never paints it. `meltdown_siren_uv_guide.png` numbers each island and names its cube face.
-- Sound: `sounds/siren.ogg` is synthesised by `art/tools/sfx.py`: two chopped tones a minor third apart over a breath of noise, two seconds long so it loops. The game changes its pitch with the siren's speed.
+- Sound: `sounds/siren.ogg` and `sounds/siren_low.ogg` are cut from a recording of a real siren that the author supplied as `Nuclear Alarm Siren.mp3`. Where the recording came from and what licence it carries are not recorded here, and the recording itself is not kept in the project. `art/tools/siren_sound.py`, given the recording and `fresh`, takes the 2.8 seconds from 6.2 s where the siren holds its top note of 576 and 689 Hz, joins the ends so it loops, and writes it as `siren.ogg`; `siren_low.ogg` is the same loop an octave down. The game plays the lower one below half speed and the upper one above, and sets the pitch from the rotor's speed. The wind-up, the eleven second wail and the coast-down in the game are timed from the same recording.
 
 ## alarm sound
 

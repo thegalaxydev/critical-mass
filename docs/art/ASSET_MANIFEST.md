@@ -146,9 +146,9 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (30)
+## Sounds (31)
 
-All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, and the nuclear explosion, which is a generated sound effect.
+All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, the nuclear explosion, which is a generated sound effect, and the two siren sounds, which `art/tools/siren_sound.py` cuts from a recording the author supplied.
 
 | Sound | Subtitle | Art | File |
 |---|---|---|---|
@@ -181,7 +181,8 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:fallout` | Fallout drifts | script | `sounds/fallout.ogg` |
 | `criticalmass:water_spray` | Water cannon sprays | script | `sounds/water_spray.ogg` |
 | `criticalmass:pump_cavitation` | Pump cavitates | script | `sounds/pump_cavitation.ogg` |
-| `criticalmass:siren` | Meltdown Siren wails | script | `sounds/siren.ogg` |
+| `criticalmass:siren` | Meltdown Siren wails | recording supplied by the author | `sounds/siren.ogg` |
+| `criticalmass:siren_low` | Meltdown Siren wails | recording supplied by the author | `sounds/siren_low.ogg` |
 
 ## Problems
 

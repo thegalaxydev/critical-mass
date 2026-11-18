@@ -275,5 +275,14 @@
     "attenuation_distance": 96
    }
   ]
+ },
+ "siren_low": {
+  "subtitle": "criticalmass.subtitle.siren",
+  "sounds": [
+   {
+    "name": "criticalmass:siren_low",
+    "attenuation_distance": 96
+   }
+  ]
  }
 }
