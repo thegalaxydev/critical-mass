@@ -235,7 +235,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 - Used by: `textures/block/heat_exchanger.png`, `textures/block/condenser.png` and the two blocks' models
 - Source: `art/blockbench/heat_exchanger.bbmodel` and `condenser.bbmodel`, each one group called `body`: a barrel with a flange at each end. The exchanger's barrel stands upright, so a stack of them reads as one column of bolted sections. The condenser's barrel lies along its facing, so a row of them reads as one long shell. Where a pipe joins the barrel's side, the blockstate adds the Reinforced Pipe's own flanged stub, the same model the Relief Valve uses.
-- Texture: `art/tools/exchanger_texture.py` paints flat ramps with two plain hoops. The Heat Exchanger is copper from `docs/art/palette.json` with flanges of the author's Steel Block. The Condenser is the Steel Block's tones with copper flanges.
+- Texture: `art/tools/exchanger_texture.py` paints each barrel as a banded tube with two hoops, a highlight row over a shadow row, using the shading in `art/tools/create_style.py`. The Heat Exchanger is in Create's copper tones with flanges of the author's Steel Block. The Condenser is the Steel Block's tones with flanges painted as a framed copper plate with a diagonal sheen.
 - Status: script-painted placeholders, not yet approved.
 - Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/exchanger_model.py` then exports the models and blockstates.
 - Date: 2026-11-15

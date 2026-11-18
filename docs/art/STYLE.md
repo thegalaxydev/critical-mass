@@ -11,6 +11,13 @@
   - Flow direction: brass double chevrons on the pump housing, pointing to the outlet.
 - Warning stripes only on hazard-bearing objects (hatch, cask, waste canister, suit trim). Lamps are drawn unlit unless a real blockstate lights them (a block state such as `powered=true`).
 - No baked directional scene lighting, no text, low noise, discrete pixels.
+- Metal is shaded the way Create's own sheets are, never as a flat fill with a one-pixel edge. `art/tools/create_style.py` holds the patterns, measured from Create's `brass_block`, `copper_underside`, `industrial_iron_block` and `whistle`:
+  - Plate: a dark outer frame with the darkest pixels at its corners, a bright one-pixel inner rim, then the field.
+  - Brass and copper field: diagonal sheen bands about 8 pixels apart across five or six tones, darker toward the top-left and bottom-right of the field.
+  - Iron and steel field: a dark inset line under the rim, then horizontal streaks, alternate rows lighter and each row brightest in the middle.
+  - Tube or thin bar: banded across its width with the highlight about 40% of the way over, and a darker row under any rim or hoop.
+  - Cavity: dark maroon, not black.
+  - Keep that shading structural. Scattered rivets, glints and dots are still noise.
 
 ## How the generated textures were made
 
