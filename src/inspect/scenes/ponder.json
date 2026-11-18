@@ -10,6 +10,78 @@
    "gui": true
   },
   {
+   "ponder": "criticalmass:dashboard_lever",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "rod_control_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
    "ponder": "criticalmass:meltdown_siren",
    "wait": 40
   },

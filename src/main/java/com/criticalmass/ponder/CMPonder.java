@@ -28,6 +28,8 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("reactor_vessel", PlantScenes::vessel, REACTOR);
         scenes.forComponents(CMBlocks.CONTROL_ROD_DRIVE, CMBlocks.CONTROL_CHANNEL, CMBlocks.REACTOR_CONTROLLER)
                 .addStoryBoard("rods", PlantScenes::rods, REACTOR);
+        scenes.forComponents(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER), CMItems.DASHBOARD_PARTS.get(DashPart.Type.BUTTON), CMBlocks.CONTROL_ROD_DRIVE)
+                .addStoryBoard("rod_control", PlantScenes::rodControl, REACTOR);
         scenes.forComponents(CMBlocks.CIRCULATION_PUMP, CMBlocks.PRIMARY_COOLANT_PORT, CMBlocks.REINFORCED_PIPE, CMBlocks.HEAT_EXCHANGER, CMBlocks.PRESSURIZER)
                 .addStoryBoard("primary_loop", PlantScenes::primaryLoop, REACTOR);
         scenes.forComponents(CMBlocks.PRIMARY_COOLANT_PORT)
@@ -94,7 +96,7 @@ public class CMPonder implements PonderPlugin {
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMBlocks.REACTOR_VESSEL_CASING).add(CMBlocks.REACTOR_VIEWPORT).add(CMBlocks.FUEL_CHANNEL).add(CMBlocks.COOLANT_CHANNEL)
                 .add(CMBlocks.CONTROL_CHANNEL).add(CMBlocks.CONTROL_ROD_DRIVE).add(CMBlocks.PRIMARY_COOLANT_PORT).add(CMBlocks.REACTOR_SERVICE_PORT).add(CMBlocks.CIRCULATION_PUMP)
                 .add(CMBlocks.REINFORCED_PIPE).add(CMBlocks.HEAT_EXCHANGER).add(CMBlocks.PRESSURIZER).add(CMBlocks.STEAM_TURBINE).add(CMBlocks.CONDENSER).add(CMBlocks.RELIEF_VALVE)
-                .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK);
+                .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER));
         tags.addToTag(ELECTRICS)
                 .add(CMBlocks.GENERATOR).add(CMBlocks.TRANSFORMER).add(CMBlocks.CIRCUIT_BREAKER).add(CMBlocks.BUS_BAR).add(CMBlocks.INSULATOR)
                 .add(CMItems.POWER_WIRE).add(CMItems.POWER_CABLE).add(CMItems.TRANSMISSION_LINE).add(CMBlocks.GRID_CONNECTION)

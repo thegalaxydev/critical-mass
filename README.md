@@ -26,7 +26,7 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
 
 - Blocks, items, fluids and the protective outfit are registered and textured. Status per asset: `docs/art/ASSET_MANIFEST.md` (and `.json`).
 - Operating manual (circuits, a minimal plant, control room wiring, start-up, shutdown, faults, expansion): `docs/OPERATING.md`. Overhaul plan and status: `docs/OVERHAUL.md`.
-- Ponder scenes: there are seventeen, listed in the Ponder index under Reactor Plant, Plant Electrics and Reactor Accidents. Hold the Ponder key on a part to open its scene.
+- Ponder scenes: there are eighteen, listed in the Ponder index under Reactor Plant, Plant Electrics and Reactor Accidents. Hold the Ponder key on a part to open its scene.
   - **Reactor Plant:** building a vessel (casing, the controller, the channels, the ports and the viewport), control rods (the Control Rod Drive), the primary loop (the Circulation Pump, Reinforced Pipe, the Heat Exchanger and the Pressurizer), the steam loop (the Steam Turbine, the Condenser and the Relief Valve), the feedwater train (the feed tank, the Threshold Switch, the feed pump and the feedwater heater, also reached from Create's Fluid Tank and Threshold Switch), rejecting heat (Cooling Tower Packing and the Radiator), and refuelling (the Service Port, the Spent Fuel Rack and the Shielded Cask).
   - **Plant Electrics:** wires, the Circuit Breaker, the Generator, the Transfer Switch and the Transformer.
   - **Reactor Accidents:** the Dashboard Switch as a bypass, Corium, the Survey Meter and Fallout Ash, and the Water Cannon.

@@ -588,6 +588,116 @@ public final class PlantScenes {
         scene.markAsFinished();
     }
 
+    private static void part(CreateSceneBuilder scene, Selection desk, int slot, java.util.function.Consumer<CompoundTag> change) {
+        scene.world().modifyBlockEntityNBT(desk, DashboardBlockEntity.class, nbt -> change.accept(nbt.getCompound("Part" + slot)), true);
+    }
+
+    private static void needle(CreateSceneBuilder scene, Selection desk, int slot, double value, double full) {
+        part(scene, desk, slot, p -> {
+            p.putFloat("Fraction", (float) Math.max(0, Math.min(1, value / full)));
+            p.putString("Readout", Math.round(value) + " %");
+        });
+    }
+
+    public static void rodControl(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("rod_control", "Working the rods from the control desk");
+        scene.configureBasePlate(0, 0, 7);
+        scene.scaleSceneView(0.7f);
+        scene.setSceneOffsetY(-2);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos controller = util.grid().at(1, 3, 3);
+        BlockPos drive = util.grid().at(3, 6, 2);
+        BlockPos cog = util.grid().at(2, 6, 2);
+        BlockPos leverDesk = util.grid().at(2, 1, 0);
+        BlockPos buttonDesk = util.grid().at(3, 1, 0);
+        BlockPos gaugeDesk = util.grid().at(4, 1, 0);
+        Selection fuel = util.select().fromTo(4, 2, 2, 4, 4, 2);
+        Selection levers = util.select().position(leverDesk);
+        Selection gauges = util.select().position(gaugeDesk);
+        ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
+        int middle = DashPart.MAX_LEVEL / 2;
+        scene.world().setKineticSpeed(util.select().everywhere(), 0);
+        status(scene, controller, ReactorControllerBlock.Display.STANDBY);
+        glow(scene, fuel, 0);
+        rod(scene, util, drive, 3, 2, 1);
+        part(scene, levers, 0, p -> p.putInt("Level", middle));
+        needle(scene, levers, 1, 100, 100);
+        needle(scene, gauges, 0, 0, 100);
+        needle(scene, gauges, 1, 0, 120);
+        scene.world().showSection(util.select().fromTo(1, 1, 1, 5, 5, 5).substract(util.select().fromTo(2, 2, 1, 4, 4, 1)), Direction.DOWN);
+        scene.idle(15);
+        scene.world().showSection(util.select().position(drive).add(util.select().position(cog)), Direction.DOWN);
+        scene.world().setKineticSpeed(util.select().position(drive), 32);
+        scene.world().setKineticSpeed(util.select().position(cog), -32);
+        scene.idle(20);
+        chapter(scene, 90, util.vector().centerOf(drive), "This drive is in bank D, and its rod is fully in");
+        scene.world().showSection(levers, Direction.SOUTH);
+        scene.idle(20);
+        scene.overlay().showControls(util.vector().blockSurface(controller, Direction.WEST), Pointing.RIGHT, 30).rightClick().withItem(linker);
+        scene.idle(35);
+        scene.overlay().showControls(util.vector().topOf(leverDesk), Pointing.DOWN, 30).rightClick().withItem(linker);
+        scene.idle(40);
+        chapter(scene, 110, util.vector().topOf(leverDesk), "A Dashboard Lever bound to the Reactor Controller is a rod lever. Its settings pick bank A, B, C, D or all of them");
+        say(scene, 80, util.vector().topOf(leverDesk), "In the middle it holds the rods where they are");
+        part(scene, levers, 0, p -> p.putInt("Level", DashPart.MAX_LEVEL));
+        scene.overlay().showText(130).attachKeyFrame().text("Pushed up it withdraws them and pulled down it inserts them. One notch off the middle moves them 0.6%% a second, and the end of its travel 4%% a second").pointAt(util.vector().topOf(leverDesk)).placeNearTarget();
+        for (int step = 1; step <= 12; step++) {
+            double in = 1 - step / 24.0;
+            rod(scene, util, drive, 3, 2, in);
+            needle(scene, levers, 1, in * 100, 100);
+            scene.idle(8);
+            if (step == 8) {
+                glow(scene, fuel, 1);
+                status(scene, controller, ReactorControllerBlock.Display.RUNNING);
+            }
+        }
+        part(scene, levers, 0, p -> p.putInt("Level", middle));
+        scene.idle(50);
+        say(scene, 80, util.vector().centerOf(drive), "Back in the middle, the rods stop where they are");
+        scene.world().showSection(util.select().position(buttonDesk).add(gauges), Direction.SOUTH);
+        scene.idle(20);
+        needle(scene, gauges, 1, 20, 120);
+        scene.overlay().showControls(util.vector().blockSurface(controller, Direction.WEST), Pointing.RIGHT, 50).rightClick();
+        scene.idle(10);
+        chapter(scene, 110, util.vector().blockSurface(controller, Direction.WEST), "The controller's face has a Power Regulator value box: Off, or a power from 1%% to 100%%");
+        scene.overlay().showControls(util.vector().topOf(buttonDesk), Pointing.DOWN, 30).rightClick();
+        scene.idle(15);
+        needle(scene, gauges, 0, 20, 100);
+        chapter(scene, 120, util.vector().topOf(buttonDesk), "Or work it from the desk with two Dashboard Buttons. Raise switches the regulator on at the power the reactor is at");
+        scene.overlay().showControls(util.vector().topOf(buttonDesk), Pointing.DOWN, 20).rightClick();
+        scene.idle(25);
+        needle(scene, gauges, 0, 25, 100);
+        scene.overlay().showControls(util.vector().topOf(buttonDesk), Pointing.DOWN, 20).rightClick();
+        scene.idle(25);
+        needle(scene, gauges, 0, 30, 100);
+        say(scene, 110, util.vector().topOf(gaugeDesk), "After that each press moves the setpoint 5%%. Lower takes it down, and switches it off below the last step. A gauge set to Regulator setpoint shows the figure");
+        scene.overlay().showText(140).attachKeyFrame().text("While it is on, the controller moves bank D by itself to bring neutron power to the setpoint and hold it. It raises power no faster than a 20 second period and leaves the other banks alone").pointAt(util.vector().centerOf(drive)).placeNearTarget();
+        for (int step = 1; step <= 10; step++) {
+            double in = 0.5 - step * 0.012;
+            rod(scene, util, drive, 3, 2, in);
+            needle(scene, levers, 1, in * 100, 100);
+            needle(scene, gauges, 1, 20 + step, 120);
+            scene.idle(12);
+        }
+        glow(scene, fuel, 2);
+        scene.idle(40);
+        say(scene, 90, util.vector().topOf(leverDesk), "Switch it off before moving bank D by lever, or the two fight");
+        status(scene, controller, ReactorControllerBlock.Display.TRIPPED);
+        needle(scene, gauges, 0, 0, 100);
+        for (int step = 1; step <= 8; step++) {
+            double in = 0.38 + step * 0.0775;
+            rod(scene, util, drive, 3, 2, in);
+            needle(scene, levers, 1, in * 100, 100);
+            scene.idle(3);
+        }
+        needle(scene, gauges, 1, 0, 120);
+        glow(scene, fuel, 1);
+        warn(scene, 100, util.vector().blockSurface(controller, Direction.WEST), "A trip drops the rods and switches the regulator off");
+        scene.markAsFinished();
+    }
+
     public static void primaryLoop(SceneBuilder builder, SceneBuildingUtil util) {
         CreateSceneBuilder scene = new CreateSceneBuilder(builder);
         scene.title("primary_loop", "The primary coolant loop");

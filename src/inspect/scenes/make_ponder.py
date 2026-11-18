@@ -129,6 +129,18 @@ def rods():
     return blocks, []
 
 
+def rod_control():
+    parts = {(1, 3, 3): "criticalmass:reactor_controller[facing=west]", (3, 5, 3): "criticalmass:reactor_service_port[facing=up]",
+             (5, 3, 3): "criticalmass:primary_coolant_port[facing=east,mode=inlet]", (3, 3, 5): "criticalmass:primary_coolant_port[facing=south,mode=outlet]"}
+    blocks = plate(7) + vessel((1, 1, 1), [".rf", "..c", "..."], parts)
+    blocks += [((3, 6, 2), "criticalmass:control_rod_drive[facing=north]{Bank:3,ScrollValue:3}"), ((2, 6, 2), "create:cogwheel[axis=y]")]
+    desks = (2, 3, 4)
+    blocks += [((x, 1, 0), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in desks).lower(), str(x - 1 in desks).lower())) for x in desks]
+    fitted = [(2, 0, "lever", 3, 7, "ROD LEVER D"), (2, 1, "gauge", 6, 4, "BANK D"), (3, 0, "button", 5, 4, "REG LOWER"), (3, 1, "button", 4, 2, "REG RAISE"),
+              (4, 0, "gauge", 12, 4, "REG SETPOINT"), (4, 1, "gauge", 7, 4, "NEUTRON POWER")]
+    return blocks, ["criticalmass fuel 1 3 3 fill"] + ["criticalmass desk %d 1 0 %d %s 1 3 3 %d %d %s" % part for part in fitted]
+
+
 def primary_loop():
     parts = {(6, 3, 4): "criticalmass:reactor_controller[facing=north]", (6, 5, 6): "criticalmass:reactor_service_port[facing=up]",
              (4, 2, 6): "criticalmass:primary_coolant_port[facing=west,mode=outlet]", (5, 2, 4): "criticalmass:primary_coolant_port[facing=north,mode=inlet]"}
@@ -191,9 +203,9 @@ def siren():
     return blocks, []
 
 
-SCENES = {"siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
+SCENES = {"rod_control": rod_control, "siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
           "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater}
-VIEW = {"siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
+VIEW = {"rod_control": "criticalmass:dashboard_lever", "siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
         "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch"}
