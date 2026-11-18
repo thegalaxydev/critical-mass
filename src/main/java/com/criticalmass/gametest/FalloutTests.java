@@ -46,9 +46,9 @@ public final class FalloutTests {
         Vec3 open = Vec3.atCenterOf(h.absolutePos(downwind));
         Vec3 behind = Vec3.atCenterOf(h.absolutePos(upwind));
         Vec3 east = Vec3.atLowerCornerOf(h.absolutePos(new BlockPos(1, 0, 0))).subtract(Vec3.atLowerCornerOf(h.absolutePos(BlockPos.ZERO)));
-        Fallout.clear(h.getLevel());
+        Fallout.clear(h.getLevel(), h.absolutePos(heart));
         Fallout.start(h.getLevel(), h.absolutePos(heart), 3, east.x, east.z);
-        Cow cow = h.spawn(EntityType.COW, downwind.north());
+        Cow cow = h.spawnWithNoFreeWill(EntityType.COW, downwind.north());
         double[] first = new double[1];
         h.startSequence()
                 .thenIdle(2)
@@ -67,8 +67,8 @@ public final class FalloutTests {
                     double covered = Fallout.rate(h.getLevel(), open);
                     h.assertTrue(Math.abs(covered / first[0] - Fallout.SHELTER) < 0.05, "A roof should cut the fallout to " + Fallout.SHELTER + ": " + covered / first[0]);
                     h.assertTrue(cow.hasEffect(MobEffects.WITHER), "An animal in the open should sicken");
-                    int plumes = Fallout.count(h.getLevel());
-                    h.assertTrue(plumes == 1 && Fallout.clear(h.getLevel()) == 1 && Fallout.rate(h.getLevel(), open) == 0, "Cleared fallout should be gone: " + plumes + " plumes");
+                    int cleared = Fallout.clear(h.getLevel(), h.absolutePos(heart));
+                    h.assertTrue(cleared == 1 && Fallout.rate(h.getLevel(), open) == 0, "Cleared fallout should be gone: " + cleared + " plumes cleared");
                 })
                 .thenSucceed();
     }

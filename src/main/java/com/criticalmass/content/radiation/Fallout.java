@@ -118,6 +118,14 @@ public final class Fallout extends SavedData {
         return n;
     }
 
+    public static int clear(ServerLevel level, BlockPos centre) {
+        Fallout data = get(level);
+        int before = data.plumes.size();
+        data.plumes.removeIf(p -> Mth.floor(p.x) == centre.getX() && Mth.floor(p.y) == centre.getY() && Mth.floor(p.z) == centre.getZ());
+        data.setDirty();
+        return before - data.plumes.size();
+    }
+
     public static int count(ServerLevel level) {
         return get(level).plumes.size();
     }
