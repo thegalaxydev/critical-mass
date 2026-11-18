@@ -500,7 +500,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 ## alarm sound
 
 - Used by: `sounds/alarm.ogg`, played by a desk with an unacknowledged Dashboard Alarm.
-- Source: synthesised by `art/tools/alarm_sound.py`: two alternating horn tones built from sine harmonics, two seconds long so it repeats cleanly.
+- Source: synthesised by `art/tools/alarm_sound.py`: three short horn blasts a second on one fixed pitch, each a rough chord of two notes a semitone apart over the octave below, with its harmonics lifted around 3 kHz. Two seconds long so it repeats cleanly. Run the tool with `fresh` to write it again.
 
 ## centrifuge
 
