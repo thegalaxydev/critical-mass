@@ -18,6 +18,7 @@
   - Tube or thin bar: banded across its width with the highlight about 40% of the way over, and a darker row under any rim or hoop.
   - Cavity: dark maroon, not black.
   - Keep that shading structural. Scattered rivets, glints and dots are still noise.
+  - A large plain panel carries one diagonal sheen band through its middle and a darker outer edge, in the tones of the author's Reactor Vessel Casing, whose own panels are painted that way. `create_style.enliven` adds this to any flat region of 20 pixels or more in a colour it knows, and `plant_style.Sheet.save` runs it, so a sheet painted by script gets it without asking. `art/tools/enliven.py` applies it to sheets that already exist without repainting them.
 
 ## How the generated textures were made
 

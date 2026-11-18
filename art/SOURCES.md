@@ -231,6 +231,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Repainting: run the tool with `fresh`. Without it the sheets are left alone, so hand edits are safe. `art/tools/channel_model.py` then exports the models.
 - Date: 2026-11-15
 
+## Panel sheen on the script-painted sheets
+
+- Applies to: `spent_fuel_rack`, `reactor_controller`, `control_channel`, `coolant_channel`, `fuel_channel` and its three glow sheets, `reactor_signal_interface`, `pressurizer`, `electric_motor`, `shielded_cask`, `generator`, `diesel_engine`, `circuit_breaker` and `transfer_switch`.
+- What: these sheets had large panels in one flat colour. `art/tools/enliven.py`, run with `fresh`, gave each such panel a diagonal sheen band and a darker outer edge in the tones of the author's Reactor Vessel Casing. It changes only flat regions of 20 pixels or more and leaves every other pixel as it was, so running it again changes nothing. Glass, screens and cavities are left flat.
+- Not done: the smaller parts of these sheets, such as the channel rods and the motor's fins, are as they were.
+
 ## heat_exchanger and condenser
 
 - Used by: `textures/block/heat_exchanger.png`, `textures/block/condenser.png` and the two blocks' models

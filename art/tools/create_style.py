@@ -10,6 +10,14 @@ COPPER = rgb("#5a2a1d", "#83402c", "#904931", "#9a5038", "#a75a40", "#b26247", "
 IRON = rgb("#2b2b2e", "#353438", "#3f3e42", "#444444", "#494848", "#4f4f4f", "#595858", "#676161", "#757171", "#8d8b8b", "#989797")
 CAVITY = rgb("#3a1212", "#511c1c", "#5e2521", "#703d2e")
 TUBE = (0.36, 0.55, 0.73, 0.91, 0.91, 0.82, 0.73, 0.64, 0.55, 0.36)
+CASING = rgb("#171f26", "#1c242c", "#1f272e", "#232b33", "#2a333d", "#333e49", "#3f4d5b")
+PLATE_STEEL = rgb("#868e97", "#929aa1", "#9ea5ac", "#a6aeb6")
+FUEL_YELLOW = rgb("#d19e27", "#edb832", "#f2c842")
+FAMILIES = (CASING, PLATE_STEEL, FUEL_YELLOW, COPPER, BRASS)
+SHEEN_AREA = 20
+SHEEN_SIDE = 3
+SHEEN_FILL = 0.6
+SHEEN_EVERY = 12
 
 
 def tone(ramp, value):
@@ -109,3 +117,54 @@ def field(w, h, streaked=False):
     if min(w, h) <= 4:
         return small(w, h)
     return plate(w, h, streaked)
+
+
+def regions(img):
+    w, h = img.size
+    px = img.load()
+    seen = set()
+    for y in range(h):
+        for x in range(w):
+            if (x, y) in seen or px[x, y][3] == 0:
+                continue
+            colour = px[x, y]
+            stack = [(x, y)]
+            seen.add((x, y))
+            cells = []
+            while stack:
+                a, b = stack.pop()
+                cells.append((a, b))
+                for q in ((a + 1, b), (a - 1, b), (a, b + 1), (a, b - 1)):
+                    if 0 <= q[0] < w and 0 <= q[1] < h and q not in seen and px[q] == colour:
+                        seen.add(q)
+                        stack.append(q)
+            yield colour, cells
+
+
+def sheen(u, v, w, h):
+    centre = (w + h) / 2.0 - 1
+    d = min(abs(u + v - centre - SHEEN_EVERY * k) for k in (-2, -1, 0, 1, 2)) if w > 2 * h or h > 2 * w else abs(u + v - centre)
+    if min(w, h) < 5:
+        return 1 if d < 1.0 else 0
+    return 2 if d < 1.0 else 1 if d < 2.5 else 0
+
+
+def enliven(img):
+    px = img.load()
+    changed = 0
+    for colour, cells in list(regions(img)):
+        family = next((f for f in FAMILIES if colour[:3] in f), None)
+        if family is None or len(cells) < SHEEN_AREA:
+            continue
+        x0, y0 = min(c[0] for c in cells), min(c[1] for c in cells)
+        w, h = max(c[0] for c in cells) - x0 + 1, max(c[1] for c in cells) - y0 + 1
+        if min(w, h) < SHEEN_SIDE or len(cells) < SHEEN_FILL * w * h:
+            continue
+        base = family.index(colour[:3])
+        for x, y in cells:
+            rim = min(w, h) >= 5 and (x in (x0, x0 + w - 1) or y in (y0, y0 + h - 1))
+            lift = max(0, min(len(family) - 1, base + sheen(x - x0, y - y0, w, h) - (1 if rim else 0)))
+            if lift != base:
+                px[x, y] = family[lift] + (colour[3],)
+                changed += 1
+    return changed

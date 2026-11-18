@@ -87,4 +87,6 @@ class Sheet:
                 self.put(island, x, y, color)
 
     def save(self, path):
+        import create_style
+        create_style.enliven(self.img)
         self.img.save(path)
