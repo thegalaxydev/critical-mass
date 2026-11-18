@@ -1,6 +1,6 @@
 # Asset manifest
 
-Made 2026-11-17 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
+Made 2026-11-18 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21.1, Sable 2.0.6, Loconautics 0.1.2BETA.
 
@@ -28,7 +28,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
-| `criticalmass:fallout_ash` | Fallout Ash | script | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x64<br>`item/fallout_ash.png` 16x16 |  | 2 |
+| `criticalmass:fallout_ash` | Fallout Ash | author's block textures, the glow animated by script; script item | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x160<br>`item/fallout_ash.png` 16x16 |  | 2 |
 | `criticalmass:fuel_channel` | Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/fuel_channel_glow_1.png` 32x32<br>`block/fuel_channel_glow_2.png` 32x32<br>`block/fuel_channel_glow_3.png` 32x32 |  | 5 |
 | `criticalmass:generator` | Generator | script | `block/generator.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |

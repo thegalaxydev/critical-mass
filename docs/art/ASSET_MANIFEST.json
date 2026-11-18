@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-17",
+ "generated": "2026-11-18",
  "minecraft": "1.21.1",
  "neoforge": "21.1.262",
  "create": "6.0.10-280",
@@ -608,7 +608,7 @@
    "registry_id": "criticalmass:fallout_ash",
    "type": "block",
    "name": "Fallout Ash",
-   "art": "script",
+   "art": "author's block textures, the glow animated by script; script item",
    "textures": [
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/fallout_ash.png",
@@ -622,7 +622,7 @@
      "path": "src/main/resources/assets/criticalmass/textures/block/fallout_ash_glow.png",
      "size": [
       16,
-      64
+      160
      ],
      "animated": true
     },

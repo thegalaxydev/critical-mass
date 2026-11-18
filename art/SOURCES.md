@@ -35,7 +35,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
 | Sounds other than the alarm and the nuclear explosion | Script | `art/tools/sfx.py` |
 | Nuclear explosion sound | Generated | A generated sound effect, trimmed and levelled |
-| Fallout Ash | Script | `art/tools/ash_texture.py`: a grey-green ash and a sheet of green specks the game draws over it at full brightness |
+| Fallout Ash | Author's ash sheet and glow frame; the animation by script | `art/originals/fallout_ash_glow.png` is the author's one frame of green specks. `art/tools/ash_texture.py`, run with `fresh`, makes the animated `fallout_ash_glow.png` from it and paints nothing: each speck fades up and down through the frame's own tones, and the first frame is the author's. The game draws the specks over the ash at full brightness |
 | Fallout Ash (item), Strontium-90, Radioisotope Cell and the cell marker on the Station Battery | Script | `art/tools/isotope_art.py` |
 | Water Cannon | Script | `art/tools/water_cannon_texture.py`, on `art/blockbench/water_cannon.bbmodel` |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
