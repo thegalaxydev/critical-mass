@@ -1,0 +1,13 @@
+{
+  "values": [
+    "minecraft:obsidian",
+    "minecraft:crying_obsidian",
+    "minecraft:reinforced_deepslate",
+    "minecraft:netherite_block",
+    "minecraft:ancient_debris",
+    "minecraft:respawn_anchor",
+    "criticalmass:shielding_concrete",
+    "criticalmass:shielded_glass",
+    "criticalmass:shielded_hatch"
+  ]
+}

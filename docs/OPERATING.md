@@ -124,7 +124,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Green fog and falling ash | You are in the fallout of a nuclear explosion | Get under a roof, which cuts the dose to three tenths, or walk out across the wind. Wear the protective outfit. Read the rate on a Survey Meter. Break the Fallout Ash to clean the ground |
 | Contamination left outdoors by a leak, a breach or corium | It never fades by itself | Set a Water Cannon turning within 24 blocks with water on it. Each pass takes half, so let it turn until it stops spraying. Under a roof use Decontamination Compound |
 | Ash still on the ground after the plume has gone | It is contamination and does not decay | Sweep it with ploughs or wash it into a stream to keep the Fallout Ash, or set a Water Cannon turning with a pipe of water on it to clear everything within 24 blocks. Mix the ash into Shielding Concrete or leach it for Strontium-90 |
-| Every fuel column melted | Total meltdown | Run. Three seconds later the core goes off and leaves a crater 40 blocks in radius, with fire and blast to nearly twice that |
+| Every fuel column melted | Total meltdown | Run. Three seconds later the core goes off and leaves a crater 40 blocks in radius, with fire and blast to nearly twice that. Shielding Concrete, Shielded Glass, Shielded Hatches and obsidian are left standing, but they shelter nothing behind them |
 
 ## Expanding safely
 
@@ -136,7 +136,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
-- **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose.
+- **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose. It also outlasts a nuclear explosion, though nothing behind it does.
 
 ## The reference plant
 

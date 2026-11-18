@@ -90,6 +90,49 @@ public final class MeltdownTests {
     }
 
     @GameTest(template = LARGE, timeoutTicks = 200)
+    public static void aDetonationLeavesBlastProofBlocksStanding(GameTestHelper h) {
+        BlockPos centre = new BlockPos(8, 4, 8);
+        for (int x = 2; x <= 14; x++) {
+            for (int z = 2; z <= 14; z++) {
+                for (int y = 1; y <= 5; y++) {
+                    h.setBlock(new BlockPos(x, y, z), Blocks.STONE);
+                }
+            }
+        }
+        BlockPos obsidian = centre.east(2);
+        BlockPos glass = centre.above(1).north(2);
+        BlockPos hatch = centre.south(2);
+        BlockPos crying = new BlockPos(8, 4, 3);
+        BlockPos basemat = centre.below();
+        h.setBlock(obsidian, Blocks.OBSIDIAN);
+        h.setBlock(glass, CMBlocks.SHIELDED_GLASS.get());
+        h.setBlock(hatch, CMBlocks.SHIELDED_HATCH.get());
+        h.setBlock(crying, Blocks.CRYING_OBSIDIAN);
+        h.setBlock(basemat, CMBlocks.SHIELDING_CONCRETE.get());
+        for (net.minecraft.world.level.block.Block b : java.util.List.of(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, CMBlocks.SHIELDING_CONCRETE.get(), CMBlocks.SHIELDED_GLASS.get(), CMBlocks.SHIELDED_HATCH.get())) {
+            h.assertTrue(b.defaultBlockState().is(Detonation.BLAST_PROOF), b + " should be tagged blast-proof");
+        }
+        h.assertTrue(!Blocks.STONE.defaultBlockState().is(Detonation.BLAST_PROOF) && !CMBlocks.REACTOR_VESSEL_CASING.get().defaultBlockState().is(Detonation.BLAST_PROOF), "Stone and vessel casing should not be blast-proof");
+        Detonation.arm(h.getLevel(), h.absolutePos(centre), 4, 1, false);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertBlockPresent(Blocks.OBSIDIAN, obsidian);
+                    h.assertBlockPresent(CMBlocks.SHIELDED_GLASS.get(), glass);
+                    h.assertBlockPresent(CMBlocks.SHIELDED_HATCH.get(), hatch);
+                    h.assertBlockPresent(Blocks.CRYING_OBSIDIAN, crying);
+                    h.assertBlockPresent(CMBlocks.SHIELDING_CONCRETE.get(), basemat);
+                    h.assertBlockPresent(Blocks.AIR, centre.east(1));
+                    h.assertBlockPresent(Blocks.AIR, centre.east(3));
+                    h.assertBlockPresent(Blocks.AIR, centre.west(2));
+                    h.assertBlockPresent(Blocks.AIR, obsidian.below());
+                    h.assertBlockPresent(CMBlocks.CORIUM.get(), centre);
+                    h.assertBlockPresent(CMBlocks.CORIUM.get(), basemat.north());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 200)
     public static void aDetonationCarvesACraterLinesItAndCharsLogs(GameTestHelper h) {
         BlockPos centre = new BlockPos(8, 4, 8);
         for (int x = 2; x <= 14; x++) {

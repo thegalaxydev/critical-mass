@@ -10,9 +10,11 @@ import java.util.Iterator;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
@@ -31,6 +33,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 public final class Detonation {
+    public static final TagKey<Block> BLAST_PROOF = BlockTags.create(ResourceLocation.fromNamespaceAndPath("criticalmass", "blast_proof"));
     public static final int FUSE_TICKS = 60;
     public static final double DEPTH_SQUASH = 2.2;
     public static final double LINING = 2.5;
@@ -175,6 +178,10 @@ public final class Detonation {
         }
     }
 
+    public static boolean survives(BlockState state, Level level, BlockPos pos) {
+        return state.is(BLAST_PROOF) || state.getDestroySpeed(level, pos) < 0;
+    }
+
     private double measure(int dx, int dy, int dz) {
         double v = dy < 0 ? dy * DEPTH_SQUASH : dy;
         return Math.sqrt(dx * dx + v * v + dz * dz);
@@ -264,7 +271,7 @@ public final class Detonation {
                     }
                     cursor.set(centre.getX() + dx, y, centre.getZ() + dz);
                     BlockState state = level.getBlockState(cursor);
-                    if (state.isAir() || state.getDestroySpeed(level, cursor) < 0) {
+                    if (state.isAir() || survives(state, level, cursor)) {
                         continue;
                     }
                     if (level.getBlockState(cursor.above()).is(CMBlocks.FALLOUT_ASH.get())) {
@@ -306,9 +313,12 @@ public final class Detonation {
         }
         double heat = (900 - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY;
         for (Direction d : new Direction[] {Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST}) {
-            BlockPos at = d == Direction.UP ? new BlockPos(centre.getX(), bottom, centre.getZ()) : new BlockPos(centre.getX(), bottom, centre.getZ()).relative(d);
-            if (level.getBlockState(at).getDestroySpeed(level, at) < 0) {
+            BlockPos at = d == Direction.UP ? centre : centre.relative(d);
+            if (survives(level.getBlockState(at), level, at)) {
                 continue;
+            }
+            while (at.getY() > bottom && !survives(level.getBlockState(at.below()), level, at.below())) {
+                at = at.below();
             }
             level.setBlock(at, CMBlocks.CORIUM.get().defaultBlockState().setValue(Corium.CoriumBlock.HOT, true), Block.UPDATE_ALL);
             if (level.getBlockEntity(at) instanceof Corium.Entity_ lump) {
