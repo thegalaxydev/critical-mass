@@ -15,6 +15,8 @@ public class CMPonder implements PonderPlugin {
     public static final ResourceLocation ELECTRICS = CriticalMass.asResource("electrics");
     public static final ResourceLocation ACCIDENTS = CriticalMass.asResource("accidents");
     public static final ResourceLocation REACTOR = CriticalMass.asResource("reactor");
+    public static final ResourceLocation FUEL = CriticalMass.asResource("fuel");
+    public static final ResourceLocation CONTROL = CriticalMass.asResource("control");
 
     @Override
     public String getModId() {
@@ -69,6 +71,21 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("fallout", PlantScenes::fallout, ACCIDENTS);
         scenes.forComponents(CMItems.FALLOUT_ASH)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon);
+        scenes.forComponents(CMBlocks.CENTRIFUGE, CMItems.URANIUM_CONCENTRATE, CMItems.ENRICHED_URANIUM, CMItems.DEPLETED_URANIUM)
+                .addStoryBoard("enrichment", FuelScenes::enrichment, FUEL);
+        scenes.forComponents(CMItems.CERAMIC_FUEL_PELLET, CMItems.FUEL_CLADDING, CMItems.EMPTY_FUEL_ASSEMBLY, CMItems.INCOMPLETE_FUEL_ASSEMBLY, CMItems.FRESH_FUEL_ASSEMBLY)
+                .addStoryBoard("fuel_assembly", FuelScenes::fuelAssembly, FUEL);
+        scenes.forComponents(CMItems.SHEARED_FUEL, CMItems.INCOMPLETE_SHEARED_FUEL, CMItems.STRONTIUM_90, CMItems.SPENT_FUEL_ASSEMBLY, CMItems.URANIUM_CONCENTRATE)
+                .addStoryBoard("reprocessing", FuelScenes::reprocessing, FUEL);
+        scenes.forComponents(CMBlocks.OPEN_WASTE_CANISTER, CMBlocks.SEALED_WASTE_CANISTER, CMItems.INCOMPLETE_WASTE_CANISTER, CMItems.DAMAGED_FUEL_ASSEMBLY, CMItems.SEALING_GASKET)
+                .addStoryBoard("waste_canister", FuelScenes::wasteCanister, FUEL);
+        scenes.forComponents(CMBlocks.SHIELDED_CASK)
+                .addStoryBoard("waste_canister", FuelScenes::wasteCanister);
+        scenes.forComponents(CMBlocks.REACTOR_ALLOY_DASHBOARD, CMItems.DASHBOARD_PARTS.get(DashPart.Type.GAUGE), CMItems.DASHBOARD_PARTS.get(DashPart.Type.ALARM),
+                        CMItems.DASHBOARD_PARTS.get(DashPart.Type.BUTTON), CMItems.DASHBOARD_PARTS.get(DashPart.Type.SWITCH), CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER))
+                .addStoryBoard("control_desk", ControlScenes::controlDesk, CONTROL);
+        scenes.forComponents(CMBlocks.PLANT_SCREEN, CMItems.PLANT_LINKER)
+                .addStoryBoard("plant_screen", ControlScenes::plantScreen, CONTROL);
     }
 
     @Override
@@ -92,6 +109,26 @@ public class CMPonder implements PonderPlugin {
                 .title("Reactor Accidents")
                 .description("What a reactor does when its protection is taken away, and what it leaves behind")
                 .register();
+        helper.registerTag(FUEL)
+                .addToIndex()
+                .item(CMItems.FRESH_FUEL_ASSEMBLY.get(), true, false)
+                .title("Nuclear Fuel")
+                .description("Making fuel for the reactor, and what becomes of it when it comes out")
+                .register();
+        helper.registerTag(CONTROL)
+                .addToIndex()
+                .item(CMBlocks.PLANT_SCREEN.get(), true, false)
+                .title("Control Room")
+                .description("Desks, screens and the parts on them that run the plant from one room")
+                .register();
+        tags.addToTag(FUEL)
+                .add(CMBlocks.CENTRIFUGE).add(CMItems.URANIUM_CONCENTRATE).add(CMItems.ENRICHED_URANIUM).add(CMItems.CERAMIC_FUEL_PELLET).add(CMItems.FUEL_CLADDING)
+                .add(CMItems.EMPTY_FUEL_ASSEMBLY).add(CMItems.FRESH_FUEL_ASSEMBLY).add(CMBlocks.SPENT_FUEL_RACK).add(CMItems.SPENT_FUEL_ASSEMBLY).add(CMItems.SHEARED_FUEL)
+                .add(CMItems.STRONTIUM_90).add(CMBlocks.OPEN_WASTE_CANISTER).add(CMBlocks.SEALED_WASTE_CANISTER).add(CMBlocks.SHIELDED_CASK);
+        tags.addToTag(CONTROL)
+                .add(CMBlocks.REACTOR_ALLOY_DASHBOARD).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.BUTTON)).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.SWITCH))
+                .add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER)).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.GAUGE)).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.ALARM))
+                .add(CMBlocks.PLANT_SCREEN).add(CMItems.PLANT_LINKER);
         tags.addToTag(REACTOR)
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMBlocks.REACTOR_VESSEL_CASING).add(CMBlocks.REACTOR_VIEWPORT).add(CMBlocks.FUEL_CHANNEL).add(CMBlocks.COOLANT_CHANNEL)
                 .add(CMBlocks.CONTROL_CHANNEL).add(CMBlocks.CONTROL_ROD_DRIVE).add(CMBlocks.PRIMARY_COOLANT_PORT).add(CMBlocks.REACTOR_SERVICE_PORT).add(CMBlocks.CIRCULATION_PUMP)

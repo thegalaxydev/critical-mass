@@ -55,17 +55,17 @@ public final class PlantScenes {
         scene.addInstruction(s -> WireLinks.erase(s.getWorld(), a, b));
     }
 
-    private static void say(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
+    static void say(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
         scene.overlay().showText(ticks).text(text).pointAt(at).placeNearTarget();
         scene.idle(ticks + 10);
     }
 
-    private static void chapter(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
+    static void chapter(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
         scene.overlay().showText(ticks).attachKeyFrame().text(text).pointAt(at).placeNearTarget();
         scene.idle(ticks + 10);
     }
 
-    private static void warn(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
+    static void warn(CreateSceneBuilder scene, int ticks, Vec3 at, String text) {
         scene.overlay().showText(ticks).colored(PonderPalette.RED).text(text).pointAt(at).placeNearTarget();
         scene.idle(ticks + 10);
     }
@@ -588,11 +588,11 @@ public final class PlantScenes {
         scene.markAsFinished();
     }
 
-    private static void part(CreateSceneBuilder scene, Selection desk, int slot, java.util.function.Consumer<CompoundTag> change) {
+    static void part(CreateSceneBuilder scene, Selection desk, int slot, java.util.function.Consumer<CompoundTag> change) {
         scene.world().modifyBlockEntityNBT(desk, DashboardBlockEntity.class, nbt -> change.accept(nbt.getCompound("Part" + slot)), true);
     }
 
-    private static void needle(CreateSceneBuilder scene, Selection desk, int slot, double value, double full) {
+    static void needle(CreateSceneBuilder scene, Selection desk, int slot, double value, double full) {
         part(scene, desk, slot, p -> {
             p.putFloat("Fraction", (float) Math.max(0, Math.min(1, value / full)));
             p.putString("Readout", Math.round(value) + " %");

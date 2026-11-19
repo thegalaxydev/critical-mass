@@ -203,12 +203,69 @@ def siren():
     return blocks, []
 
 
+def enrichment():
+    blocks = plate(7)
+    blocks += [((3, y, 3), "criticalmass:centrifuge") for y in (1, 2, 3)] + [((3, 4, 3), "create:shaft[axis=y]")]
+    return blocks, []
+
+
+DEPLOYER = "create:deployer[facing=down,axis_along_first=false]"
+PRESS = "create:mechanical_press[facing=north]"
+BURNER = "create:blaze_burner[blaze=kindled]"
+
+
+def fuel_assembly():
+    blocks = plate(7)
+    blocks += [((1, 1, 2), BURNER), ((1, 2, 2), "create:basin"), ((1, 4, 2), PRESS)]
+    blocks += [((4, 1, 3), "create:depot"), ((4, 3, 3), DEPLOYER), ((3, 3, 3), PRESS)]
+    return blocks, []
+
+
+def reprocessing():
+    blocks = plate(9)
+    blocks += [((1, 1, 6), "criticalmass:spent_fuel_rack"), ((1, 1, 4), "create:shaft[axis=x]")]
+    blocks += [((x, 1, 4), "create:mechanical_saw[facing=up,axis_along_first=true,flipped=false]") for x in (2, 3, 4, 5)]
+    blocks += [((7, 1, 4), BURNER), ((7, 2, 4), "create:basin"), ((7, 4, 4), "create:mechanical_mixer")]
+    return blocks, ["data merge block 1 1 6 {Buffer:{Fluid:{id:\"minecraft:water\",amount:4000},Heat:0.0d}}"]
+
+
+def waste_canister():
+    blocks = plate(7)
+    blocks += [((3, 1, 3), "create:depot"), ((3, 3, 3), "create:spout"), ((2, 3, 3), DEPLOYER), ((4, 3, 3), PRESS)]
+    blocks += [((1, 1, 5), "criticalmass:sealed_waste_canister"), ((5, 1, 5), "criticalmass:shielded_cask")]
+    return blocks, []
+
+
+def control_desk():
+    blocks = plate(7)
+    blocks += [((x, y, 5), CASING) for x in (2, 3, 4) for y in (1, 2, 3) if (x, y) != (3, 2)]
+    blocks += [((3, 2, 5), "criticalmass:reactor_controller[facing=north]"), ((1, 1, 4), "create:redstone_link[receiver=true,facing=up,powered=false]"),
+               ((0, 1, 4), "minecraft:redstone_lamp")]
+    desks = (2, 3, 4)
+    blocks += [((x, 1, 2), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in desks).lower(), str(x - 1 in desks).lower())) for x in desks]
+    fitted = [(2, 0, "button", "3 2 5", 0, 1, "SCRAM"), (2, 1, "alarm", "3 2 5", 0, 0, "ALARM"), (3, 0, "gauge", "3 2 5", 7, 4, "NEUTRON POWER"),
+              (3, 1, "gauge", "3 2 5", 1, 4, "COOLANT"), (4, 0, "switch", "1 1 4", 0, 2, "PUMP"), (4, 1, "lever", "1 1 4", 0, 4, "VALVE")]
+    return blocks, ["criticalmass desk %d 1 2 %d %s %s %d %d %s" % part for part in fitted]
+
+
+def plant_screen():
+    blocks = plate(9)
+    blocks += [((x, y, 6), "criticalmass:plant_screen[facing=north]") for x in (2, 3, 4, 5, 6) for y in (1, 2, 3)]
+    blocks += [((7, 1, 6), "create:cogwheel[axis=z]"), ((4, 1, 2), "create:shaft[axis=y]"), ((4, 2, 2), "criticalmass:circulation_pump[facing=west,axis_along_first=true]"),
+               ((4, 3, 2), "create:display_link[facing=up,powered=false]")]
+    return blocks, []
+
+
 SCENES = {"rod_control": rod_control, "siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
-          "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater}
+          "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater,
+          "enrichment": enrichment, "fuel_assembly": fuel_assembly, "reprocessing": reprocessing, "waste_canister": waste_canister, "control_desk": control_desk,
+          "plant_screen": plant_screen}
 VIEW = {"rod_control": "criticalmass:dashboard_lever", "siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
-        "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch"}
+        "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch",
+        "enrichment": "criticalmass:centrifuge", "fuel_assembly": "criticalmass:ceramic_fuel_pellet", "reprocessing": "criticalmass:sheared_fuel",
+        "waste_canister": "criticalmass:open_waste_canister", "control_desk": "criticalmass:reactor_alloy_dashboard", "plant_screen": "criticalmass:plant_screen"}
 SCROLL = {"feedwater": 1}
 
 
