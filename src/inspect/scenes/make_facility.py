@@ -126,7 +126,8 @@ class Train:
         self.fills = [[(x, y, tz) for y in range(2, 14)] for x in columns]
         self.fill = [cell for column in self.fills for cell in column]
         last = columns[-1]
-        self.makeup_pipe, self.makeup_pump, self.makeup_tank = (last, 3, tz + 1), (last, 3, tz + 2), (last, 3, tz + 3)
+        self.makeup_pipe, self.makeup_pump = (last, 3, tz + 1), (last, 3, tz + 2)
+        self.makeup_intake = [(last, y, tz + 3) for y in (3, 2, 1)]
         self.makeup_cog, self.makeup_motor = (last, 4, tz + 2), (last, 4, tz + 3)
         self.steam = route((SG_X, 11, z0), (12, 11, z0), (12, 8, z0), (20, 8, z0)) + route((22, 8, z0), (23, 8, z0)) + route((25, 8, z0), (28, 8, z0)) \
             + route((30, 6, z0), (30, 5, z0)) + route((30, 3, z0), (31, 3, z0)) + route((40, 3, z0), (41, 3, z0)) \
@@ -206,6 +207,11 @@ BENCH_SPOUT, BENCH_DEPLOYER, BENCH_PRESS, BENCH_GEARBOX = (-6, 3, BENCH_Z), (-7,
 BENCH_COGS = [(-9, y, CELL_Z) for y in (1, 2, 3)]
 BENCH_MOTOR = (-9, 3, CELL_Z + 1)
 CANNING_PUMP, CANNING_PIPE, CANNING_COG, CANNING_MOTOR = (-5, 3, CELL_Z), (-6, 3, CELL_Z), (-5, 3, CELL_Z + 1), (-4, 3, CELL_Z + 1)
+WELL, WELL_PUMP, WELL_COG, WELL_MOTOR = (43, 0, -2), (44, 1, -2), (44, 1, -3), (43, 1, -3)
+WELL_MAIN = route((45, -1, TA.z0), (45, -1, TB.z0))
+WELL_PIPES = [(43, 1, -2)] + route((45, 1, -2), (45, 0, -2)) + route((45, 1, TA.z0), (45, 0, TA.z0)) + WELL_MAIN + route((45, 0, TB.z0), (45, 1, TB.z0))
+CELL_WELL, CELL_WELL_PUMP = (-1, 0, CELL_Z + 6), (-2, 1, CELL_Z + 2)
+CELL_WELL_PIPES = route((-1, 1, CELL_Z + 2), (-1, 1, CELL_Z + 6)) + [(-3, 1, CELL_Z + 2), (-3, 2, CELL_Z + 2)]
 INSULATORS = [(IN20, "west"), (OUT20, "east"), (P_A, "up"), (P_B, "up"), (OUT6, "east"), (IN6, "west"), (C_NORMAL, "down"), (C_D, "down"), (C_LOAD, "down"), (C_L2, "down"),
               (R_UP, "down"), (R2, "down"), (H_IN, "east"), (C_IN, "west"), (C_HI, "west"),
               (A_UP, "down"), (A2, "down"), (A_F, "down"), (A3, "down"), (N_A_IN, "south"), (N_A_OUT, "north"),
@@ -230,12 +236,13 @@ WIRES = [
     ("wire", FEED_B, LOAD, B_UP, 0), ("wire", B_UP, 0, B2, 0), ("wire", B2, 0, TB.feed_motor, 0), ("wire", FEED_B, LOAD, B3_UP, 0), ("wire", B3_UP, 0, B3, 0), ("wire", B3, 0, TB.circ_motor, 0),
     ("wire", FEED_B, LOAD, N_B_IN, 0), ("wire", N_B_IN, 0, N_B_OUT, 0), ("wire", N_B_OUT, 0, TB.makeup_motor, 0),
     ("wire", A_F, 0, TA.fill_drop, 0), ("wire", TA.fill_drop, 0, TA.fill_motor, 0), ("wire", B2, 0, TB.fill_drop, 0), ("wire", TB.fill_drop, 0, TB.fill_motor, 0),
+    ("wire", A_F, 0, WELL_MOTOR, 0),
     ("cable", BUS6[2], 0, FEED_FUEL, LINE), ("cable", FEED_FUEL, LOAD, FUEL_UP, 0), ("cable", FUEL_UP, 0, FUEL_2, 0), ("cable", FUEL_2, 0, FUEL_3, 0),
     ("cable", FUEL_3, 0, HALL_OUT, 0), ("cable", HALL_OUT, 0, AUX_IN, 0), ("cable", AUX_IN, 0, AUX_OUT, 0), ("cable", AUX_OUT, 0, YARD_OUT, 0), ("cable", YARD_OUT, 0, CELL_OUT, 0),
     ("cable", CELL_OUT, 0, CELL_IN, 0), ("wire", CELL_IN, 0, SAW_MOTOR, 0), ("wire", CELL_IN, 0, CELL_MID, 0), ("wire", CELL_MID, 0, DISSOLVER_MOTOR, 0), ("wire", CELL_MID, 0, CELL_WEST, 0),
-    ("wire", CELL_WEST, 0, PUMP_MOTOR, 0), ("wire", CELL_WEST, 0, BENCH_MOTOR, 0), ("wire", CELL_WEST, 0, CANNING_MOTOR, 0),
+    ("wire", CELL_MID, 0, PUMP_MOTOR, 0), ("wire", CELL_WEST, 0, BENCH_MOTOR, 0), ("wire", CELL_WEST, 0, CANNING_MOTOR, 0),
 ]
-SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32, "fill": 16, "shear": 32, "dissolver": 32, "process": 16, "bench": -32, "canning": 16}
+SPEEDS = {"primary": 32, "feed": 16, "circ": 32, "makeup": 8, "drive": 16, "refuel": 32, "fill": 16, "well": 16, "shear": 32, "dissolver": 32, "process": 16, "bench": -32, "canning": 16}
 RAMP = ((0.3, 126), (0.6, 153), (0.9, 179))
 PART_LOAD, RUN_LOAD = 0.3, 0.6
 RUN_POWER, RUN_COOLANT = RAMP[-1]
@@ -614,10 +621,15 @@ def train(t):
         put(column[0][0], 1, column[0][2], STEEL)
     machine(t.makeup_pipe, "create:fluid_pipe")
     machine(t.makeup_pump, "create:mechanical_pump[facing=north]")
-    machine(t.makeup_tank, "create:creative_fluid_tank")
+    for pos in t.makeup_intake:
+        machine(pos, "create:fluid_pipe")
+    x, y, z = t.makeup_intake[-1]
+    assert blocks.get((x, y - 1, z)) == WATER, "the make-up intake at %s is not over the basin" % (t.makeup_intake[-1],)
     machine(t.makeup_cog, "create:cogwheel[axis=z]")
-    for pos in (t.makeup_pump, t.makeup_tank):
-        stand(pos)
+    stand(t.makeup_pump)
+    x, y, z = t.makeup_motor
+    assert not any(taken((x - 1, j, z)) for j in range(1, y + 2)), "the make-up motor's post is in the way at %d %d" % (x - 1, z)
+    box(x - 1, 0, z, x - 1, y + 1, z, STEEL)
     put(t.makeup_motor[0], t.makeup_motor[1] + 1, t.makeup_motor[2], STEEL)
     put(t.makeup_cog[0], t.makeup_cog[1] + 1, t.makeup_cog[2], STEEL)
     stand(t.circ_motor)
@@ -1166,6 +1178,44 @@ def reprocessing():
     put(16, 10, CELL_Z, ROD)
 
 
+def well(pit, along_x):
+    x, _, z = pit
+    dx, dz = (1, 0) if along_x else (0, 1)
+    box(x - 1 - dx, -2, z - 1 - dz, x + 1 + dx, -1, z + 1 + dz, PLINTH)
+    for i in (-1, 0, 1):
+        put(x + dx * i, -1, z + dz * i, WATER)
+    for i in (-1, 1):
+        if not taken((x + dx * i, 1, z + dz * i)):
+            put(x + dx * i, 0, z + dz * i, GRATE)
+    machine(pit, "create:fluid_pipe")
+
+
+def water_supply():
+    supply = WELL_PIPES + CELL_WELL_PIPES + [WELL, CELL_WELL] + [cell for t in TRAINS for cell in t.makeup_intake + [t.makeup_pipe]]
+    for pos in WELL_PIPES + CELL_WELL_PIPES + [WELL_PUMP, WELL_COG, WELL_MOTOR, CELL_WELL_PUMP]:
+        assert pos not in machines and pos not in PIPE_SET and pos not in reserved and not any(pos == at for at, _ in late), "the water supply is in the way at %s" % (pos,)
+    for x, y, z in supply:
+        for q in ((x + 1, y, z), (x - 1, y, z), (x, y + 1, z), (x, y - 1, z), (x, y, z + 1), (x, y, z - 1)):
+            assert q not in PIPE_SET, "the water supply pipe at %s would join the loop pipe at %s" % ((x, y, z), q)
+    reserved.add(WELL_MOTOR)
+    well(WELL, False)
+    for x, y, z in WELL_MAIN:
+        box(x - 1, -2, z, x + 1, -1, z, PLINTH)
+    for pos in WELL_PIPES:
+        machine(pos, "create:fluid_pipe")
+    for x, y, z in WELL_MAIN:
+        if (x, 0, z) not in machines and not taken((x, 1, z)):
+            put(x, 0, z, GRATE)
+    machine(WELL_PUMP, "create:mechanical_pump[facing=east]")
+    machine(WELL_COG, "create:cogwheel[axis=x]")
+    post((42, 1, -2), 4, "Well Pump", "Make-up", "Water")
+    well(CELL_WELL, True)
+    for pos in CELL_WELL_PIPES:
+        machine(pos, "create:fluid_pipe")
+    machine(CELL_WELL_PUMP, "create:mechanical_pump[facing=west]")
+    sign((1, 2, CELL_Z + 6), "south", "Process", "Water Well")
+
+
 def stack():
     for y in range(1, 34):
         put(15, y, 29, "minecraft:red_concrete" if (y // 4) % 2 == 0 else WHITE)
@@ -1260,6 +1310,7 @@ def design():
     for t in TRAINS:
         train(t)
     rooms()
+    water_supply()
     switchyard()
     electrics()
     basement_lights()
@@ -1358,7 +1409,6 @@ def start(w):
     cmds = [merge(w, CONTROLLER, "Coolant", "criticalmass:primary_coolant", 8000, 8000 * 80.0), tank(w, ECCS_TANK, "criticalmass:primary_coolant", 4000)]
     for t in TRAINS:
         cmds += [merge(w, t.turbine, "Coolant", "minecraft:water", 1000, 1000 * 80.0),
-                 "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:1000}}}" % w(*t.makeup_tank),
                  tank(w, t.feed_tank[0], "minecraft:water", 16000, 16000 * 80.0)]
         cmds += [merge(w, p, "Secondary", "minecraft:water", 1000, 1000 * 80.0) for p in t.exchangers]
         cmds += [merge(w, t.heater, key, "minecraft:water", 1000, 1000 * 80.0) for key in ("Primary", "Secondary")]
@@ -1373,7 +1423,8 @@ def start(w):
                  setblock(w, t.circ_motor, "criticalmass:electric_motor[facing=up]{ScrollValue:%d}" % SPEEDS["circ"]),
                  setblock(w, t.makeup_motor, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["makeup"])]
     cmds += [merge(w, p, "Buffer", "minecraft:water", 4000, 0) for p in RACKS + REFUEL_RACKS]
-    cmds += [setblock(w, REFUEL_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["refuel"]),
+    cmds += [setblock(w, WELL_MOTOR, "criticalmass:electric_motor[facing=east]{ScrollValue:%d}" % SPEEDS["well"]),
+             setblock(w, REFUEL_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["refuel"]),
              "data merge block %s {TankContent:{Fluid:{id:\"minecraft:water\",amount:16000}}}" % w(*WATER_TANK[0]),
              setblock(w, SAW_MOTOR, "criticalmass:electric_motor[facing=north]{ScrollValue:%d}" % SPEEDS["shear"]),
              setblock(w, DISSOLVER_MOTOR, "criticalmass:electric_motor[facing=down]{ScrollValue:%d}" % SPEEDS["dissolver"]),
