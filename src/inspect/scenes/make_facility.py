@@ -58,6 +58,7 @@ UNLOAD_ARM, LOAD_ARM = (-1, 12, -2), (1, 12, -2)
 REFUEL_COGS = [(0, 12, -2)]
 REFUEL_MOTOR = (0, 13, -2)
 REFUEL_RACKS, REFUEL_DEPOT = [(-2, 10, -5), (-3, 10, -5)], (2, 10, -5)
+REFUEL_BREAKER = (5, 11, -5)
 BANKS = {-2: 0, 0: 3, 2: 1}
 ALL_BANKS = 4
 CHANNELS = ["temperature", "coolant_temperature", "pressure", "level", "flow", "power"] + ["rods_" + "abcd"[b] for b in sorted(set(BANKS.values()))] \
@@ -230,7 +231,7 @@ WIRES = [
     ("cable", STANDBY_T, LOW, TRANSFER, ON_STANDBY), ("cable", TRANSFER, TO_LOAD, C_LOAD, 0), ("cable", C_LOAD, 0, C_L2, 0), ("cable", C_L2, 0, BUS6[2], 0), ("cable", BATTERY, 0, BUS6[0], 0), ("cable", BATTERY_B, 0, BUS6[0], 0),
     ("cable", BUS6[0], 0, FEED_REACTOR, LINE), ("cable", BUS6[1], 0, FEED_A, LINE), ("cable", BUS6[2], 0, FEED_B, LINE),
     ("wire", FEED_REACTOR, LOAD, R_UP, 0), ("wire", R_UP, 0, R2, 0), ("wire", R2, 0, H_IN, 0), ("wire", H_IN, 0, C_IN, 0), ("wire", C_IN, 0, LA.motor, 0), ("wire", C_IN, 0, LB.motor, 0),
-    ("wire", C_IN, 0, C_HI, 0), ("wire", C_HI, 0, DRIVE_MOTOR, 0), ("wire", C_HI, 0, REFUEL_MOTOR, 0),
+    ("wire", C_IN, 0, C_HI, 0), ("wire", C_HI, 0, DRIVE_MOTOR, 0), ("wire", C_HI, 0, REFUEL_BREAKER, LINE), ("wire", REFUEL_BREAKER, LOAD, REFUEL_MOTOR, 0),
     ("wire", FEED_A, LOAD, A_UP, 0), ("wire", A_UP, 0, A2, 0), ("wire", A2, 0, A_F, 0), ("wire", A_F, 0, TA.feed_motor, 0), ("wire", A2, 0, A3, 0), ("wire", A3, 0, TA.circ_motor, 0),
     ("wire", A3, 0, N_A_IN, 0), ("wire", N_A_IN, 0, N_A_OUT, 0), ("wire", N_A_OUT, 0, TA.makeup_motor, 0),
     ("wire", FEED_B, LOAD, B_UP, 0), ("wire", B_UP, 0, B2, 0), ("wire", B2, 0, TB.feed_motor, 0), ("wire", FEED_B, LOAD, B3_UP, 0), ("wire", B3_UP, 0, B3, 0), ("wire", B3, 0, TB.circ_motor, 0),
@@ -508,6 +509,7 @@ def containment():
     post((-7, 1, 3), 4, "Pressurizer")
     post((-4, 10, -5), 8, "Spent Fuel", "Transfer Racks")
     post((3, 10, -5), 8, "Fresh Fuel")
+    post((5, 10, -4), 4, "Refuelling", "Arms", "Breaker")
     post((12, 1, -8), 12, "Steam", "Generator A")
     post((12, 1, 8), 12, "Steam", "Generator B")
     post((6, 1, -12), 0, "Loop A", "Coolant Pump")
@@ -565,6 +567,8 @@ def refuelling():
     for rack in REFUEL_RACKS:
         machine(rack, "criticalmass:spent_fuel_rack")
     machine(REFUEL_DEPOT, "create:depot")
+    machine(REFUEL_BREAKER, "criticalmass:circuit_breaker[facing=west,closed=false]")
+    put(REFUEL_BREAKER[0], REFUEL_BREAKER[1] - 1, REFUEL_BREAKER[2], STEEL)
     box(0, 13, -5, 0, 13, -3, GIRDER_Z)
     box(0, 10, -6, 0, 13, -6, STEEL)
 
