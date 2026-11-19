@@ -43,6 +43,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 
@@ -59,6 +61,9 @@ public class InspectionHarness {
     private long seed = 1234L;
     private String worldName;
     private int clicks;
+    private boolean matte;
+    private float backdrop;
+    private String alphaShot;
     private final StringBuilder log = new StringBuilder();
 
     public InspectionHarness(IEventBus modBus) {
@@ -81,6 +86,45 @@ public class InspectionHarness {
             return;
         }
         NeoForge.EVENT_BUS.addListener(this::onClientTick);
+        NeoForge.EVENT_BUS.addListener((ViewportEvent.ComputeFogColor event) -> {
+            if (matte) {
+                event.setRed(0);
+                event.setGreen(0);
+                event.setBlue(0);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((ViewportEvent.RenderFog event) -> {
+            if (matte) {
+                event.setNearPlaneDistance(100000f);
+                event.setFarPlaneDistance(200000f);
+                event.setCanceled(true);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((RenderLevelStageEvent event) -> {
+            if (matte && event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
+                com.mojang.blaze3d.systems.RenderSystem.clearColor(backdrop, backdrop, backdrop, 0f);
+                com.mojang.blaze3d.systems.RenderSystem.clear(org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT, Minecraft.ON_OSX);
+            }
+            if (alphaShot != null && event.getStage() == RenderLevelStageEvent.Stage.AFTER_LEVEL) {
+                grabWithAlpha(Minecraft.getInstance(), alphaShot);
+                alphaShot = null;
+            }
+        });
+    }
+
+    private void grabWithAlpha(Minecraft mc, String name) {
+        com.mojang.blaze3d.pipeline.RenderTarget target = mc.getMainRenderTarget();
+        try (com.mojang.blaze3d.platform.NativeImage image = new com.mojang.blaze3d.platform.NativeImage(target.width, target.height, false)) {
+            com.mojang.blaze3d.systems.RenderSystem.bindTexture(target.getColorTextureId());
+            image.downloadTexture(0, false);
+            image.flipY();
+            File file = new File(mc.gameDirectory, "screenshots/" + name);
+            file.getParentFile().mkdirs();
+            image.writeToFile(file);
+            note("alpha shot " + name + " " + target.width + "x" + target.height + " from " + mc.gameRenderer.getMainCamera().getPosition());
+        } catch (IOException ex) {
+            note("alpha shot " + name + " failed " + ex);
+        }
     }
 
     private void onClientTick(ClientTickEvent.Post event) {
@@ -279,6 +323,34 @@ public class InspectionHarness {
         if (step.has("ponderSeek") && mc.screen instanceof net.createmod.ponder.foundation.ui.PonderUI ui) {
             ui.seekToTime(step.get("ponderSeek").getAsInt());
             note("ponder at " + ui.getActiveScene().getCurrentTime() + " of " + ui.getActiveScene().getTotalTime());
+        }
+        if (step.has("matte")) {
+            matte = step.get("matte").getAsBoolean();
+            mc.options.renderDistance().set(matte ? 3 : 12);
+            mc.options.cloudStatus().set(matte ? net.minecraft.client.CloudStatus.OFF : net.minecraft.client.CloudStatus.FANCY);
+        }
+        if (step.has("backdrop")) {
+            backdrop = step.get("backdrop").getAsFloat();
+        }
+        if (step.has("hold")) {
+            mc.setScreen(step.get("hold").getAsBoolean() ? new net.minecraft.client.gui.screens.Screen(Component.empty()) {
+                @Override
+                public void render(net.minecraft.client.gui.GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+                }
+            } : null);
+        }
+        if (step.has("window")) {
+            JsonArray size = step.getAsJsonArray("window");
+            org.lwjgl.glfw.GLFW.glfwSetWindowSize(mc.getWindow().getWindow(), size.get(0).getAsInt(), size.get(1).getAsInt());
+        }
+        if (step.has("nuke")) {
+            JsonArray at = step.getAsJsonArray("nuke");
+            Vec3 ground = new Vec3(at.get(0).getAsDouble(), at.get(1).getAsDouble(), at.get(2).getAsDouble());
+            com.criticalmass.client.effects.ClientEffects.handle(com.criticalmass.content.effects.Effects.NUKE, ground, ground, at.get(3).getAsFloat());
+            note("nuke at " + ground + " radius " + at.get(3).getAsFloat());
+        }
+        if (step.has("alphaShot")) {
+            alphaShot = scriptName + "_" + step.get("alphaShot").getAsString() + ".png";
         }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";
