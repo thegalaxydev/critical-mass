@@ -82,28 +82,29 @@ public final class ContainerSources {
         }
         Set<Object> counted = Collections.newSetFromMap(new IdentityHashMap<>());
         around(level, cells, counted, receiver, reach, null, out);
-        carried(level, counted, receiver, reach, null, out);
+        carried(level, counted, receiver, reach, out);
         BoundingBox3d box = new BoundingBox3d(receiver.x - reach, receiver.y - reach, receiver.z - reach, receiver.x + reach, receiver.y + reach, receiver.z + reach);
         for (SubLevelAccess body : SableCompanion.INSTANCE.getAllIntersecting(level, box)) {
             Vec3 aboard = body.logicalPose().transformPositionInverse(receiver);
             around(level, cells, counted, aboard, reach, body, out);
-            carried(level, counted, aboard, reach, body, out);
+            carried(level, counted, aboard, reach, out);
         }
     }
 
-    private static void carried(ServerLevel level, Set<Object> counted, Vec3 receiver, double reach, @Nullable SubLevelAccess body, List<Radiation.Source> out) {
+    private static void carried(ServerLevel level, Set<Object> counted, Vec3 receiver, double reach, List<Radiation.Source> out) {
         AABB box = new AABB(receiver, receiver).inflate(reach);
         for (Entity e : level.getEntities((Entity) null, box, e -> e.isAlive() && !(e instanceof Player) && !(e instanceof ItemEntity))) {
             if (!counted.add(e)) {
                 continue;
             }
+            SubLevelAccess on = SableCompanion.INSTANCE.getContaining(e);
             if (e instanceof AbstractContraptionEntity moving) {
-                aboard(moving, counted, body, out);
+                aboard(moving, counted, on, out);
                 continue;
             }
             double strength = carriedBy(e);
             if (strength > 0) {
-                out.add(new Radiation.Source(e.getBoundingBox().getCenter(), strength, null, body, null));
+                out.add(new Radiation.Source(e.getBoundingBox().getCenter(), strength, null, on, null));
             }
         }
     }
