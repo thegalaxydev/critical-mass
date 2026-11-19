@@ -63,6 +63,7 @@ public class InspectionHarness {
     private int clicks;
     private boolean matte;
     private float backdrop;
+    private java.util.Map<net.minecraft.client.particle.ParticleRenderType, List<net.minecraft.client.particle.Particle>> stashed;
     private String alphaShot;
     private final StringBuilder log = new StringBuilder();
 
@@ -110,6 +111,49 @@ public class InspectionHarness {
                 alphaShot = null;
             }
         });
+    }
+
+    private void only(Minecraft mc, String group, double splitZ) {
+        java.util.Map<net.minecraft.client.particle.ParticleRenderType, java.util.Queue<net.minecraft.client.particle.Particle>> live =
+                net.neoforged.fml.util.ObfuscationReflectionHelper.getPrivateValue(net.minecraft.client.particle.ParticleEngine.class, mc.particleEngine, "particles");
+        if (stashed == null) {
+            stashed = new java.util.LinkedHashMap<>();
+            for (var entry : live.entrySet()) {
+                stashed.put(entry.getKey(), new ArrayList<>(entry.getValue()));
+            }
+        }
+        int kept = 0;
+        for (var entry : stashed.entrySet()) {
+            java.util.Queue<net.minecraft.client.particle.Particle> queue = live.get(entry.getKey());
+            queue.clear();
+            for (net.minecraft.client.particle.Particle particle : entry.getValue()) {
+                if (shown(particle, group, splitZ)) {
+                    queue.add(particle);
+                    kept++;
+                }
+            }
+        }
+        if (group.equals("all")) {
+            stashed = null;
+        }
+        note("only " + group + " keeps " + kept + " particles");
+    }
+
+    private static boolean shown(net.minecraft.client.particle.Particle particle, String group, double splitZ) {
+        if (group.equals("all")) {
+            return true;
+        }
+        Class<?> parent = particle.getClass().getSuperclass();
+        boolean mushroom = parent != null && parent.getName().endsWith("MushroomCloud$Bound");
+        if (group.equals("mushroom") || mushroom) {
+            return mushroom && group.equals("mushroom");
+        }
+        double z = particle.getBoundingBox().getCenter().z;
+        return switch (group) {
+            case "ground_back" -> z >= splitZ;
+            case "ground_front" -> z < splitZ;
+            default -> true;
+        };
     }
 
     private void grabWithAlpha(Minecraft mc, String name) {
@@ -328,6 +372,9 @@ public class InspectionHarness {
             matte = step.get("matte").getAsBoolean();
             mc.options.renderDistance().set(matte ? 3 : 12);
             mc.options.cloudStatus().set(matte ? net.minecraft.client.CloudStatus.OFF : net.minecraft.client.CloudStatus.FANCY);
+        }
+        if (step.has("only")) {
+            only(mc, step.get("only").getAsString(), step.has("splitZ") ? step.get("splitZ").getAsDouble() : 0);
         }
         if (step.has("backdrop")) {
             backdrop = step.get("backdrop").getAsFloat();
