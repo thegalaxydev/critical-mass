@@ -1,4 +1,4 @@
-# Create: Critical Mass
+# Critical Mass
 
 Nuclear engineering addon for [Create](https://modrinth.com/mod/create) and [Create Aeronautics](https://modrinth.com/mod/create-aeronautics).
 Design specs, tasks, and decisions live in the development console: open `index.html` in a browser.

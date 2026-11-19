@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark light">
-<title>Create: Critical Mass | Development Console</title>
+<title>Critical Mass | Development Console</title>
 <style>
 :root{
   --bg:#141619;
@@ -530,7 +530,7 @@ table.asset-table td:nth-child(8){min-width:240px}
           <circle cx="19" cy="19" r="2" fill="#141619"></circle>
         </svg>
         <div>
-          <div class="brand-title">Create: Critical Mass</div>
+          <div class="brand-title">Critical Mass</div>
           <div class="brand-sub">Development Console</div>
         </div>
       </div>
@@ -1345,8 +1345,8 @@ const SEED_DECISIONS = [
 ].map(r => Object.assign({ status: "Open", date: "", updatedAt: null }, r));
 
 const SEED_META = {
-  projectName: "Create: Critical Mass",
-  description: "Create: Critical Mass is a proposed nuclear engineering addon for Create and Create Aeronautics. Reactors produce heat, not power: players build complete facilities that move that heat through pumped coolant loops, heat exchangers, turbines, condensers, and cooling towers, ending in ordinary Create kinetic capacity. The same plants can be built aboard Aeronautics vehicles, where mass, orientation, docking, and physics-body boundaries become part of the engineering.",
+  projectName: "Critical Mass",
+  description: "Critical Mass is a proposed nuclear engineering addon for Create and Create Aeronautics. Reactors produce heat, not power: players build complete facilities that move that heat through pumped coolant loops, heat exchangers, turbines, condensers, and cooling towers, ending in ordinary Create kinetic capacity. The same plants can be built aboard Aeronautics vehicles, where mass, orientation, docking, and physics-body boundaries become part of the engineering.",
   pillars: [
     "Build an entire nuclear facility, not a single generator block.",
     "Produce heat first and convert it through mechanical infrastructure.",
@@ -3551,7 +3551,7 @@ function renderMain(opts) {
   main.replaceChildren(...renderBanners(), view());
   renderNav();
   updateSaveIndicators();
-  document.title = (NAV.find(n => n[0] === ui.section) || NAV[0])[1] + " · Create: Critical Mass | Development Console";
+  document.title = (NAV.find(n => n[0] === ui.section) || NAV[0])[1] + " · Critical Mass | Development Console";
   if (opts && opts.fresh) { window.scrollTo(0, 0); main.focus({ preventScroll: true }); return; }
   if (aid) {
     const el = document.getElementById(aid);
