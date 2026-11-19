@@ -173,6 +173,11 @@ public class InspectionHarness {
 
     private void onClientTick(ClientTickEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
+        mc.setWindowActive(false);
+        if (mc.mouseHandler.isMouseGrabbed()) {
+            mc.mouseHandler.releaseMouse();
+            note("let go of the mouse");
+        }
         if (!worldRequested) {
             if (mc.screen instanceof TitleScreen && mc.getOverlay() == null) {
                 worldRequested = true;
