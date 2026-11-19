@@ -2,13 +2,16 @@ package com.criticalmass.client;
 
 import com.criticalmass.content.ReinforcedPipeBlock;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
 import com.simibubi.create.content.fluids.pump.PumpBlock;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
 import dev.engine_room.flywheel.lib.model.baked.PartialModel;
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -23,6 +26,7 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 public class ReinforcedPipeModel extends BakedModelWrapperWithData {
     private static final ModelProperty<Integer> DRAINS = new ModelProperty<>();
+    private static final ModelProperty<BlockState> BRACKET = new ModelProperty<>();
 
     public ReinforcedPipeModel(BakedModel template) {
         super(template);
@@ -37,6 +41,10 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
                     drains |= 1 << d.get3DDataValue();
                 }
             }
+        }
+        BracketedBlockEntityBehaviour bracket = BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
+        if (bracket != null && bracket.isBracketPresent()) {
+            builder.with(BRACKET, bracket.getBracket());
         }
         return builder.with(DRAINS, drains);
     }
@@ -59,21 +67,37 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
         return (drain ? CMPartialModels.REINFORCED_PIPE_DRAIN : CMPartialModels.REINFORCED_PIPE_RIM).get(d);
     }
 
+    private static List<BakedModel> parts(BlockState state, ModelData data) {
+        List<BakedModel> parts = new ArrayList<>();
+        BlockState bracket = data.get(BRACKET);
+        if (bracket != null) {
+            parts.add(Minecraft.getInstance().getBlockRenderer().getBlockModel(bracket));
+        }
+        for (Direction d : Direction.values()) {
+            PartialModel plate = plate(state, data, d);
+            if (plate != null) {
+                parts.add(plate.get());
+            }
+        }
+        return parts;
+    }
+
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         ChunkRenderTypeSet base = super.getRenderTypes(state, rand, data);
         if (!(state.getBlock() instanceof ReinforcedPipeBlock)) {
             return base;
         }
+        List<BakedModel> parts = parts(state, data);
+        if (parts.isEmpty()) {
+            return base;
+        }
         List<ChunkRenderTypeSet> sets = new ArrayList<>();
         sets.add(base);
-        for (Direction d : Direction.values()) {
-            PartialModel plate = plate(state, data, d);
-            if (plate != null) {
-                sets.add(plate.get().getRenderTypes(state, rand, data));
-            }
+        for (BakedModel part : parts) {
+            sets.add(part.getRenderTypes(state, rand, data));
         }
-        return sets.size() == 1 ? base : ChunkRenderTypeSet.union(sets);
+        return ChunkRenderTypeSet.union(sets);
     }
 
     @Override
@@ -82,17 +106,14 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
         if (state == null || !(state.getBlock() instanceof ReinforcedPipeBlock)) {
             return quads;
         }
-        List<BakedQuad> all = null;
-        for (Direction d : Direction.values()) {
-            PartialModel plate = plate(state, data, d);
-            if (plate == null) {
-                continue;
-            }
-            if (all == null) {
-                all = new ArrayList<>(quads);
-            }
-            all.addAll(plate.get().getQuads(state, side, rand, data, renderType));
+        List<BakedModel> parts = parts(state, data);
+        if (parts.isEmpty()) {
+            return quads;
         }
-        return all == null ? quads : all;
+        List<BakedQuad> all = new ArrayList<>(quads);
+        for (BakedModel part : parts) {
+            all.addAll(part.getQuads(state, side, rand, data, renderType));
+        }
+        return all;
     }
 }

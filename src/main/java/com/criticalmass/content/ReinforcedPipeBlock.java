@@ -2,6 +2,7 @@ package com.criticalmass.content;
 
 import com.criticalmass.registry.CMBlockEntities;
 import com.mojang.serialization.MapCodec;
+import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlockEntity;
 import java.util.EnumMap;
@@ -84,7 +85,20 @@ public class ReinforcedPipeBlock extends FluidPipeBlock {
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        return tryRemoveBracket(context) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+        if (!tryRemoveBracket(context)) {
+            return InteractionResult.PASS;
+        }
+        Level world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockState freed = world.getBlockState(pos);
+        if (!world.isClientSide && freed.getBlock() == this) {
+            Direction.Axis axis = FluidPropagator.getStraightPipeAxis(freed);
+            BlockState joined = updateBlockState(freed, axis == null ? Direction.UP : Direction.get(Direction.AxisDirection.POSITIVE, axis), null, world, pos);
+            if (joined != freed) {
+                world.setBlockAndUpdate(pos, joined);
+            }
+        }
+        return InteractionResult.SUCCESS;
     }
 
     @Override

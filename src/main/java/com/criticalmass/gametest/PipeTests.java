@@ -14,9 +14,12 @@ import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlockEntityTypes;
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.content.decoration.bracket.BracketBlock;
+import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalAxisKineticBlock;
 import com.simibubi.create.content.kinetics.base.DirectionalKineticBlock;
+import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import java.util.List;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,6 +30,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -178,6 +182,47 @@ public final class PipeTests {
         BlockState reinforced = h.getBlockState(a);
         BlockState create = h.getBlockState(b);
         h.assertTrue(FluidPipeBlock.isOpenAt(reinforced, Direction.EAST) && FluidPipeBlock.isOpenAt(create, Direction.WEST), "Reinforced and Create pipes should connect");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 20)
+    public static void reinforcedPipesTakeBrackets(GameTestHelper h) {
+        BlockPos mid = new BlockPos(2, 2, 2);
+        List<BlockPos> run = List.of(mid.west(), mid, mid.east());
+        for (BlockPos p : run) {
+            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+        }
+        for (BlockPos p : run) {
+            TestVessels.connect(h, p);
+        }
+        BlockPos abs = h.absolutePos(mid);
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack brackets = new ItemStack(AllBlocks.METAL_BRACKET.get(), 2);
+        player.setItemInHand(InteractionHand.MAIN_HAND, brackets);
+        UseOnContext click = new UseOnContext(player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs), Direction.DOWN, abs, false));
+        brackets.useOn(click);
+        BracketedBlockEntityBehaviour bracket = BlockEntityBehaviour.get(h.getLevel(), abs, BracketedBlockEntityBehaviour.TYPE);
+        h.assertTrue(bracket != null && bracket.isBracketPresent(), "A Reinforced Pipe should take a bracket");
+        h.assertTrue(bracket.getBracket().is(AllBlocks.METAL_BRACKET.get()) && bracket.getBracket().getValue(BracketBlock.FACING) == Direction.DOWN,
+                "The bracket should hang on the face it was put on: " + bracket.getBracket());
+        h.assertTrue(brackets.getCount() == 1, "The bracket should use one item: " + brackets);
+        BlockState held = h.getBlockState(mid);
+        h.assertTrue(FluidPipeBlock.isOpenAt(held, Direction.WEST) && FluidPipeBlock.isOpenAt(held, Direction.EAST), "The bracketed pipe should keep its run: " + held);
+        h.setBlock(mid.above(), CMBlocks.REINFORCED_PIPE.get());
+        TestVessels.connect(h, mid);
+        TestVessels.connect(h, mid.above());
+        h.assertTrue(!FluidPipeBlock.isOpenAt(h.getBlockState(mid), Direction.UP) && !FluidPipeBlock.isOpenAt(h.getBlockState(mid.above()), Direction.DOWN),
+                "A bracketed pipe should not branch: " + h.getBlockState(mid) + " " + h.getBlockState(mid.above()));
+        TestVessels.createPipes(h, List.of(mid.north(), mid.north().east()));
+        TestVessels.connect(h, mid);
+        h.assertTrue(!FluidPipeBlock.isOpenAt(h.getBlockState(mid), Direction.NORTH) && !FluidPipeBlock.isOpenAt(h.getBlockState(mid.north()), Direction.SOUTH),
+                "A Create pipe beside a bracketed pipe should not join it: " + h.getBlockState(mid) + " " + h.getBlockState(mid.north()));
+        h.setBlock(mid.north(), Blocks.AIR);
+        h.setBlock(mid.north().east(), Blocks.AIR);
+        h.assertTrue(CMBlocks.REINFORCED_PIPE.get().onWrenched(h.getBlockState(mid), click).consumesAction(), "A wrench should take the bracket off");
+        h.assertTrue(!bracket.isBracketPresent(), "The bracket should be gone after the wrench");
+        h.assertTrue(FluidPipeBlock.isOpenAt(h.getBlockState(mid), Direction.UP), "The freed pipe should join the pipe above it: " + h.getBlockState(mid));
+        h.assertTrue(player.getInventory().countItem(AllBlocks.METAL_BRACKET.asItem()) == 2, "The wrench should give the bracket back");
         h.succeed();
     }
 
