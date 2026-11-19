@@ -4,6 +4,7 @@
   "package": "com.criticalmass.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "ArmBlockEntityAccessor",
     "SequencedAssemblyRecipeMixin"
   ],
   "client": [

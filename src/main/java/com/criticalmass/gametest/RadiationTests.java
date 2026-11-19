@@ -226,6 +226,75 @@ public final class RadiationTests {
                 .thenSucceed();
     }
 
+    private static double strengthNear(List<Radiation.Source> sources, Vec3 at) {
+        return sources.stream().filter(s -> s.pos().distanceTo(at) < 0.75).mapToDouble(Radiation.Source::strength).sum();
+    }
+
+    @GameTest(template = LARGE)
+    public static void fuelCarriedByCartsArmsAndContraptionsIsASource(GameTestHelper h) {
+        BlockPos armPos = new BlockPos(3, 1, 3);
+        BlockPos bearingPos = new BlockPos(12, 1, 12);
+        BlockPos crate = bearingPos.above();
+        BlockPos chestPos = new BlockPos(12, 1, 4);
+        BlockPos untouched = new BlockPos(3, 1, 12);
+        double one = Radiation.itemStrength(spent(0));
+        HolderLookup.Provider registries = h.getLevel().registryAccess();
+        h.setBlock(armPos, AllBlocks.MECHANICAL_ARM.get());
+        com.simibubi.create.content.kinetics.mechanicalArm.ArmBlockEntity arm = h.getBlockEntity(armPos);
+        CompoundTag gripping = arm.saveWithoutMetadata(registries);
+        gripping.put("HeldItem", spent(0).save(registries));
+        arm.loadWithComponents(gripping, registries);
+        h.setBlock(bearingPos, AllBlocks.MECHANICAL_BEARING.getDefaultState().setValue(com.simibubi.create.content.contraptions.bearing.BearingBlock.FACING, Direction.UP));
+        h.setBlock(crate, Blocks.BARREL);
+        net.minecraft.world.level.block.entity.BarrelBlockEntity barrel = h.getBlockEntity(crate);
+        barrel.setItem(0, spent(0));
+        barrel.setItem(1, spent(0));
+        h.setBlock(chestPos, Blocks.CHEST);
+        net.minecraft.world.level.block.entity.ChestBlockEntity sealed = h.getBlockEntity(chestPos);
+        sealed.setLootTable(net.minecraft.world.level.storage.loot.BuiltInLootTables.SIMPLE_DUNGEON, 1L);
+        net.minecraft.world.entity.vehicle.MinecartChest cart = h.spawn(net.minecraft.world.entity.EntityType.CHEST_MINECART, new BlockPos(8, 2, 3));
+        cart.setNoGravity(true);
+        cart.setItem(5, spent(0));
+        net.minecraft.world.entity.vehicle.MinecartChest unopened = h.spawn(net.minecraft.world.entity.EntityType.CHEST_MINECART, untouched.above());
+        unopened.setNoGravity(true);
+        unopened.setLootTable(net.minecraft.world.level.storage.loot.BuiltInLootTables.ABANDONED_MINESHAFT, 1L);
+        net.minecraft.world.entity.decoration.ArmorStand stand = h.spawn(net.minecraft.world.entity.EntityType.ARMOR_STAND, new BlockPos(8, 2, 12));
+        stand.setNoGravity(true);
+        stand.setItemSlot(EquipmentSlot.MAINHAND, spent(0));
+        Vec3 middle = Vec3.atCenterOf(h.absolutePos(new BlockPos(8, 2, 8)));
+        h.startSequence()
+                .thenIdle(3)
+                .thenExecute(() -> {
+                    com.simibubi.create.content.contraptions.bearing.MechanicalBearingBlockEntity bearing = h.getBlockEntity(bearingPos);
+                    bearing.assemble();
+                    h.assertTrue(bearing.getMovedContraption() != null && h.getBlockState(crate).isAir(), "The bearing should have picked the barrel up");
+                })
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, List.of());
+                    h.assertTrue(Math.abs(strengthAt(h, sources, armPos) - one) < 1e-6, "Fuel in a Mechanical Arm's grip should be a source: " + strengthAt(h, sources, armPos));
+                    h.assertTrue(Math.abs(strengthNear(sources, cart.getBoundingBox().getCenter()) - one) < 1e-6, "Fuel in a minecart's chest should be a source: " + strengthNear(sources, cart.getBoundingBox().getCenter()));
+                    h.assertTrue(Math.abs(strengthNear(sources, stand.getBoundingBox().getCenter()) - one) < 1e-6, "Fuel held by a mob or an armour stand should be a source: " + strengthNear(sources, stand.getBoundingBox().getCenter()));
+                    h.assertTrue(Math.abs(strengthAt(h, sources, crate) - 2 * one) < 1e-6, "Fuel in a contraption's storage should be one source where the storage is: " + strengthAt(h, sources, crate));
+                    h.assertTrue(sealed.getLootTable() != null && unopened.getLootTable() != null, "Looking for sources should not open an unopened loot chest or cart");
+                    cart.clearContent();
+                    stand.setItemSlot(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
+                    com.simibubi.create.content.contraptions.bearing.MechanicalBearingBlockEntity bearing = h.getBlockEntity(bearingPos);
+                    bearing.disassemble();
+                })
+                .thenIdle(com.criticalmass.content.radiation.ContainerSources.KEPT_TICKS + 5)
+                .thenExecute(() -> {
+                    List<Radiation.Source> sources = Radiation.sourcesNear(h.getLevel(), middle, List.of());
+                    h.assertTrue(strengthNear(sources, cart.getBoundingBox().getCenter()) == 0 && strengthNear(sources, stand.getBoundingBox().getCenter()) == 0, "An emptied cart and an empty hand should stop being sources");
+                    h.assertTrue(h.getBlockState(crate).is(Blocks.BARREL) && Math.abs(strengthAt(h, sources, crate) - 2 * one) < 1e-6,
+                            "The barrel set down again should be counted once: " + strengthAt(h, sources, crate));
+                    cart.discard();
+                    unopened.discard();
+                    stand.discard();
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = LARGE)
     public static void caskAndFloodedRackCutTheDose(GameTestHelper h) {
         BlockPos rackPos = new BlockPos(2, 1, 2);
