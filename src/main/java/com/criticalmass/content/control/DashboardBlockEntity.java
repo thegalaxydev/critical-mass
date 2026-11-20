@@ -24,7 +24,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -152,7 +151,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             return;
         }
         part.glassOpen = !part.glassOpen;
-        level.playSound(null, worldPosition, part.glassOpen ? SoundEvents.IRON_TRAPDOOR_OPEN : SoundEvents.IRON_TRAPDOOR_CLOSE, SoundSource.BLOCKS, 0.5f, 1.4f);
+        level.playSound(null, worldPosition, CMSounds.LID_FLIP.get(), SoundSource.BLOCKS, 0.6f, part.glassOpen ? 1.15f : 0.9f);
         changed();
     }
 
@@ -315,7 +314,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
             case SWITCH -> {
                 part.on = !part.on;
-                level.playSound(null, worldPosition, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.4f, part.on ? 0.7f : 0.55f);
+                level.playSound(null, worldPosition, CMSounds.DESK_CLICK.get(), SoundSource.BLOCKS, 0.6f, part.on ? 1.1f : 0.85f);
                 if (part.targetEntity(level) instanceof ReactorControllerBlockEntity) {
                     result = part.signal(level.getGameTime()) > 0 ? "criticalmass.dashboard.result.bypass_on" : "criticalmass.dashboard.result.bypass_off";
                 } else {
@@ -324,7 +323,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             }
             case LEVER -> {
                 part.level = (int) Math.round(Math.max(0, Math.min(1, along)) * DashPart.MAX_LEVEL);
-                level.playSound(null, worldPosition, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.3f, 0.6f + part.level / 30f);
+                level.playSound(null, worldPosition, CMSounds.DESK_CLICK.get(), SoundSource.BLOCKS, 0.45f, 0.8f + part.level / 30f);
                 result = "criticalmass.dashboard.result.strength";
             }
             case ALARM -> {
@@ -345,7 +344,7 @@ public class DashboardBlockEntity extends SmartBlockEntity implements IHaveGoggl
             return;
         }
         part.level = clamped;
-        level.playSound(null, worldPosition, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.25f, 0.9f + clamped / (float) DashPart.MAX_LEVEL * 0.6f);
+        level.playSound(null, worldPosition, CMSounds.DESK_CLICK.get(), SoundSource.BLOCKS, 0.4f, 0.8f + clamped / (float) DashPart.MAX_LEVEL * 0.5f);
         changed();
     }
 

@@ -1,5 +1,7 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMParticles;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.registry.CMItems;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +9,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -30,6 +30,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 public class WeldingTorchItem extends Item {
+    private static final double ARC_STANDOFF = 0.12;
+    private static final double ARC_FLASH = 0.5;
     private static final Map<UUID, BlockPos> TARGETS = new ConcurrentHashMap<>();
 
     public WeldingTorchItem(Properties properties) {
@@ -82,7 +84,7 @@ public class WeldingTorchItem extends Item {
         if (level.random.nextInt(4) == 0) {
             Block.popResource(level, pos, new ItemStack(CMItems.REACTOR_ALLOY_SHEET.get()));
         }
-        level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.6f, 0.8f);
+        level.playSound(null, pos, CMSounds.TORCH_DONE.get(), SoundSource.BLOCKS, 0.7f, 0.85f);
         if (player instanceof net.minecraft.server.level.ServerPlayer worker) {
             com.criticalmass.registry.CMTriggers.grant(worker, "wreckage_cut");
         }
@@ -142,13 +144,16 @@ public class WeldingTorchItem extends Item {
         if (hit.getType() != HitResult.Type.BLOCK) {
             return;
         }
-        Vec3 at = hit.getLocation();
+        Vec3 at = hit.getLocation().add(eye.subtract(hit.getLocation()).normalize().scale(ARC_STANDOFF));
         for (int i = 0; i < 3; i++) {
-            level.addParticle(ParticleTypes.ELECTRIC_SPARK, at.x, at.y, at.z, (level.random.nextDouble() - 0.5) * 0.3, level.random.nextDouble() * 0.2, (level.random.nextDouble() - 0.5) * 0.3);
+            level.addParticle(CMParticles.ARC_SPARK.get(), at.x, at.y, at.z, (level.random.nextDouble() - 0.5) * 0.3, level.random.nextDouble() * 0.2, (level.random.nextDouble() - 0.5) * 0.3);
         }
-        level.addParticle(ParticleTypes.SMALL_FLAME, at.x, at.y, at.z, 0, 0.01, 0);
+        level.addParticle(CMParticles.EMBER.get(), at.x, at.y, at.z, (level.random.nextDouble() - 0.5) * 0.06, 0.03, (level.random.nextDouble() - 0.5) * 0.06);
+        if (remaining % 4 == 0) {
+            level.addParticle(CMParticles.GLOW.get(), true, at.x, at.y, at.z, ARC_FLASH, 0, 0);
+        }
         if (remaining % 8 == 0) {
-            level.playLocalSound(at.x, at.y, at.z, SoundEvents.FIRECHARGE_USE, SoundSource.PLAYERS, 0.2f, 1.6f + level.random.nextFloat() * 0.3f, false);
+            level.playLocalSound(at.x, at.y, at.z, CMSounds.TORCH_ARC.get(), SoundSource.PLAYERS, 0.35f, 0.95f + level.random.nextFloat() * 0.1f, false);
         }
     }
 
@@ -193,7 +198,7 @@ public class WeldingTorchItem extends Item {
             return stack;
         }
         if (repairAt(level, pos)) {
-            level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.6f, 1.2f);
+            level.playSound(null, pos, CMSounds.TORCH_DONE.get(), SoundSource.BLOCKS, 0.7f, 1.1f);
             if (!creative) {
                 plate.shrink(1);
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));

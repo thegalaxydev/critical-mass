@@ -38,6 +38,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Fallout Ash | Author's ash sheet and glow frame; the animation by script | `art/originals/fallout_ash_glow.png` is the author's one frame of green specks. `art/tools/ash_texture.py`, run with `fresh`, makes the animated `fallout_ash_glow.png` from it and paints nothing: each speck fades up and down through the frame's own tones, and the first frame is the author's. The game draws the specks over the ash at full brightness |
 | Fallout Ash (item), Strontium-90, Radioisotope Cell and the cell marker on the Station Battery | Script | `art/tools/isotope_art.py` |
 | Water Cannon | Script | `art/tools/water_cannon_texture.py`, on `art/blockbench/water_cannon.bbmodel` |
+| Creative tab section banners | Script | `art/tools/tab_banners.py` |
+| Advancement tab background | Script, from the author's casing sheet | `art/tools/advancement_background.py` |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
@@ -163,7 +165,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Loops: `hum`, `generator_run`, `motor_run`, `steam_hiss`, `reactor_thrum`, `water_spray` and `pump_cavitation` are cut to whole cycles so they repeat without a click.
 - Status: script-made, not yet approved. They have been checked for level and that they load; they have not been listened to in game.
 - Remaking: run the tool with `fresh`. Naming sounds after it remakes only those, as in `sfx.py fresh water_spray`.
-- Date: 2026-11-16
+- Date: 2026-11-16. Ten were added on 2026-11-20 in place of the last borrowed game sounds: `torch_arc`, `torch_done`, `scrub`, `quench`, `corium_slump`, `melt_through`, `link_bound`, `desk_click`, `lid_flip` and `part_fit`.
 
 ## circulation_pump
 
@@ -557,3 +559,19 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Status: script-painted placeholders, not yet approved.
 - Repainting: run the tool with `fresh`, and name the pieces after it to repaint only those, as in `isotope_art.py fresh sheared_fuel`. `art/tools/power_model.py` writes the cell model and the battery's blockstate. The Partly Sheared Fuel Assembly has no art of its own: its model shows the Spent Fuel Assembly.
 - Date: 2026-11-17
+
+## creative tab section banners
+
+- Used by: `textures/gui/banner/reactor.png`, `equipment.png`, `console.png`, `fallout.png` and `electricity.png`, the animated strips over the five sections of the mod's creative tab.
+- Source: `art/tools/tab_banners.py` paints every frame from shapes and pixel maps in the script. Each file is 162 pixels wide with its 18 pixel frames stacked top to bottom: 24 frames for Reactor, Equipment and Console, 48 for Fallout and 16 for Electricity.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`. The frame counts are also in `TabSection`, so change both together.
+- Date: 2026-11-19
+
+## advancement tab background
+
+- Used by: `textures/gui/advancement_background.png`, the tile behind the mod's advancement tree.
+- Source: `art/tools/advancement_background.py` cuts one 16 pixel tile out of the author's `textures/block/reactor_vessel_casing_connected.png`: the one joined on every side, with no rim and no rivets. Nothing is drawn.
+- Status: the author's art, cut by script.
+- Remaking: run the tool with `fresh` after the casing sheet changes.
+- Date: 2026-11-20

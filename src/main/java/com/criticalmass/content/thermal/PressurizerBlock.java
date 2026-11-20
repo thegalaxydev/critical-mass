@@ -1,5 +1,6 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.control.DashPart;
 import com.criticalmass.content.control.DashPartItem;
 import com.criticalmass.registry.CMBlockEntities;
@@ -7,7 +8,6 @@ import com.criticalmass.registry.CMBlocks;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -72,7 +72,7 @@ public class PressurizerBlock extends Block implements IBE<PressurizerBlockEntit
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.6f, 1.2f);
+            level.playSound(null, pos, CMSounds.PART_FIT.get(), SoundSource.BLOCKS, 0.7f, 1.1f);
             return ItemInteractionResult.SUCCESS;
         });
     }
@@ -89,7 +89,7 @@ public class PressurizerBlock extends Block implements IBE<PressurizerBlockEntit
             if (player == null || !player.getInventory().add(gauge)) {
                 Block.popResource(level, context.getClickedPos(), gauge);
             }
-            level.playSound(null, context.getClickedPos(), SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.6f, 1.2f);
+            level.playSound(null, context.getClickedPos(), CMSounds.PART_FIT.get(), SoundSource.BLOCKS, 0.7f, 0.8f);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

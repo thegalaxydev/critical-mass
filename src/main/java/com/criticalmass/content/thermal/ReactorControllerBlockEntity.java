@@ -451,7 +451,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
             }
         }
         coriumFloor = shape.min.getY();
-        level.playSound(null, new BlockPos(x, shape.min.getY() + 1, z), net.minecraft.sounds.SoundEvents.LAVA_EXTINGUISH, net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
+        level.playSound(null, new BlockPos(x, shape.min.getY() + 1, z), CMSounds.CORIUM_SLUMP.get(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.9f);
         if (level instanceof ServerLevel server) {
             server.sendParticles(CMParticles.OIL_SMOKE.get(), x + 0.5, shape.max.getY() + 1.2, z + 0.5, 20, 0.5, 0.3, 0.5, 0.03);
             server.sendParticles(CMParticles.EMBER.get(), x + 0.5, shape.max.getY() + 1.2, z + 0.5, 12, 0.5, 0.3, 0.5, 0.05);
@@ -490,10 +490,11 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         if (level instanceof ServerLevel server) {
             ContaminationData.get(server).add(floor, CMThermal.CORIUM_SPILL * c[2] * CMConfig.get(CMConfig.CORIUM_CONTAMINATION));
-            server.sendParticles(net.minecraft.core.particles.ParticleTypes.LAVA, floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5, 30, 0.4, 0.2, 0.4, 0.1);
+            server.sendParticles(CMParticles.EMBER.get(), floor.getX() + 0.5, floor.getY(), floor.getZ() + 0.5, 40, 0.4, 0.2, 0.4, 0.12);
+            server.sendParticles(CMParticles.OIL_SMOKE.get(), floor.getX() + 0.5, floor.getY() + 0.5, floor.getZ() + 0.5, 16, 0.5, 0.3, 0.5, 0.03);
             Effects.blast(level, net.minecraft.world.phys.Vec3.atCenterOf(floor), 2.0f);
         }
-        level.playSound(null, floor, net.minecraft.sounds.SoundEvents.GENERIC_EXPLODE.value(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 0.5f);
+        level.playSound(null, floor, CMSounds.MELT_THROUGH.get(), net.minecraft.sounds.SoundSource.BLOCKS, 1.4f, 1.0f);
         coriumFloor = Integer.MIN_VALUE;
         setChanged();
     }

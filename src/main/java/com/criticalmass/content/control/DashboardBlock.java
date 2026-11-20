@@ -1,5 +1,6 @@
 package com.criticalmass.content.control;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.CMShapes;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMComponents;
@@ -304,7 +305,7 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
                 } else if (!be.bind(slot, stored)) {
                     tell(player, Component.translatable("criticalmass.dashboard.item.refused"));
                 } else {
-                    level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
+                    level.playSound(null, pos, CMSounds.LINK_BOUND.get(), SoundSource.BLOCKS, 0.6f, 1.0f);
                     tell(player, Component.translatable("criticalmass.linker.bound", level.getBlockState(stored).getBlock().getName(), stored.getX(), stored.getY(), stored.getZ()));
                 }
             }

@@ -18,7 +18,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.Mth;
@@ -155,7 +154,7 @@ public class WaterCannonBlockEntity extends KineticBlockEntity {
                 if (fire || here.is(CMBlocks.FALLOUT_ASH.get())) {
                     level.setBlock(cursor, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL);
                     if (fire) {
-                        level.playSound(null, cursor, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5f, 1.4f);
+                        level.playSound(null, cursor, CMSounds.QUENCH.get(), SoundSource.BLOCKS, 0.5f, 1.0f);
                     }
                 } else if (soil == null || soil.wash(cursor, WASH_KEEP, WASH_FLOOR) + soil.wash(cursor.below(), WASH_KEEP, WASH_FLOOR) <= 0) {
                     continue;

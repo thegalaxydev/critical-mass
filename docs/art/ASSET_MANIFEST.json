@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-18",
+ "generated": "2026-11-20",
  "minecraft": "1.21.1",
  "neoforge": "21.1.262",
  "create": "6.0.10-280",
@@ -408,6 +408,47 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/cooling_tower_packing.json",
+   "item": true
+  },
+  {
+   "key": "core_debris",
+   "registry_id": "criticalmass:core_debris",
+   "type": "block",
+   "name": "Core Debris",
+   "art": "none of its own",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/corium.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/corium_hot.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/ruined_channel.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/core_debris.json",
+    "src/main/resources/assets/criticalmass/models/item/core_debris.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/core_debris.json",
    "item": true
   },
   {
@@ -1986,6 +2027,47 @@
    "item": true
   },
   {
+   "key": "wreckage",
+   "registry_id": "criticalmass:wreckage",
+   "type": "block",
+   "name": "Wreckage",
+   "art": "none of its own",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/burnt_equipment.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_vessel_casing.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/steel_block.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/wreckage.json",
+    "src/main/resources/assets/criticalmass/models/item/wreckage.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/wreckage.json",
+   "item": true
+  },
+  {
    "key": "ceramic_fuel_pellet",
    "registry_id": "criticalmass:ceramic_fuel_pellet",
    "type": "item",
@@ -3139,6 +3221,66 @@
    "used": true
   },
   {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/advancement_background.png",
+   "size": [
+    16,
+    16
+   ],
+   "animated": false,
+   "art": "script, cut from the author's casing sheet",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/console.png",
+   "size": [
+    162,
+    432
+   ],
+   "animated": false,
+   "art": "script",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/electricity.png",
+   "size": [
+    162,
+    288
+   ],
+   "animated": false,
+   "art": "script",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/equipment.png",
+   "size": [
+    162,
+    432
+   ],
+   "animated": false,
+   "art": "script",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/fallout.png",
+   "size": [
+    162,
+    864
+   ],
+   "animated": false,
+   "art": "script",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/reactor.png",
+   "size": [
+    162,
+    432
+   ],
+   "animated": false,
+   "art": "script",
+   "used": true
+  },
+  {
    "path": "src/main/resources/assets/criticalmass/textures/gui/dashboard_part.png",
    "size": [
     512,
@@ -3568,6 +3710,96 @@
    "subtitle": "Meltdown Siren wails",
    "missing": [],
    "art": "recording supplied by the author"
+  },
+  {
+   "key": "torch_arc",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/torch_arc.ogg"
+   ],
+   "subtitle": "Welding Torch arcs",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "torch_done",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/torch_done.ogg"
+   ],
+   "subtitle": "Welding Torch finishes",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "scrub",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/scrub.ogg"
+   ],
+   "subtitle": "Surface scrubbed",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "quench",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/quench.ogg"
+   ],
+   "subtitle": "Fire quenched",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "corium_slump",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/corium_slump.ogg"
+   ],
+   "subtitle": "Corium slumps",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "melt_through",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/melt_through.ogg"
+   ],
+   "subtitle": "Vessel melts through",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "link_bound",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/link_bound.ogg"
+   ],
+   "subtitle": "Link bound",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "desk_click",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/desk_click.ogg"
+   ],
+   "subtitle": "Control clicks",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "lid_flip",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/lid_flip.ogg"
+   ],
+   "subtitle": "Cover flips",
+   "missing": [],
+   "art": "script"
+  },
+  {
+   "key": "part_fit",
+   "files": [
+    "src/main/resources/assets/criticalmass/sounds/part_fit.ogg"
+   ],
+   "subtitle": "Part fitted",
+   "missing": [],
+   "art": "script"
   }
  ],
  "problems": []

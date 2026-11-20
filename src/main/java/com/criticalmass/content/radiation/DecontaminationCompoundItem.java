@@ -1,5 +1,7 @@
 package com.criticalmass.content.radiation;
 
+import com.criticalmass.registry.CMParticles;
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.registry.CMAttachments;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMFluids;
@@ -10,7 +12,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -31,6 +32,8 @@ public class DecontaminationCompoundItem extends Item {
     public static final int RUNOFF = 250;
     public static final int RUNOFF_SEARCH = 4;
     public static final int CLEAN_RADIUS = 1;
+    private static final int FOAM_PUFFS = 36;
+    private static final double FOAM_SPREAD = 0.7;
     private static final EquipmentSlot[] ARMOR = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET};
 
     public DecontaminationCompoundItem(Properties properties) {
@@ -100,7 +103,10 @@ public class DecontaminationCompoundItem extends Item {
         if (!player.getAbilities().instabuild) {
             stack.shrink(1);
         }
-        level.playSound(null, pos, SoundEvents.BRUSH_GENERIC, SoundSource.PLAYERS, 1.0f, 1.0f);
+        level.playSound(null, pos, CMSounds.SCRUB.get(), SoundSource.PLAYERS, 1.0f, 1.0f);
+        if (level instanceof ServerLevel server) {
+            server.sendParticles(CMParticles.FOAM.get(), pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, FOAM_PUFFS, FOAM_SPREAD, FOAM_SPREAD, FOAM_SPREAD, 0.015);
+        }
     }
 
     @Override

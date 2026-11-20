@@ -321,7 +321,85 @@ def pump_cavitation():
     return level(crush(seamless(gravel * (0.7 + 0.3 * sine(25, t) ** 2) + 0.5 * rumble), 6), 0.5)
 
 
+def torch_arc():
+    t = clock(0.4)
+    hiss = highpass(noise(t, 90), 3000) * (0.6 + 0.4 * lowpass(np.abs(noise(t, 91)), 40) / 0.5)
+    wave = 0.7 * buzz(t, 92) + 0.5 * hiss + 0.8 * crackle(t, 93, 160)
+    return level(crush(edges(wave, 0.004, 0.06), 6), 0.55)
+
+
+def torch_done():
+    t = clock(0.7)
+    late = clock(0.62)
+    clank = (0.9 * sine(1180, t) + 0.6 * sine(1730, t) + 0.4 * sine(2610, t)) * decay(t, 0.09)
+    knock = lowpass(noise(t, 94), 2200) * decay(t, 0.012) + 0.8 * thump(t, 160, 80, 0.07)
+    sizzle = np.concatenate([np.zeros(len(t) - len(late)), 0.35 * highpass(noise(late, 95), 3500) * decay(late, 0.18)])
+    return level(crush(edges(mix(clank + knock, sizzle), 0.0005, 0.08), 6), 0.65)
+
+
+def scrub():
+    t = clock(0.9)
+    strokes = np.clip(np.sin(2 * np.pi * 4.4 * t), 0, 1) ** 0.6
+    brush = highpass(lowpass(noise(t, 96), 5200), 1100) * strokes
+    fizz = crackle(t, 97, 260, 0.0006) * np.clip(t / 0.2, 0, 1) * decay(t, 0.6)
+    wet = 0.3 * sine(240 + 90 * sine(4.4, t), t) * strokes
+    return level(crush(edges(brush + 0.5 * fizz + wet, 0.004, 0.12), 6), 0.6)
+
+
+def quench():
+    t = clock(0.35)
+    wave = highpass(lowpass(noise(t, 98), 6000), 1500) * np.clip(t / 0.01, 0, 1) * decay(t, 0.1) + 0.3 * crackle(t, 99, 90) * decay(t, 0.15)
+    return level(crush(edges(wave, 0.001, 0.08), 6), 0.5)
+
+
+def corium_slump():
+    t = clock(1.3)
+    thud = 1.3 * thump(t, 85, 32, 0.4)
+    glop = 2.2 * lowpass(noise(t, 100), 320) * decay(t, 0.3)
+    hiss = 0.6 * highpass(lowpass(noise(t, 101), 3800), 900) * np.clip(t / 0.05, 0, 1) * decay(t, 0.5)
+    crack = 0.5 * crackle(t, 102, 40) * decay(t, 0.6)
+    return level(crush(np.tanh(1.2 * edges(thud + glop + hiss + crack, 0.001, 0.25)), 6), 0.7)
+
+
+def melt_through():
+    t = clock(2.4)
+    crack = 1.2 * noise(t, 103) * decay(t, 0.03)
+    tear = 0.5 * saw(140 - 90 * np.clip(t / 0.35, 0, 1), t) * np.clip(1 - t / 0.4, 0, 1) * (0.5 + 0.5 * lowpass(np.abs(noise(t, 104)), 50) / 0.5)
+    boom = 1.4 * thump(t, 75, 24, 0.7)
+    roar = 2.4 * lowpass(noise(t, 105), 420) * np.clip(t / 0.15, 0, 1) * decay(t, 0.9)
+    hiss = 0.5 * highpass(lowpass(noise(t, 106), 4200), 1000) * np.clip((t - 0.25) / 0.2, 0, 1) * decay(t, 1.0)
+    return level(crush(np.tanh(1.4 * edges(crack + tear + boom + roar + hiss, 0.0005, 0.4)), 6), 0.75)
+
+
+def link_bound():
+    return blips((1318.51, 1760.0, 2093.0), 0.04, 0.25)
+
+
+def desk_click():
+    t = clock(0.07)
+    wave = noise(t, 107) * decay(t, 0.003) + 0.7 * square(1500, t, 0.3) * decay(t, 0.008) + 0.5 * thump(t, 420, 240, 0.02)
+    return level(crush(edges(wave, 0.0003, 0.02), 6), 0.6)
+
+
+def lid_flip():
+    t = clock(0.25)
+    late = clock(0.13)
+    hinge = 0.25 * square(700 + 500 * np.clip(t / 0.12, 0, 1), t, 0.2) * np.clip(1 - np.abs(t - 0.06) / 0.06, 0, 1)
+    tap = noise(late, 108) * decay(late, 0.004) + 0.6 * sine(2600, late) * decay(late, 0.015) + 0.3 * sine(3900, late) * decay(late, 0.01)
+    return level(crush(edges(mix(hinge, np.concatenate([np.zeros(len(t) - len(late)), tap])), 0.001, 0.03), 6), 0.55)
+
+
+def part_fit():
+    t = clock(0.3)
+    late = clock(0.2)
+    slide = 0.35 * highpass(noise(t, 109), 2200) * np.clip(1 - np.abs(t - 0.05) / 0.05, 0, 1)
+    seat = lowpass(noise(late, 110), 1600) * decay(late, 0.012) + thump(late, 180, 90, 0.06) + 0.3 * square(1100, late) * decay(late, 0.02)
+    return level(crush(edges(mix(slide, np.concatenate([np.zeros(len(t) - len(late)), seat])), 0.001, 0.04), 6), 0.6)
+
+
 SOUNDS = {
+    "torch_arc": torch_arc, "torch_done": torch_done, "scrub": scrub, "quench": quench, "corium_slump": corium_slump, "melt_through": melt_through,
+    "link_bound": link_bound, "desk_click": desk_click, "lid_flip": lid_flip, "part_fit": part_fit,
     "pump_cavitation": pump_cavitation,
     "water_spray": water_spray,
     "service": service,

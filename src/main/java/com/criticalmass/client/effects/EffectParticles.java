@@ -87,6 +87,7 @@ public final class EffectParticles {
         });
         event.registerSpriteSet(CMParticles.PLUME.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 2.4f, 190, 1.011f, 0.0015f, 0.5f, 1f, 1f, 1f));
         event.registerSpriteSet(CMParticles.OIL_SMOKE.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 1.1f, 110, 1.014f, 0.003f, 0.85f, 0.13f, 0.12f, 0.12f));
+        event.registerSpriteSet(CMParticles.FOAM.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Cloud(level, x, y, z, xd, yd, zd, sprites, 0.26f, 30, 0.975f, -0.0012f, 0.9f, 0.86f, 1f, 0.9f));
         event.registerSpriteSet(CMParticles.ARC_SPARK.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Spark(level, x, y, z, xd, yd, zd, sprites, 0.75f, 0.9f, 1f, 0.05f));
         event.registerSpriteSet(CMParticles.EMBER.get(), sprites -> (type, level, x, y, z, xd, yd, zd) -> new Spark(level, x, y, z, xd, yd, zd, sprites, 1f, 0.55f, 0.15f, -0.012f));
         event.registerSpriteSet(CMParticles.GLOW.get(), sprites -> {

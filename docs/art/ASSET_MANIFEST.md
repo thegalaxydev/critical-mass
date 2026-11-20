@@ -1,12 +1,12 @@
 # Asset manifest
 
-Made 2026-11-18 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
+Made 2026-11-20 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21.1, Sable 2.0.6, Loconautics 0.1.2BETA.
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (58)
+## Blocks (60)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -22,6 +22,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:control_rod_drive` | Control Rod Drive | script | `block/control_rod_drive.png` 32x32<br>`block/control_rod_shaft.png` 16x16 | `create:block/cogwheel` | 5 |
 | `criticalmass:coolant_channel` | Coolant Channel | script | `block/coolant_channel.png` 32x32 |  | 2 |
 | `criticalmass:cooling_tower_packing` | Cooling Tower Packing | author | `block/cooling_tower_packing.png` 32x32<br>`block/cooling_tower_packing_bottom.png` 32x32<br>`block/cooling_tower_packing_middle.png` 32x32<br>`block/cooling_tower_packing_top.png` 32x32 |  | 5 |
+| `criticalmass:core_debris` | Core Debris | none of its own | `block/corium.png` 16x16<br>`block/corium_hot.png` 16x16<br>`block/ruined_channel.png` 32x32 |  | 2 |
 | `criticalmass:corium` | Corium | author's texture, script glow | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
@@ -68,6 +69,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:transformer` | Transformer | script | `block/transformer.png` 32x32 |  | 2 |
 | `criticalmass:uranium_ore` | Uranium Ore | script | `block/uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
+| `criticalmass:wreckage` | Wreckage | none of its own | `block/burnt_equipment.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/steel_block.png` 16x16 |  | 2 |
 
 ## Items (41)
 
@@ -124,7 +126,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:primary_coolant` | Primary Coolant | generated | `fluid/primary_coolant_flow.png` 32x512<br>`fluid/primary_coolant_still.png` 16x256 |  | 0 |
 | `criticalmass:steam` | Steam | generated | `fluid/steam_flow.png` 32x512<br>`fluid/steam_still.png` 16x256 |  | 0 |
 
-## Other textures (15)
+## Other textures (21)
 
 Dashboard part sheets, the dashboard screen, the worn suit layers and effect sprites.
 
@@ -133,6 +135,12 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `block/dashboard_part/alarm_atlas_lit.png` 64x64 | not recorded |
 | `block/dashboard_part/big_button_atlas.png` 64x64 | Create: Loconautics, with permission |
 | `block/dashboard_part/glass.png` 16x16 | Create: Loconautics, with permission |
+| `gui/advancement_background.png` 16x16 | script, cut from the author's casing sheet |
+| `gui/banner/console.png` 162x432 | script |
+| `gui/banner/electricity.png` 162x288 | script |
+| `gui/banner/equipment.png` 162x432 | script |
+| `gui/banner/fallout.png` 162x864 | script |
+| `gui/banner/reactor.png` 162x432 | script |
 | `gui/dashboard_part.png` 512x256 | Create: Loconautics, with permission |
 | `models/armor/protective_layer_1.png` 64x32 | generated |
 | `models/armor/protective_layer_2.png` 64x32 | generated |
@@ -146,7 +154,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `particle/steam_3.png` 16x16 | script |
 | `particle/streak.png` 16x4 | script |
 
-## Sounds (31)
+## Sounds (41)
 
 All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools/alarm_sound.py`, the nuclear explosion, which is a generated sound effect, and the two siren sounds, which `art/tools/siren_sound.py` cuts from a recording the author supplied.
 
@@ -183,6 +191,16 @@ All are synthesised by `art/tools/sfx.py`, except the alarm, which is `art/tools
 | `criticalmass:pump_cavitation` | Pump cavitates | script | `sounds/pump_cavitation.ogg` |
 | `criticalmass:siren` | Meltdown Siren wails | recording supplied by the author | `sounds/siren.ogg` |
 | `criticalmass:siren_low` | Meltdown Siren wails | recording supplied by the author | `sounds/siren_low.ogg` |
+| `criticalmass:torch_arc` | Welding Torch arcs | script | `sounds/torch_arc.ogg` |
+| `criticalmass:torch_done` | Welding Torch finishes | script | `sounds/torch_done.ogg` |
+| `criticalmass:scrub` | Surface scrubbed | script | `sounds/scrub.ogg` |
+| `criticalmass:quench` | Fire quenched | script | `sounds/quench.ogg` |
+| `criticalmass:corium_slump` | Corium slumps | script | `sounds/corium_slump.ogg` |
+| `criticalmass:melt_through` | Vessel melts through | script | `sounds/melt_through.ogg` |
+| `criticalmass:link_bound` | Link bound | script | `sounds/link_bound.ogg` |
+| `criticalmass:desk_click` | Control clicks | script | `sounds/desk_click.ogg` |
+| `criticalmass:lid_flip` | Cover flips | script | `sounds/lid_flip.ogg` |
+| `criticalmass:part_fit` | Part fitted | script | `sounds/part_fit.ogg` |
 
 ## Problems
 

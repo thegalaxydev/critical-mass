@@ -1,12 +1,12 @@
 package com.criticalmass.content.power;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.HorizontalBlock;
 import com.criticalmass.registry.CMBlockEntities;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.IBE;
 import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -46,7 +46,7 @@ public class BatteryBlock extends HorizontalBlock implements IBE<BatteryBlockEnt
             if (!player.isCreative()) {
                 stack.shrink(1);
             }
-            level.playSound(null, pos, SoundEvents.ITEM_FRAME_ADD_ITEM, SoundSource.BLOCKS, 0.6f, 0.9f);
+            level.playSound(null, pos, CMSounds.PART_FIT.get(), SoundSource.BLOCKS, 0.7f, 1.0f);
         }
         return ItemInteractionResult.sidedSuccess(level.isClientSide);
     }
@@ -65,7 +65,7 @@ public class BatteryBlock extends HorizontalBlock implements IBE<BatteryBlockEnt
             if (player == null || !player.getInventory().add(cell)) {
                 Block.popResource(level, pos, cell);
             }
-            level.playSound(null, pos, SoundEvents.ITEM_FRAME_REMOVE_ITEM, SoundSource.BLOCKS, 0.6f, 0.9f);
+            level.playSound(null, pos, CMSounds.PART_FIT.get(), SoundSource.BLOCKS, 0.7f, 0.75f);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
     }

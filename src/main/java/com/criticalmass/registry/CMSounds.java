@@ -40,6 +40,16 @@ public final class CMSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> PUMP_CAVITATION = sound("pump_cavitation");
     public static final DeferredHolder<SoundEvent, SoundEvent> SIREN = sound("siren");
     public static final DeferredHolder<SoundEvent, SoundEvent> SIREN_LOW = sound("siren_low");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TORCH_ARC = sound("torch_arc");
+    public static final DeferredHolder<SoundEvent, SoundEvent> TORCH_DONE = sound("torch_done");
+    public static final DeferredHolder<SoundEvent, SoundEvent> SCRUB = sound("scrub");
+    public static final DeferredHolder<SoundEvent, SoundEvent> QUENCH = sound("quench");
+    public static final DeferredHolder<SoundEvent, SoundEvent> CORIUM_SLUMP = sound("corium_slump");
+    public static final DeferredHolder<SoundEvent, SoundEvent> MELT_THROUGH = sound("melt_through");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LINK_BOUND = sound("link_bound");
+    public static final DeferredHolder<SoundEvent, SoundEvent> DESK_CLICK = sound("desk_click");
+    public static final DeferredHolder<SoundEvent, SoundEvent> LID_FLIP = sound("lid_flip");
+    public static final DeferredHolder<SoundEvent, SoundEvent> PART_FIT = sound("part_fit");
 
     private CMSounds() {
     }

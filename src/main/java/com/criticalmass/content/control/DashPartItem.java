@@ -1,5 +1,6 @@
 package com.criticalmass.content.control;
 
+import com.criticalmass.registry.CMSounds;
 import com.criticalmass.content.kinetics.TurbineStructure;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
@@ -7,7 +8,6 @@ import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -59,7 +59,7 @@ public class DashPartItem extends Item {
         }
         if (!level.isClientSide) {
             context.getItemInHand().set(CMComponents.LINK_TARGET.get(), pos.immutable());
-            level.playSound(null, pos, SoundEvents.LEVER_CLICK, SoundSource.BLOCKS, 0.4f, 1.4f);
+            level.playSound(null, pos, CMSounds.RELAY_CLICK.get(), SoundSource.BLOCKS, 0.6f, 1.2f);
             player.displayClientMessage(Component.translatable("criticalmass.dashboard.item.bound", level.getBlockState(pos).getBlock().getName(), pos.getX(), pos.getY(), pos.getZ()), true);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);

@@ -12,6 +12,7 @@ OUT = os.path.join(ASSETS, "textures", "particle")
 DEFS = os.path.join(ASSETS, "particles")
 PUFF_ALPHA = (0, 56, 128, 200)
 SHEETS = {"steam": ["steam_0", "steam_1", "steam_2", "steam_3"], "plume": ["steam_0", "steam_1", "steam_2", "steam_3"], "oil_smoke": ["steam_0", "steam_1", "steam_2", "steam_3"],
+          "foam": ["steam_0", "steam_1", "steam_2", "steam_3"],
           "arc_spark": ["spark"], "ember": ["spark"], "glow": ["glow"], "fireball": ["glow"], "shockwave": ["ring"], "cherenkov": ["glow"], "mote": ["mote"], "arc": ["streak"]}
 
 

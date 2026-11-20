@@ -284,5 +284,95 @@
     "attenuation_distance": 96
    }
   ]
+ },
+ "torch_arc": {
+  "subtitle": "criticalmass.subtitle.torch_arc",
+  "sounds": [
+   {
+    "name": "criticalmass:torch_arc",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "torch_done": {
+  "subtitle": "criticalmass.subtitle.torch_done",
+  "sounds": [
+   {
+    "name": "criticalmass:torch_done",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "scrub": {
+  "subtitle": "criticalmass.subtitle.scrub",
+  "sounds": [
+   {
+    "name": "criticalmass:scrub",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "quench": {
+  "subtitle": "criticalmass.subtitle.quench",
+  "sounds": [
+   {
+    "name": "criticalmass:quench",
+    "attenuation_distance": 24
+   }
+  ]
+ },
+ "corium_slump": {
+  "subtitle": "criticalmass.subtitle.corium_slump",
+  "sounds": [
+   {
+    "name": "criticalmass:corium_slump",
+    "attenuation_distance": 32
+   }
+  ]
+ },
+ "melt_through": {
+  "subtitle": "criticalmass.subtitle.melt_through",
+  "sounds": [
+   {
+    "name": "criticalmass:melt_through",
+    "attenuation_distance": 64
+   }
+  ]
+ },
+ "link_bound": {
+  "subtitle": "criticalmass.subtitle.link_bound",
+  "sounds": [
+   {
+    "name": "criticalmass:link_bound",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "desk_click": {
+  "subtitle": "criticalmass.subtitle.desk_click",
+  "sounds": [
+   {
+    "name": "criticalmass:desk_click",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "lid_flip": {
+  "subtitle": "criticalmass.subtitle.lid_flip",
+  "sounds": [
+   {
+    "name": "criticalmass:lid_flip",
+    "attenuation_distance": 16
+   }
+  ]
+ },
+ "part_fit": {
+  "subtitle": "criticalmass.subtitle.part_fit",
+  "sounds": [
+   {
+    "name": "criticalmass:part_fit",
+    "attenuation_distance": 16
+   }
+  ]
  }
 }

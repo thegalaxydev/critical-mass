@@ -21,6 +21,7 @@ public final class CMParticles {
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> CHERENKOV = simple("cherenkov", false);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> MOTE = simple("mote", false);
     public static final DeferredHolder<ParticleType<?>, SimpleParticleType> ARC = simple("arc", true);
+    public static final DeferredHolder<ParticleType<?>, SimpleParticleType> FOAM = simple("foam", false);
 
     private CMParticles() {
     }
