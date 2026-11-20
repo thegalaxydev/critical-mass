@@ -45,7 +45,7 @@ public final class ControlScenes {
         }, true);
     }
 
-    private static void reading(CreateSceneBuilder scene, Selection desk, int slot, double fraction, String readout) {
+    static void reading(CreateSceneBuilder scene, Selection desk, int slot, double fraction, String readout) {
         part(scene, desk, slot, p -> {
             p.putFloat("Fraction", (float) fraction);
             p.putString("Readout", readout);

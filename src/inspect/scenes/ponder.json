@@ -1812,6 +1812,78 @@
   {
    "closeScreen": true,
    "wait": 5
+  },
+  {
+   "ponder": "criticalmass:borax",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "boron_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "boron_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "boron_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "boron_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "boron_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "boron_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "boron_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "boron_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
   }
  ]
 }

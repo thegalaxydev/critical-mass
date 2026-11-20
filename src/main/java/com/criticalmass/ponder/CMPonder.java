@@ -48,6 +48,10 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("refuelling", PlantScenes::refuelling, REACTOR);
         scenes.forComponents(CMBlocks.REACTOR_SERVICE_PORT)
                 .addStoryBoard("reactor_vessel", PlantScenes::vessel);
+        scenes.forComponents(CMItems.BORAX)
+                .addStoryBoard("boron", BoronScenes::boron, REACTOR);
+        scenes.forComponents(CMBlocks.PRIMARY_COOLANT_PORT, CMBlocks.REACTOR_CONTROLLER)
+                .addStoryBoard("boron", BoronScenes::boron);
         scenes.forComponents(CMBlocks.WATER_CANNON)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon, ACCIDENTS);
         scenes.forComponents(CMBlocks.MELTDOWN_SIREN)
@@ -137,7 +141,8 @@ public class CMPonder implements PonderPlugin {
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMBlocks.REACTOR_VESSEL_CASING).add(CMBlocks.REACTOR_VIEWPORT).add(CMBlocks.FUEL_CHANNEL).add(CMBlocks.COOLANT_CHANNEL)
                 .add(CMBlocks.CONTROL_CHANNEL).add(CMBlocks.CONTROL_ROD_DRIVE).add(CMBlocks.PRIMARY_COOLANT_PORT).add(CMBlocks.REACTOR_SERVICE_PORT).add(CMBlocks.CIRCULATION_PUMP)
                 .add(CMBlocks.REINFORCED_PIPE).add(CMBlocks.HEAT_EXCHANGER).add(CMBlocks.PRESSURIZER).add(CMBlocks.STEAM_TURBINE).add(CMBlocks.CONDENSER).add(CMBlocks.RELIEF_VALVE)
-                .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER));
+                .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER))
+                .add(CMItems.BORAX);
         tags.addToTag(ELECTRICS)
                 .add(CMBlocks.GENERATOR).add(CMBlocks.TRANSFORMER).add(CMBlocks.CIRCUIT_BREAKER).add(CMBlocks.BUS_BAR).add(CMBlocks.INSULATOR)
                 .add(CMItems.POWER_WIRE).add(CMItems.POWER_CABLE).add(CMItems.TRANSMISSION_LINE).add(CMBlocks.GRID_CONNECTION)
