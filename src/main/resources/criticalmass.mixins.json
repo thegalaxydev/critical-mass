@@ -8,6 +8,7 @@
     "SequencedAssemblyRecipeMixin"
   ],
   "client": [
+    "CreativeScreenMixin",
     "MouseHandlerMixin"
   ],
   "injectors": {

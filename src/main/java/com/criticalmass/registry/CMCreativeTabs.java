@@ -14,7 +14,7 @@ public final class CMCreativeTabs {
     public static final Supplier<CreativeModeTab> MAIN = TABS.register("main", () -> CreativeModeTab.builder()
             .title(Component.translatable("itemGroup.criticalmass.main"))
             .icon(() -> new ItemStack(CMBlocks.REACTOR_VESSEL_CASING.get()))
-            .displayItems((params, output) -> CMItems.TAB_ORDER.forEach(item -> output.accept(item.get())))
+            .displayItems((params, output) -> TabSection.ordered(CMItems.TAB_ORDER.stream().map(item -> item.get()).toList()).forEach(output::accept))
             .build());
 
     private CMCreativeTabs() {

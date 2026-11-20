@@ -404,6 +404,17 @@ public class InspectionHarness {
         if (step.has("alphaShot")) {
             alphaShot = scriptName + "_" + step.get("alphaShot").getAsString() + ".png";
         }
+        if (step.has("creativeTab")) {
+            net.minecraft.world.item.CreativeModeTab tab = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(net.minecraft.resources.ResourceLocation.parse(step.get("creativeTab").getAsString()));
+            net.neoforged.fml.util.ObfuscationReflectionHelper.setPrivateValue(net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.class, null, tab, "selectedTab");
+            mc.setScreen(new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.player.connection.enabledFeatures(), mc.options.operatorItemsTab().get()));
+            note("creative tab " + step.get("creativeTab").getAsString());
+        }
+        if (step.has("creativeScroll") && mc.screen instanceof net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen creative) {
+            for (int i = 0; i < step.get("creativeScroll").getAsInt(); i++) {
+                creative.mouseScrolled(0, 0, 0, -1);
+            }
+        }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";
             Screenshot.grab(mc.gameDirectory, name, mc.getMainRenderTarget(), msg -> {
