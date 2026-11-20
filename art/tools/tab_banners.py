@@ -263,6 +263,37 @@ def electricity(frame, frames):
     return c
 
 
+CLOUD_SMALL = [
+    "..hhh..",
+    ".hhhss.",
+    "hhsssss",
+    ".sssss.",
+]
+CLOUD_MID = [
+    "..hhhhh..",
+    ".hhsssss.",
+    "hsssssssd",
+    ".dd.s.dd.",
+    "....s....",
+    "....sd...",
+    "...ssd...",
+    "..sssdd..",
+]
+CLOUD_FULL = [
+    "....hhhhhhh....",
+    "..hhhhhssssss..",
+    ".hhhsssssssssd.",
+    "hhsssssssssssdd",
+    "ssssssssssssddd",
+    ".dd..ddddd..dd.",
+    "......sss......",
+    "......ssd......",
+    "......ssd......",
+    ".....sssdd.....",
+    "...sssssdddd...",
+]
+
+
 def fallout(frame, frames):
     blast = 0.0 if frame < 8 else 1.0 if frame < 34 else max(0.0, 1 - (frame - 34) / 12.0)
     ruin = 0.0 if frame < 12 else min(1.0, (frame - 12) / 14.0) if frame < 34 else max(0.0, 1 - (frame - 36) / 11.0)
@@ -308,27 +339,22 @@ def fallout(frame, frames):
     cx = 112
     if 8 <= frame < 30:
         t = frame - 8
-        rise = min(1.0, t / 7.0)
         fade = 1.0 if t < 12 else max(0.0, 1 - (t - 12) / 10.0)
         hot = max(0.0, 1 - t / 9.0)
-        smoke = mix(mix((92, 84, 80), (255, 208, 112), hot), sky, 1 - fade)
-        core = mix(mix((120, 98, 88), (255, 246, 210), hot), sky, 1 - fade)
-        cap_y = 10 - rise * 6.5
-        cap_r = 2.5 + rise * 3.5
-        stem = round(cap_y + 1)
-        if fade > 0.05:
-            c.box(cx - 1, stem, cx + 1, 10, smoke)
-            c.box(cx, stem, cx, 10, core)
-            c.disc(cx, 11, 1.5 + rise * 3, smoke)
-            for dx in range(-int(cap_r + 4), int(cap_r + 4) + 1):
-                for dy in range(-3, 3):
-                    if (dx / (cap_r + 2.5)) ** 2 + (dy / 2.6) ** 2 <= 1:
-                        c.put(cx + dx, cap_y + dy, smoke if dy > -1 or abs(dx) > cap_r else core)
-            if t > 3:
-                ring = (t - 3) * 3.2
-                for side in (-1, 1):
-                    c.put(cx + side * ring, 11, mix((240, 236, 220), sky, min(1.0, (t - 3) / 14.0)))
-                    c.put(cx + side * (ring - 1), 12, mix((240, 236, 220), sky, min(1.0, (t - 3) / 14.0)))
+        smoke = mix((104, 94, 88), (250, 150, 70), hot)
+        tones = {"h": mix((150, 138, 128), (255, 244, 200), hot), "s": smoke, "d": mix(mix(smoke, (40, 34, 34), 0.4), (196, 84, 40), hot * 0.6)}
+        shape = CLOUD_SMALL if t < 3 else CLOUD_MID if t < 6 else CLOUD_FULL
+        left = cx - len(shape[0]) // 2
+        top = 12 - len(shape)
+        for row, line in enumerate(shape):
+            for col, mark in enumerate(line):
+                if mark != ".":
+                    c.put(left + col, top + row, mix(sky, tones[mark], fade))
+        if t > 3:
+            ring = (t - 3) * 3.2
+            for side in (-1, 1):
+                c.put(cx + side * ring, 11, mix((240, 236, 220), sky, min(1.0, (t - 3) / 14.0)))
+                c.put(cx + side * (ring - 1), 12, mix((240, 236, 220), sky, min(1.0, (t - 3) / 14.0)))
     if frame in (8, 9):
         whiten = 0.92 if frame == 8 else 0.55
         for y in range(H):
