@@ -49,6 +49,7 @@ public final class Radiation {
     public static final double SPENT_DOSE = 5.0;
     public static final double RESIDUAL_DOSE = 20.0;
     public static final double CANISTER_DOSE = 3.0;
+    public static final double DEBRIS_DOSE = 8.0;
     public static final double LIQUID_WASTE_DOSE = 3.0;
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
@@ -89,6 +90,9 @@ public final class Radiation {
         }
         if (stack.is(CMBlocks.CORIUM.get().asItem())) {
             return stack.getCount() * CMThermal.CORIUM_ITEM_DOSE;
+        }
+        if (stack.is(CMBlocks.CORE_DEBRIS.get().asItem())) {
+            return stack.getCount() * DEBRIS_DOSE;
         }
         if (stack.is(CMBlocks.RUINED_CHANNEL.get().asItem())) {
             return stack.getCount() * CMThermal.RUINED_ITEM_DOSE;
@@ -238,6 +242,8 @@ public final class Radiation {
                 }
             } else if (be instanceof Corium.Entity_ lump) {
                 out.add(new Source(c, lump.strength(), null, body(be), null));
+            } else if (be instanceof com.criticalmass.content.thermal.CoreDebrisBlock.Source) {
+                out.add(new Source(c, DEBRIS_DOSE, null, body(be), null));
             } else if (be instanceof SealedWasteCanisterBlockEntity canister) {
                 out.add(new Source(c, canister.strength(), null, body(be), null));
             } else if (be instanceof ServicePortBlockEntity port) {

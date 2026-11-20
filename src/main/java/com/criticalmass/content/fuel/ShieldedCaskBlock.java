@@ -46,7 +46,13 @@ public class ShieldedCaskBlock extends Block implements IBE<ShieldedCaskBlockEnt
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         if (!level.isClientSide) {
-            withBlockEntityDo(level, pos, ShieldedCaskBlockEntity::toggle);
+            withBlockEntityDo(level, pos, cask -> {
+                cask.toggle();
+                if (cask.bolted() && context.getPlayer() instanceof net.minecraft.server.level.ServerPlayer player
+                        && cask.slots().stream().anyMatch(s -> s.is(com.criticalmass.registry.CMBlocks.CORE_DEBRIS.get().asItem()))) {
+                    com.criticalmass.registry.CMTriggers.grant(player, "debris_sealed");
+                }
+            });
             IWrenchable.playRotateSound(level, pos);
         }
         return InteractionResult.sidedSuccess(level.isClientSide);
@@ -74,7 +80,7 @@ public class ShieldedCaskBlock extends Block implements IBE<ShieldedCaskBlockEnt
             return ItemInteractionResult.SUCCESS;
         }
         if (AllItems.WRENCH.isIn(stack)) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
         return onBlockEntityUseItemOn(level, pos, be -> {
             if (!be.open()) {

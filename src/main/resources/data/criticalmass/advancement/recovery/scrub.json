@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:decontamination_compound"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.scrub"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.scrub.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "surface_scrubbed"
+   }
+  }
+ },
+ "parent": "criticalmass:recovery/root"
+}

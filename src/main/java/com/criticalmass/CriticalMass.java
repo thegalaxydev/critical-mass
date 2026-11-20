@@ -91,6 +91,7 @@ public class CriticalMass {
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("control_panel"), asResource("dashboard"));
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMSounds.SOUNDS.register(modEventBus);
+        com.criticalmass.registry.CMTriggers.TRIGGERS.register(modEventBus);
         CMParticles.PARTICLES.register(modEventBus);
         CMCreativeTabs.TABS.register(modEventBus);
         CMFluids.TYPES.register(modEventBus);
@@ -115,6 +116,7 @@ public class CriticalMass {
         NeoForge.EVENT_BUS.addListener(PowerNetwork::tick);
         NeoForge.EVENT_BUS.addListener(Storms::onJoin);
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.Detonation::tick);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.Aftermath::tick);
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Fallout::tick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);

@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:shielded_cask"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.debris"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.debris.description"
+  },
+  "frame": "goal",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "debris_sealed"
+   }
+  }
+ },
+ "parent": "criticalmass:recovery/root"
+}

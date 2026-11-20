@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:welding_torch"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.wreckage"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.wreckage.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "wreckage_cut"
+   }
+  }
+ },
+ "parent": "criticalmass:recovery/root"
+}

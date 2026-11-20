@@ -1,0 +1,32 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:corium"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.corium"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.corium.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:corium"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:recovery/root"
+}

@@ -73,6 +73,21 @@ public class WeldingTorchItem extends Item {
         return true;
     }
 
+    public static void cut(Level level, BlockPos pos, @org.jetbrains.annotations.Nullable Player player) {
+        level.destroyBlock(pos, false);
+        Block.popResource(level, pos, new ItemStack(CMItems.STEEL_PLATE.get()));
+        if (level.random.nextInt(2) == 0) {
+            Block.popResource(level, pos, new ItemStack(CMItems.STEEL_NUGGET.get(), 1 + level.random.nextInt(4)));
+        }
+        if (level.random.nextInt(4) == 0) {
+            Block.popResource(level, pos, new ItemStack(CMItems.REACTOR_ALLOY_SHEET.get()));
+        }
+        level.playSound(null, pos, SoundEvents.ANVIL_USE, SoundSource.BLOCKS, 0.6f, 0.8f);
+        if (player instanceof net.minecraft.server.level.ServerPlayer worker) {
+            com.criticalmass.registry.CMTriggers.grant(worker, "wreckage_cut");
+        }
+    }
+
     public static ItemStack findPlate(Player player) {
         if (player.getOffhandItem().is(CMItems.STEEL_PLATES)) {
             return player.getOffhandItem();
@@ -91,6 +106,11 @@ public class WeldingTorchItem extends Item {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Player player = context.getPlayer();
+        if (player != null && level.getBlockState(pos).is(com.criticalmass.registry.CMBlocks.WRECKAGE.get())) {
+            TARGETS.put(player.getUUID(), pos.immutable());
+            player.startUsingItem(context.getHand());
+            return InteractionResult.CONSUME;
+        }
         if (player == null || !needsRepair(level, pos)) {
             return InteractionResult.PASS;
         }
@@ -160,6 +180,13 @@ public class WeldingTorchItem extends Item {
             return stack;
         }
         boolean creative = player.getAbilities().instabuild;
+        if (level.getBlockState(pos).is(com.criticalmass.registry.CMBlocks.WRECKAGE.get())) {
+            cut(level, pos, player);
+            if (!creative) {
+                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(player.getUsedItemHand()));
+            }
+            return stack;
+        }
         ItemStack plate = creative ? ItemStack.EMPTY : findPlate(player);
         if (!creative && plate.isEmpty()) {
             player.displayClientMessage(Component.translatable("criticalmass.welder.needs_plate"), true);
@@ -184,5 +211,6 @@ public class WeldingTorchItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         tooltip.add(Component.translatable("criticalmass.welder.tooltip").withStyle(ChatFormatting.GRAY));
         tooltip.add(Component.translatable("criticalmass.welder.tooltip_cost").withStyle(ChatFormatting.DARK_GRAY));
+        tooltip.add(Component.translatable("criticalmass.welder.tooltip_cut").withStyle(ChatFormatting.GRAY));
     }
 }

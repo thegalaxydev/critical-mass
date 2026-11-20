@@ -125,6 +125,9 @@ public class DecontaminationCompoundItem extends Item {
         }
         consume(player, context.getItemInHand(), level, pos);
         player.displayClientMessage(Component.translatable("criticalmass.decon.done", RUNOFF), true);
+        if (player instanceof net.minecraft.server.level.ServerPlayer worker) {
+            com.criticalmass.registry.CMTriggers.grant(worker, "surface_scrubbed");
+        }
         return InteractionResult.CONSUME;
     }
 

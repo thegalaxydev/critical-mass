@@ -54,6 +54,8 @@
     "criticalmass:surge_arrester",
     "criticalmass:burnt_equipment",
     "criticalmass:water_cannon",
-    "criticalmass:meltdown_siren"
+    "criticalmass:meltdown_siren",
+    "criticalmass:core_debris",
+    "criticalmass:wreckage"
   ]
 }

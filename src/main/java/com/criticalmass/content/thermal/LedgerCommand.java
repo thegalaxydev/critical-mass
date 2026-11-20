@@ -87,6 +87,9 @@ public final class LedgerCommand {
                 .then(Commands.literal("bypass").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("seconds", IntegerArgumentType.integer(1, 3600))
                         .executes(ctx -> bypass(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), IntegerArgumentType.getInteger(ctx, "seconds"))))))
                 .then(Commands.literal("meltdown").executes(ctx -> meltdown(ctx.getSource())))
+                .then(Commands.literal("recovery").executes(ctx -> recovery(ctx.getSource())))
+                .then(Commands.literal("decontaminate").then(Commands.argument("from", BlockPosArgument.blockPos()).then(Commands.argument("to", BlockPosArgument.blockPos())
+                        .executes(ctx -> decontaminate(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "from"), BlockPosArgument.getLoadedBlockPos(ctx, "to"))))))
                 .then(Commands.literal("melt").then(Commands.argument("controller", BlockPosArgument.blockPos()).executes(ctx -> melt(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller")))))
                 .then(Commands.literal("detonate").then(Commands.argument("centre", BlockPosArgument.blockPos())
                         .executes(ctx -> detonate(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "centre"), com.criticalmass.registry.CMConfig.explosionRadius()))
@@ -359,6 +362,36 @@ public final class LedgerCommand {
         c.holdBypass(seconds * 20);
         source.sendSuccess(() -> Component.translatable("criticalmass.command.bypassed", seconds), true);
         return 1;
+    }
+
+    private static int decontaminate(CommandSourceStack source, BlockPos from, BlockPos to) {
+        long volume = (long) (Math.abs(from.getX() - to.getX()) + 1) * (Math.abs(from.getY() - to.getY()) + 1) * (Math.abs(from.getZ() - to.getZ()) + 1);
+        if (volume > 2_000_000) {
+            source.sendFailure(Component.literal("That is more than 2,000,000 blocks"));
+            return 0;
+        }
+        ContaminationData soil = ContaminationData.get(source.getLevel());
+        double taken = 0;
+        for (BlockPos p : BlockPos.betweenClosed(from, to)) {
+            taken += soil.clear(p);
+        }
+        double cleared = taken;
+        source.sendSuccess(() -> Component.literal("Cleared " + fmt(cleared) + " of contamination"), true);
+        return (int) Math.round(taken);
+    }
+
+    private static int recovery(CommandSourceStack source) {
+        List<Aftermath.Site> sites = Aftermath.Sites.get(source.getLevel()).all();
+        for (Aftermath.Site site : sites) {
+            double[] reading = new double[1];
+            BlockPos where = source.getLevel().isLoaded(site.centre()) ? Aftermath.worst(source.getLevel(), site, reading) : null;
+            source.sendSuccess(() -> Component.literal("site " + site.centre().toShortString() + " radius=" + site.radius() + " points=" + site.points().size() + " cleared=" + site.cleared()
+                    + " worst=" + fmt(reading[0]) + (where == null ? "" : " at " + where.toShortString())), false);
+        }
+        if (sites.isEmpty()) {
+            source.sendSuccess(() -> Component.literal("no explosion sites"), false);
+        }
+        return sites.size();
     }
 
     private static int meltdown(CommandSourceStack source) {

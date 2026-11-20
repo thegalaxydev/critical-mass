@@ -1,0 +1,35 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:corium"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.root"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.root.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false,
+  "background": "minecraft:textures/gui/advancements/backgrounds/stone.png"
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:core_debris",
+       "criticalmass:corium",
+       "criticalmass:ruined_channel",
+       "criticalmass:fallout_ash"
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

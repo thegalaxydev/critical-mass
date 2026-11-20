@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:survey_meter"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.recovery.all_clear"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.recovery.all_clear.description"
+  },
+  "frame": "challenge",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "all_clear"
+   }
+  }
+ },
+ "parent": "criticalmass:recovery/debris"
+}

@@ -1,0 +1,22 @@
+{
+ "variants": {
+  "": [
+   {
+    "model": "criticalmass:block/wreckage",
+    "y": 0
+   },
+   {
+    "model": "criticalmass:block/wreckage",
+    "y": 90
+   },
+   {
+    "model": "criticalmass:block/wreckage",
+    "y": 180
+   },
+   {
+    "model": "criticalmass:block/wreckage",
+    "y": 270
+   }
+  ]
+ }
+}

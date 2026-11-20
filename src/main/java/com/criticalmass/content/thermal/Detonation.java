@@ -46,11 +46,13 @@ public final class Detonation {
     private final BlockPos centre;
     private final int radius;
     private final boolean scorch;
+    private final boolean aftermath;
     private int fuse;
     private double front;
     private int ring;
     private boolean carved;
     private LongOpenHashSet shields;
+    private final List<BlockPos> wrecks = new ArrayList<>();
     private final Solid shield = (x, y, z) -> shields.contains(BlockPos.asLong(x, y, z));
 
     @FunctionalInterface
@@ -58,11 +60,12 @@ public final class Detonation {
         boolean at(int x, int y, int z);
     }
 
-    private Detonation(BlockPos centre, int radius, int fuse, boolean scorch) {
+    private Detonation(BlockPos centre, int radius, int fuse, boolean scorch, boolean aftermath) {
         this.centre = centre;
         this.radius = radius;
         this.fuse = fuse;
         this.scorch = scorch;
+        this.aftermath = aftermath;
     }
 
     public static int radiusFor(int moltenMass) {
@@ -71,13 +74,17 @@ public final class Detonation {
     }
 
     public static void arm(ServerLevel level, BlockPos centre, int radius, int fuse, boolean scorch) {
+        arm(level, centre, radius, fuse, scorch, scorch);
+    }
+
+    public static void arm(ServerLevel level, BlockPos centre, int radius, int fuse, boolean scorch, boolean aftermath) {
         Store store = Store.get(level);
         for (Detonation d : store.list) {
             if (d.centre.equals(centre)) {
                 return;
             }
         }
-        store.list.add(new Detonation(centre.immutable(), Math.max(2, radius), fuse, scorch));
+        store.list.add(new Detonation(centre.immutable(), Math.max(2, radius), fuse, scorch, aftermath));
         store.setDirty();
     }
 
@@ -115,7 +122,8 @@ public final class Detonation {
                 if (at.length != 3) {
                     continue;
                 }
-                Detonation d = new Detonation(new BlockPos(at[0], at[1], at[2]), one.getInt("Radius"), one.getInt("Fuse"), one.getBoolean("Scorch"));
+                Detonation d = new Detonation(new BlockPos(at[0], at[1], at[2]), one.getInt("Radius"), one.getInt("Fuse"), one.getBoolean("Scorch"),
+                        one.contains("Aftermath") ? one.getBoolean("Aftermath") : one.getBoolean("Scorch"));
                 d.front = one.getDouble("Front");
                 d.ring = one.getInt("Ring");
                 d.carved = one.getBoolean("Carved");
@@ -131,6 +139,7 @@ public final class Detonation {
                 one.putInt("Radius", d.radius);
                 one.putInt("Fuse", d.fuse);
                 one.putBoolean("Scorch", d.scorch);
+                one.putBoolean("Aftermath", d.aftermath);
                 one.putDouble("Front", d.front);
                 one.putInt("Ring", d.ring);
                 one.putBoolean("Carved", d.carved);
@@ -341,7 +350,7 @@ public final class Detonation {
                 living.igniteForSeconds((float) (4 + near * 10));
             }
         }
-        ContaminationData.get(level).add(centre, CMThermal.CORIUM_SPILL * radius * CMConfig.get(CMConfig.CORIUM_CONTAMINATION));
+        ContaminationData.get(level).add(centre, CMThermal.CORIUM_SPILL * radius * CMConfig.get(CMConfig.CORIUM_CONTAMINATION) * (aftermath ? 1 - Aftermath.SHELL_SHARE : 1));
     }
 
     private void carve(ServerLevel level) {
@@ -372,13 +381,16 @@ public final class Detonation {
                     }
                     cursor.set(centre.getX() + dx, y, centre.getZ() + dz);
                     BlockState state = level.getBlockState(cursor);
-                    if (state.isAir() || survives(state, level, cursor) || sheltered(dx, dy, dz)) {
+                    if (state.isAir() || survives(state, level, cursor) || state.is(CMBlocks.CORE_DEBRIS.get()) || state.is(CMBlocks.WRECKAGE.get()) || sheltered(dx, dy, dz)) {
                         continue;
                     }
                     if (level.getBlockState(cursor.above()).is(CMBlocks.FALLOUT_ASH.get())) {
                         level.setBlock(cursor.above(), Blocks.AIR.defaultBlockState(), QUIET);
                     }
                     if (m < radius) {
+                        if (aftermath && wrecks.size() < Aftermath.WRECK_LIMIT && Aftermath.leavesWreckage(state) && random.nextDouble() < Aftermath.WRECK_CHANCE) {
+                            wrecks.add(cursor.immutable());
+                        }
                         level.setBlock(cursor, Blocks.AIR.defaultBlockState(), QUIET);
                     } else if (state.is(BlockTags.LOGS)) {
                         level.setBlock(cursor, charred(state), QUIET);
@@ -394,6 +406,9 @@ public final class Detonation {
         if (front >= outer) {
             carved = true;
             pool(level);
+            if (aftermath) {
+                Aftermath.settle(level, centre, radius, wrecks);
+            }
         }
     }
 

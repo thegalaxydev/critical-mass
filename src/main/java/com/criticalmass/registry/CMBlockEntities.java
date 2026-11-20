@@ -136,6 +136,9 @@ public final class CMBlockEntities {
     public static final Supplier<BlockEntityType<ShieldedCaskBlockEntity>> SHIELDED_CASK = BLOCK_ENTITIES.register("shielded_cask",
             () -> BlockEntityType.Builder.of((pos, state) -> new ShieldedCaskBlockEntity(CMBlockEntities.SHIELDED_CASK.get(), pos, state), CMBlocks.SHIELDED_CASK.get()).build(null));
 
+    public static final Supplier<BlockEntityType<com.criticalmass.content.thermal.CoreDebrisBlock.Source>> CORE_DEBRIS = BLOCK_ENTITIES.register("core_debris",
+            () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.thermal.CoreDebrisBlock.Source(CMBlockEntities.CORE_DEBRIS.get(), pos, state), CMBlocks.CORE_DEBRIS.get()).build(null));
+
     public static final Supplier<BlockEntityType<SealedWasteCanisterBlockEntity>> SEALED_WASTE_CANISTER = BLOCK_ENTITIES.register("sealed_waste_canister",
             () -> BlockEntityType.Builder.of((pos, state) -> new SealedWasteCanisterBlockEntity(CMBlockEntities.SEALED_WASTE_CANISTER.get(), pos, state), CMBlocks.SEALED_WASTE_CANISTER.get()).build(null));
 

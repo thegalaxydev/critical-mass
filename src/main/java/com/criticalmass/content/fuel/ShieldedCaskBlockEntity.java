@@ -67,6 +67,10 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
         return lid.getValue() <= 0;
     }
 
+    public boolean bolted() {
+        return !unbolted && !powered;
+    }
+
     private void moveLid() {
         lid.chase(unbolted || powered ? 1 : 0, LID_SPEED, Chaser.LINEAR);
         setChanged();
@@ -112,7 +116,7 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
 
     @Nullable
     public static String refuseReason(ItemStack stack) {
-        if (stack.is(CMItems.SEALED_WASTE_CANISTER.get())) {
+        if (stack.is(CMItems.SEALED_WASTE_CANISTER.get()) || stack.is(com.criticalmass.registry.CMBlocks.CORE_DEBRIS.get().asItem())) {
             return null;
         }
         if (!(stack.getItem() instanceof FuelAssemblyItem a)) {

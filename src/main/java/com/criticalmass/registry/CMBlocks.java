@@ -86,6 +86,9 @@ public final class CMBlocks {
     public static final DeferredBlock<com.criticalmass.content.radiation.FalloutAshBlock> FALLOUT_ASH = BLOCKS.register("fallout_ash", () -> new com.criticalmass.content.radiation.FalloutAshBlock(
             BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(0.1f).sound(SoundType.SAND).noCollission().replaceable().randomTicks().lightLevel(s -> 5)
                     .pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY)));
+    public static final DeferredBlock<com.criticalmass.content.thermal.CoreDebrisBlock> CORE_DEBRIS = register("core_debris", com.criticalmass.content.thermal.CoreDebrisBlock::new,
+            metal(2.5f).noOcclusion().lightLevel(s -> 6));
+    public static final DeferredBlock<Block> WRECKAGE = register("wreckage", Block::new, metal(4.0f).noOcclusion().noLootTable());
     public static final DeferredBlock<RotatedPillarBlock> CHARRED_LOG = register("charred_log", RotatedPillarBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0f).sound(SoundType.WOOD));
     public static final DeferredBlock<com.criticalmass.content.radiation.WaterCannonBlock> WATER_CANNON = register("water_cannon", com.criticalmass.content.radiation.WaterCannonBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.control.MeltdownSirenBlock> MELTDOWN_SIREN = register("meltdown_siren", com.criticalmass.content.control.MeltdownSirenBlock::new, metal(3.0f).noOcclusion());
