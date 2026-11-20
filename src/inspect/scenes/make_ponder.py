@@ -256,16 +256,26 @@ def plant_screen():
     return blocks, []
 
 
+def recovery():
+    concrete = "criticalmass:shielding_concrete"
+    blocks = [(pos, concrete if 1 <= pos[0] <= 7 and 1 <= pos[2] <= 7 else b) for pos, b in plate(9)]
+    blocks += [((x, y, 7), concrete) for x in range(1, 8) for y in (1, 2, 3)] + [((7, y, z), concrete) for z in range(3, 7) for y in (1, 2, 3)]
+    blocks += [((4, 1, 4), "criticalmass:corium[hot=true]"), ((2, 1, 6), "criticalmass:core_debris"), ((6, 1, 5), "criticalmass:core_debris"), ((5, 1, 2), "criticalmass:core_debris"),
+               ((2, 1, 3), "criticalmass:wreckage"), ((3, 1, 3), "criticalmass:wreckage"), ((2, 2, 3), "criticalmass:wreckage"), ((1, 1, 1), "criticalmass:shielded_cask"),
+               ((5, 1, 6), "create:fluid_tank")]
+    return blocks, []
+
+
 SCENES = {"rod_control": rod_control, "siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
           "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater,
           "enrichment": enrichment, "fuel_assembly": fuel_assembly, "reprocessing": reprocessing, "waste_canister": waste_canister, "control_desk": control_desk,
-          "plant_screen": plant_screen}
+          "plant_screen": plant_screen, "recovery": recovery}
 VIEW = {"rod_control": "criticalmass:dashboard_lever", "siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
         "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch",
         "enrichment": "criticalmass:centrifuge", "fuel_assembly": "criticalmass:ceramic_fuel_pellet", "reprocessing": "criticalmass:sheared_fuel",
-        "waste_canister": "criticalmass:open_waste_canister", "control_desk": "criticalmass:reactor_alloy_dashboard", "plant_screen": "criticalmass:plant_screen"}
+        "waste_canister": "criticalmass:open_waste_canister", "control_desk": "criticalmass:reactor_alloy_dashboard", "plant_screen": "criticalmass:plant_screen", "recovery": "criticalmass:core_debris"}
 SCROLL = {"feedwater": 1}
 
 

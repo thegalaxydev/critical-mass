@@ -71,6 +71,10 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("fallout", PlantScenes::fallout, ACCIDENTS);
         scenes.forComponents(CMItems.FALLOUT_ASH)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon);
+        scenes.forComponents(CMBlocks.CORE_DEBRIS, CMBlocks.WRECKAGE, CMItems.DECONTAMINATION_COMPOUND, CMItems.WELDING_TORCH)
+                .addStoryBoard("recovery", RecoveryScenes::recovery, ACCIDENTS);
+        scenes.forComponents(CMBlocks.CORIUM)
+                .addStoryBoard("recovery", RecoveryScenes::recovery);
         scenes.forComponents(CMBlocks.CENTRIFUGE, CMItems.URANIUM_CONCENTRATE, CMItems.ENRICHED_URANIUM, CMItems.DEPLETED_URANIUM)
                 .addStoryBoard("enrichment", FuelScenes::enrichment, FUEL);
         scenes.forComponents(CMItems.CERAMIC_FUEL_PELLET, CMItems.FUEL_CLADDING, CMItems.EMPTY_FUEL_ASSEMBLY, CMItems.INCOMPLETE_FUEL_ASSEMBLY, CMItems.FRESH_FUEL_ASSEMBLY)
@@ -140,6 +144,7 @@ public class CMPonder implements PonderPlugin {
                 .add(CMBlocks.TRANSFER_SWITCH).add(CMBlocks.STATION_BATTERY).add(CMBlocks.DIESEL_ENGINE).add(CMBlocks.ELECTRIC_MOTOR);
         tags.addToTag(ACCIDENTS)
                 .add(CMBlocks.REACTOR_CONTROLLER).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.SWITCH)).add(CMBlocks.FUEL_CHANNEL)
-                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER).add(CMItems.FALLOUT_ASH).add(CMBlocks.WATER_CANNON).add(CMBlocks.MELTDOWN_SIREN);
+                .add(CMBlocks.RUINED_CHANNEL).add(CMBlocks.CORIUM).add(CMBlocks.CHARRED_LOG).add(CMItems.SURVEY_METER).add(CMItems.FALLOUT_ASH).add(CMBlocks.WATER_CANNON).add(CMBlocks.MELTDOWN_SIREN).add(CMBlocks.CORE_DEBRIS).add(CMBlocks.WRECKAGE)
+                .add(CMItems.DECONTAMINATION_COMPOUND);
     }
 }

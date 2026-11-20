@@ -1740,6 +1740,78 @@
   {
    "closeScreen": true,
    "wait": 5
+  },
+  {
+   "ponder": "criticalmass:core_debris",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "recovery_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
   }
  ]
 }

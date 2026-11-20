@@ -1,0 +1,111 @@
+package com.criticalmass.ponder;
+
+import static com.criticalmass.ponder.PlantScenes.chapter;
+import static com.criticalmass.ponder.PlantScenes.say;
+import static com.criticalmass.ponder.PlantScenes.warn;
+
+import com.criticalmass.content.fuel.ShieldedCaskBlockEntity;
+import com.criticalmass.content.thermal.Corium;
+import com.criticalmass.registry.CMBlocks;
+import com.criticalmass.registry.CMFluids;
+import com.criticalmass.registry.CMItems;
+import com.criticalmass.registry.CMParticles;
+import com.simibubi.create.AllItems;
+import com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
+import com.simibubi.create.foundation.ponder.CreateSceneBuilder;
+import net.createmod.catnip.math.Pointing;
+import net.createmod.ponder.api.PonderPalette;
+import net.createmod.ponder.api.scene.SceneBuilder;
+import net.createmod.ponder.api.scene.SceneBuildingUtil;
+import net.createmod.ponder.api.scene.Selection;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidStack;
+
+public final class RecoveryScenes {
+    private RecoveryScenes() {
+    }
+
+    public static void recovery(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("recovery", "Cleaning up after an explosion");
+        scene.configureBasePlate(0, 0, 9);
+        scene.scaleSceneView(0.8f);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos corium = util.grid().at(4, 1, 4);
+        BlockPos near = util.grid().at(5, 1, 2);
+        BlockPos far = util.grid().at(2, 1, 6);
+        BlockPos east = util.grid().at(6, 1, 5);
+        BlockPos cask = util.grid().at(1, 1, 1);
+        BlockPos tank = util.grid().at(5, 1, 6);
+        BlockPos wall = util.grid().at(3, 2, 7);
+        Selection shell = util.select().fromTo(1, 1, 7, 7, 3, 7).add(util.select().fromTo(7, 1, 3, 7, 3, 6));
+        Selection wreckage = util.select().fromTo(2, 1, 3, 3, 1, 3).add(util.select().position(2, 2, 3));
+        ItemStack debris = new ItemStack(CMBlocks.CORE_DEBRIS.get());
+        ItemStack wrench = new ItemStack(AllItems.WRENCH.get());
+        Vec3 patch = util.vector().blockSurface(wall, Direction.NORTH);
+        scene.world().modifyBlock(corium, s -> s.setValue(Corium.CoriumBlock.HOT, true), false);
+        scene.world().showSection(shell, Direction.DOWN);
+        scene.idle(20);
+        chapter(scene, 120, util.vector().blockSurface(util.grid().at(4, 3, 7), Direction.NORTH), "A total meltdown guts a sealed building and leaves its shell standing. The work afterwards is in what the blast left inside");
+        scene.world().showSection(util.select().position(corium), Direction.DOWN);
+        scene.idle(20);
+        scene.effects().emitParticles(util.vector().topOf(corium), scene.effects().simpleParticleEmitter(ParticleTypes.LARGE_SMOKE, new Vec3(0, 0.04, 0)), 1, 60);
+        chapter(scene, 120, util.vector().topOf(corium), "Corium lies where it fell, hot and the strongest source on the site. Water beside it cools it six times faster");
+        scene.world().modifyBlock(corium, s -> s.setValue(Corium.CoriumBlock.HOT, false), false);
+        scene.idle(20);
+        say(scene, 110, util.vector().topOf(corium), "Cooled to slag it can be mined and stored behind shielding, or buried where it lies in Shielding Concrete");
+        scene.world().showSection(util.select().position(near).add(util.select().position(far)).add(util.select().position(east)), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showOutline(PonderPalette.RED, "debris", util.select().position(near).add(util.select().position(far)).add(util.select().position(east)), 110);
+        chapter(scene, 120, util.vector().topOf(near), "Pieces of the core are thrown outward until something stops them. Each piece of Core Debris gives 8 mSv/min at one block, lying there or carried");
+        scene.world().showSection(util.select().position(cask), Direction.DOWN);
+        scene.idle(15);
+        scene.overlay().showControls(util.vector().topOf(near), Pointing.DOWN, 30).leftClick().withItem(new ItemStack(Items.IRON_PICKAXE));
+        scene.idle(20);
+        scene.world().destroyBlock(near);
+        scene.idle(20);
+        scene.overlay().showControls(util.vector().topOf(cask), Pointing.DOWN, 25).rightClick().withItem(wrench);
+        scene.idle(10);
+        scene.world().modifyBlockEntity(cask, ShieldedCaskBlockEntity.class, ShieldedCaskBlockEntity::toggle);
+        scene.idle(30);
+        scene.overlay().showControls(util.vector().topOf(cask), Pointing.DOWN, 25).rightClick().withItem(debris);
+        scene.idle(30);
+        scene.overlay().showControls(util.vector().topOf(cask), Pointing.DOWN, 25).rightClick().withItem(wrench);
+        scene.idle(10);
+        scene.world().modifyBlockEntity(cask, ShieldedCaskBlockEntity.class, ShieldedCaskBlockEntity::toggle);
+        scene.idle(25);
+        say(scene, 120, util.vector().topOf(cask), "Take it up with a pickaxe and get it into a Shielded Cask, four to a cask. Bolted down, the cask lets 1%% of the dose out");
+        scene.world().showSection(wreckage, Direction.DOWN);
+        scene.idle(20);
+        chapter(scene, 110, util.vector().topOf(util.grid().at(3, 1, 3)), "About one in eight of the plant's blocks falls where it stood as Wreckage, so a vessel leaves a heap");
+        scene.overlay().showControls(util.vector().topOf(util.grid().at(3, 1, 3)), Pointing.DOWN, 50).rightClick().withItem(new ItemStack(CMItems.WELDING_TORCH.get()));
+        scene.effects().emitParticles(util.vector().topOf(util.grid().at(3, 1, 3)), scene.effects().simpleParticleEmitter(ParticleTypes.ELECTRIC_SPARK, new Vec3(0, 0.08, 0)), 3, 40);
+        scene.idle(45);
+        scene.world().setBlock(util.grid().at(3, 1, 3), Blocks.AIR.defaultBlockState(), true);
+        scene.world().createItemEntity(util.vector().centerOf(3, 1, 3), util.vector().of(0.03, 0.18, -0.03), new ItemStack(CMItems.STEEL_PLATE.get()));
+        scene.idle(20);
+        say(scene, 120, util.vector().centerOf(3, 1, 3), "Hold a Welding Torch on a piece for 2 seconds to cut it up. It gives back a Steel Plate, and sometimes nuggets or a Reactor Alloy Sheet");
+        scene.effects().emitParticles(patch, scene.effects().simpleParticleEmitter(CMParticles.STEAM.get(), new Vec3(0, 0.01, -0.02)), 1, 100);
+        scene.overlay().showOutline(PonderPalette.RED, "patch", util.select().fromTo(2, 1, 7, 4, 3, 7), 110);
+        chapter(scene, 120, patch, "Most of the blast's contamination lands on the walls and floor that stopped it. A Survey Meter set to contamination finds the patches");
+        scene.world().showSection(util.select().position(tank), Direction.DOWN);
+        scene.idle(20);
+        scene.overlay().showControls(patch, Pointing.RIGHT, 40).rightClick().withItem(new ItemStack(CMItems.DECONTAMINATION_COMPOUND.get()));
+        scene.idle(25);
+        scene.world().modifyBlockEntity(tank, FluidTankBlockEntity.class, be -> be.getTankInventory().setFluid(new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), 250)));
+        scene.effects().indicateSuccess(wall);
+        scene.idle(20);
+        say(scene, 130, patch, "Decontamination Compound cleans a patch three blocks across. It needs a tank within 4 blocks to take 250 mB of Contaminated Coolant as runoff");
+        scene.overlay().showOutline(PonderPalette.GREEN, "clear", shell, 120);
+        chapter(scene, 130, util.vector().blockSurface(util.grid().at(4, 3, 7), Direction.NORTH), "The site is read where the debris and the contamination landed and over the Corium. When every one of those reads under 1 mSv/min, it is cleared");
+        warn(scene, 110, util.vector().topOf(corium), "Burying a source deep enough in Shielding Concrete counts as well as taking it away");
+        scene.markAsFinished();
+    }
+}
