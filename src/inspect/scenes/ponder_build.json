@@ -2961,6 +2961,7 @@
     "/setblock 3 2 5 criticalmass:reactor_controller[facing=north]",
     "/setblock 1 1 4 create:redstone_link[receiver=true,facing=up,powered=false]",
     "/setblock 0 1 4 minecraft:redstone_lamp",
+    "/setblock 3 3 4 criticalmass:part_panel[face=wall,facing=north]{Centered:1b}",
     "/setblock 2 1 2 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=true,join_ccw=false]",
     "/setblock 3 1 2 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=true,join_ccw=true]",
     "/setblock 4 1 2 criticalmass:reactor_alloy_dashboard[facing=north,join_cw=false,join_ccw=true]"
@@ -2971,10 +2972,11 @@
    "cmds": [
     "/criticalmass desk 2 1 2 0 button 3 2 5 0 1 SCRAM",
     "/criticalmass desk 2 1 2 1 alarm 3 2 5 0 0 ALARM",
-    "/criticalmass desk 3 1 2 0 gauge 3 2 5 7 4 NEUTRON POWER",
+    "/criticalmass desk 3 1 2 0 gauge 3 2 5 6 4 NEUTRON POWER",
     "/criticalmass desk 3 1 2 1 gauge 3 2 5 1 4 COOLANT",
     "/criticalmass desk 4 1 2 0 switch 1 1 4 0 2 PUMP",
-    "/criticalmass desk 4 1 2 1 lever 1 1 4 0 4 VALVE"
+    "/criticalmass desk 4 1 2 1 lever 1 1 4 0 4 VALVE",
+    "/criticalmass desk 3 3 4 0 gauge 3 2 5 3 4 LEVEL"
    ],
    "wait": 30
   },

@@ -405,24 +405,16 @@ public class InspectionHarness {
             alphaShot = scriptName + "_" + step.get("alphaShot").getAsString() + ".png";
         }
         if (step.has("advancementTab") && mc.player != null) {
-            net.minecraft.client.multiplayer.ClientAdvancements held = mc.player.connection.getAdvancements();
-            net.minecraft.advancements.AdvancementHolder root = held.get(net.minecraft.resources.ResourceLocation.parse(step.get("advancementTab").getAsString()));
-            mc.setScreen(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(held));
-            if (root != null) {
-                held.setSelectedTab(root, true);
-            }
-            note("advancement tab " + step.get("advancementTab").getAsString() + (root == null ? " not found" : ""));
+            note(InspectScreens.advancementTab(mc, step.get("advancementTab").getAsString()));
         }
-        if (step.has("creativeTab")) {
-            net.minecraft.world.item.CreativeModeTab tab = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(net.minecraft.resources.ResourceLocation.parse(step.get("creativeTab").getAsString()));
-            net.neoforged.fml.util.ObfuscationReflectionHelper.setPrivateValue(net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.class, null, tab, "selectedTab");
-            mc.setScreen(new net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen(mc.player, mc.player.connection.enabledFeatures(), mc.options.operatorItemsTab().get()));
-            note("creative tab " + step.get("creativeTab").getAsString());
+        if (step.has("creativeTab") && mc.player != null) {
+            note(InspectScreens.creativeTab(mc, step.get("creativeTab").getAsString()));
         }
-        if (step.has("creativeScroll") && mc.screen instanceof net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen creative) {
-            for (int i = 0; i < step.get("creativeScroll").getAsInt(); i++) {
-                creative.mouseScrolled(0, 0, 0, -1);
-            }
+        if (step.has("creativeScroll")) {
+            InspectScreens.creativeScroll(mc, step.get("creativeScroll").getAsInt());
+        }
+        if (step.has("creativeHover")) {
+            note(InspectScreens.creativeHover(mc, step.get("creativeHover").getAsInt()));
         }
         if (step.has("shot")) {
             String name = scriptName + "_" + step.get("shot").getAsString() + ".png";

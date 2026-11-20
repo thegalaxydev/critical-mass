@@ -66,6 +66,7 @@ public final class ControlScenes {
         BlockPos east = util.grid().at(4, 1, 2);
         BlockPos link = util.grid().at(1, 1, 4);
         BlockPos lamp = util.grid().at(0, 1, 4);
+        BlockPos panel = util.grid().at(3, 3, 4);
         Selection first = util.select().position(west);
         Selection second = util.select().position(middle);
         Selection third = util.select().position(east);
@@ -137,7 +138,12 @@ public final class ControlScenes {
         scene.idle(15);
         chapter(scene, 130, util.vector().topOf(middle), "Use a Wrench on a part for its settings: its colours and style, a label, a glass cover, an indicator light, and what the part does");
         say(scene, 90, util.vector().topOf(middle), "Sneak and use the wrench to take a part off again");
-        say(scene, 110, face, "Parts also mount on a floor, a wall or a ceiling, up to four to a block, and work the same there");
+        reading(scene, util.select().position(panel), 0, 1, "100 %");
+        scene.overlay().showControls(util.vector().blockSurface(util.grid().at(3, 3, 5), Direction.NORTH), Pointing.RIGHT, 30).rightClick().withItem(gauge);
+        scene.idle(15);
+        scene.world().showSection(util.select().position(panel), Direction.SOUTH);
+        scene.idle(25);
+        say(scene, 110, util.vector().blockSurface(panel, Direction.SOUTH), "Parts also mount on a floor, a wall or a ceiling, up to four to a block, and work the same there");
         say(scene, 100, util.vector().topOf(middle), "The Plant Linker binds a part that is already fitted to another machine");
         warn(scene, 100, util.vector().topOf(west), "Look at a part through goggles to see what it does and what it is bound to. A missing target shows in red");
         scene.markAsFinished();

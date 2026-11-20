@@ -240,12 +240,12 @@ def control_desk():
     blocks = plate(7)
     blocks += [((x, y, 5), CASING) for x in (2, 3, 4) for y in (1, 2, 3) if (x, y) != (3, 2)]
     blocks += [((3, 2, 5), "criticalmass:reactor_controller[facing=north]"), ((1, 1, 4), "create:redstone_link[receiver=true,facing=up,powered=false]"),
-               ((0, 1, 4), "minecraft:redstone_lamp")]
+               ((0, 1, 4), "minecraft:redstone_lamp"), ((3, 3, 4), "criticalmass:part_panel[face=wall,facing=north]{Centered:1b}")]
     desks = (2, 3, 4)
     blocks += [((x, 1, 2), "criticalmass:reactor_alloy_dashboard[facing=north,join_cw=%s,join_ccw=%s]" % (str(x + 1 in desks).lower(), str(x - 1 in desks).lower())) for x in desks]
-    fitted = [(2, 0, "button", "3 2 5", 0, 1, "SCRAM"), (2, 1, "alarm", "3 2 5", 0, 0, "ALARM"), (3, 0, "gauge", "3 2 5", 7, 4, "NEUTRON POWER"),
+    fitted = [(2, 0, "button", "3 2 5", 0, 1, "SCRAM"), (2, 1, "alarm", "3 2 5", 0, 0, "ALARM"), (3, 0, "gauge", "3 2 5", 6, 4, "NEUTRON POWER"),
               (3, 1, "gauge", "3 2 5", 1, 4, "COOLANT"), (4, 0, "switch", "1 1 4", 0, 2, "PUMP"), (4, 1, "lever", "1 1 4", 0, 4, "VALVE")]
-    return blocks, ["criticalmass desk %d 1 2 %d %s %s %d %d %s" % part for part in fitted]
+    return blocks, ["criticalmass desk %d 1 2 %d %s %s %d %d %s" % part for part in fitted] + ["criticalmass desk 3 3 4 0 gauge 3 2 5 3 4 LEVEL"]
 
 
 def plant_screen():
