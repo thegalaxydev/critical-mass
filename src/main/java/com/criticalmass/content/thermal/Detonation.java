@@ -325,6 +325,9 @@ public final class Detonation {
 
     private void flash(ServerLevel level, Vec3 core) {
         Effects.nuke(level, core, radius);
+        if (aftermath) {
+            com.criticalmass.registry.CMTriggers.near(level, centre, radius * REACH * 2, "explosion");
+        }
         if (scorch) {
             com.criticalmass.content.radiation.Fallout.start(level, centre, radius);
         }

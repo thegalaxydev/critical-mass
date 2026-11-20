@@ -1,0 +1,35 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:reactor_controller"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.root"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.root.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false,
+  "background": "criticalmass:textures/block/steel_block.png"
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:raw_uranium",
+       "criticalmass:uranium_ore",
+       "criticalmass:deepslate_uranium_ore",
+       "create:crushed_raw_uranium"
+      ]
+     }
+    ]
+   }
+  }
+ }
+}

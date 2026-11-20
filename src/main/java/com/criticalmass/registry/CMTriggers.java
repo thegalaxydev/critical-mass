@@ -26,6 +26,14 @@ public final class CMTriggers {
         }
     }
 
+    public static void near(@org.jetbrains.annotations.Nullable net.minecraft.world.level.Level level, net.minecraft.core.BlockPos pos, double reach, String milestone) {
+        if (level instanceof net.minecraft.server.level.ServerLevel server) {
+            for (ServerPlayer player : server.getPlayers(p -> p.blockPosition().distSqr(pos) <= reach * reach)) {
+                grant(player, milestone);
+            }
+        }
+    }
+
     public static class Milestone extends SimpleCriterionTrigger<Milestone.Reached> {
         @Override
         public Codec<Reached> codec() {

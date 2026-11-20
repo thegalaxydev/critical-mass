@@ -443,6 +443,9 @@ public class GeneratorBlockEntity extends KineticBlockEntity implements WireNode
                         tripIn = 0;
                     }
                     online = true;
+                    if (grid && !onGrid) {
+                        com.criticalmass.registry.CMTriggers.near(level, worldPosition, 64, "on_grid");
+                    }
                     onGrid = grid;
                     frequency = reference;
                     phase = grid ? outside.phase() : other.phase();

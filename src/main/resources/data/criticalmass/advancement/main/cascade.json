@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:enriched_uranium"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.cascade"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.cascade.description"
+  },
+  "frame": "goal",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "cascade"
+   }
+  }
+ },
+ "parent": "criticalmass:main/enriched"
+}

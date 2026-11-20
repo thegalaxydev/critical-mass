@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:fuel_channel"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.critical"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.critical.description"
+  },
+  "frame": "goal",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "first_critical"
+   }
+  }
+ },
+ "parent": "criticalmass:main/vessel"
+}

@@ -92,6 +92,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private int liveSync;
 
     private String status = "criticalmass.reactor.status.unchecked";
+    public static final double MILESTONE_REACH = 64;
+    private boolean atPower;
     private String sizeError;
     private int[] dims = new int[3];
     private final List<BlockPos> problemPos = new ArrayList<>();
@@ -546,6 +548,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     public void holdBypass(int ticks) {
         if (level != null) {
+            if (!bypassed()) {
+                com.criticalmass.registry.CMTriggers.near(level, worldPosition, MILESTONE_REACH, "bypass");
+            }
             bypassUntil = Math.max(bypassUntil, level.getGameTime() + ticks);
         }
     }
@@ -1022,6 +1027,9 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         for (long k : melted) {
             ruinColumn(k, shape);
         }
+        if (!melted.isEmpty()) {
+            com.criticalmass.registry.CMTriggers.near(level, worldPosition, MILESTONE_REACH, "core_damage");
+        }
         if (!melted.isEmpty() && shape != null && core.coriumColumns().size() >= core.fuelColumns() && CMConfig.nuclearExplosion() && level instanceof ServerLevel server) {
             BlockPos heart = new BlockPos((shape.min.getX() + shape.max.getX()) / 2, (shape.min.getY() + shape.max.getY()) / 2, (shape.min.getZ() + shape.max.getZ()) / 2);
             Detonation.arm(server, heart, Detonation.radiusFor(core.coriumMass()), Detonation.FUSE_TICKS, true);
@@ -1040,9 +1048,17 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         }
         String newStatus = statusKey(canRun);
         if (!newStatus.equals(status)) {
+            if (newStatus.equals("criticalmass.reactor.status.running")) {
+                com.criticalmass.registry.CMTriggers.near(level, worldPosition, MILESTONE_REACH, "first_critical");
+            }
             status = newStatus;
             syncPending = true;
         }
+        boolean high = core.neutronPower() >= 0.9;
+        if (high && !atPower) {
+            com.criticalmass.registry.CMTriggers.near(level, worldPosition, MILESTONE_REACH, "full_power");
+        }
+        atPower = high;
         showStatus();
         if (liveSync-- <= 0) {
             liveSync = 20;

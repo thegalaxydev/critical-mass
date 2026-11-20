@@ -1,0 +1,32 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:centrifuge"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.enriched"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.enriched.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:enriched_uranium"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/concentrate"
+}

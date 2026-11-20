@@ -161,6 +161,7 @@ public class GridTieBlockEntity extends SmartBlockEntity implements IHaveGoggleI
     private void finish(boolean met) {
         if (met) {
             completed++;
+            com.criticalmass.registry.CMTriggers.near(level, worldPosition, 128, "order_met");
         } else {
             missed++;
         }

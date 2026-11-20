@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:shielded_cask"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.dry_storage"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.dry_storage.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "dry_storage"
+   }
+  }
+ },
+ "parent": "criticalmass:main/spent"
+}

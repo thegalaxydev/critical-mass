@@ -289,6 +289,9 @@ public class SteamTurbineBlockEntity extends GeneratingKineticBlockEntity implem
         if (updateCooldown > 0) {
             updateCooldown--;
         } else if (Math.abs(target - appliedCapacity) > Math.max(16.0, appliedCapacity * 0.02)) {
+            if (appliedCapacity <= 0 && target > 0) {
+                com.criticalmass.registry.CMTriggers.near(level, worldPosition, 64, "turbine_running");
+            }
             appliedCapacity = target;
             updateCooldown = 10;
             updateGeneratedRotation();

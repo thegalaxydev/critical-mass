@@ -76,6 +76,9 @@ public class PlantLinkerItem extends Item {
                 return InteractionResult.FAIL;
             }
             level.playSound(null, pos, SoundEvents.EXPERIENCE_ORB_PICKUP, SoundSource.BLOCKS, 0.4f, 1.6f);
+            if (screen.linked() && player instanceof net.minecraft.server.level.ServerPlayer linker) {
+                com.criticalmass.registry.CMTriggers.grant(linker, "screen_linked");
+            }
             if (screen.linked() && !screen.bigEnough()) {
                 player.displayClientMessage(Component.translatable("criticalmass.screen.link.too_small", screen.width(), screen.height(), ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT), true);
             } else {

@@ -1,0 +1,47 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:protective_suit"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.suit"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.suit.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:protective_hood"
+      ]
+     },
+     {
+      "items": [
+       "criticalmass:protective_suit"
+      ]
+     },
+     {
+      "items": [
+       "criticalmass:protective_leggings"
+      ]
+     },
+     {
+      "items": [
+       "criticalmass:protective_boots"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/meter"
+}

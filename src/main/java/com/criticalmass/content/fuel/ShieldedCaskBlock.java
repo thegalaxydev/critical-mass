@@ -52,6 +52,10 @@ public class ShieldedCaskBlock extends Block implements IBE<ShieldedCaskBlockEnt
                         && cask.slots().stream().anyMatch(s -> s.is(com.criticalmass.registry.CMBlocks.CORE_DEBRIS.get().asItem()))) {
                     com.criticalmass.registry.CMTriggers.grant(player, "debris_sealed");
                 }
+                if (cask.bolted() && context.getPlayer() instanceof net.minecraft.server.level.ServerPlayer keeper
+                        && cask.slots().stream().anyMatch(s -> s.getItem() instanceof FuelAssemblyItem fuel && fuel.form() == FuelAssemblyItem.Form.SPENT)) {
+                    com.criticalmass.registry.CMTriggers.grant(keeper, "dry_storage");
+                }
             });
             IWrenchable.playRotateSound(level, pos);
         }

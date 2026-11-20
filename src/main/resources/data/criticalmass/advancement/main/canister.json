@@ -1,0 +1,32 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:sealed_waste_canister"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.canister"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.canister.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:sealed_waste_canister"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/reprocessed"
+}

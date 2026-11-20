@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:reactor_controller"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.full_power"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.full_power.description"
+  },
+  "frame": "goal",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "full_power"
+   }
+  }
+ },
+ "parent": "criticalmass:main/critical"
+}

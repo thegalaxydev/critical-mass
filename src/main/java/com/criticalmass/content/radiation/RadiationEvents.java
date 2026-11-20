@@ -63,6 +63,8 @@ public final class RadiationEvents {
         return sum;
     }
 
+    public static final double LIFETIME_MILESTONE = 1000;
+
     public static double exposeOnce(Player player, ServerLevel level, List<Radiation.Source> blockSources) {
         RadiationData d = data(player);
         Vec3 eye = player.getEyePosition();
@@ -87,6 +89,9 @@ public final class RadiationEvents {
         double rate = (direct + dust + d.contamination * Radiation.SKIN_DOSE + gearContamination(player) * Radiation.GEAR_DOSE) * CMConfig.get(CMConfig.DOSE_MULTIPLIER);
         d.lastRate = rate;
         d.body += rate / 60.0;
+        if (d.total < LIFETIME_MILESTONE && d.total + rate / 60.0 >= LIFETIME_MILESTONE && player instanceof net.minecraft.server.level.ServerPlayer dosed) {
+            com.criticalmass.registry.CMTriggers.grant(dosed, "dose");
+        }
         d.total += rate / 60.0;
         d.body = Math.max(0, d.body - CMConfig.get(CMConfig.RECOVERY_PER_MINUTE) / 60.0);
         player.setData(CMAttachments.RADIATION.get(), d);

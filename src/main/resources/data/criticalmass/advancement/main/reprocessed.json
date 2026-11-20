@@ -1,0 +1,32 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:sheared_fuel"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.reprocessed"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.reprocessed.description"
+  },
+  "frame": "goal",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:strontium_90"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/spent"
+}

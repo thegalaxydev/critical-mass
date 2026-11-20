@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:grid_connection"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.order_met"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.order_met.description"
+  },
+  "frame": "challenge",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "order_met"
+   }
+  }
+ },
+ "parent": "criticalmass:main/on_grid"
+}

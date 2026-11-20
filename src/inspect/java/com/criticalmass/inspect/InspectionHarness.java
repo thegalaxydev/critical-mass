@@ -404,6 +404,15 @@ public class InspectionHarness {
         if (step.has("alphaShot")) {
             alphaShot = scriptName + "_" + step.get("alphaShot").getAsString() + ".png";
         }
+        if (step.has("advancementTab") && mc.player != null) {
+            net.minecraft.client.multiplayer.ClientAdvancements held = mc.player.connection.getAdvancements();
+            net.minecraft.advancements.AdvancementHolder root = held.get(net.minecraft.resources.ResourceLocation.parse(step.get("advancementTab").getAsString()));
+            mc.setScreen(new net.minecraft.client.gui.screens.advancements.AdvancementsScreen(held));
+            if (root != null) {
+                held.setSelectedTab(root, true);
+            }
+            note("advancement tab " + step.get("advancementTab").getAsString() + (root == null ? " not found" : ""));
+        }
         if (step.has("creativeTab")) {
             net.minecraft.world.item.CreativeModeTab tab = net.minecraft.core.registries.BuiltInRegistries.CREATIVE_MODE_TAB.get(net.minecraft.resources.ResourceLocation.parse(step.get("creativeTab").getAsString()));
             net.neoforged.fml.util.ObfuscationReflectionHelper.setPrivateValue(net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen.class, null, tab, "selectedTab");

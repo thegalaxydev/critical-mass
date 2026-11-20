@@ -1,0 +1,31 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:reactor_vessel_casing"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.vessel"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.vessel.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:placed_block",
+   "conditions": {
+    "location": [
+     {
+      "condition": "minecraft:block_state_property",
+      "block": "criticalmass:reactor_controller"
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/root"
+}

@@ -1,0 +1,32 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:spent_fuel_assembly"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.spent"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.spent.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "minecraft:inventory_changed",
+   "conditions": {
+    "items": [
+     {
+      "items": [
+       "criticalmass:spent_fuel_assembly"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "parent": "criticalmass:main/critical"
+}

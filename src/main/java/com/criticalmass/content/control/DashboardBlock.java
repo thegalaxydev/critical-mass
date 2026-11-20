@@ -432,6 +432,9 @@ public class DashboardBlock extends HorizontalDirectionalBlock implements IBE<Da
         }
         part.configure(stack);
         be.install(slot, part);
+        if (player instanceof ServerPlayer fitter) {
+            com.criticalmass.registry.CMTriggers.grant(fitter, "part_fitted");
+        }
         SoundType sound = level.getBlockState(pos).getSoundType();
         level.playSound(null, pos, sound.getPlaceSound(), SoundSource.BLOCKS, (sound.getVolume() + 1) / 2, sound.getPitch() * 0.8f);
         if (type == DashPart.Type.GAUGE && player instanceof ServerPlayer opener) {

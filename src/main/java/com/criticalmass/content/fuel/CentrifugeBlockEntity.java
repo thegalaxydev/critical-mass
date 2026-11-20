@@ -189,6 +189,9 @@ public class CentrifugeBlockEntity extends KineticBlockEntity {
             progress += (int) speed;
             if (progress >= WORK) {
                 progress = 0;
+                if (stages >= 3) {
+                    com.criticalmass.registry.CMTriggers.near(level, worldPosition, 16, "cascade");
+                }
                 items.extractItem(INPUT, BATCH, false);
                 enrichedCarry += enrichedPerBatch();
                 depletedCarry += BATCH - enrichedPerBatch();

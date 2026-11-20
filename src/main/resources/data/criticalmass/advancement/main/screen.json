@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:plant_screen"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.screen"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.screen.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "screen_linked"
+   }
+  }
+ },
+ "parent": "criticalmass:main/desk"
+}
