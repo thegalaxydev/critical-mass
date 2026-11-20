@@ -214,6 +214,17 @@ public final class CoolantCircuit {
         return pipe != null ? pipe : TankCoolant.at(level, pos);
     }
 
+    public List<CoolantBuffer> buffers(Level level) {
+        List<CoolantBuffer> out = new ArrayList<>(passThrough.size());
+        for (Hop h : passThrough) {
+            ThermalNode n = node(level, h.pos());
+            if (n != null) {
+                out.add(n.bufferFor(h.enteredFrom()));
+            }
+        }
+        return out;
+    }
+
     public double intakeSteam(Level level) {
         if (!ok()) {
             return 0;

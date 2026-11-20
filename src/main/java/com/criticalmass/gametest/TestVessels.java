@@ -78,7 +78,7 @@ final class TestVessels {
             c.core().setColumnHeat(f.dx(), f.dz(), (coolant - CMThermal.AMBIENT) * CMThermal.FUEL_HEAT_CAPACITY * 3);
         }
         double defect = (CMThermal.FUEL_COEFFICIENT + CMThermal.MODERATOR_COEFFICIENT) * (coolant - CMThermal.AMBIENT) + CMThermal.XENON_WORTH * xenon;
-        c.setBoron((c.core().excessReactivity() - 0.001 - defect) / CMThermal.BORON_WORTH);
+        c.holdBoron((c.core().excessReactivity() - 0.001 - defect) / CMThermal.BORON_WORTH);
         c.setManualInsertion(0);
         c.core().setKinetics(power, xenon, power);
     }
@@ -131,7 +131,7 @@ final class TestVessels {
             }
         }
         if (h.getBlockEntity(CONTROLLER) instanceof ReactorControllerBlockEntity c) {
-            c.setBoron(CRITICAL_BORON + 50);
+            c.holdBoron(CRITICAL_BORON + 50);
         }
     }
 

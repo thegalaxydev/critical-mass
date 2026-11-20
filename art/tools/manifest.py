@@ -40,7 +40,7 @@ ART = {
     "protective_hood": GENERATED, "protective_suit": GENERATED, "protective_leggings": GENERATED, "protective_boots": GENERATED,
     "enriched_uranium": SCRIPT, "depleted_uranium": SCRIPT, "plant_linker": SCRIPT, "power_wire": SCRIPT, "power_cable": SCRIPT, "transmission_line": SCRIPT,
     "dashboard_alarm": UNRECORDED, "dashboard_button": LOCONAUTICS, "dashboard_switch": LOCONAUTICS, "dashboard_lever": LOCONAUTICS, "dashboard_gauge": LOCONAUTICS,
-    "primary_coolant": GENERATED, "contaminated_coolant": GENERATED, "steam": GENERATED, "fuel_oil": SCRIPT,
+    "primary_coolant": GENERATED, "contaminated_coolant": GENERATED, "steam": GENERATED, "fuel_oil": SCRIPT, "boric_acid": SCRIPT, "borax": SCRIPT,
 }
 OTHER_ART = [("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT), ("gui/banner/", SCRIPT),
              ("gui/advancement_background", "script, cut from the author's casing sheet")]

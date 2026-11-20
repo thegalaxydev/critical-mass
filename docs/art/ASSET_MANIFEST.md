@@ -71,10 +71,11 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
 | `criticalmass:wreckage` | Wreckage | none of its own | `block/burnt_equipment.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/steel_block.png` 16x16 |  | 2 |
 
-## Items (41)
+## Items (42)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
+| `criticalmass:borax` | Borax | script | `item/borax.png` 16x16 |  | 1 |
 | `criticalmass:ceramic_fuel_pellet` | Ceramic Fuel Pellet | author | `item/ceramic_fuel_pellet.png` 16x16 |  | 1 |
 | `criticalmass:control_rod` | Control Rod | author | `item/control_rod.png` 16x16 |  | 1 |
 | `criticalmass:damaged_fuel_assembly` | Damaged Fuel Assembly | generated | `item/damaged_fuel_assembly.png` 16x16 |  | 1 |
@@ -117,10 +118,11 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:uranium_concentrate` | Uranium Concentrate | generated | `item/uranium_concentrate.png` 16x16 |  | 1 |
 | `criticalmass:welding_torch` | Welding Torch | author | `item/welding_torch.png` 16x16 |  | 1 |
 
-## Fluids (4)
+## Fluids (5)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
+| `criticalmass:boric_acid` | Boric Acid | script | `fluid/boric_acid_flow.png` 32x512<br>`fluid/boric_acid_still.png` 16x256 |  | 0 |
 | `criticalmass:contaminated_coolant` | Contaminated Coolant | generated | `fluid/contaminated_coolant_flow.png` 32x512<br>`fluid/contaminated_coolant_still.png` 16x256 |  | 0 |
 | `criticalmass:fuel_oil` | Fuel Oil | script | `fluid/fuel_oil_flow.png` 32x512<br>`fluid/fuel_oil_still.png` 16x256 |  | 0 |
 | `criticalmass:primary_coolant` | Primary Coolant | generated | `fluid/primary_coolant_flow.png` 32x512<br>`fluid/primary_coolant_still.png` 16x256 |  | 0 |

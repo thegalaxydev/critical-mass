@@ -111,6 +111,8 @@ public final class CMThermal {
     public static final double MIN_FISSION_HEAT = 1.0e-3;
     public static final double ROD_SHADOW = 0.5;
     public static final double BORON_WORTH = 7.0e-5;
+    public static final double BORIC_ACID_PPM = 7000.0;
+    public static final double BORATED_MILESTONE_PPM = 100.0;
     public static final double FUEL_COEFFICIENT = 2.0e-5;
     public static final double MODERATOR_COEFFICIENT = 1.0e-4;
     public static final double XENON_WORTH = 0.025;
@@ -193,6 +195,10 @@ public final class CMThermal {
 
     public static boolean isContaminated(FluidStack stack) {
         return stack.is(CMFluids.CONTAMINATED_COOLANT.source.get());
+    }
+
+    public static boolean isBoricAcid(FluidStack stack) {
+        return stack.is(CMFluids.BORIC_ACID.source.get());
     }
 
     public static boolean isPrimaryMedium(FluidStack stack) {

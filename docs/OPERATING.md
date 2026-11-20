@@ -84,6 +84,8 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **Holding power:** a steady core sits at zero reactivity. Xenon builds over the first half hour at power and costs up to 2,500 pcm, so power sags unless you keep feeding the rods out. Fuel burn-up does the same more slowly.
 - **More power:** withdraw rods, or draw more steam. Drawing steam cools the coolant, and cooler coolant raises reactor power by itself.
 - **Less power:** insert rods. After a power cut xenon rises for several minutes before it falls, so expect to pull rods again later.
+- **Boron:** it does slowly what the rods do quickly. Pump Boric Acid in through a spare inlet port to take reactivity away, 7 pcm for each ppm, and pump clean Primary Coolant in to give it back. A fresh core with its rods out needs about 1,200 ppm to sit at critical cold, and less as it heats, as xenon builds and as the fuel burns. Borate to hold a fresh core with the rods nearly out, and dilute a little at a time as xenon builds and the fuel burns down. A full vessel takes nothing, so let coolant down first.
+- **Never dilute blind:** clean coolant into a critical core is a rod withdrawal you cannot take back quickly. Dilute in small amounts and read the reactivity after each one.
 - **Cold water is reactivity:** anything that cools the primary coolant quickly, such as starting a big steam demand, adds reactivity fast. Do it in steps.
 - **Hotter and more efficient:** raise the Pressurizer setpoint, then let the coolant temperature rise. Never let coolant pass its boiling point; the boiling alarm lamp means you are losing coolant.
 - **Load changes:** change the shaft load in steps. Losing the whole load at once trips the turbine on overspeed; losing half of it does not.
@@ -97,6 +99,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 3. **Keep the pumps and tower running.** Decay heat starts at 7% of the power you were making and halves every minute. Stop cooling too soon and the fuel heats up with the rods fully in.
 4. When the controller reads Cold, the pumps can stop.
 5. If you plan to restart, do it within a couple of minutes or wait out the xenon peak.
+6. For a long shutdown, borate. A core that boron holds below critical with its rods out stays shut down whatever the rods and the xenon do.
 
 ## Faults and recovery
 

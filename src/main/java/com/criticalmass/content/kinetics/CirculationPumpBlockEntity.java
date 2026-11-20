@@ -115,6 +115,11 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         return out;
     }
 
+    @org.jetbrains.annotations.Nullable
+    public CoolantCircuit circuit() {
+        return circuit;
+    }
+
     public void invalidateCircuit() {
         retraceIn = 0;
     }

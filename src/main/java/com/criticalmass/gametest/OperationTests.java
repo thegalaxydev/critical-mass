@@ -214,7 +214,7 @@ public final class OperationTests {
         ControlRodDriveBlockEntity a = drive(h, DRIVE_A, 64);
         ControlRodDriveBlockEntity d = drive(h, DRIVE_B, 64);
         d.setBank(CMThermal.REGULATING_BANK);
-        c.setBoron(5000);
+        c.holdBoron(5000);
         c.setBankTarget(0, 0.0);
         c.setBankTarget(CMThermal.REGULATING_BANK, 0.5);
         h.startSequence()
@@ -224,7 +224,7 @@ public final class OperationTests {
                     TestVessels.atPower(c, 0.2);
                     double xenon = (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT) * 0.2 / (CMThermal.XENON_DECAY + CMThermal.XENON_BURNOUT * 0.2);
                     double defect = (CMThermal.FUEL_COEFFICIENT + CMThermal.MODERATOR_COEFFICIENT) * (c.coolant().temperature() - CMThermal.AMBIENT) + CMThermal.XENON_WORTH * xenon;
-                    c.setBoron((c.core().excessReactivity() - CMThermal.ROD_WORTH * 3 / 5 / 2 - defect) / CMThermal.BORON_WORTH);
+                    c.holdBoron((c.core().excessReactivity() - CMThermal.ROD_WORTH * 3 / 5 / 2 - defect) / CMThermal.BORON_WORTH);
                     c.setRegulator(30);
                 })
                 .thenIdle(700)

@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 public enum TabSection {
     REACTOR("reactor", 0xFFFFE9B0, 24, 2,
             "reactor_vessel_casing", "reactor_controller", "reactor_viewport", "fuel_channel", "control_channel", "coolant_channel", "control_rod_drive", "control_rod",
-            "reactor_service_port", "primary_coolant_port", "reinforced_pipe", "reinforced_valve", "circulation_pump", "heat_exchanger", "pressurizer", "steam_turbine", "turbine_blade",
+            "reactor_service_port", "primary_coolant_port", "reinforced_pipe", "reinforced_valve", "circulation_pump", "heat_exchanger", "pressurizer", "borax", "steam_turbine", "turbine_blade",
             "condenser", "relief_valve", "cooling_tower_packing", "radiator_panel", "boiler_heating_plate", "shielding_concrete", "shielded_glass", "shielded_hatch"),
     EQUIPMENT("equipment", 0xFFFFDFA6, 24, 2,
             "uranium_ore", "deepslate_uranium_ore", "raw_uranium", "uranium_concentrate", "centrifuge", "enriched_uranium", "depleted_uranium", "ceramic_fuel_pellet", "fuel_cladding",

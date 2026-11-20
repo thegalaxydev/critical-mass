@@ -7,6 +7,7 @@ import com.criticalmass.client.VesselHighlighter;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.radiation.ContaminationData;
+import com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.simibubi.create.api.equipment.goggles.IHaveGoggleInformation;
 import com.simibubi.create.foundation.blockEntity.SmartBlockEntity;
@@ -43,6 +44,7 @@ import net.minecraft.world.level.block.Block;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMConfig;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -63,7 +65,8 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     private boolean startingUp;
     private int noFlowTicks;
     private double manualInsertion = 1.0;
-    private double boron;
+    private double heldBoron;
+    private boolean borated;
     private double clientNeutron;
     private double clientReactivity;
     private double clientStartupRate;
@@ -346,7 +349,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     }
 
     public double boron() {
-        return boron;
+        return heldBoron + coolant.boronPpm();
     }
 
     public void setManualInsertion(double value) {
@@ -355,7 +358,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
 
     public double setSteadyPower(double power) {
         revalidate();
-        double insertion = core.steadyInsertion(power, Math.max(effectiveFlow, lastTickFlow), coolant, boron);
+        double insertion = core.steadyInsertion(power, Math.max(effectiveFlow, lastTickFlow), coolant, boron());
         manualInsertion = insertion;
         for (int i = 0; i < bankTargets.length; i++) {
             bankTargets[i] = insertion;
@@ -369,8 +372,28 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return insertion;
     }
 
+    public void holdBoron(double ppm) {
+        heldBoron = Math.max(0, ppm);
+        syncPending = true;
+        setChanged();
+    }
+
     public void setBoron(double ppm) {
-        boron = Math.max(0, ppm);
+        heldBoron = 0;
+        coolant.setBoronPpm(ppm);
+        if (level != null) {
+            for (BlockEntity be : LoadedThermalBlocks.snapshot()) {
+                if (!(be instanceof CirculationPumpBlockEntity pump) || be.getLevel() != level) {
+                    continue;
+                }
+                CoolantCircuit circuit = pump.circuit();
+                if (circuit != null && circuit.ok() && (worldPosition.equals(circuit.source) || worldPosition.equals(circuit.dest))) {
+                    for (CoolantBuffer b : circuit.buffers(level)) {
+                        b.setBoronPpm(ppm);
+                    }
+                }
+            }
+        }
         syncPending = true;
         setChanged();
     }
@@ -617,6 +640,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
                 double excess = over * coolant.amount() * CMThermal.HEAT_CAPACITY;
                 int mb = (int) Math.min(coolant.amount(), Math.max(1, Math.ceil(excess * CMThermal.FLASH_SHARE / CMThermal.LATENT_HEAT)));
                 CoolantBuffer.Packet steam = coolant.take(mb);
+                coolant.addBoron(steam.boron());
                 sinks.vent(steam);
                 sinks.ventedHeat += coolant.removeHeat(Math.min(excess * CMThermal.FLASH_SHARE, mb * CMThermal.LATENT_HEAT));
                 flashedVolume += mb;
@@ -1020,7 +1044,12 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         heatAdded += core.tick(k -> {
             ControlRodDriveBlockEntity d = drives.get(k);
             return d != null ? d.insertion() : fallback;
-        }, effectiveFlow, coolant, boron);
+        }, effectiveFlow, coolant, boron());
+        boolean nowBorated = coolant.boronPpm() >= CMThermal.BORATED_MILESTONE_PPM;
+        if (nowBorated && !borated) {
+            com.criticalmass.registry.CMTriggers.near(level, worldPosition, MILESTONE_REACH, "borated");
+        }
+        borated = nowBorated;
         if (failures > 0) {
             coolant.contaminate();
         }
@@ -1266,7 +1295,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         tag.putDouble("MaxTemp", core.maxTemperature());
         tag.putInt("HotSpots", core.hotSpots());
         tag.putDouble("Manual", manualInsertion);
-        tag.putDouble("Boron", boron);
+        tag.putDouble("Boron", heldBoron);
         tag.putDouble("NeutronPower", core.neutronPower());
         tag.putDouble("Reactivity", core.reactivity());
         tag.putDouble("StartupRate", core.startupRate());
@@ -1285,7 +1314,7 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         flashing = tag.getBoolean("Flashing");
         startBlock = tag.getString("StartBlock");
         manualInsertion = tag.contains("Manual") ? tag.getDouble("Manual") : 1.0;
-        boron = tag.getDouble("Boron");
+        heldBoron = tag.getDouble("Boron");
         coriumFloor = tag.contains("CoriumFloor") ? tag.getInt("CoriumFloor") : Integer.MIN_VALUE;
         flashedVolume = tag.getDouble("Flashed");
         for (int i = 0; i < bankTargets.length; i++) {

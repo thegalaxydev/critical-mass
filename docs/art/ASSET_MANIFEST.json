@@ -2068,6 +2068,28 @@
    "item": true
   },
   {
+   "key": "borax",
+   "registry_id": "criticalmass:borax",
+   "type": "item",
+   "name": "Borax",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/borax.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/borax.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "ceramic_fuel_pellet",
    "registry_id": "criticalmass:ceramic_fuel_pellet",
    "type": "item",
@@ -3074,6 +3096,34 @@
    "models": [
     "src/main/resources/assets/criticalmass/models/item/welding_torch.json"
    ],
+   "missing": []
+  },
+  {
+   "key": "boric_acid",
+   "registry_id": "criticalmass:boric_acid",
+   "type": "fluid",
+   "name": "Boric Acid",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/boric_acid_flow.png",
+     "size": [
+      32,
+      512
+     ],
+     "animated": true
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/fluid/boric_acid_still.png",
+     "size": [
+      16,
+      256
+     ],
+     "animated": true
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [],
    "missing": []
   },
   {

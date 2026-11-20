@@ -36,6 +36,7 @@ public final class CMItems {
 
     public static final DeferredItem<Item> RAW_URANIUM = simple("raw_uranium", new Item.Properties());
     public static final DeferredItem<Item> URANIUM_CONCENTRATE = simple("uranium_concentrate", new Item.Properties());
+    public static final DeferredItem<Item> BORAX = simple("borax", new Item.Properties());
     public static final DeferredItem<Item> ENRICHED_URANIUM = simple("enriched_uranium", new Item.Properties());
     public static final DeferredItem<Item> DEPLETED_URANIUM = simple("depleted_uranium", new Item.Properties());
     public static final DeferredItem<Item> CERAMIC_FUEL_PELLET = simple("ceramic_fuel_pellet", new Item.Properties());

@@ -33,7 +33,7 @@ IntelliJ IDEA: open the folder as a Gradle project. Run configurations are gener
   - **Plant Electrics:** wires, the Circuit Breaker, the Generator, the Transfer Switch and the Transformer.
   - **Reactor Accidents:** the Dashboard Switch as a bypass, Corium, the Survey Meter and Fallout Ash, the Water Cannon, and cleaning up after an explosion (Core Debris, Wreckage, Decontamination Compound and the all clear).
   - `src/inspect/scenes/make_ponder.py build` writes the scene that builds their schematics into `assets/criticalmass/ponder/`, or only the ones named after it, as in `build rods,steam`. `make_ponder.py view` writes the scene that screenshots them, and `make_ponder.py lang <dump>` puts the scene text into `en_us.json`. The scripts are in `ponder/PlantScenes.java`, `ponder/FuelScenes.java`, `ponder/ControlScenes.java` and `ponder/RecoveryScenes.java`.
-- Advancements: thirty, in one tree under a Critical Mass tab, which opens when you first dig up uranium.
+- Advancements: thirty-one, in one tree under a Critical Mass tab, which opens when you first dig up uranium.
   - **Fuel:** Uranium Concentrate, enrichment, a cascade of three Centrifuges, pellets and a finished Fuel Assembly.
   - **Reactor:** setting a Reactor Controller, first criticality, 90% power, a turbine turning, a Generator on the grid and a power order met.
   - **After the reactor:** taking spent fuel out, bolting it into a cask, reprocessing it and sealing waste.
@@ -72,7 +72,16 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Xenon:** fission makes iodine, which decays into xenon, which absorbs neutrons. At steady full power xenon costs 2,500 pcm. After a shutdown the iodine keeps decaying, so xenon climbs to about one and a half times that around 8 minutes later, then fades over the next hour. A core without enough spare reactivity cannot restart until it has.
 - **Decay heat:** fission products give 7% of the power the fuel was making, halving every minute after shutdown.
 - **Readings:** goggles show little, the way Create's own do: a block's state and one or two readings. On the controller that is its state, neutron power, fuel temperature and coolant. Reactivity, period, xenon and boron are on the Plant Screen and dashboard gauges, and are Display Link sources, with a neutronics summary for a Display Board.
-- **Boron:** the reactivity term is modelled, but nothing in the world adds or removes boron yet. Operators with permission can set it with `/criticalmass boron <controller> <ppm>`.
+- **Boron:** boron dissolved in the primary coolant holds reactivity down, 7 pcm for each ppm, evenly through the core. It is the slow control. Let it carry the fuel's spare reactivity so the rods can run nearly out, and change it over minutes, not seconds.
+  - **Borax and Boric Acid:** crush Scoria for Borax, which comes one time in four. Mix 1 Borax with 1,000 mB of water in a heated basin into 1,000 mB of Boric Acid, which holds 7,000 ppm.
+  - **Borating:** pump Boric Acid into the vessel with Create parts: a Fluid Tank of acid, a Mechanical Pump and a spare inlet port, the way emergency cooling is built. The acid joins the coolant and its boron goes with it. 1,000 mB of acid into 7,000 mB of coolant leaves 1,000 ppm.
+  - **Diluting:** pump clean Primary Coolant in the same way and the figure falls.
+  - **Letdown:** a full vessel takes nothing more, so draw coolant off first with a pump on a port. What is drawn off takes its share of the boron and leaves the concentration as it was. A Fluid Tank keeps no boron figure, so coolant let down into one goes back in as clean coolant.
+  - **It travels with the coolant:** boron is carried the way heat is. The Circulation Pump takes it round the loop, a leak takes it out with what it spills, and coolant that boils off leaves its boron behind, so the figure rises as the level falls. Topping up a leaking plant with clean coolant dilutes it. Boric Acid goes into Primary Coolant only, never into plain water.
+  - **Where to read it:** the Plant Screen's reactor display, a Dashboard Gauge bound to the controller and a Display Link all give boron in ppm.
+  - **Mistakes cost:** diluting a critical reactor adds reactivity as surely as pulling rods does, and a core held down mostly by boron is not shut down by its rods alone. Boron is worth only what the water is, so the term fades as the vessel empties.
+  - **Emergency boration:** fill the emergency cooling tank with Boric Acid instead of Primary Coolant and it borates the core as it cools it. Plain emergency coolant dilutes.
+  - **Command:** operators with permission can set the vessel and its loop to a figure with `/criticalmass boron <controller> <ppm>`.
 - **Jump to power:** `/criticalmass steady <controller> <fraction> [coolant °C]` puts a reactor at that power with matching fuel temperatures and xenon, optionally sets the coolant temperature, and sets the rods to the position that holds it.
 - If the vessel breaks while running, the reactor trips. It stays tripped until it is reset with the rods commanded in.
 

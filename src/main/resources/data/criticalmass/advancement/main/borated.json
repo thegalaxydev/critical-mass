@@ -1,0 +1,26 @@
+{
+ "display": {
+  "icon": {
+   "id": "criticalmass:borax"
+  },
+  "title": {
+   "translate": "criticalmass.advancement.main.borated"
+  },
+  "description": {
+   "translate": "criticalmass.advancement.main.borated.description"
+  },
+  "frame": "task",
+  "show_toast": true,
+  "announce_to_chat": true,
+  "hidden": false
+ },
+ "criteria": {
+  "done": {
+   "trigger": "criticalmass:milestone",
+   "conditions": {
+    "milestone": "borated"
+   }
+  }
+ },
+ "parent": "criticalmass:main/critical"
+}
