@@ -13,7 +13,7 @@
   "show_toast": true,
   "announce_to_chat": true,
   "hidden": false,
-  "background": "criticalmass:textures/block/steel_block.png"
+  "background": "criticalmass:textures/gui/advancement_background.png"
  },
  "criteria": {
   "done": {
