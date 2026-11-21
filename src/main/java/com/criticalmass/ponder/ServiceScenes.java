@@ -354,4 +354,98 @@ public final class ServiceScenes {
         say(scene, 100, util.vector().topOf(cell), "Crushing Wheels turn Chartrine into Crushed Raw Uranium 12 times in 100");
         scene.markAsFinished();
     }
+
+    public static void pumpSeals(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("pump_seals", "Pump seals and their leaks");
+        scene.configureBasePlate(0, 0, 7);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos pump = util.grid().at(3, 2, 3);
+        BlockPos monitor = util.grid().at(3, 2, 4);
+        Selection drive = util.select().fromTo(3, 1, 3, 3, 2, 3);
+        Selection run = util.select().fromTo(1, 2, 3, 5, 2, 3);
+        Selection wall = util.select().fromTo(2, 1, 5, 4, 3, 5).add(util.select().position(monitor));
+        scene.world().setKineticSpeed(util.select().everywhere(), 0);
+        rate(scene, util.select().position(monitor), monitor, 0.02, false);
+        scene.world().showSection(run.add(drive), Direction.DOWN);
+        scene.idle(20);
+        scene.world().setKineticSpeed(drive, 64);
+        scene.effects().rotationSpeedIndicator(pump);
+        chapter(scene, 120, util.vector().topOf(pump), "A Circulation Pump's seals wear while it moves coolant. They are worn out in 10 hours of running, and ten times as fast while the pump cavitates");
+        scene.overlay().showOutline(PonderPalette.RED, "leak", util.select().position(pump), 110);
+        warn(scene, 110, util.vector().blockSurface(pump, Direction.NORTH), "From three quarters worn they leak coolant out beside the pump, up to 1 mB a tick, whether or not it is turning");
+        scene.world().showSection(wall, Direction.NORTH);
+        scene.idle(20);
+        rate(scene, util.select().position(monitor), monitor, 3.4, true);
+        chapter(scene, 120, util.vector().blockSurface(monitor, Direction.NORTH), "Water is only lost. Primary coolant also contaminates the floor at the pump, so an Area Radiation Monitor in the pump room catches the leak");
+        say(scene, 100, util.vector().topOf(pump), "Goggles show the seals' condition and the leak. A Dashboard Alarm lamp bound to the pump lights while it leaks");
+        scene.world().setKineticSpeed(drive, 0);
+        scene.idle(15);
+        scene.overlay().showControls(util.vector().topOf(pump), Pointing.DOWN, 50).rightClick().withItem(new ItemStack(CMItems.SEALING_GASKET.get()));
+        chapter(scene, 120, util.vector().topOf(pump), "Stop the pump and use a Sealing Gasket on it. Each one takes a quarter off the wear. A pump that is turning hurts the hand and takes no gasket");
+        say(scene, 100, util.vector().blockSurface(monitor, Direction.NORTH), "The floor stays contaminated until it is cleaned with Decontamination Compound");
+        rate(scene, util.select().position(monitor), monitor, 0.02, false);
+        say(scene, 80, util.vector().topOf(pump), "A pump keeps its wear when it is broken and placed again");
+        scene.markAsFinished();
+    }
+
+    public static void throughWall(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("through_wall", "Taking a pipe through a containment wall");
+        scene.configureBasePlate(0, 0, 7);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos hole = util.grid().at(3, 2, 3);
+        Selection wall = util.select().fromTo(3, 1, 1, 3, 3, 5).substract(util.select().position(hole));
+        Selection run = util.select().fromTo(1, 2, 3, 5, 2, 3);
+        Selection side = util.select().fromTo(4, 2, 2, 4, 2, 2);
+        scene.world().showSection(wall, Direction.DOWN);
+        scene.idle(15);
+        scene.world().showSection(run, Direction.DOWN);
+        scene.idle(20);
+        warn(scene, 110, util.vector().blockSurface(hole, Direction.WEST), "A pipe through a containment wall is a hole in it. Radiation gets out there, and so does the blast");
+        scene.world().showSection(side, Direction.SOUTH);
+        scene.idle(15);
+        scene.overlay().showControls(util.vector().topOf(util.grid().at(4, 2, 3)), Pointing.DOWN, 40).rightClick().withItem(AllItems.WRENCH.asStack());
+        scene.idle(15);
+        scene.world().setBlock(util.grid().at(4, 2, 3), CMBlocks.REINFORCED_STRAIGHT_PIPE.get().defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), false);
+        chapter(scene, 120, util.vector().topOf(util.grid().at(4, 2, 3)), "Use a Wrench on the side of a Reinforced Pipe to lock it straight. A locked pipe joins nothing beside its run");
+        scene.overlay().showControls(util.vector().topOf(hole), Pointing.DOWN, 40).rightClick().withItem(new ItemStack(CMBlocks.SHIELDING_CONCRETE.get()));
+        scene.idle(15);
+        scene.world().setBlock(hole, CMBlocks.ENCASED_REINFORCED_PIPE.get().defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.X), true);
+        chapter(scene, 120, util.vector().topOf(hole), "Use Shielding Concrete on a straight or locked Reinforced Pipe to encase it. It becomes a full block with the pipe running through it");
+        say(scene, 120, util.vector().blockSurface(hole, Direction.WEST), "It shields like Shielding Concrete, stops corium and stands through a nuclear explosion, and coolant still passes along its one way");
+        say(scene, 100, util.vector().topOf(hole), "A Wrench takes the casing off again, leaves a locked pipe and gives the concrete back. A bend or a tee cannot be encased");
+        scene.markAsFinished();
+    }
+
+    public static void holdingTank(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("holding_tank", "Holding coolant in a Fluid Tank");
+        scene.configureBasePlate(0, 0, 7);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos tank = util.grid().at(3, 2, 3);
+        BlockPos desk = util.grid().at(3, 1, 1);
+        Selection stand = util.select().fromTo(3, 1, 3, 3, 2, 3);
+        Selection in = util.select().fromTo(1, 2, 3, 2, 3, 3);
+        Selection out = util.select().fromTo(4, 2, 3, 5, 3, 3);
+        scene.world().setKineticSpeed(util.select().everywhere(), 0);
+        scene.world().showSection(stand, Direction.DOWN);
+        scene.idle(20);
+        chapter(scene, 120, util.vector().blockSurface(tank, Direction.NORTH), "A Create Fluid Tank keeps the figures of the coolant or Boric Acid in it: its heat, its boron and its contamination");
+        scene.world().showSection(in, Direction.EAST);
+        scene.world().showSection(out, Direction.WEST);
+        scene.idle(20);
+        scene.world().setKineticSpeed(in.add(out), 32);
+        say(scene, 120, util.vector().topOf(tank), "The figures go with the coolant through any pipe or pump, between tanks and the plant's machines, so a holding tank and a borated make-up tank work");
+        say(scene, 110, util.vector().blockSurface(tank, Direction.NORTH), "Mixing shares them out. Coolant at one part contaminated in a hundred or less is Primary Coolant again");
+        scene.world().showSection(util.select().position(desk), Direction.DOWN);
+        scene.idle(15);
+        scene.overlay().showControls(util.vector().blockSurface(tank, Direction.NORTH), Pointing.RIGHT, 40).rightClick().withItem(new ItemStack(CMItems.PLANT_LINKER.get()));
+        chapter(scene, 120, util.vector().topOf(desk), "Use the Plant Linker on a tank to remember it for a Dashboard Gauge, a Plant Screen wall or a Display Link. They read its temperature, level, boron and contamination");
+        warn(scene, 140, util.vector().topOf(tank), "A bucket, a Basin and an Item Drain keep no figures. Coolant from them comes cold and without boron, and Contaminated Coolant from them counts as wholly contaminated, with nothing on the reactor's record");
+        scene.markAsFinished();
+    }
 }

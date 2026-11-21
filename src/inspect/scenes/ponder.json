@@ -14,7 +14,7 @@
    "wait": 5
   },
   {
-   "ponder": "criticalmass:chartrine",
+   "ponder": "criticalmass:sealing_gasket",
    "wait": 40
   },
   {
@@ -22,7 +22,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_0",
+   "shot": "pump_seals_0",
    "wait": 2
   },
   {
@@ -30,7 +30,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_1",
+   "shot": "pump_seals_1",
    "wait": 2
   },
   {
@@ -38,7 +38,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_2",
+   "shot": "pump_seals_2",
    "wait": 2
   },
   {
@@ -46,7 +46,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_3",
+   "shot": "pump_seals_3",
    "wait": 2
   },
   {
@@ -54,7 +54,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_4",
+   "shot": "pump_seals_4",
    "wait": 2
   },
   {
@@ -62,7 +62,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_5",
+   "shot": "pump_seals_5",
    "wait": 2
   },
   {
@@ -70,7 +70,7 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_6",
+   "shot": "pump_seals_6",
    "wait": 2
   },
   {
@@ -78,7 +78,151 @@
    "wait": 30
   },
   {
-   "shot": "chartrine_7",
+   "shot": "pump_seals_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:shielding_concrete",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "through_wall_7",
+   "wait": 2
+  },
+  {
+   "closeScreen": true,
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:boric_acid_bucket",
+   "wait": 40
+  },
+  {
+   "ponderSeek": 60,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_0",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 250,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_1",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 500,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_2",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 750,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_3",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1000,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_4",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1250,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_5",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1500,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_6",
+   "wait": 2
+  },
+  {
+   "ponderSeek": 1750,
+   "wait": 30
+  },
+  {
+   "shot": "holding_tank_7",
    "wait": 2
   },
   {
