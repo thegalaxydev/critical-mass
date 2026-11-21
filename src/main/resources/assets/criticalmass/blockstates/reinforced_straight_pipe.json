@@ -13,6 +13,14 @@
     "axis": "x"
    },
    "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_z"
+   }
+  },
+  {
+   "when": {
+    "axis": "x"
+   },
+   "apply": {
     "model": "criticalmass:block/reinforced_pipe/connection/east"
    }
   },
@@ -37,6 +45,14 @@
     "axis": "y"
    },
    "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_z"
+   }
+  },
+  {
+   "when": {
+    "axis": "y"
+   },
+   "apply": {
     "model": "criticalmass:block/reinforced_pipe/connection/up"
    }
   },
@@ -54,6 +70,14 @@
    },
    "apply": {
     "model": "criticalmass:block/reinforced_pipe/lr_x"
+   }
+  },
+  {
+   "when": {
+    "axis": "z"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_y"
    }
   },
   {
