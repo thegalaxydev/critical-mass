@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "criticalmass:contaminated_coolant_bucket"
+    },
+    "title": {
+      "translate": "criticalmass.advancement.main.grown"
+    },
+    "description": {
+      "translate": "criticalmass.advancement.main.grown.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "criticalmass:milestone",
+      "conditions": {
+        "milestone": "chartrine_grown"
+      }
+    }
+  },
+  "parent": "criticalmass:main/core_damage"
+}

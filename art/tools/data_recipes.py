@@ -252,8 +252,25 @@ def storage_blocks():
         write(os.path.join(ASSETS, "models", "item", n + ".json"), {"parent": "minecraft:item/generated", "textures": {"layer0": M + "item/" + n}})
 
 
+def unknown(target):
+    found = []
+    for folder, _, files in os.walk(target):
+        for name in files:
+            key = os.path.relpath(os.path.join(folder, name), target).replace(os.sep, "/")[:-len(".json")]
+            if name.endswith(".json") and key not in RECIPES:
+                found.append(key)
+    return sorted(found)
+
+
 def main():
+    import sys
     target = os.path.join(DATA, "criticalmass", "recipe")
+    extra = unknown(target) if os.path.isdir(target) else []
+    if extra and "wipe" not in sys.argv:
+        print("left alone: the recipe folder holds %d recipes this tool does not know, written by hand since. Running it would delete them." % len(extra))
+        print("the first of them:", ", ".join(extra[:8]))
+        print("pass wipe only if losing them is meant")
+        return
     if os.path.isdir(target):
         shutil.rmtree(target)
     for path, r in RECIPES.items():

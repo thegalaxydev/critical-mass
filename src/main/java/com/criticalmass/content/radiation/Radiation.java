@@ -130,6 +130,9 @@ public final class Radiation {
         if (stack.is(CMItems.INCOMPLETE_WASTE_CANISTER.get())) {
             return stack.getCount() * (s == null ? CANISTER_DOSE : 2 * (SPENT_DOSE + RESIDUAL_DOSE * residual));
         }
+        if (stack.is(CMItems.CONTAMINATED_COOLANT_BUCKET.get())) {
+            return stack.getCount() * com.criticalmass.content.FluidBucketItem.AMOUNT * com.criticalmass.content.thermal.SteamActivity.DOSE;
+        }
         return stack.getCount() * packed(stack);
     }
 

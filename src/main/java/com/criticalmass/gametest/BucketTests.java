@@ -91,6 +91,16 @@ public final class BucketTests {
                         if (kind.fluid() == CMFluids.CONTAMINATED_COOLANT) {
                             double share = TankCoolant.at(h.getLevel(), h.absolutePos(TANK)).coolant().activityShare();
                             h.assertTrue(share > 0.999, "A bucket keeps no record of how contaminated its coolant is, so it should count as fully contaminated: " + share);
+                            com.criticalmass.content.control.PlantChannel.Reading activity = com.criticalmass.content.control.PlantChannel.ACTIVITY.read(h.getLevel(), h.absolutePos(TANK));
+                            com.criticalmass.content.control.PlantChannel.Reading record = com.criticalmass.content.control.PlantChannel.RECORD.read(h.getLevel(), h.absolutePos(TANK));
+                            h.assertTrue(activity != null && activity.value() > 99.9 && record != null && record.value() == 0, "A gauge should read the tank as contaminated with none of it on the reactor's record: " + activity + ", " + record);
+                            TankCoolant.at(h.getLevel(), h.absolutePos(TANK)).coolant().contaminate();
+                            record = com.criticalmass.content.control.PlantChannel.RECORD.read(h.getLevel(), h.absolutePos(TANK));
+                            h.assertTrue(record != null && record.value() > 99.9, "Coolant the reactor contaminated should read as on its record: " + record);
+                            double held1 = com.criticalmass.content.radiation.Radiation.itemStrength(new ItemStack(kind.bucket()));
+                            h.assertTrue(Math.abs(held1 - 1000 * com.criticalmass.content.thermal.SteamActivity.DOSE) < 1e-9, "A bucket of Contaminated Coolant should give the dose a tank of as much gives: " + held1);
+                        } else {
+                            h.assertTrue(com.criticalmass.content.radiation.Radiation.itemStrength(new ItemStack(kind.bucket())) == 0, "A bucket of " + name + " should give no dose");
                         }
                         h.assertTrue(com.simibubi.create.content.fluids.transfer.GenericItemFilling.getRequiredAmountForItem(h.getLevel(), new ItemStack(Items.BUCKET), full.copy()) == 1000
                                 && com.simibubi.create.content.fluids.transfer.GenericItemFilling.fillItem(h.getLevel(), 1000, new ItemStack(Items.BUCKET), full.copy()).is(kind.bucket()),

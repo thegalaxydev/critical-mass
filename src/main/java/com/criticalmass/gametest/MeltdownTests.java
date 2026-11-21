@@ -102,6 +102,7 @@ public final class MeltdownTests {
         BlockPos obsidian = centre.east(2);
         BlockPos glass = centre.above(1).north(2);
         BlockPos hatch = centre.south(2);
+        BlockPos sleeve = centre.south(2).west(2);
         BlockPos crying = new BlockPos(8, 4, 3);
         BlockPos basemat = centre.below();
         h.setBlock(obsidian, Blocks.OBSIDIAN);
@@ -109,7 +110,9 @@ public final class MeltdownTests {
         h.setBlock(hatch, CMBlocks.SHIELDED_HATCH.get());
         h.setBlock(crying, Blocks.CRYING_OBSIDIAN);
         h.setBlock(basemat, CMBlocks.SHIELDING_CONCRETE.get());
-        for (net.minecraft.world.level.block.Block b : java.util.List.of(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, CMBlocks.SHIELDING_CONCRETE.get(), CMBlocks.SHIELDED_GLASS.get(), CMBlocks.SHIELDED_HATCH.get())) {
+        h.setBlock(sleeve, CMBlocks.ENCASED_REINFORCED_PIPE.get());
+        for (net.minecraft.world.level.block.Block b : java.util.List.of(Blocks.OBSIDIAN, Blocks.CRYING_OBSIDIAN, CMBlocks.SHIELDING_CONCRETE.get(), CMBlocks.SHIELDED_GLASS.get(), CMBlocks.SHIELDED_HATCH.get(),
+                CMBlocks.ENCASED_REINFORCED_PIPE.get())) {
             h.assertTrue(b.defaultBlockState().is(Detonation.BLAST_PROOF), b + " should be tagged blast-proof");
         }
         h.assertTrue(!Blocks.STONE.defaultBlockState().is(Detonation.BLAST_PROOF) && !CMBlocks.REACTOR_VESSEL_CASING.get().defaultBlockState().is(Detonation.BLAST_PROOF), "Stone and vessel casing should not be blast-proof");
@@ -122,6 +125,7 @@ public final class MeltdownTests {
                     h.assertBlockPresent(CMBlocks.SHIELDED_HATCH.get(), hatch);
                     h.assertBlockPresent(Blocks.CRYING_OBSIDIAN, crying);
                     h.assertBlockPresent(CMBlocks.SHIELDING_CONCRETE.get(), basemat);
+                    h.assertBlockPresent(CMBlocks.ENCASED_REINFORCED_PIPE.get(), sleeve);
                     h.assertBlockPresent(Blocks.AIR, centre.above(1));
                     h.assertBlockPresent(CMBlocks.CORIUM.get(), centre.east(1));
                     h.assertBlockPresent(Blocks.STONE, centre.east(3));

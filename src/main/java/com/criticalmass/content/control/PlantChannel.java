@@ -49,7 +49,8 @@ public enum PlantChannel {
     CURRENT("current", "kA"),
     SETPOINT("setpoint", "%"),
     DOSE("dose", "mSv/min"),
-    ACTIVITY("activity", "%");
+    ACTIVITY("activity", "%"),
+    RECORD("record", "%");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -94,6 +95,7 @@ public enum PlantChannel {
             case PRESSURE -> of(b.pressure(), 0, CMThermal.RUPTURE_PRESSURE);
             case LEVEL -> of(100.0 * b.amount() / Math.max(1, b.capacity()), 0, 100);
             case ACTIVITY -> of(b.activityShare() * 100, 0, 100);
+            case RECORD -> of(b.provenShare() * 100, 0, 100);
             default -> null;
         };
     }
@@ -226,7 +228,7 @@ public enum PlantChannel {
             double ppm = com.criticalmass.content.thermal.TankFigure.carried(held.fluid()) ? held.boronPpm() : 0;
             return switch (this) {
                 case BORON -> of(ppm, 0, ppm > TANK_BORON_SCALE ? CMThermal.BORIC_ACID_PPM : TANK_BORON_SCALE);
-                case TEMPERATURE, LEVEL, ACTIVITY -> buffer(held);
+                case TEMPERATURE, LEVEL, ACTIVITY, RECORD -> buffer(held);
                 default -> null;
             };
         }

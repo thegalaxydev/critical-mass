@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "criticalmass:used_resin_cartridge"
+    },
+    "title": {
+      "translate": "criticalmass.advancement.main.cleanup"
+    },
+    "description": {
+      "translate": "criticalmass.advancement.main.cleanup.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "criticalmass:used_resin_cartridge"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "criticalmass:main/core_damage"
+}

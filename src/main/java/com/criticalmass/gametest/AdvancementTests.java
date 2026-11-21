@@ -13,8 +13,8 @@ import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 @PrefixGameTestTemplate(false)
 public final class AdvancementTests {
     private static final List<String> MAIN = List.of("root", "concentrate", "enriched", "cascade", "pellet", "assembly", "vessel", "critical", "full_power", "steam", "on_grid", "order_met",
-            "spent", "dry_storage", "reprocessed", "canister", "desk", "screen", "meter", "suit", "dose", "bypass", "core_damage", "explosion");
-    private static final List<String> RECOVERY = List.of("root", "corium", "wreckage", "scrub", "debris", "all_clear");
+            "spent", "dry_storage", "reprocessed", "canister", "desk", "screen", "meter", "suit", "dose", "bypass", "core_damage", "explosion", "chartrine", "grown", "monitor", "cleanup");
+    private static final List<String> RECOVERY = List.of("root", "corium", "wreckage", "scrub", "debris", "all_clear", "charred");
 
     private AdvancementTests() {
     }

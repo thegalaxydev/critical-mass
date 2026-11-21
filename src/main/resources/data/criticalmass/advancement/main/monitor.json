@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "criticalmass:area_radiation_monitor"
+    },
+    "title": {
+      "translate": "criticalmass.advancement.main.monitor"
+    },
+    "description": {
+      "translate": "criticalmass.advancement.main.monitor.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "criticalmass:area_radiation_monitor"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "criticalmass:main/meter"
+}

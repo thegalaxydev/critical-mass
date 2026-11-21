@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "criticalmass:chartrine"
+    },
+    "title": {
+      "translate": "criticalmass.advancement.main.chartrine"
+    },
+    "description": {
+      "translate": "criticalmass.advancement.main.chartrine.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "criticalmass:chartrine"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "criticalmass:main/root"
+}

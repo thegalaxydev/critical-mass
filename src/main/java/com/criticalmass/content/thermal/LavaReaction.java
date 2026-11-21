@@ -51,8 +51,12 @@ public final class LavaReaction {
         if (level.random.nextDouble() * CMThermal.CHARTRINE_COOLANT >= fluid.getAmount()) {
             return;
         }
-        level.setBlockAndUpdate(lava, stone(level.random, arrived.proven() / fluid.getAmount()));
+        BlockState made = stone(level.random, arrived.proven() / fluid.getAmount());
+        level.setBlockAndUpdate(lava, made);
         level.levelEvent(LevelEvent.LAVA_FIZZ, lava, 0);
+        if (made.is(CMBlocks.CHARTRINE.get())) {
+            com.criticalmass.registry.CMTriggers.near(level, lava, 16, "chartrine_grown");
+        }
     }
 
     @Nullable

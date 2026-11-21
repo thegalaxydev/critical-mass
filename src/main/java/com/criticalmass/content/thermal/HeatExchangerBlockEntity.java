@@ -356,8 +356,6 @@ public class HeatExchangerBlockEntity extends SmartBlockEntity implements Therma
         ThermalTooltips.title(tooltip, getBlockState().getBlock().getName());
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.exchange");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.heat_rate", lastExchange != 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(lastExchange)));
-        ThermalTooltips.coolant(tooltip, "criticalmass.goggles.label.primary", primary);
-        ThermalTooltips.coolant(tooltip, "criticalmass.goggles.label.secondary", secondary);
         com.criticalmass.content.power.Wear.goggles(tooltip, wear);
         if (leakRate > 0) {
             ThermalTooltips.label(tooltip, "criticalmass.goggles.label.tube_leak");

@@ -1,0 +1,32 @@
+{
+  "display": {
+    "icon": {
+      "id": "criticalmass:charred_planks"
+    },
+    "title": {
+      "translate": "criticalmass.advancement.recovery.charred"
+    },
+    "description": {
+      "translate": "criticalmass.advancement.recovery.charred.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "done": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "criticalmass:charred_planks"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "parent": "criticalmass:recovery/root"
+}
