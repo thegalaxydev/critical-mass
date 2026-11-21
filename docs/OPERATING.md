@@ -123,6 +123,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Trip: high flux | Neutron power passed 118% | Find what cooled the coolant or moved the rods, then restart in steps |
 | Power sags with the rods untouched | Xenon building, or fuel burning out | Withdraw rods a little at a time |
 | Cannot reach critical after a shutdown | Xenon peak | Wait for it to decay, about an hour at worst |
+| Primary coolant falling, the steam loop filling, and a dose in the turbine hall | A Heat Exchanger's tubes are leaking | Goggles on each exchanger show its condition and its leak. Shut down, stop both loops, let the exchanger cool to 60 °C and use Reactor Alloy Sheets on it, a quarter of its wear for each. Top the primary loop up again |
 | The vessel holds Contaminated Coolant | A fuel assembly failed | Shut down and take the damaged assembly out. Then run the coolant through a Demineralizer with a Resin Cartridge in it: one pump draws it off through a port and a second returns it. Change the cartridge when it is spent and put the spent one in a Shielded Cask |
 | Hot window, casing cracking | A fuel column without enough cooling | Insert rods, raise flow, add coolant channels next to that column. Weld the casing once it is cool |
 | Boiling window | Coolant above its boiling point | Lower power, or restore the Pressurizer's power and setpoint. Refill the vessel |
@@ -149,7 +150,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **Rod lever:** bind a Dashboard Lever to the controller and pick its bank in its settings. Middle holds, up withdraws, down inserts, and the further from the middle the faster.
 - **Power Regulator:** put at least one drive in bank D, bring the reactor critical by hand with the other banks, then set a power on the controller's value box. The controller works bank D to hold it. Set it back to Off before moving bank D yourself.
 - **Regulator from the desk:** two Dashboard Buttons bound to the controller, one set to raise and one to lower. Raise switches the regulator on at the power the reactor is at, and after that each press moves the setpoint 5%. Lower takes it down 5% and switches it off below the last step. A Gauge on the controller set to Regulator setpoint shows it.
-- **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
+- **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature, and the tubes wear more slowly for it. Never run hot coolant through an exchanger whose steam side is dry.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
 - **Coolant clean-up:** build the Demineralizer line before you need it, on a spare outlet port and a spare inlet port, with a clutch on the pumps. Keep Resin Cartridges to hand, since one takes up 4,000 mB of wholly contaminated coolant.

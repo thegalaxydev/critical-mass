@@ -75,6 +75,10 @@ public final class CoolantBuffer {
         return amount() == 0 ? 0 : Math.min(1, activity / amount());
     }
 
+    public void decayActivity(double kept) {
+        activity = activity * kept < 1e-6 ? 0 : activity * kept;
+    }
+
     private void refreshActivity() {
         if (fluid.isEmpty()) {
             activity = 0;

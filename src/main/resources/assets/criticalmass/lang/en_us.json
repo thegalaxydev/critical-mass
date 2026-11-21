@@ -717,6 +717,8 @@
   "criticalmass.goggles.label.copper_sheets": "Copper Sheets:",
   "criticalmass.goggles.label.steel_plates": "Steel Plates:",
   "criticalmass.goggles.label.condition": "Condition:",
+  "criticalmass.goggles.label.tube_leak": "Tube leak:",
+  "criticalmass.exchanger.hot": "Hot. Stop both loops and let it cool before working on the tubes",
   "criticalmass.service.live": "Live. Make it dead before working on it",
   "criticalmass.service.done": "Serviced: condition %s%%",
   "criticalmass.service.turning": "Still turning. Stop the turbine before reaching in",

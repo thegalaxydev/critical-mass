@@ -26,7 +26,7 @@ public final class PlantAlarms {
                 || be instanceof com.criticalmass.content.power.GeneratorBlockEntity || be instanceof com.criticalmass.content.power.BatteryBlockEntity || be instanceof com.criticalmass.content.power.DieselEngineBlockEntity || be instanceof com.criticalmass.content.power.TransferSwitchBlockEntity
                 || be instanceof com.criticalmass.content.power.MotorBlockEntity || be instanceof com.criticalmass.content.power.BusBarBlockEntity || be instanceof com.criticalmass.content.power.BurntBlockEntity
                 || be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity || be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity
-                || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity;
+                || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity || be instanceof com.criticalmass.content.thermal.HeatExchangerBlockEntity;
     }
 
     public static boolean trouble(@org.jetbrains.annotations.Nullable net.minecraft.world.level.block.entity.BlockEntity be) {
@@ -69,6 +69,9 @@ public final class PlantAlarms {
         }
         if (be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity resin) {
             return resin.blocked() || resin.load() >= 1;
+        }
+        if (be instanceof com.criticalmass.content.thermal.HeatExchangerBlockEntity exchanger) {
+            return exchanger.leaking();
         }
         return false;
     }

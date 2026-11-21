@@ -226,6 +226,17 @@ public final class Radiation {
                 continue;
             }
             Vec3 c = be.getBlockPos().getCenter();
+            if (be instanceof ThermalNode steamed) {
+                double carried = 0;
+                for (com.criticalmass.content.thermal.CoolantBuffer held : steamed.buffers()) {
+                    if (com.criticalmass.content.thermal.SteamActivity.carries(held)) {
+                        carried += held.activityLoad();
+                    }
+                }
+                if (carried > 0) {
+                    out.add(new Source(c, carried * com.criticalmass.content.thermal.SteamActivity.DOSE, null, body(be), null));
+                }
+            }
             if (be instanceof ReactorControllerBlockEntity r) {
                 Vec3 center = r.coreCenter();
                 double s = r.core().lastOutput() * REACTOR_DOSE;
@@ -261,6 +272,10 @@ public final class Radiation {
                 }
             } else if (be instanceof CirculationPumpBlockEntity pump) {
                 for (ThermalNode node : pump.pipeContents()) {
+                    if (com.criticalmass.content.thermal.SteamActivity.carries(node.coolant())) {
+                        BlockPos at = node instanceof PipeCoolant steamPipe ? steamPipe.pos() : node instanceof com.criticalmass.content.thermal.TankCoolant tank ? tank.pos() : be.getBlockPos();
+                        out.add(new Source(at.getCenter(), node.coolant().activityLoad() * com.criticalmass.content.thermal.SteamActivity.DOSE, null, body(be), null));
+                    }
                     if (node instanceof PipeCoolant pipe && !pipe.reinforced() && pipe.coolant().amount() > 0 && CMThermal.isPrimaryMedium(pipe.coolant().fluid())) {
                         double dose = CMThermal.isContaminated(pipe.coolant().fluid()) ? CMThermal.CONTAMINATED_PIPE_DOSE : CMThermal.PLAIN_PIPE_DOSE;
                         out.add(new Source(pipe.pos().getCenter(), dose * pipe.coolant().amount() / CMThermal.PIPE_CAPACITY, null, body(be), null));

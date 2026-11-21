@@ -185,6 +185,15 @@ public final class CMThermal {
     public static final double CLEAN_SPILL = 0.05;
     public static final double CONTAMINATED_SPILL = 0.2;
     public static final double CLEAN_ACTIVITY = 0.01;
+    public static final double TUBE_WEAR = 1.0 / 720000.0;
+    public static final double TUBE_DRY_WEAR = 1.0 / 36000.0;
+    public static final double TUBE_STRESS_GAP = 150.0;
+    public static final double TUBE_LEAK_AT = 0.75;
+    public static final double TUBE_LEAK_MAX = 4.0;
+    public static final double TUBE_STEP = 0.25;
+    public static final double TUBE_COOL = 60.0;
+    public static final float TUBE_HURT = 4.0f;
+    public static final double LEAK_ACTIVITY = PLAIN_PIPE_DOSE / CONTAMINATED_PIPE_DOSE;
     public static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / DECAY_HALF_LIFE_TICKS);
 
     private CMThermal() {

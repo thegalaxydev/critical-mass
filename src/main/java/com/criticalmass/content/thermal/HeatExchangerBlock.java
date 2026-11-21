@@ -105,9 +105,15 @@ public class HeatExchangerBlock extends HorizontalBlock implements IBE<HeatExcha
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        return onBlockEntityUseItemOn(level, pos, be -> FluidUtil.interactWithFluidHandler(player, hand, be.bufferFor(hit.getDirection()).handler())
-                ? ItemInteractionResult.sidedSuccess(level.isClientSide)
-                : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION);
+        return onBlockEntityUseItemOn(level, pos, be -> {
+            ItemInteractionResult retubed = be.retube(stack, player);
+            if (retubed != ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION) {
+                return retubed;
+            }
+            return FluidUtil.interactWithFluidHandler(player, hand, be.bufferFor(hit.getDirection()).handler())
+                    ? ItemInteractionResult.sidedSuccess(level.isClientSide)
+                    : ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        });
     }
 
     @Override
