@@ -226,6 +226,61 @@ public final class PipeTests {
         h.succeed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 60)
+    public static void aWrenchLocksAReinforcedPipeStraight(GameTestHelper h) {
+        BlockPos mid = new BlockPos(2, 1, 2);
+        BlockPos glass = new BlockPos(0, 1, 0);
+        List<BlockPos> run = List.of(mid.west(), mid, mid.east(), mid.south(), mid.south().west(), mid.south().east());
+        for (BlockPos p : run) {
+            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+        }
+        for (BlockPos p : run) {
+            TestVessels.connect(h, p);
+        }
+        h.setBlock(glass, AllBlocks.GLASS_FLUID_PIPE.getDefaultState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, Direction.Axis.Z));
+        BlockPos abs = h.absolutePos(mid);
+        BlockState tee = h.getBlockState(mid);
+        h.assertTrue(FluidPipeBlock.isOpenAt(tee, Direction.WEST) && FluidPipeBlock.isOpenAt(tee, Direction.EAST) && FluidPipeBlock.isOpenAt(tee, Direction.SOUTH), "The middle pipe should start as a tee: " + tee);
+        PipeCoolant.at(h.getLevel(), abs).coolant().set(CoolantLoopTests.coolant(100), 500);
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(com.simibubi.create.AllItems.WRENCH.get()));
+        UseOnContext top = new UseOnContext(player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs).add(0.4, 0.5, 0), Direction.UP, abs, false));
+        UseOnContext end = new UseOnContext(player, InteractionHand.MAIN_HAND, new BlockHitResult(Vec3.atCenterOf(abs).add(0.5, 0, 0), Direction.EAST, abs, false));
+        h.assertTrue(CMBlocks.REINFORCED_PIPE.get().onWrenched(tee, top).consumesAction(), "A wrench on the side of a Reinforced Pipe should lock it");
+        BlockState locked = h.getBlockState(mid);
+        h.assertTrue(locked.is(CMBlocks.REINFORCED_STRAIGHT_PIPE.get()) && locked.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == Direction.Axis.X,
+                "It should lock along the run nearest the click: " + locked);
+        h.assertTrue(PipeCoolant.open(h.getLevel(), abs, locked, Direction.EAST) && PipeCoolant.open(h.getLevel(), abs, locked, Direction.WEST) && !PipeCoolant.open(h.getLevel(), abs, locked, Direction.SOUTH),
+                "A locked pipe should be open only along its run");
+        h.assertTrue(PipeCoolant.isPipe(locked) && PipeCoolant.isReinforced(locked), "A locked pipe should still be a Reinforced Pipe");
+        h.assertTrue(PipeCoolant.at(h.getLevel(), abs).coolant().amount() == 100 && PipeCoolant.at(h.getLevel(), abs).coolant().heat() == 500, "Locking a pipe should keep the coolant in it");
+        List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(locked, h.getLevel(), abs, h.getLevel().getBlockEntity(abs));
+        h.assertTrue(drops.size() == 1 && drops.get(0).is(CMBlocks.REINFORCED_PIPE.get().asItem()), "A locked pipe should drop a Reinforced Pipe: " + drops);
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    BlockState beside = h.getBlockState(mid.south());
+                    h.assertTrue(!FluidPipeBlock.isOpenAt(beside, Direction.NORTH) && FluidPipeBlock.isOpenAt(beside, Direction.WEST) && FluidPipeBlock.isOpenAt(beside, Direction.EAST), "A run beside a locked pipe should let go of it: " + beside);
+                    h.assertTrue(FluidPipeBlock.isOpenAt(h.getBlockState(mid.east()), Direction.WEST), "The pipes along its run should stay joined: " + h.getBlockState(mid.east()));
+                    h.assertTrue(CMBlocks.REINFORCED_STRAIGHT_PIPE.get().onWrenched(h.getBlockState(mid), top).consumesAction(), "A wrench on a locked pipe should free it");
+                    BlockState freed = h.getBlockState(mid);
+                    h.assertTrue(freed.is(CMBlocks.REINFORCED_PIPE.get()) && FluidPipeBlock.isOpenAt(freed, Direction.WEST) && FluidPipeBlock.isOpenAt(freed, Direction.EAST) && FluidPipeBlock.isOpenAt(freed, Direction.SOUTH),
+                            "A freed pipe should join everything round it again: " + freed);
+                    h.assertTrue(PipeCoolant.at(h.getLevel(), abs).coolant().amount() == 100, "Freeing a pipe should keep the coolant in it");
+                    h.setBlock(mid.south(), Blocks.AIR);
+                    TestVessels.connect(h, mid);
+                    BlockState straight = h.getBlockState(mid);
+                    h.assertTrue(!CMBlocks.REINFORCED_PIPE.get().onWrenched(straight, end).consumesAction() && h.getBlockState(mid).is(CMBlocks.REINFORCED_PIPE.get()), "A wrench on the end of a run should do nothing");
+                    h.assertTrue(CMBlocks.REINFORCED_PIPE.get().onWrenched(straight, top).consumesAction() && h.getBlockState(mid).is(CMBlocks.REINFORCED_STRAIGHT_PIPE.get()), "A wrench on the side of a straight run should lock it");
+                    player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(CMItems.REACTOR_ALLOY_INGOT.get(), 2));
+                    apply(h, player, glass);
+                    BlockState made = h.getBlockState(glass);
+                    h.assertTrue(made.is(CMBlocks.REINFORCED_STRAIGHT_PIPE.get()) && made.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == Direction.Axis.Z && player.getMainHandItem().getCount() == 1,
+                            "Reactor alloy on a Glass Fluid Pipe should make a locked Reinforced Pipe along the same run: " + made);
+                })
+                .thenSucceed();
+    }
+
     private static void apply(GameTestHelper h, Player player, BlockPos pos) {
         BlockPos abs = h.absolutePos(pos);
         CommonHooks.onRightClickBlock(player, InteractionHand.MAIN_HAND, abs, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false));

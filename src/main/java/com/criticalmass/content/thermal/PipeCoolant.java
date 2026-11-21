@@ -45,7 +45,7 @@ public final class PipeCoolant implements ThermalNode, INBTSerializable<Compound
     }
 
     public static boolean isReinforced(BlockState state) {
-        return state.getBlock() instanceof ReinforcedPipeBlock;
+        return state.getBlock() instanceof ReinforcedPipeBlock || state.getBlock() instanceof com.criticalmass.content.ReinforcedStraightPipeBlock;
     }
 
     public static boolean open(BlockGetter level, BlockPos pos, BlockState state, Direction face) {

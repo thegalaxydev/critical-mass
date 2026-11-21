@@ -1,10 +1,12 @@
 package com.criticalmass.client;
 
 import com.criticalmass.content.ReinforcedPipeBlock;
+import com.criticalmass.content.ReinforcedStraightPipeBlock;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.content.decoration.bracket.BracketedBlockEntityBehaviour;
 import com.simibubi.create.content.fluids.FluidPropagator;
 import com.simibubi.create.content.fluids.pipes.EncasedPipeBlock;
+import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.fluids.pump.PumpBlock;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.foundation.model.BakedModelWrapperWithData;
@@ -26,6 +28,7 @@ import net.neoforged.neoforge.client.model.data.ModelProperty;
 
 public class ReinforcedPipeModel extends BakedModelWrapperWithData {
     private static final ModelProperty<Integer> DRAINS = new ModelProperty<>();
+    private static final ModelProperty<Integer> RIMS = new ModelProperty<>();
     private static final ModelProperty<BlockState> BRACKET = new ModelProperty<>();
 
     public ReinforcedPipeModel(BakedModel template) {
@@ -35,18 +38,21 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
     @Override
     protected ModelData.Builder gatherModelData(ModelData.Builder builder, BlockAndTintGetter world, BlockPos pos, BlockState state, ModelData blockEntityData) {
         int drains = 0;
-        if (state.getBlock() instanceof ReinforcedPipeBlock) {
-            for (Direction d : Direction.values()) {
-                if (state.getValue(ReinforcedPipeBlock.RIM.get(d)) && drains(world, pos, d)) {
-                    drains |= 1 << d.get3DDataValue();
-                }
+        int rims = 0;
+        for (Direction d : Direction.values()) {
+            if (!rimmed(world, pos, state, d)) {
+                continue;
+            }
+            rims |= 1 << d.get3DDataValue();
+            if (drains(world, pos, d)) {
+                drains |= 1 << d.get3DDataValue();
             }
         }
         BracketedBlockEntityBehaviour bracket = BlockEntityBehaviour.get(world, pos, BracketedBlockEntityBehaviour.TYPE);
         if (bracket != null && bracket.isBracketPresent()) {
             builder.with(BRACKET, bracket.getBracket());
         }
-        return builder.with(DRAINS, drains);
+        return builder.with(DRAINS, drains).with(RIMS, rims);
     }
 
     private static boolean drains(BlockAndTintGetter world, BlockPos pos, Direction d) {
@@ -58,8 +64,28 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
         return FluidPropagator.hasFluidCapability(world, other, d.getOpposite());
     }
 
+    private static boolean ours(BlockState state) {
+        return state != null && (state.getBlock() instanceof ReinforcedPipeBlock || state.getBlock() instanceof ReinforcedStraightPipeBlock);
+    }
+
+    private static boolean rimmed(BlockAndTintGetter world, BlockPos pos, BlockState state, Direction d) {
+        if (state.getBlock() instanceof ReinforcedStraightPipeBlock) {
+            Direction.Axis axis = state.getValue(ReinforcedStraightPipeBlock.AXIS);
+            if (d.getAxis() != axis) {
+                return false;
+            }
+            BlockState next = world.getBlockState(pos.relative(d));
+            if (next.getBlock() instanceof ReinforcedStraightPipeBlock && next.getValue(ReinforcedStraightPipeBlock.AXIS) == axis) {
+                return d.getAxisDirection() == Direction.AxisDirection.POSITIVE;
+            }
+            return !(next.getBlock() instanceof FluidPipeBlock && FluidPipeBlock.isOpenAt(next, d.getOpposite()));
+        }
+        return state.getBlock() instanceof ReinforcedPipeBlock && state.getValue(ReinforcedPipeBlock.RIM.get(d));
+    }
+
     private static PartialModel plate(BlockState state, ModelData data, Direction d) {
-        if (!state.getValue(ReinforcedPipeBlock.RIM.get(d))) {
+        Integer rims = data.get(RIMS);
+        if (rims == null || (rims >> d.get3DDataValue() & 1) == 0) {
             return null;
         }
         Integer drains = data.get(DRAINS);
@@ -85,7 +111,7 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
     @Override
     public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
         ChunkRenderTypeSet base = super.getRenderTypes(state, rand, data);
-        if (!(state.getBlock() instanceof ReinforcedPipeBlock)) {
+        if (!ours(state)) {
             return base;
         }
         List<BakedModel> parts = parts(state, data);
@@ -103,7 +129,7 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
     @Override
     public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData data, RenderType renderType) {
         List<BakedQuad> quads = super.getQuads(state, side, rand, data, renderType);
-        if (state == null || !(state.getBlock() instanceof ReinforcedPipeBlock)) {
+        if (!ours(state)) {
             return quads;
         }
         List<BakedModel> parts = parts(state, data);

@@ -49,6 +49,7 @@ public class CriticalMassClient {
         DashPartDraw.init();
         ClientEffects.init(modEventBus);
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_PIPE.getId(), ReinforcedPipeModel::new);
+        CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_STRAIGHT_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
         modEventBus.addListener(this::addSkinPack);
         modEventBus.addListener(this::hideDuplicateParts);

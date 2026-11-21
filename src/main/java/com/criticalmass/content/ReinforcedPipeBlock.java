@@ -22,7 +22,9 @@ import net.minecraft.world.level.block.PipeBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -80,16 +82,37 @@ public class ReinforcedPipeBlock extends FluidPipeBlock {
     }
 
     public static boolean connectsTo(BlockState neighbor, Direction towards) {
-        return isPipe(neighbor);
+        return isPipe(neighbor) || neighbor.getBlock() instanceof ReinforcedStraightPipeBlock && neighbor.getValue(ReinforcedStraightPipeBlock.AXIS) == towards.getAxis();
     }
 
     @Override
     public InteractionResult onWrenched(BlockState state, UseOnContext context) {
-        if (!tryRemoveBracket(context)) {
-            return InteractionResult.PASS;
-        }
         Level world = context.getLevel();
         BlockPos pos = context.getClickedPos();
+        if (!tryRemoveBracket(context)) {
+            Direction clicked = context.getClickedFace();
+            Direction.Axis axis = FluidPropagator.getStraightPipeAxis(state);
+            if (axis == null) {
+                Vec3 at = context.getClickLocation().subtract(pos.getX(), pos.getY(), pos.getZ());
+                double closest = Double.MAX_VALUE;
+                Direction pick = Direction.UP;
+                for (Direction d : Direction.values()) {
+                    double distance = Vec3.atCenterOf(d.getNormal()).distanceToSqr(at);
+                    if (clicked.getAxis() != d.getAxis() && distance < closest) {
+                        closest = distance;
+                        pick = d;
+                    }
+                }
+                axis = pick.getAxis();
+            }
+            if (clicked.getAxis() == axis) {
+                return InteractionResult.PASS;
+            }
+            if (!world.isClientSide) {
+                ReinforcedStraightPipeBlock.swap(world, pos, ReinforcedStraightPipeBlock.along(axis, state.getValue(BlockStateProperties.WATERLOGGED)));
+            }
+            return InteractionResult.SUCCESS;
+        }
         BlockState freed = world.getBlockState(pos);
         if (!world.isClientSide && freed.getBlock() == this) {
             Direction.Axis axis = FluidPropagator.getStraightPipeAxis(freed);

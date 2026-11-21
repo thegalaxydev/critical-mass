@@ -115,6 +115,7 @@ public class CriticalMass {
         modEventBus.addListener(com.criticalmass.content.effects.FalloutPacket::register);
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent e) -> LedgerCommand.register(e.getDispatcher()));
         NeoForge.EVENT_BUS.addListener(VesselEvents::onNeighborNotify);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.ReinforcedStraightPipeBlock::onUse);
         NeoForge.EVENT_BUS.addListener(PowerNetwork::tick);
         NeoForge.EVENT_BUS.addListener(Storms::onJoin);
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.Detonation::tick);

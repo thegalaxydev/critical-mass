@@ -1,0 +1,76 @@
+{
+ "multipart": [
+  {
+   "when": {
+    "axis": "x"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_y"
+   }
+  },
+  {
+   "when": {
+    "axis": "x"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/east"
+   }
+  },
+  {
+   "when": {
+    "axis": "x"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/west"
+   }
+  },
+  {
+   "when": {
+    "axis": "y"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/ud_x"
+   }
+  },
+  {
+   "when": {
+    "axis": "y"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/up"
+   }
+  },
+  {
+   "when": {
+    "axis": "y"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/down"
+   }
+  },
+  {
+   "when": {
+    "axis": "z"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/lr_x"
+   }
+  },
+  {
+   "when": {
+    "axis": "z"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/north"
+   }
+  },
+  {
+   "when": {
+    "axis": "z"
+   },
+   "apply": {
+    "model": "criticalmass:block/reinforced_pipe/connection/south"
+   }
+  }
+ ]
+}

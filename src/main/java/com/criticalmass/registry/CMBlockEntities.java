@@ -107,6 +107,9 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new BoilerPlateBlockEntity(CMBlockEntities.BOILER_PLATE.get(), pos, state), CMBlocks.BOILER_HEATING_PLATE.get()).build(null));
     public static final Supplier<BlockEntityType<ReinforcedValveBlockEntity>> REINFORCED_VALVE = BLOCK_ENTITIES.register("reinforced_valve",
             () -> BlockEntityType.Builder.of((pos, state) -> new ReinforcedValveBlockEntity(CMBlockEntities.REINFORCED_VALVE.get(), pos, state), CMBlocks.REINFORCED_VALVE.get()).build(null));
+    public static final Supplier<BlockEntityType<com.simibubi.create.content.fluids.pipes.StraightPipeBlockEntity>> REINFORCED_STRAIGHT_PIPE = BLOCK_ENTITIES.register("reinforced_straight_pipe",
+            () -> BlockEntityType.Builder.of((pos, state) -> new com.simibubi.create.content.fluids.pipes.StraightPipeBlockEntity(CMBlockEntities.REINFORCED_STRAIGHT_PIPE.get(), pos, state),
+                    CMBlocks.REINFORCED_STRAIGHT_PIPE.get()).build(null));
     public static final Supplier<BlockEntityType<FluidPipeBlockEntity>> REINFORCED_PIPE = BLOCK_ENTITIES.register("reinforced_pipe",
             () -> BlockEntityType.Builder.of((pos, state) -> new FluidPipeBlockEntity(CMBlockEntities.REINFORCED_PIPE.get(), pos, state), CMBlocks.REINFORCED_PIPE.get()).build(null));
     public static final Supplier<BlockEntityType<ReliefValveBlockEntity>> RELIEF_VALVE = BLOCK_ENTITIES.register("relief_valve",

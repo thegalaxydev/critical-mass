@@ -76,6 +76,8 @@ public final class CMBlocks {
     public static final DeferredBlock<com.criticalmass.content.fuel.ChannelCapBlock> FUEL_CHANNEL_CAP = register("fuel_channel_cap", com.criticalmass.content.fuel.ChannelCapBlock::new, metal(5.0f));
     public static final DeferredBlock<CoolantPortBlock> PRIMARY_COOLANT_PORT = register("primary_coolant_port", CoolantPortBlock::new, metal(5.0f));
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<com.criticalmass.content.ReinforcedStraightPipeBlock> REINFORCED_STRAIGHT_PIPE = BLOCKS.register("reinforced_straight_pipe",
+            () -> new com.criticalmass.content.ReinforcedStraightPipeBlock(metal(3.0f).noOcclusion()));
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());

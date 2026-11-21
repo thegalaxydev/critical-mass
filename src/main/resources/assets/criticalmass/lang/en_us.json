@@ -394,6 +394,7 @@
   "criticalmass.centrifuge.running": "Enriching",
   "block.criticalmass.centrifuge": "Centrifuge",
   "block.criticalmass.reinforced_pipe": "Reinforced Pipe",
+  "block.criticalmass.reinforced_straight_pipe": "Straight Reinforced Pipe",
   "block.criticalmass.reinforced_valve": "Reinforced Valve",
   "criticalmass.valve.open": "Open",
   "criticalmass.valve.closed": "Closed: no coolant passes",
