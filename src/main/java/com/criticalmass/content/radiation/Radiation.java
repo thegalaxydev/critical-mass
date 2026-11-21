@@ -52,6 +52,7 @@ public final class Radiation {
     public static final double CANISTER_DOSE = 3.0;
     public static final double DEBRIS_DOSE = 8.0;
     public static final double LIQUID_WASTE_DOSE = 3.0;
+    public static final double RESIN_DOSE = LIQUID_WASTE_DOSE * com.criticalmass.content.thermal.DemineralizerBlockEntity.RESIN_CAPACITY / 1000.0;
     public static final double ASH_DOSE = 0.03;
     public static final double STRONTIUM_DOSE = 0.25;
     public static final double ORE_DOSE = 0.2;
@@ -100,6 +101,9 @@ public final class Radiation {
         }
         if (stack.is(CMItems.SEALED_WASTE_CANISTER.get())) {
             return stack.getCount() * (CANISTER_DOSE + RESIDUAL_DOSE * residual);
+        }
+        if (stack.is(CMItems.USED_RESIN_CARTRIDGE.get())) {
+            return stack.getCount() * RESIN_DOSE * com.criticalmass.content.thermal.ResinCartridgeItem.load(stack);
         }
         if (stack.is(CMItems.FALLOUT_ASH.get())) {
             return stack.getCount() * ASH_DOSE;

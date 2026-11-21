@@ -25,7 +25,8 @@ public final class PlantAlarms {
         return be instanceof ReactorControllerBlockEntity || be instanceof com.criticalmass.content.power.BreakerBlockEntity || be instanceof com.criticalmass.content.power.GridTieBlockEntity || be instanceof com.criticalmass.content.power.TransformerBlockEntity
                 || be instanceof com.criticalmass.content.power.GeneratorBlockEntity || be instanceof com.criticalmass.content.power.BatteryBlockEntity || be instanceof com.criticalmass.content.power.DieselEngineBlockEntity || be instanceof com.criticalmass.content.power.TransferSwitchBlockEntity
                 || be instanceof com.criticalmass.content.power.MotorBlockEntity || be instanceof com.criticalmass.content.power.BusBarBlockEntity || be instanceof com.criticalmass.content.power.BurntBlockEntity
-                || be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity || be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity;
+                || be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity || be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity
+                || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity;
     }
 
     public static boolean trouble(@org.jetbrains.annotations.Nullable net.minecraft.world.level.block.entity.BlockEntity be) {
@@ -65,6 +66,9 @@ public final class PlantAlarms {
         }
         if (be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity monitor) {
             return monitor.alarm();
+        }
+        if (be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity resin) {
+            return resin.blocked() || resin.load() >= 1;
         }
         return false;
     }

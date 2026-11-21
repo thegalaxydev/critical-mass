@@ -90,6 +90,18 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - **Emergency boration:** fill the emergency cooling tank with Boric Acid instead of Primary Coolant and it borates the core as it cools it. Plain emergency coolant dilutes.
   - **Command:** operators with permission can set the vessel and its loop to a figure with `/criticalmass boron <controller> <ppm>`.
   - **Ponder:** the scene opens from Borax, the Primary Coolant Port and the Reactor Controller.
+- **Coolant clean-up:** a Demineralizer takes the contamination out of coolant and keeps it in a Resin Cartridge, so a loop that a fuel failure has contaminated can be brought back without draining it.
+  - **Contamination is carried:** coolant carries its contamination the way it carries heat and boron. A fuel failure contaminates the vessel's coolant wholly, a split keeps the share and a merge averages it. Coolant with more than one part in a hundred is Contaminated Coolant, and at or under that it is Primary Coolant again.
+  - **The line:** set a Demineralizer beside the vessel. One Create Mechanical Pump draws coolant off through a port and into it, and a second pumps what it has cleaned back through a spare inlet port. Pipes join every face but the top. It cleans 10 mB a tick and holds 1,000 mB waiting and 1,000 mB cleaned.
+  - **What it does:** coolant goes in on any pipe and comes out clean on any other. Its heat and its boron pass with it. Clean coolant passes with or without resin, and contaminated coolant waits until there is resin to take it.
+  - **How long:** each pass takes out what goes through, so the loop's share falls steadily. About four and a half times the loop's volume has to go through to bring it under one part in a hundred.
+  - **Resin Cartridge:** use one on the Demineralizer to fit it and an empty hand to lift it out. A cartridge takes up what 4,000 mB of wholly contaminated coolant holds and is then spent, and the line stops. The window on the front shows the bed: amber when fresh, part brown in use and brown when spent.
+  - **Used Resin Cartridge:** a cartridge that has taken anything up is radioactive, 3 mSv/min for each 1,000 mB it has cleaned and 12 when spent, the same as the coolant gave. One that still has resin goes back in. A spent one goes into a Shielded Cask, and it resists fire and never despawns.
+  - **Automation:** a funnel or a Mechanical Arm fits a cartridge and takes it out once it is spent.
+  - **Reading:** goggles show its state and the resin left, and a comparator gives the resin left from 0 to 15. The Plant Linker remembers it: a Dashboard Gauge and a Plant Screen wall show the resin left, a Dashboard Alarm lamp lights when the resin is spent or coolant is waiting with none fitted, and a Display Link gives the level as text.
+  - **Other waste water:** Contaminated Coolant from reprocessing, from leaching Fallout Ash and from Decontamination Compound can be pumped through one as well, in place of sealing it in canisters.
+  - **A Fluid Tank keeps no figure:** like boron, the share is kept only between this mod's machines. Coolant that has stood in a Create Fluid Tank counts as wholly contaminated if it is Contaminated Coolant and as clean if it is not.
+  - **Breaking it** spills what it holds as contamination on the spot and drops the cartridge.
 - **Jump to power:** `/criticalmass steady <controller> <fraction> [coolant °C]` puts a reactor at that power with matching fuel temperatures and xenon, optionally sets the coolant temperature, and sets the rods to the position that holds it.
 - If the vessel breaks while running, the reactor trips. It stays tripped until it is reset with the rods commanded in.
 
@@ -144,7 +156,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - A comparator on the Reactor Controller reads the hottest fuel column against the 1,100 °C trip temperature (0 to 15).
 - **Plant Linker:** the tool that links a Plant Screen wall to its machines. Use it on a machine to remember it, then on a screen of the wall. Sneak-use in the air to clear it.
 - **Plant Screen:** a screen with green text, built like Create's Display Board in a steel frame. A wall of them shows a display of its own for whatever machine it is linked to, or Display Link text like a Display Board.
-  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers, Station Batteries, Diesel Engines, the Grid Connection and Area Radiation Monitors.
+  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers, Station Batteries, Diesel Engines, the Grid Connection, Area Radiation Monitors and Demineralizers.
     - The wall shows the machine's name and its state, trend graphs of its readings over the last two minutes, and a table of every reading.
     - How much it shows depends on its size. Three by two is one graph. A bigger wall fits more graphs, up to six, and from 5 wide the table stands beside them. A narrow wall 4 or more high puts the table under them.
     - Readings that start at zero scale themselves to what they have seen. Frequency, phase angle and temperature are graphed on a fixed window, so 50 Hz sits in the middle of 45 to 55.
@@ -310,7 +322,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - It runs on any Create belt or depot, with Deployers for the cladding and pellets and a Mechanical Press for the last step of each loop.
   - The item's tooltip shows the next step. Progress is stored on the item, so an interrupted assembly carries on after a reload.
 - **Spent Fuel Rack:** an open steel tub with four cells. Use an assembly on it to stand it in a cell and an empty hand to lift the last one out; funnels and Mechanical Arms can do both, and an arm can pick a rack or a Shielded Cask as a target the way it picks the Service Port. Fill it with a bucket or a pipe. The water shows at its real level, so a rack that is running dry can be seen: its fuel then heats up and wears. Racks set side by side read as one pool grid, and a comparator reads how full a rack is.
-- **Shielded Cask:** dry storage for four cooled assemblies, waste canisters or pieces of Core Debris. Its lid is bolted down on four studs: use a wrench on the cask to unbolt it, and the lid rises up the studs; use the wrench again to bolt it down, whatever is in it. A redstone signal also holds the lid up, for funnels and Mechanical Arms. It takes and gives items only with the lid up, and it shields far less then (half the dose gets out, against 1% when sealed). A cask keeps its contents when broken and placed again.
+- **Shielded Cask:** dry storage for four cooled assemblies, waste canisters, Used Resin Cartridges or pieces of Core Debris. Its lid is bolted down on four studs: use a wrench on the cask to unbolt it, and the lid rises up the studs; use the wrench again to bolt it down, whatever is in it. A redstone signal also holds the lid up, for funnels and Mechanical Arms. It takes and gives items only with the lid up, and it shields far less then (half the dose gets out, against 1% when sealed). A cask keeps its contents when broken and placed again.
 - **Reprocessing:** a cooled Spent Fuel Assembly can be taken apart for what is left in it, with Create's machines.
   - **Shearing:** pass it under a Mechanical Saw four times, on a belt or along a row of four saws facing up. It comes out as 4 Sheared Spent Fuel. A saw leaves an assembly alone while it is still hot, so it has to cool in a Spent Fuel Rack first.
   - **Dissolving:** a heated Mixer turns 4 Sheared Spent Fuel and 1,000 mB of water into 4 Uranium Concentrate, 1 Strontium-90 and 400 mB of Contaminated Coolant.
@@ -319,11 +331,13 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Damaged fuel:** once cooled (in the spent fuel rack), a damaged assembly becomes a Sealed Waste Canister that keeps its lifecycle record. It is a sequenced assembly: deploy an Open Waste Canister onto the assembly, deploy a Sealing Gasket, then press it shut. The deployer leaves hot assemblies alone, and the half-sealed canister is as radioactive as the bare assembly. Canisters go in a Shielded Cask.
 - **Fire and despawn:** assemblies and canisters resist fire and never despawn.
 - **Placing canisters:** a Sealed Waste Canister can be placed as a block. It stays a radiation source where it stands, and breaking it (with a pickaxe) drops the canister with its record intact.
-- **Other recipes:** every block and item has a survival recipe, or comes from the world or the plant: the ores and Raw Uranium, the Centrifuge's Enriched and Depleted Uranium, spent and damaged fuel, and what an accident leaves behind. A game test checks that list. JEI shows the recipes under Create's categories.
+- **Other recipes:** every block and item has a survival recipe, or comes from the world or the plant: the ores and Raw Uranium, the Centrifuge's Enriched and Depleted Uranium, spent and damaged fuel, a Used Resin Cartridge, and what an accident leaves behind. A game test checks that list. JEI shows the recipes under Create's categories.
   - **Survey Meter:** an Electron Tube over a glass pane between two Brass Sheets, with a Steel Plate under it.
   - **Dosimeter:** a Steel Plate, Nether Quartz and a Brass Nugget, in any order.
   - **Protective outfit:** each piece is the leather piece of the same kind with a Sealing Gasket and a block of wool, in any order.
   - **Area Radiation Monitor:** a redstone torch over an Electron Tube between two Brass Sheets, with a Copper Sheet between two Steel Plates under them.
+  - **Demineralizer:** a Brass Sheet between two Steel Plates, a block of glass between two Fluid Pipes, and a Fluid Pipe between two Steel Plates.
+  - **Resin Cartridge:** charcoal or coal between two clay balls, with an Iron Sheet over and under it.
 
 **Electricity.** The plant has its own electrical system. It does not use Forge Energy. What the generators make goes down the wires as they make it, and only a Station Battery stores any. Values live in `content/power/Power.java`.
 - **Generator:** a block with a shaft through it. Sections in a line on one shaft are one machine, up to 8 sections.
@@ -473,7 +487,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
 - **Contamination:**
   - A breach leaks coolant out of each broken casing block and leaves contamination there that never fades.
   - Standing in it gives dose and contaminates you.
-  - Failed fuel turns the vessel coolant into Contaminated Coolant, which contaminates any clean coolant it mixes with.
+  - Failed fuel turns the vessel coolant into Contaminated Coolant. It keeps its contamination as it goes round the loop and shares it with clean coolant it mixes with, and a Demineralizer takes it out (see Coolant clean-up).
 - **Protective gear:** each piece blocks a quarter of 90% of contamination uptake and collects that contamination itself. A full set cuts direct dose by only 5%: it is not shielding.
 - **Decontamination Compound:** use it on a contaminated area (3×3×3) or in the air (yourself and your gear). Outdoors a Water Cannon does the ground for you.
   - Each use puts 250 mB of Contaminated Coolant runoff into a tank within 4 blocks. Without such a tank nothing is cleaned.

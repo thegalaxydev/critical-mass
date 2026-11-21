@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (62)
+## Blocks (63)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -26,6 +26,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:core_debris` | Core Debris | none of its own | `block/corium.png` 16x16<br>`block/corium_hot.png` 16x16<br>`block/ruined_channel.png` 32x32 |  | 2 |
 | `criticalmass:corium` | Corium | author's texture, script glow | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
+| `criticalmass:demineralizer` | Demineralizer | script | `block/demineralizer_front_fresh.png` 16x16<br>`block/demineralizer_front_none.png` 16x16<br>`block/demineralizer_front_spent.png` 16x16<br>`block/demineralizer_front_used.png` 16x16<br>`block/demineralizer_side.png` 16x16<br>`block/demineralizer_top.png` 16x16<br>`block/steel_block.png` 16x16 |  | 5 |
 | `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
@@ -73,7 +74,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
 | `criticalmass:wreckage` | Wreckage | none of its own | `block/burnt_equipment.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/steel_block.png` 16x16 |  | 2 |
 
-## Items (42)
+## Items (44)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -107,6 +108,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:raw_uranium` | Raw Uranium | generated | `item/raw_uranium.png` 16x16 |  | 1 |
 | `criticalmass:reactor_alloy_ingot` | Reactor Alloy Ingot | author | `item/reactor_alloy_ingot.png` 16x16 |  | 1 |
 | `criticalmass:reactor_alloy_sheet` | Reactor Alloy Sheet | author | `item/reactor_alloy_sheet.png` 16x16 |  | 1 |
+| `criticalmass:resin_cartridge` | Resin Cartridge | script | `item/resin_cartridge.png` 16x16 |  | 1 |
 | `criticalmass:sealing_gasket` | Sealing Gasket | author | `item/sealing_gasket.png` 16x16 |  | 1 |
 | `criticalmass:sheared_fuel` | Sheared Spent Fuel | script | `item/sheared_fuel.png` 16x16 |  | 1 |
 | `criticalmass:spent_fuel_assembly` | Spent Fuel Assembly | generated | `item/spent_fuel_assembly.png` 16x16 |  | 1 |
@@ -118,6 +120,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:transmission_line` | Transmission Line | script | `item/transmission_line.png` 16x16 |  | 1 |
 | `criticalmass:turbine_blade` | Turbine Blade | author | `item/turbine_blade.png` 16x16 |  | 1 |
 | `criticalmass:uranium_concentrate` | Uranium Concentrate | generated | `item/uranium_concentrate.png` 16x16 |  | 1 |
+| `criticalmass:used_resin_cartridge` | Used Resin Cartridge | script | `item/used_resin_cartridge.png` 16x16 |  | 1 |
 | `criticalmass:welding_torch` | Welding Torch | author | `item/welding_torch.png` 16x16 |  | 1 |
 
 ## Fluids (5)

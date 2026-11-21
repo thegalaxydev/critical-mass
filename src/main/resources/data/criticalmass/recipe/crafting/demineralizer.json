@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "item": "criticalmass:steel_plate"
+    },
+    "P": {
+      "item": "create:fluid_pipe"
+    },
+    "G": {
+      "tag": "c:glass_blocks/colorless"
+    },
+    "B": {
+      "tag": "c:plates/brass"
+    }
+  },
+  "pattern": [
+    "SBS",
+    "PGP",
+    "SPS"
+  ],
+  "result": {
+    "id": "criticalmass:demineralizer",
+    "count": 1
+  }
+}

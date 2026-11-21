@@ -56,6 +56,9 @@ public final class CMItems {
     public static final DeferredItem<Item> CONTROL_ROD = simple("control_rod", new Item.Properties());
     public static final DeferredItem<Item> TURBINE_BLADE = simple("turbine_blade", new Item.Properties());
     public static final DeferredItem<Item> SEALING_GASKET = simple("sealing_gasket", new Item.Properties());
+    public static final DeferredItem<Item> RESIN_CARTRIDGE = simple("resin_cartridge", new Item.Properties().stacksTo(16));
+    public static final DeferredItem<com.criticalmass.content.thermal.ResinCartridgeItem> USED_RESIN_CARTRIDGE = custom("used_resin_cartridge",
+            () -> new com.criticalmass.content.thermal.ResinCartridgeItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<SurveyMeterItem> SURVEY_METER = custom("survey_meter", () -> new SurveyMeterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<DosimeterItem> DOSIMETER = custom("dosimeter", () -> new DosimeterItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_HOOD = armor("protective_hood", ArmorItem.Type.HELMET);

@@ -184,6 +184,7 @@ public final class CMThermal {
     public static final int CASK_SLOTS = 4;
     public static final double CLEAN_SPILL = 0.05;
     public static final double CONTAMINATED_SPILL = 0.2;
+    public static final double CLEAN_ACTIVITY = 0.01;
     public static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / DECAY_HALF_LIFE_TICKS);
 
     private CMThermal() {

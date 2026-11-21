@@ -1,0 +1,9 @@
+{
+ "parent": "minecraft:block/orientable_with_bottom",
+ "textures": {
+  "top": "criticalmass:block/demineralizer_top",
+  "bottom": "criticalmass:block/steel_block",
+  "side": "criticalmass:block/demineralizer_side",
+  "front": "criticalmass:block/demineralizer_front_fresh"
+ }
+}

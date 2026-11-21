@@ -1,0 +1,64 @@
+{
+ "variants": {
+  "facing=north,resin=none": {
+   "model": "criticalmass:block/demineralizer_none"
+  },
+  "facing=north,resin=fresh": {
+   "model": "criticalmass:block/demineralizer_fresh"
+  },
+  "facing=north,resin=used": {
+   "model": "criticalmass:block/demineralizer_used"
+  },
+  "facing=north,resin=spent": {
+   "model": "criticalmass:block/demineralizer_spent"
+  },
+  "facing=east,resin=none": {
+   "model": "criticalmass:block/demineralizer_none",
+   "y": 90
+  },
+  "facing=east,resin=fresh": {
+   "model": "criticalmass:block/demineralizer_fresh",
+   "y": 90
+  },
+  "facing=east,resin=used": {
+   "model": "criticalmass:block/demineralizer_used",
+   "y": 90
+  },
+  "facing=east,resin=spent": {
+   "model": "criticalmass:block/demineralizer_spent",
+   "y": 90
+  },
+  "facing=south,resin=none": {
+   "model": "criticalmass:block/demineralizer_none",
+   "y": 180
+  },
+  "facing=south,resin=fresh": {
+   "model": "criticalmass:block/demineralizer_fresh",
+   "y": 180
+  },
+  "facing=south,resin=used": {
+   "model": "criticalmass:block/demineralizer_used",
+   "y": 180
+  },
+  "facing=south,resin=spent": {
+   "model": "criticalmass:block/demineralizer_spent",
+   "y": 180
+  },
+  "facing=west,resin=none": {
+   "model": "criticalmass:block/demineralizer_none",
+   "y": 270
+  },
+  "facing=west,resin=fresh": {
+   "model": "criticalmass:block/demineralizer_fresh",
+   "y": 270
+  },
+  "facing=west,resin=used": {
+   "model": "criticalmass:block/demineralizer_used",
+   "y": 270
+  },
+  "facing=west,resin=spent": {
+   "model": "criticalmass:block/demineralizer_spent",
+   "y": 270
+  }
+ }
+}

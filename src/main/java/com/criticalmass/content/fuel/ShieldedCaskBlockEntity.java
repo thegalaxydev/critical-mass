@@ -116,7 +116,7 @@ public class ShieldedCaskBlockEntity extends SmartBlockEntity implements IHaveGo
 
     @Nullable
     public static String refuseReason(ItemStack stack) {
-        if (stack.is(CMItems.SEALED_WASTE_CANISTER.get()) || stack.is(com.criticalmass.registry.CMBlocks.CORE_DEBRIS.get().asItem())) {
+        if (stack.is(CMItems.SEALED_WASTE_CANISTER.get()) || stack.is(com.criticalmass.registry.CMBlocks.CORE_DEBRIS.get().asItem()) || stack.is(CMItems.USED_RESIN_CARTRIDGE.get())) {
             return null;
         }
         if (!(stack.getItem() instanceof FuelAssemblyItem a)) {

@@ -14,6 +14,7 @@ public class FuelStoreArmType extends ArmInteractionPointType {
     public static final Supplier<FuelStoreArmType> RACK = ServicePortArmType.TYPES.register("spent_fuel_rack", () -> new FuelStoreArmType(CMBlocks.SPENT_FUEL_RACK));
     public static final Supplier<FuelStoreArmType> CAP = ServicePortArmType.TYPES.register("fuel_channel_cap", () -> new FuelStoreArmType(CMBlocks.FUEL_CHANNEL_CAP));
     public static final Supplier<FuelStoreArmType> CASK = ServicePortArmType.TYPES.register("shielded_cask", () -> new FuelStoreArmType(CMBlocks.SHIELDED_CASK));
+    public static final Supplier<FuelStoreArmType> DEMINERALIZER = ServicePortArmType.TYPES.register("demineralizer", () -> new FuelStoreArmType(CMBlocks.DEMINERALIZER));
     private final Supplier<? extends Block> block;
 
     public FuelStoreArmType(Supplier<? extends Block> block) {

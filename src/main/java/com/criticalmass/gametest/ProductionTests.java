@@ -63,7 +63,7 @@ public final class ProductionTests {
     private static final List<String> GEAR = List.of("crafting/survey_meter", "crafting/dosimeter", "crafting/protective_hood", "crafting/protective_suit", "crafting/protective_leggings", "crafting/protective_boots",
             "crafting/area_radiation_monitor");
     private static final Set<String> NOT_CRAFTED = Set.of("uranium_ore", "deepslate_uranium_ore", "raw_uranium", "enriched_uranium", "depleted_uranium", "spent_fuel_assembly", "damaged_fuel_assembly",
-            "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash");
+            "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash", "used_resin_cartridge");
 
     private ProductionTests() {
     }
@@ -91,6 +91,8 @@ public final class ProductionTests {
         crafts(h, CMItems.SURVEY_METER.get(), 3, 3, null, tube, null, brass, Items.GLASS_PANE, brass, null, steel, null);
         crafts(h, CMBlocks.AREA_RADIATION_MONITOR.get(), 3, 3, null, Items.REDSTONE_TORCH, null, brass, tube, brass, steel, AllItems.COPPER_SHEET.get(), steel);
         crafts(h, CMItems.DOSIMETER.get(), 3, 1, steel, Items.QUARTZ, AllItems.BRASS_NUGGET.get());
+        crafts(h, CMBlocks.DEMINERALIZER.get(), 3, 3, steel, brass, steel, AllBlocks.FLUID_PIPE.get(), Items.GLASS, AllBlocks.FLUID_PIPE.get(), steel, AllBlocks.FLUID_PIPE.get(), steel);
+        crafts(h, CMItems.RESIN_CARTRIDGE.get(), 3, 3, null, AllItems.IRON_SHEET.get(), null, Items.CLAY_BALL, Items.CHARCOAL, Items.CLAY_BALL, null, AllItems.IRON_SHEET.get(), null);
         crafts(h, CMItems.PROTECTIVE_HOOD.get(), 3, 1, Items.LEATHER_HELMET, gasket, Items.WHITE_WOOL);
         crafts(h, CMItems.PROTECTIVE_SUIT.get(), 3, 1, Items.LEATHER_CHESTPLATE, gasket, Items.YELLOW_WOOL);
         crafts(h, CMItems.PROTECTIVE_LEGGINGS.get(), 3, 1, Items.LEATHER_LEGGINGS, gasket, Items.WHITE_WOOL);

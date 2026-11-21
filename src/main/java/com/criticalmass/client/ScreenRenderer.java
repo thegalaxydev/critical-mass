@@ -657,13 +657,13 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
         }
 
         private int tone(String key) {
-            if (key.contains(".trip.") || key.contains("breached") || key.contains("damaged") || key.contains("no_target") || key.contains("overloaded") || key.contains("transformer.hot") || key.endsWith("monitor.alarm")) {
+            if (key.contains(".trip.") || key.contains("breached") || key.contains("damaged") || key.contains("no_target") || key.contains("overloaded") || key.contains("transformer.hot") || key.endsWith("monitor.alarm") || key.endsWith("demineralizer.spent")) {
                 return RED;
             }
             if (key.startsWith("criticalmass.alarm.")) {
                 return AMBER;
             }
-            return key.contains("running") || key.contains("cleared") || key.contains("synchronised") || key.contains("supplying") || key.contains("breaker.closed") || key.endsWith(".live") || key.endsWith("monitor.normal") ? GREEN : AMBER;
+            return key.contains("running") || key.contains("cleared") || key.contains("synchronised") || key.contains("supplying") || key.contains("breaker.closed") || key.endsWith(".live") || key.endsWith("monitor.normal") || key.endsWith("demineralizer.cleaning") ? GREEN : AMBER;
         }
 
         private void centre(float x0, float y0, float x1, float y1) {

@@ -441,6 +441,9 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         if (be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity monitor) {
             return monitor.status();
         }
+        if (be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity resin) {
+            return resin.status();
+        }
         return "";
     }
 

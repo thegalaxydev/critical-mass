@@ -82,6 +82,7 @@ public final class CMBlocks {
     public static final DeferredBlock<PressurizerBlock> PRESSURIZER = register("pressurizer", PressurizerBlock::new, metal(5.0f).noOcclusion());
     public static final DeferredBlock<PressurizerTopBlock> PRESSURIZER_TOP = BLOCKS.register("pressurizer_top",
             () -> new PressurizerTopBlock(metal(5.0f).noOcclusion().noLootTable()));
+    public static final DeferredBlock<com.criticalmass.content.thermal.DemineralizerBlock> DEMINERALIZER = register("demineralizer", com.criticalmass.content.thermal.DemineralizerBlock::new, metal(4.0f));
     public static final DeferredBlock<Block> RUINED_CHANNEL = register("ruined_channel", Block::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<Corium.CoriumBlock> CORIUM = register("corium", Corium.CoriumBlock::new, metal(30.0f));
     public static final DeferredBlock<com.criticalmass.content.radiation.FalloutAshBlock> FALLOUT_ASH = BLOCKS.register("fallout_ash", () -> new com.criticalmass.content.radiation.FalloutAshBlock(

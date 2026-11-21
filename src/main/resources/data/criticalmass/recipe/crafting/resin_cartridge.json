@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "tag": "c:plates/iron"
+    },
+    "C": {
+      "item": "minecraft:clay_ball"
+    },
+    "K": {
+      "tag": "minecraft:coals"
+    }
+  },
+  "pattern": [
+    " I ",
+    "CKC",
+    " I "
+  ],
+  "result": {
+    "id": "criticalmass:resin_cartridge",
+    "count": 1
+  }
+}

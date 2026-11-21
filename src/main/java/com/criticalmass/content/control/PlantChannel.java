@@ -73,7 +73,7 @@ public enum PlantChannel {
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
                 || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity || be instanceof BatteryBlockEntity || be instanceof DieselEngineBlockEntity
-                || be instanceof AreaMonitorBlockEntity;
+                || be instanceof AreaMonitorBlockEntity || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity;
     }
 
     private static double scale(double kilovolts) {
@@ -212,6 +212,9 @@ public enum PlantChannel {
                 case VOLTAGE -> of(tie.live() ? tie.kilovolts() : 0, 0, 250);
                 default -> null;
             };
+        }
+        if (be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity resin) {
+            return this == LEVEL ? of(resin.resinLeft() * 100, 0, 100) : null;
         }
         if (be instanceof AreaMonitorBlockEntity monitor) {
             return this == DOSE ? of(monitor.rate(), 0, monitor.setpoint() * 2) : null;

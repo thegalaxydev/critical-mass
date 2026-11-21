@@ -548,6 +548,82 @@
    "item": true
   },
   {
+   "key": "demineralizer",
+   "registry_id": "criticalmass:demineralizer",
+   "type": "block",
+   "name": "Demineralizer",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_front_fresh.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_front_none.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_front_spent.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_front_used.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_side.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/demineralizer_top.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/steel_block.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/demineralizer_fresh.json",
+    "src/main/resources/assets/criticalmass/models/block/demineralizer_none.json",
+    "src/main/resources/assets/criticalmass/models/block/demineralizer_spent.json",
+    "src/main/resources/assets/criticalmass/models/block/demineralizer_used.json",
+    "src/main/resources/assets/criticalmass/models/item/demineralizer.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/demineralizer.json",
+   "item": true
+  },
+  {
    "key": "diesel_engine",
    "registry_id": "criticalmass:diesel_engine",
    "type": "block",
@@ -2898,6 +2974,28 @@
    "missing": []
   },
   {
+   "key": "resin_cartridge",
+   "registry_id": "criticalmass:resin_cartridge",
+   "type": "item",
+   "name": "Resin Cartridge",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/resin_cartridge.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/resin_cartridge.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "sealing_gasket",
    "registry_id": "criticalmass:sealing_gasket",
    "type": "item",
@@ -3136,6 +3234,28 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/item/uranium_concentrate.json"
+   ],
+   "missing": []
+  },
+  {
+   "key": "used_resin_cartridge",
+   "registry_id": "criticalmass:used_resin_cartridge",
+   "type": "item",
+   "name": "Used Resin Cartridge",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/used_resin_cartridge.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/used_resin_cartridge.json"
    ],
    "missing": []
   },

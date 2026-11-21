@@ -24,6 +24,9 @@ public final class CMComponents {
     public static final Supplier<DataComponentType<Double>> CONTAMINATION = COMPONENTS.registerComponentType("contamination",
             b -> b.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE));
 
+    public static final Supplier<DataComponentType<Double>> RESIN_LOAD = COMPONENTS.registerComponentType("resin_load",
+            b -> b.persistent(Codec.DOUBLE).networkSynchronized(ByteBufCodecs.DOUBLE));
+
     public static final Supplier<DataComponentType<BlockPos>> LINK_TARGET = COMPONENTS.registerComponentType("link_target",
             b -> b.persistent(BlockPos.CODEC).networkSynchronized(BlockPos.STREAM_CODEC));
 

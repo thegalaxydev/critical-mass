@@ -123,6 +123,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 | Trip: high flux | Neutron power passed 118% | Find what cooled the coolant or moved the rods, then restart in steps |
 | Power sags with the rods untouched | Xenon building, or fuel burning out | Withdraw rods a little at a time |
 | Cannot reach critical after a shutdown | Xenon peak | Wait for it to decay, about an hour at worst |
+| The vessel holds Contaminated Coolant | A fuel assembly failed | Shut down and take the damaged assembly out. Then run the coolant through a Demineralizer with a Resin Cartridge in it: one pump draws it off through a port and a second returns it. Change the cartridge when it is spent and put the spent one in a Shielded Cask |
 | Hot window, casing cracking | A fuel column without enough cooling | Insert rods, raise flow, add coolant channels next to that column. Weld the casing once it is cool |
 | Boiling window | Coolant above its boiling point | Lower power, or restore the Pressurizer's power and setpoint. Refill the vessel |
 | Feed pump cavitating, flow down | Steam is reaching the pump: the Condenser is not condensing all of the exhaust | Start or speed up the cooling water pump, check the cooling tower has water and airflow, lower the load until the pump runs quiet |
@@ -151,6 +152,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
+- **Coolant clean-up:** build the Demineralizer line before you need it, on a spare outlet port and a spare inlet port, with a clutch on the pumps. Keep Resin Cartridges to hand, since one takes up 4,000 mB of wholly contaminated coolant.
 - **Radiation monitors:** hang an Area Radiation Monitor on a wall of each hall where fuel or waste is handled, and set its alarm level on its value box. It ticks with the rate, lights and sounds at its level and gives a redstone signal, so it can close a Shielded Hatch. Link a Plant Screen wall, a Dashboard Gauge or a Dashboard Alarm lamp to it to watch the hall from the control room.
 - **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose. It also outlasts a nuclear explosion and shelters what is behind it, so a containment sealed on every side, under the vessel too, keeps the blast in. Each doorway and each pipe through the wall lets a jet of it out.
 
