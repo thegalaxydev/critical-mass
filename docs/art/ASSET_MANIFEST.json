@@ -295,6 +295,55 @@
    "item": true
   },
   {
+   "key": "charred_hanging_sign",
+   "registry_id": "criticalmass:charred_hanging_sign",
+   "type": "block",
+   "name": "Charred Hanging Sign",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/stripped_charred_log.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/entity/signs/hanging/charred.png",
+     "size": [
+      64,
+      32
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/gui/hanging_signs/charred.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/charred_hanging_sign.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_hanging_sign.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_hanging_sign.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_hanging_sign.json",
+   "item": true
+  },
+  {
    "key": "charred_log",
    "registry_id": "criticalmass:charred_log",
    "type": "block",
@@ -380,6 +429,47 @@
    "item": true
   },
   {
+   "key": "charred_sign",
+   "registry_id": "criticalmass:charred_sign",
+   "type": "block",
+   "name": "Charred Sign",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/entity/signs/charred.png",
+     "size": [
+      64,
+      32
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/charred_sign.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_sign.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_sign.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_sign.json",
+   "item": true
+  },
+  {
    "key": "charred_slab",
    "registry_id": "criticalmass:charred_slab",
    "type": "block",
@@ -459,6 +549,54 @@
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_trapdoor.json",
    "item": true
+  },
+  {
+   "key": "charred_wall_hanging_sign",
+   "registry_id": "criticalmass:charred_wall_hanging_sign",
+   "type": "block",
+   "name": "Charred Wall Hanging Sign",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/stripped_charred_log.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_hanging_sign.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_wall_hanging_sign.json",
+   "item": false
+  },
+  {
+   "key": "charred_wall_sign",
+   "registry_id": "criticalmass:charred_wall_sign",
+   "type": "block",
+   "name": "Charred Wall Sign",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_sign.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_wall_sign.json",
+   "item": false
   },
   {
    "key": "charred_wood",

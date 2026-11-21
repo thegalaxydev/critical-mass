@@ -104,6 +104,10 @@ public class CriticalMass {
         PlantDisplaySources.TARGETS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener((net.neoforged.neoforge.event.BlockEntityTypeAddBlocksEvent event) -> {
+            event.modify(net.minecraft.world.level.block.entity.BlockEntityType.SIGN, CMBlocks.CHARRED_SIGN.get(), CMBlocks.CHARRED_WALL_SIGN.get());
+            event.modify(net.minecraft.world.level.block.entity.BlockEntityType.HANGING_SIGN, CMBlocks.CHARRED_HANGING_SIGN.get(), CMBlocks.CHARRED_WALL_HANGING_SIGN.get());
+        });
         modEventBus.addListener(CriticalMass::registerCapabilities);
         modEventBus.addListener(net.neoforged.bus.api.EventPriority.HIGH, (RegisterCapabilitiesEvent event) -> event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
                 com.simibubi.create.AllBlockEntityTypes.FLUID_TANK.get(), com.criticalmass.content.thermal.TankFigure::of));
@@ -134,6 +138,7 @@ public class CriticalMass {
         event.enqueueWork(CMStress::register);
         event.enqueueWork(PlantDisplaySources::attach);
         event.enqueueWork(com.criticalmass.content.thermal.LavaReaction::register);
+        event.enqueueWork(com.criticalmass.content.FluidBucketItem::dispensers);
         event.enqueueWork(() -> BoilerHeater.REGISTRY.register(CMBlocks.BOILER_HEATING_PLATE.get(),
                 (level, pos, state) -> level.getBlockEntity(pos) instanceof BoilerPlateBlockEntity plate ? plate.heatForBoiler() : BoilerHeater.NO_HEAT));
         ModList mods = ModList.get();

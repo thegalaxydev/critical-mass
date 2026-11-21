@@ -2,9 +2,13 @@ package com.criticalmass.content;
 
 import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.thermal.CMThermal;
+import com.criticalmass.registry.CMItems;
 import java.util.List;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -21,11 +25,15 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidActionResult;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class FluidBucketItem extends BucketItem {
@@ -38,6 +46,37 @@ public class FluidBucketItem extends BucketItem {
     public double spillDirt() {
         FluidStack held = new FluidStack(content, AMOUNT);
         return AMOUNT * (CMThermal.isContaminated(held) ? CMThermal.CONTAMINATED_SPILL : CMThermal.isPrimaryMedium(held) ? CMThermal.CLEAN_SPILL : 0);
+    }
+
+    public void spill(ServerLevel server, BlockPos spot) {
+        double dirt = spillDirt();
+        if (dirt > 0) {
+            ContaminationData.get(server).add(spot, dirt);
+        }
+        server.playSound(null, spot, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
+        server.sendParticles(ParticleTypes.SPLASH, spot.getX() + 0.5, spot.getY() + 0.1, spot.getZ() + 0.5, 24, 0.25, 0.05, 0.25, 0.1);
+    }
+
+    public static void dispensers() {
+        DefaultDispenseItemBehavior pour = new DefaultDispenseItemBehavior() {
+            @Override
+            protected ItemStack execute(BlockSource source, ItemStack stack) {
+                Direction facing = source.state().getValue(DispenserBlock.FACING);
+                BlockPos front = source.pos().relative(facing);
+                IFluidHandler store = source.level().getCapability(Capabilities.FluidHandler.BLOCK, front, facing.getOpposite());
+                if (store != null) {
+                    FluidActionResult poured = FluidUtil.tryEmptyContainer(stack, store, AMOUNT, null, true);
+                    return poured.isSuccess() ? consumeWithRemainder(source, stack, poured.getResult()) : stack;
+                }
+                if (stack.getItem() instanceof FluidBucketItem bucket) {
+                    bucket.spill(source.level(), front);
+                }
+                return consumeWithRemainder(source, stack, new ItemStack(Items.BUCKET));
+            }
+        };
+        for (var bucket : List.of(CMItems.PRIMARY_COOLANT_BUCKET, CMItems.CONTAMINATED_COOLANT_BUCKET, CMItems.BORIC_ACID_BUCKET, CMItems.FUEL_OIL_BUCKET)) {
+            DispenserBlock.registerBehavior(bucket.get(), pour);
+        }
     }
 
     @Override
@@ -54,12 +93,7 @@ public class FluidBucketItem extends BucketItem {
             return InteractionResultHolder.pass(stack);
         }
         if (level instanceof ServerLevel server) {
-            double dirt = spillDirt();
-            if (dirt > 0) {
-                ContaminationData.get(server).add(spot, dirt);
-            }
-            server.playSound(null, spot, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1.0f, 1.0f);
-            server.sendParticles(ParticleTypes.SPLASH, spot.getX() + 0.5, spot.getY() + 0.1, spot.getZ() + 0.5, 24, 0.25, 0.05, 0.25, 0.1);
+            spill(server, spot);
         }
         player.awardStat(Stats.ITEM_USED.get(this));
         return InteractionResultHolder.sidedSuccess(ItemUtils.createFilledResult(stack, player, new ItemStack(Items.BUCKET)), level.isClientSide);

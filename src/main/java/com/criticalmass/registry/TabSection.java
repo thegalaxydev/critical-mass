@@ -36,7 +36,7 @@ public enum TabSection {
             "small_chartrine_bricks", "small_chartrine_brick_stairs", "small_chartrine_brick_slab", "small_chartrine_brick_wall",
             "layered_chartrine", "chartrine_pillar",
             "charred_log", "charred_wood", "stripped_charred_log", "stripped_charred_wood", "charred_planks", "charred_stairs", "charred_slab", "charred_fence", "charred_fence_gate",
-            "charred_door", "charred_trapdoor", "charred_pressure_plate", "charred_button");
+            "charred_door", "charred_trapdoor", "charred_pressure_plate", "charred_button", "charred_sign", "charred_hanging_sign");
 
     public static final int WIDTH = 162;
     public static final int HEIGHT = 18;

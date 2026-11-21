@@ -119,6 +119,18 @@ public final class CMBlocks {
     public static final DeferredBlock<net.minecraft.world.level.block.ButtonBlock> CHARRED_BUTTON = register("charred_button",
             p -> new net.minecraft.world.level.block.ButtonBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK, 30, p),
             charred().noCollission().strength(0.5f).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
+    public static final net.minecraft.world.level.block.state.properties.WoodType CHARRED_TYPE = net.minecraft.world.level.block.state.properties.WoodType.register(
+            new net.minecraft.world.level.block.state.properties.WoodType("criticalmass:charred", net.minecraft.world.level.block.state.properties.BlockSetType.OAK));
+    public static final DeferredBlock<net.minecraft.world.level.block.WallSignBlock> CHARRED_WALL_SIGN = BLOCKS.register("charred_wall_sign",
+            () -> new net.minecraft.world.level.block.WallSignBlock(CHARRED_TYPE, sign().lootFrom(() -> CMBlocks.CHARRED_SIGN.get())));
+    public static final DeferredBlock<net.minecraft.world.level.block.StandingSignBlock> CHARRED_SIGN = register("charred_sign",
+            p -> new net.minecraft.world.level.block.StandingSignBlock(CHARRED_TYPE, p), sign(),
+            b -> new net.minecraft.world.item.SignItem(new net.minecraft.world.item.Item.Properties().stacksTo(16), b, CMBlocks.CHARRED_WALL_SIGN.get()));
+    public static final DeferredBlock<net.minecraft.world.level.block.WallHangingSignBlock> CHARRED_WALL_HANGING_SIGN = BLOCKS.register("charred_wall_hanging_sign",
+            () -> new net.minecraft.world.level.block.WallHangingSignBlock(CHARRED_TYPE, sign().lootFrom(() -> CMBlocks.CHARRED_HANGING_SIGN.get())));
+    public static final DeferredBlock<net.minecraft.world.level.block.CeilingHangingSignBlock> CHARRED_HANGING_SIGN = register("charred_hanging_sign",
+            p -> new net.minecraft.world.level.block.CeilingHangingSignBlock(CHARRED_TYPE, p), sign(),
+            b -> new net.minecraft.world.item.HangingSignItem(b, CMBlocks.CHARRED_WALL_HANGING_SIGN.get(), new net.minecraft.world.item.Item.Properties().stacksTo(16)));
     public static final DeferredBlock<com.criticalmass.content.radiation.WaterCannonBlock> WATER_CANNON = register("water_cannon", com.criticalmass.content.radiation.WaterCannonBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.control.MeltdownSirenBlock> MELTDOWN_SIREN = register("meltdown_siren", com.criticalmass.content.control.MeltdownSirenBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.radiation.AreaMonitorBlock> AREA_RADIATION_MONITOR = register("area_radiation_monitor", com.criticalmass.content.radiation.AreaMonitorBlock::new,
@@ -176,6 +188,10 @@ public final class CMBlocks {
     public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = register("deepslate_uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 3.0f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
 
     private CMBlocks() {
+    }
+
+    static BlockBehaviour.Properties sign() {
+        return charred().forceSolidOn().noCollission().strength(1.0f);
     }
 
     static BlockBehaviour.Properties charred() {

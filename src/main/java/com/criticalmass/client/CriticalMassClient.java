@@ -119,6 +119,7 @@ public class CriticalMassClient {
     }
 
     private void clientSetup(FMLClientSetupEvent event) {
+        event.enqueueWork(() -> net.minecraft.client.renderer.Sheets.addWoodType(CMBlocks.CHARRED_TYPE));
         net.createmod.ponder.foundation.PonderIndex.addPlugin(new com.criticalmass.ponder.CMPonder());
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
                 .factory(SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))

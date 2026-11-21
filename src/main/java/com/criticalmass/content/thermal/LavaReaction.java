@@ -48,10 +48,10 @@ public final class LavaReaction {
             ContaminationData.get(server).add(mouth(area), arrived.activity() * CMThermal.CONTAMINATED_SPILL + (fluid.getAmount() - arrived.activity()) * CMThermal.CLEAN_SPILL);
             return;
         }
-        if (level.random.nextDouble() * CMThermal.CHARTRINE_COOLANT >= fluid.getAmount()) {
+        if (level.random.nextDouble() * com.criticalmass.registry.CMConfig.CHARTRINE_COOLANT.get() >= fluid.getAmount()) {
             return;
         }
-        BlockState made = stone(level.random, arrived.proven() / fluid.getAmount());
+        BlockState made = stone(level.random, com.criticalmass.registry.CMConfig.GROW_CHARTRINE.get() ? arrived.proven() / fluid.getAmount() : 0);
         level.setBlockAndUpdate(lava, made);
         level.levelEvent(LevelEvent.LAVA_FIZZ, lava, 0);
         if (made.is(CMBlocks.CHARTRINE.get())) {

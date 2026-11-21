@@ -13,6 +13,10 @@
     "criticalmass:charred_door",
     "criticalmass:charred_trapdoor",
     "criticalmass:charred_pressure_plate",
-    "criticalmass:charred_button"
+    "criticalmass:charred_button",
+    "criticalmass:charred_sign",
+    "criticalmass:charred_wall_sign",
+    "criticalmass:charred_hanging_sign",
+    "criticalmass:charred_wall_hanging_sign"
   ]
 }

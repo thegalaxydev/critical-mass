@@ -592,7 +592,7 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 ## charred wood
 
-- Used by: `textures/block/stripped_charred_log.png`, `stripped_charred_log_top.png`, `charred_planks.png`, `charred_door_top.png`, `charred_door_bottom.png`, `charred_trapdoor.png` and `textures/item/charred_door.png`. Charred Wood uses the Charred Log's bark on every side, Stripped Charred Wood uses the stripped log's side, and the stairs, slab, fence, fence gate, pressure plate and button use the planks.
+- Used by: `textures/block/stripped_charred_log.png`, `stripped_charred_log_top.png`, `charred_planks.png`, `charred_door_top.png`, `charred_door_bottom.png`, `charred_trapdoor.png`, `textures/item/charred_door.png`, `charred_sign.png` and `charred_hanging_sign.png`, and the sign boards `textures/entity/signs/charred.png`, `entity/signs/hanging/charred.png` and `gui/hanging_signs/charred.png`, which are painted in five lighter tones so that writing shows on them. Charred Wood uses the Charred Log's bark on every side, Stripped Charred Wood uses the stripped log's side, and the stairs, slab, fence, fence gate, pressure plate and button use the planks.
 - Source: `art/tools/charred_texture.py` takes vanilla's oak sheets from the game's own resources when it runs and repaints each one by rank of tone: the bark in the Corium's crust tones, the rest in five burnt timber tones in the script. Clear pixels stay clear, so the door and trapdoor keep their windows. No vanilla texture is stored in the project.
 - Status: script-painted placeholders, not yet approved.
 - Repainting: run the tool with `fresh`, and name sheets after it to repaint only those, as in `charred_texture.py fresh charred_planks`.

@@ -8,14 +8,17 @@ from PIL import Image
 from plant_style import BLOCK, CRUST, EMBER, ROOT
 
 VANILLA = os.path.join(ROOT, "build", "moddev", "artifacts", "neoforge-21.1.262-client-extra-aka-minecraft-resources.jar")
-ITEM = os.path.join(os.path.dirname(BLOCK), "item")
+TEXTURES = os.path.dirname(BLOCK)
 TIMBER = [(27, 23, 22), (38, 32, 30), (50, 42, 38), (64, 53, 47), (80, 66, 57)]
+BOARD = [(58, 49, 44), (76, 63, 55), (96, 80, 68), (116, 97, 82), (136, 115, 97)]
 SHEETS = {
-    "charred_log": ("block/oak_log", CRUST, BLOCK), "charred_log_top": ("block/oak_log_top", CRUST, BLOCK),
-    "stripped_charred_log": ("block/stripped_oak_log", TIMBER, BLOCK), "stripped_charred_log_top": ("block/stripped_oak_log_top", TIMBER, BLOCK),
-    "charred_planks": ("block/oak_planks", TIMBER, BLOCK), "charred_door_top": ("block/oak_door_top", TIMBER, BLOCK),
-    "charred_door_bottom": ("block/oak_door_bottom", TIMBER, BLOCK), "charred_trapdoor": ("block/oak_trapdoor", TIMBER, BLOCK),
-    "charred_door": ("item/oak_door", TIMBER, ITEM),
+    "block/charred_log": ("block/oak_log", CRUST), "block/charred_log_top": ("block/oak_log_top", CRUST),
+    "block/stripped_charred_log": ("block/stripped_oak_log", TIMBER), "block/stripped_charred_log_top": ("block/stripped_oak_log_top", TIMBER),
+    "block/charred_planks": ("block/oak_planks", TIMBER), "block/charred_door_top": ("block/oak_door_top", TIMBER),
+    "block/charred_door_bottom": ("block/oak_door_bottom", TIMBER), "block/charred_trapdoor": ("block/oak_trapdoor", TIMBER),
+    "item/charred_door": ("item/oak_door", TIMBER), "item/charred_sign": ("item/oak_sign", TIMBER), "item/charred_hanging_sign": ("item/oak_hanging_sign", TIMBER),
+    "entity/signs/charred": ("entity/signs/oak", BOARD), "entity/signs/hanging/charred": ("entity/signs/hanging/oak", BOARD),
+    "gui/hanging_signs/charred": ("gui/hanging_signs/oak", BOARD),
 }
 CRACKS = ((5, 3), (5, 4), (6, 5), (6, 6), (10, 9), (10, 10), (11, 11), (3, 12), (3, 13))
 
@@ -41,12 +44,14 @@ def main():
     if "fresh" not in sys.argv:
         print("left alone; pass fresh to repaint the charred wood")
         return
-    chosen = [name for name in SHEETS if name in sys.argv] or list(SHEETS)
+    chosen = [name for name in SHEETS if name in sys.argv or os.path.basename(name) in sys.argv] or list(SHEETS)
     with zipfile.ZipFile(VANILLA) as jar:
         for name in chosen:
-            source, tones, folder = SHEETS[name]
+            source, tones = SHEETS[name]
             img = Image.open(io.BytesIO(jar.read("assets/minecraft/textures/%s.png" % source))).convert("RGBA")
-            charred(img, tones, name == "charred_log").save(os.path.join(folder, name + ".png"))
+            path = os.path.join(TEXTURES, name.replace("/", os.sep) + ".png")
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            charred(img, tones, name == "block/charred_log").save(path)
             print("painted", name)
 
 

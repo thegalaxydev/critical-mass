@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (96)
+## Blocks (100)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -19,12 +19,16 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:charred_door` | Charred Door | script | `block/charred_door_bottom.png` 16x16<br>`block/charred_door_top.png` 16x16<br>`item/charred_door.png` 16x16 |  | 9 |
 | `criticalmass:charred_fence` | Charred Fence | script | `block/charred_planks.png` 16x16 |  | 4 |
 | `criticalmass:charred_fence_gate` | Charred Fence Gate | script | `block/charred_planks.png` 16x16 |  | 5 |
+| `criticalmass:charred_hanging_sign` | Charred Hanging Sign | script | `block/stripped_charred_log.png` 16x16<br>`entity/signs/hanging/charred.png` 64x32<br>`gui/hanging_signs/charred.png` 16x16<br>`item/charred_hanging_sign.png` 16x16 |  | 2 |
 | `criticalmass:charred_log` | Charred Log | script | `block/charred_log.png` 16x16<br>`block/charred_log_top.png` 16x16 |  | 3 |
 | `criticalmass:charred_planks` | Charred Planks | script | `block/charred_planks.png` 16x16 |  | 2 |
 | `criticalmass:charred_pressure_plate` | Charred Pressure Plate | script | `block/charred_planks.png` 16x16 |  | 3 |
+| `criticalmass:charred_sign` | Charred Sign | script | `block/charred_planks.png` 16x16<br>`entity/signs/charred.png` 64x32<br>`item/charred_sign.png` 16x16 |  | 2 |
 | `criticalmass:charred_slab` | Charred Slab | script | `block/charred_planks.png` 16x16 |  | 4 |
 | `criticalmass:charred_stairs` | Charred Stairs | script | `block/charred_planks.png` 16x16 |  | 4 |
 | `criticalmass:charred_trapdoor` | Charred Trapdoor | script | `block/charred_trapdoor.png` 16x16 |  | 4 |
+| `criticalmass:charred_wall_hanging_sign` | Charred Wall Hanging Sign (no item) | script | `block/stripped_charred_log.png` 16x16 |  | 1 |
+| `criticalmass:charred_wall_sign` | Charred Wall Sign (no item) | script | `block/charred_planks.png` 16x16 |  | 1 |
 | `criticalmass:charred_wood` | Charred Wood | script | `block/charred_log.png` 16x16 |  | 2 |
 | `criticalmass:chartrine` | Chartrine | generated | `block/chartrine_0.png` 16x16<br>`block/chartrine_1.png` 16x16<br>`block/chartrine_2.png` 16x16<br>`block/chartrine_3.png` 16x16 |  | 5 |
 | `criticalmass:chartrine_pillar` | Chartrine Pillar | script | `block/chartrine_cut_cap.png` 16x16<br>`block/chartrine_cut_cap_connected.png` 128x128<br>`block/chartrine_cut_pillar.png` 16x16<br>`block/chartrine_cut_pillar_connected.png` 64x64 |  | 3 |

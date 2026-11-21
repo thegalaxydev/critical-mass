@@ -45,6 +45,52 @@ public final class BucketTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void aDispenserSpillsABucketOrPoursItIntoATank(GameTestHelper h) {
+        BlockPos open = new BlockPos(1, 2, 1);
+        BlockPos fed = new BlockPos(1, 2, 4);
+        BlockPos into = fed.east();
+        h.setBlock(into, AllBlocks.FLUID_TANK.getDefaultState());
+        for (BlockPos at : List.of(open, fed)) {
+            h.setBlock(at, Blocks.DISPENSER.defaultBlockState().setValue(net.minecraft.world.level.block.DispenserBlock.FACING, Direction.EAST));
+            net.minecraft.world.level.block.entity.DispenserBlockEntity box = h.getBlockEntity(at);
+            box.setItem(0, new ItemStack(CMItems.CONTAMINATED_COOLANT_BUCKET.get()));
+        }
+        ContaminationData floor = ContaminationData.get(h.getLevel());
+        floor.clear(h.absolutePos(open.east()));
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    h.setBlock(open.above(), Blocks.REDSTONE_BLOCK);
+                    h.setBlock(fed.above(), Blocks.REDSTONE_BLOCK);
+                })
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    net.minecraft.world.level.block.entity.DispenserBlockEntity spilled = h.getBlockEntity(open);
+                    h.assertTrue(spilled.getItem(0).is(Items.BUCKET), "A dispenser should be left with the empty bucket: " + spilled.getItem(0));
+                    h.assertTrue(Math.abs(floor.clear(h.absolutePos(open.east())) - ((FluidBucketItem) CMItems.CONTAMINATED_COOLANT_BUCKET.get()).spillDirt()) < 1e-6, "A dispensed bucket should spill in front of the dispenser");
+                    h.assertBlockPresent(Blocks.AIR, open.east());
+                    net.minecraft.world.level.block.entity.DispenserBlockEntity poured = h.getBlockEntity(fed);
+                    FluidTankBlockEntity tank = h.getBlockEntity(into);
+                    h.assertTrue(poured.getItem(0).is(Items.BUCKET) && tank.getTankInventory().getFluidAmount() == 1000, "A dispenser facing a tank should pour the bucket into it: " + tank.getTankInventory().getFluid());
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY)
+    public static void charredSignsTakeText(GameTestHelper h) {
+        BlockPos post = new BlockPos(1, 2, 1);
+        BlockPos hung = new BlockPos(3, 2, 1);
+        h.setBlock(post.below(), Blocks.STONE);
+        h.setBlock(post, com.criticalmass.registry.CMBlocks.CHARRED_SIGN.get());
+        h.setBlock(hung.above(), Blocks.STONE);
+        h.setBlock(hung, com.criticalmass.registry.CMBlocks.CHARRED_HANGING_SIGN.get());
+        h.succeedWhen(() -> {
+            h.assertTrue(h.getLevel().getBlockEntity(h.absolutePos(post)) instanceof net.minecraft.world.level.block.entity.SignBlockEntity, "A Charred Sign should be a sign");
+            h.assertTrue(h.getLevel().getBlockEntity(h.absolutePos(hung)) instanceof net.minecraft.world.level.block.entity.HangingSignBlockEntity, "A Charred Hanging Sign should be a hanging sign");
+        });
+    }
+
+    @GameTest(template = EMPTY)
     public static void everyLiquidHasABucketThatFillsTanksAndSpillsOnTheGround(GameTestHelper h) {
         List<Kind> kinds = List.of(new Kind(CMFluids.PRIMARY_COOLANT, CMItems.PRIMARY_COOLANT_BUCKET.get()), new Kind(CMFluids.CONTAMINATED_COOLANT, CMItems.CONTAMINATED_COOLANT_BUCKET.get()),
                 new Kind(CMFluids.BORIC_ACID, CMItems.BORIC_ACID_BUCKET.get()), new Kind(CMFluids.FUEL_OIL, CMItems.FUEL_OIL_BUCKET.get()));

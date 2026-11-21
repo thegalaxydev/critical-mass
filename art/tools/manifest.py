@@ -48,15 +48,17 @@ ART.update({name: SCRIPT for name in ("cut_chartrine", "polished_cut_chartrine",
 ART.update({name: SCRIPT for name in ("charred_wood", "stripped_charred_log", "stripped_charred_wood", "charred_planks", "charred_stairs", "charred_slab", "charred_fence", "charred_fence_gate",
                                       "charred_door", "charred_trapdoor", "charred_pressure_plate", "charred_button")})
 ART.update({name + "_bucket": SCRIPT for name in ("primary_coolant", "contaminated_coolant", "boric_acid", "fuel_oil")})
-OTHER_ART = [("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT), ("gui/banner/", SCRIPT),
+ART.update({name: SCRIPT for name in ("charred_sign", "charred_wall_sign", "charred_hanging_sign", "charred_wall_hanging_sign")})
+OTHER_ART = [("entity/signs/", SCRIPT), ("gui/hanging_signs/", SCRIPT), ("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT), ("gui/banner/", SCRIPT),
              ("gui/advancement_background", "script, cut from the author's casing sheet")]
 OWNERS = {"block/control_rod_cap": "control_rod_drive", "block/control_rod_shaft": "control_rod_drive"}
 DIRECT = {
     "block/casing_crack_1": "reactor_vessel_casing", "block/casing_crack_2": "reactor_vessel_casing", "block/casing_crack_3": "reactor_vessel_casing",
     "block/reactor_vessel_casing_connected": "reactor_vessel_casing", "block/shielded_glass_connected": "shielded_glass",
+    "entity/signs/charred": "charred_sign", "entity/signs/hanging/charred": "charred_hanging_sign", "gui/hanging_signs/charred": "charred_hanging_sign",
     "block/chartrine_cut_layered_connected": "layered_chartrine", "block/chartrine_cut_pillar_connected": "chartrine_pillar", "block/chartrine_cut_cap_connected": "chartrine_pillar",
 }
-NO_ITEM = {"burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure", "reinforced_straight_pipe", "encased_reinforced_pipe"}
+NO_ITEM = {"charred_wall_sign", "charred_wall_hanging_sign", "burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure", "reinforced_straight_pipe", "encased_reinforced_pipe"}
 LEGEND = ("The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: "
           "both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. "
           "`not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.")
