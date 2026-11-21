@@ -60,7 +60,7 @@ Values live in `content/thermal/CMThermal.java`.
   - **By hand:** with the cap unlocked, use an assembly on it to lower it into that column, and an empty hand to lift the column's assembly out, spent or not.
   - **By machine:** funnels, hoppers and Mechanical Arms work a cap the way they work the Service Port, and an arm can pick it as a target. A Deployer does what a hand does, so a Deployer on a Gantry Carriage over a row of caps is a refuelling machine.
   - **Rules:** fuel moves only while the reactor is shut down. An unlocked cap keeps the reactor from starting and stops one that is running, and it shields a quarter as well as casing, so the head of an open core is no place to stand.
-  - **Reading:** goggles on a cap show how much fuel its column has left, and a comparator gives the same, with 0 for an empty column.
+  - **Reading:** goggles on a cap show how much fuel its column has left, and a comparator gives the same, with 0 for an empty column. A Plant Screen wall linked to a cap or to the Service Port shows every column at once as a core map.
   - **Shuffling:** columns do not burn evenly. A column makes 25% more for each fuel column beside it and burns down that much faster. Caps let part-burnt assemblies change places, the fresher ones into the middle and the tired ones to the edge, so a core is used up evenly. The Service Port only hands out what is already spent and loads whichever column is free.
 - Only casing may sit on edges and corners.
 - The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed. Each channel is an open bundle of rods between two end plates, so you can see through a column to the ones behind it.
@@ -148,6 +148,12 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
     - The wall shows the machine's name and its state, trend graphs of its readings over the last two minutes, and a table of every reading.
     - How much it shows depends on its size. Three by two is one graph. A bigger wall fits more graphs, up to six, and from 5 wide the table stands beside them. A narrow wall 4 or more high puts the table under them.
     - Readings that start at zero scale themselves to what they have seen. Frequency, phase angle and temperature are graphed on a fixed window, so 50 Hz sits in the middle of 45 to 55.
+  - **Core map:** use the Plant Linker on a Reactor Service Port or a Fuel Channel Cap, then on a wall at least 3 wide and 2 high. The wall draws the vessel's columns from above, with north at the top.
+    - A fuel column is a square with the percent of fuel it has left, a bar of the same and its temperature. It is green in use, amber when spent or under 15%, red when damaged, over 800 °C or melted, and dim with two dashes when empty.
+    - A capped column has a mark in its corner: a filled square for a locked cap and an amber outline for an unlocked one.
+    - A control rod is a ring with the percent it is inserted, and a coolant column is a small dim square.
+    - Beside the map, or under it on a narrow wall, the wall says whether fuel can move or why it is locked, how many columns are loaded, the lowest fuel, the hottest column and how many caps are unlocked, with a key to the marks where there is room.
+    - A Dashboard Gauge does not bind to a cap or the Service Port.
     - Where the table stands beside the graphs and there is room under it, the wall lists the machine's latest changes of state with their age.
     - Linking another machine to the same wall replaces the first and starts the graphs again.
   - **One-line diagram:** a wall at least 5 wide and 3 high linked to a Bus Bar draws everything wired to that bar, however far, as a diagram. The Grid Connection or a generator is at the top, and each breaker, switch, transformer, bus, generator, motor and battery hangs from what feeds it. Insulators and arresters are left out.

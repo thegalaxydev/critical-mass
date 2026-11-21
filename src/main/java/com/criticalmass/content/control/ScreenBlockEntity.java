@@ -59,6 +59,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.REACTIVITY, PlantChannel.PERIOD);
     private static final int SCAN_TICKS = 10;
     private static final int LINE_LIMIT = 160;
+    private static final String NO_VESSEL = "criticalmass.service.no_vessel";
 
     public enum Trend {
         POWER("power", PlantChannel.NEUTRON, 120), PRESSURE("pressure", PlantChannel.PRESSURE, 20), COOLANT("coolant", PlantChannel.COOLANT_TEMPERATURE, 200), XENON("xenon", PlantChannel.XENON, 100);
@@ -111,6 +112,9 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     private final List<Event> events = new ArrayList<>();
     private int lastAlarms;
     private List<Mimic.Node> mimic = List.of();
+    @Nullable
+    private CoreMap.Snapshot core;
+
     public ScreenBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
     }
@@ -208,6 +212,11 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         return mimic;
     }
 
+    @Nullable
+    public CoreMap.Snapshot core() {
+        return core;
+    }
+
     public int samples() {
         return samples;
     }
@@ -273,7 +282,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         boolean onReactor = reactor != null && level.getBlockEntity(reactor) instanceof ReactorControllerBlockEntity;
         if (be instanceof SteamTurbineBlockEntity && onReactor) {
             turbine = pos.immutable();
-        } else if (PlantChannel.isTarget(be)) {
+        } else if (PlantChannel.isTarget(be) || CoreMap.isSource(be)) {
             if (!pos.equals(reactor)) {
                 clearReadings();
                 turbine = null;
@@ -309,6 +318,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         events.clear();
         lastAlarms = 0;
         mimic = List.of();
+        core = null;
     }
 
     private void adopt(ScreenBlockEntity other) {
@@ -461,8 +471,11 @@ public class ScreenBlockEntity extends KineticBlockEntity {
         rows = List.copyOf(nowRows);
         board = nowBoard;
         title = be == null ? "" : be.getBlockState().getBlock().getDescriptionId();
-        String nowStatus = rows.isEmpty() ? "criticalmass.screen.no_target" : statusOf(be);
-        int alarms = be instanceof ReactorControllerBlockEntity c ? PlantAlarms.evaluate(c) : 0;
+        boolean nowCore = CoreMap.isSource(be);
+        ReactorControllerBlockEntity vessel = nowCore ? CoreMap.controller(be) : be instanceof ReactorControllerBlockEntity c ? c : null;
+        String nowStatus = nowCore ? vessel == null ? NO_VESSEL : statusOf(vessel) : rows.isEmpty() ? "criticalmass.screen.no_target" : statusOf(be);
+        int alarms = vessel != null ? PlantAlarms.evaluate(vessel) : 0;
+        core = nowCore ? CoreMap.build(vessel) : null;
         values.clear();
         for (PlantChannel channel : rows) {
             values.add(shown(channel.read(level, reactor)));
@@ -596,6 +609,9 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             tag.put("Values", shown);
             tag.putString("TurbineSpeed", turbineSpeed);
             tag.put("Mimic", Mimic.save(mimic));
+            if (core != null) {
+                tag.put("Core", core.save());
+            }
             tag.putString("Output", output);
             tag.putInt("Samples", samples);
             for (int i = 0; i < trends.size(); i++) {
@@ -649,6 +665,7 @@ public class ScreenBlockEntity extends KineticBlockEntity {
             }
             turbineSpeed = tag.getString("TurbineSpeed");
             mimic = Mimic.load(tag.getList("Mimic", Tag.TAG_COMPOUND));
+            core = tag.contains("Core") ? CoreMap.load(tag.getCompound("Core")) : null;
             output = tag.getString("Output");
             samples = tag.getInt("Samples");
             title = tag.getString("Title");

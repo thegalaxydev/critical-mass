@@ -86,7 +86,7 @@ public class PlantLinkerItem extends Item {
             }
             return InteractionResult.SUCCESS;
         }
-        if (PlantChannel.isTarget(be)) {
+        if (PlantChannel.isTarget(be) || CoreMap.isSource(be)) {
             if (!level.isClientSide) {
                 stack.set(CMComponents.LINK_TARGET.get(), pos.immutable());
                 level.playSound(null, pos, CMSounds.RELAY_CLICK.get(), SoundSource.BLOCKS, 0.6f, 1.2f);

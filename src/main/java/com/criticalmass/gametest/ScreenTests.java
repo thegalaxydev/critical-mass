@@ -1,12 +1,16 @@
 package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
+import com.criticalmass.content.control.CoreMap;
+import com.criticalmass.content.control.DashPart;
 import com.criticalmass.content.control.Mimic;
 import com.criticalmass.content.control.PlantAlarms;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
 import com.criticalmass.content.control.ScreenBlock;
 import com.criticalmass.content.control.ScreenBlockEntity;
+import com.criticalmass.content.fuel.ChannelCapBlock;
+import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.power.BreakerBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
@@ -15,6 +19,7 @@ import com.criticalmass.content.power.WireLinks;
 import com.criticalmass.content.power.WireType;
 import com.criticalmass.content.thermal.CMThermal;
 import com.criticalmass.content.thermal.ReactorControllerBlockEntity;
+import com.criticalmass.content.thermal.ReactorCore;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMItems;
 import com.simibubi.create.AllBlocks;
@@ -190,6 +195,66 @@ public final class ScreenTests {
             }
         }
         return h.getBlockEntity(corner.offset(width - 1, height - 1, 0));
+    }
+
+    @GameTest(template = LARGE, timeoutTicks = 300)
+    public static void aWallLinkedToACapOrTheServicePortShowsTheCoreMap(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+        BlockPos capPos = new BlockPos(2, 5, 2);
+        int dx = capPos.getX() - TestVessels.CONTROLLER.getX();
+        int dz = capPos.getZ() - TestVessels.CONTROLLER.getZ();
+        h.setBlock(capPos, CMBlocks.FUEL_CHANNEL_CAP.get());
+        List<ScreenBlockEntity> all = new ArrayList<>();
+        BlockPos corner = new BlockPos(7, 2, 8);
+        ScreenBlockEntity main = wall(h, corner, ScreenBlockEntity.MIN_WIDTH, ScreenBlockEntity.MIN_HEIGHT, all);
+        h.onEachTick(() -> all.forEach(ScreenBlockEntity::charge));
+        Player player = h.makeMockPlayer(GameType.CREATIVE);
+        ItemStack linker = new ItemStack(CMItems.PLANT_LINKER.get());
+        player.setItemInHand(InteractionHand.MAIN_HAND, linker);
+        BlockPos capAbs = h.absolutePos(capPos);
+        BlockPos screenAbs = h.absolutePos(corner);
+        h.startSequence()
+                .thenIdle(15)
+                .thenExecute(() -> {
+                    c.loadFuel(dx, dz, FuelState.fresh().withRemaining(0.4));
+                    linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(capAbs), Direction.UP, capAbs, false)));
+                    linker.useOn(new UseOnContext(h.getLevel(), player, InteractionHand.MAIN_HAND, linker, new BlockHitResult(Vec3.atCenterOf(screenAbs), Direction.NORTH, screenAbs, false)));
+                    h.assertTrue(main.linked() && capAbs.equals(main.reactor()), "The linker should link a wall to a Fuel Channel Cap: " + main.reactor());
+                    h.assertTrue(!DashPart.accepts(DashPart.Type.GAUGE, h.getLevel(), capAbs), "A gauge should not bind to a cap");
+                })
+                .thenIdle(45)
+                .thenExecute(() -> {
+                    CoreMap.Snapshot map = main.core();
+                    h.assertTrue(map != null && map.present() && map.width() == 3 && map.depth() == 3, "The wall should hold a three by three core map");
+                    h.assertTrue(map.count(CoreMap.Kind.FUEL) == 5 && map.count(CoreMap.Kind.CONTROL) == 2 && map.count(CoreMap.Kind.COOLANT) == 2 && map.loaded() == 5, "The map should have five loaded fuel columns, two rods and two coolant columns");
+                    CoreMap.Cell capped = map.cell(0, 0);
+                    h.assertTrue(capped.kind() == CoreMap.Kind.FUEL && capped.state() == CoreMap.State.ACTIVE && capped.cap() == CoreMap.Cap.LOCKED && capped.percent() == 40, "The north-west column should be fuel at 40% under a locked cap: " + capped);
+                    h.assertTrue(map.cell(1, 0).kind() == CoreMap.Kind.CONTROL && map.cell(0, 1).kind() == CoreMap.Kind.COOLANT, "North should be up and west to the left: " + map.cell(1, 0) + " " + map.cell(0, 1));
+                    CoreMap.Cell centre = map.cell(1, 1);
+                    h.assertTrue(centre.kind() == CoreMap.Kind.FUEL && centre.cap() == CoreMap.Cap.NONE && centre.percent() == 100 && Math.abs(centre.temperature() - CMThermal.AMBIENT) < 60, "The centre column should be whole, uncapped and cold: " + centre);
+                    h.assertTrue(map.lowest() == 40 && map.caps(false) == 1 && map.caps(true) == 0 && map.handling() == CoreMap.Handling.FREE, "The summary should give the lowest fuel, the caps and that fuel can move: " + map.lowest() + " " + map.handling());
+                    h.assertTrue(main.trends().isEmpty() && main.status().endsWith(".short"), "The map should carry the reactor's state and no trends: " + main.status());
+                    CompoundTag sent = main.getUpdateTag(h.getLevel().registryAccess()).getCompound("Core");
+                    h.assertTrue(CoreMap.load(sent).cell(0, 0).equals(capped) && sent.getIntArray("Cells").length == 9, "The map should be sent to the client whole");
+                    h.setBlock(capPos, CMBlocks.FUEL_CHANNEL_CAP.get().defaultBlockState().setValue(ChannelCapBlock.OPEN, true));
+                    h.assertTrue(c.discharge(ReactorCore.key(dx, dz)) != null, "The corner column should give up its assembly");
+                })
+                .thenIdle(45)
+                .thenExecute(() -> {
+                    CoreMap.Snapshot map = main.core();
+                    CoreMap.Cell capped = map.cell(0, 0);
+                    h.assertTrue(capped.state() == CoreMap.State.EMPTY && capped.cap() == CoreMap.Cap.UNLOCKED && map.loaded() == 4 && map.caps(true) == 1 && map.lowest() == 100, "The map should show the column empty under an unlocked cap: " + capped);
+                    h.assertTrue(main.link(h.absolutePos(TestVessels.SERVICE)), "A wall should link to a Reactor Service Port");
+                })
+                .thenIdle(45)
+                .thenExecute(() -> {
+                    h.assertTrue(main.core() != null && main.core().present() && main.core().loaded() == 4, "The Service Port should show the same core map");
+                    h.assertTrue(main.link(h.absolutePos(TestVessels.CONTROLLER)), "The wall should take the controller again");
+                })
+                .thenIdle(45)
+                .thenExecute(() -> h.assertTrue(main.core() == null && main.board(), "A wall linked to the controller should go back to the reactor display"))
+                .thenSucceed();
     }
 
     @GameTest(template = LARGE, timeoutTicks = 300)

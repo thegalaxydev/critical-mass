@@ -106,9 +106,10 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 1. Shut down and wait for the controller to read Cold.
 2. For a full reload, turn the Service Port's hatch open. It hands out each spent assembly and takes fresh ones into whichever column is free.
 3. To choose columns, fit Fuel Channel Caps over them and unlock each with a Wrench. Goggles on a cap show what its column has left.
-4. Lift out the assemblies that are spent, move the part-burnt ones from the middle to the edge, and put fresh fuel where it will do the most work.
-5. Lock every cap again. The reactor will not start while one is unlocked.
-6. Stand spent fuel in a flooded Spent Fuel Rack. It is hot and gives a strong dose, and so does an unlocked cap over a loaded column.
+4. Plan the moves on a core map. Use the Plant Linker on a cap or the Service Port, then on a wall of Plant Screens. It shows what every column has left, how hot it is and which caps are unlocked, with north at the top.
+5. Lift out the assemblies that are spent, move the part-burnt ones from the middle to the edge, and put fresh fuel where it will do the most work.
+6. Lock every cap again. The reactor will not start while one is unlocked, and the core map counts the caps still unlocked.
+7. Stand spent fuel in a flooded Spent Fuel Rack. It is hot and gives a strong dose, and so does an unlocked cap over a loaded column.
 
 ## Faults and recovery
 

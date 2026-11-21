@@ -791,15 +791,26 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
     }
 
     @Nullable
-    public String capBlocker(long key, boolean inserting) {
+    public String fuelMoveBlocker() {
         if (frozen) {
             return "criticalmass.service.frozen";
         }
         if (reacting || startingUp) {
             return "criticalmass.service.running";
         }
-        if (structure == null || !structure.valid()) {
-            return "criticalmass.service.invalid";
+        return structure == null || !structure.valid() ? "criticalmass.service.invalid" : null;
+    }
+
+    @Nullable
+    public VesselStructure layout() {
+        return structure != null && structure.valid() ? structure : lastValid;
+    }
+
+    @Nullable
+    public String capBlocker(long key, boolean inserting) {
+        String blocked = fuelMoveBlocker();
+        if (blocked != null) {
+            return blocked;
         }
         if (!core.hasColumn(key)) {
             return "criticalmass.cap.no_column";

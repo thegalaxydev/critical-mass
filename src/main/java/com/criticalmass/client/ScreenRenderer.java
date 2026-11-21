@@ -1,5 +1,6 @@
 package com.criticalmass.client;
 
+import com.criticalmass.content.control.CoreMap;
 import com.criticalmass.content.control.Mimic;
 import com.criticalmass.content.control.PlantChannel;
 import com.criticalmass.content.control.PlantDisplaySources;
@@ -121,6 +122,8 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
                 graph(2, w - side, pad, w - pad, h / 2 - pad / 2);
                 graph(3, w - side, h / 2 + pad / 2, w - pad, h - pad);
                 centre(side + pad, pad, w - side - pad, h - pad);
+            } else if (be.bigEnough() && be.core() != null) {
+                coreMap(be.core());
             } else if (be.bigEnough() && !be.mimic().isEmpty()) {
                 mimic();
             } else if (be.bigEnough()) {
@@ -380,6 +383,181 @@ public class ScreenRenderer extends KineticBlockEntityRenderer<ScreenBlockEntity
                 } else {
                     text(node.value(), px[i] + s * 1.3f, py[i] - label / 2, label, color, LEFT, Math.max(0.1f, cellWidth * 0.5f - s * 1.3f + cellWidth * 0.4f));
                 }
+            }
+        }
+
+        private void coreMap(CoreMap.Snapshot map) {
+            u = Math.min(1.6f, Math.min(w / 5f, h / 2.5f));
+            float pad = 0.16f * u;
+            float right = w - pad;
+            String status = be.status();
+            text(upper("criticalmass.screen.core"), pad, pad, 0.3f * u, GREEN, LEFT, (right - pad) * 0.5f);
+            text(status.isEmpty() ? "" : upper(status), right, pad + 0.03f * u, 0.25f * u, tone(status), RIGHT, (right - pad) * 0.46f);
+            float top = pad + 0.42f * u;
+            line(pad, top, right, top, 0.02f * u, DIM);
+            top += 0.1f * u;
+            float bottom = h - pad;
+            if (!map.present()) {
+                text(upper("criticalmass.screen.core.none"), w / 2, (top + bottom) / 2 - 0.12f * u, 0.24f * u, AMBER, CENTRE, right - pad);
+                return;
+            }
+            float gap = 0.2f * u;
+            top += 0.16f * u;
+            float areaWidth = right - pad;
+            float areaHeight = bottom - top;
+            float fit = Math.min(areaWidth / map.width(), areaHeight / map.depth());
+            boolean beside = areaWidth - fit * map.width() - gap >= 1.7f * u;
+            float tableHeight = 1.5f * u;
+            boolean under = !beside && areaHeight - gap - tableHeight >= areaHeight * 0.4f;
+            float cell = under ? Math.min(areaWidth / map.width(), (areaHeight - gap - tableHeight) / map.depth()) : fit;
+            float gridWidth = cell * map.width();
+            float gridHeight = cell * map.depth();
+            float gridX = beside ? pad : pad + (areaWidth - gridWidth) / 2;
+            float gridY = under ? top : top + (areaHeight - gridHeight) / 2;
+            text(Component.translatable("criticalmass.screen.core.north").getString(), gridX + gridWidth / 2, gridY - 0.15f * u, 0.12f * u, DIM, CENTRE, 0);
+            for (int z = 0; z < map.depth(); z++) {
+                for (int x = 0; x < map.width(); x++) {
+                    cell(map.cell(x, z), gridX + x * cell, gridY + z * cell, cell, true);
+                }
+            }
+            if (beside) {
+                float x0 = gridX + gridWidth + gap;
+                summary(map, x0, top - 0.16f * u, Math.min(right, x0 + 3.2f * u), bottom);
+            } else if (under) {
+                summary(map, pad, gridY + gridHeight + gap, right, bottom);
+            }
+        }
+
+        private int fuelTone(CoreMap.Cell c) {
+            return switch (c.state()) {
+                case EMPTY -> DIM;
+                case ACTIVE -> c.percent() <= CoreMap.LOW_FUEL ? AMBER : GREEN;
+                case SPENT -> AMBER;
+                default -> RED;
+            };
+        }
+
+        private void cell(CoreMap.Cell c, float x, float y, float size, boolean labelled) {
+            float inset = size * 0.07f;
+            float x0 = x + inset;
+            float y0 = y + inset;
+            float x1 = x + size - inset;
+            float y1 = y + size - inset;
+            float cx = x + size / 2;
+            float cy = y + size / 2;
+            float thin = Math.max(0.008f, size * 0.035f);
+            boolean words = labelled && size >= 0.16f;
+            switch (c.kind()) {
+                case FUEL -> {
+                    int color = fuelTone(c);
+                    if (c.state() == CoreMap.State.MELTED) {
+                        poly(x0, y0, x0, y1, x1, y1, x1, y0, GRID);
+                        line(x0, y0, x1, y1, thin, RED);
+                        line(x0, y1, x1, y0, thin, RED);
+                    }
+                    box(x0, y0, x1, y1, thin * (c.state() == CoreMap.State.EMPTY ? 1 : 1.6f), color);
+                    if (c.state() == CoreMap.State.DAMAGED) {
+                        line(x0, y0, x1, y1, thin, RED);
+                    }
+                    if (c.loaded()) {
+                        float bar = y1 - thin - size * 0.1f;
+                        float full = x1 - x0 - thin * 3;
+                        float end = x0 + thin * 1.5f + full * c.percent() / 100f;
+                        line(x0 + thin * 1.5f, bar, x1 - thin * 1.5f, bar, size * 0.08f, GRID);
+                        line(x0 + thin * 1.5f, bar, end, bar, size * 0.08f, color);
+                    }
+                    if (c.cap() != CoreMap.Cap.NONE) {
+                        float s = size * 0.09f;
+                        float mx = x1 - thin * 1.5f - s;
+                        float my = y0 + thin * 1.5f + s;
+                        if (c.cap() == CoreMap.Cap.LOCKED) {
+                            poly(mx - s, my - s, mx - s, my + s, mx + s, my + s, mx + s, my - s, DIM);
+                        } else {
+                            box(mx - s, my - s, mx + s, my + s, thin, AMBER);
+                        }
+                    }
+                    if (words) {
+                        String main = c.state() == CoreMap.State.EMPTY ? "--" : c.state() == CoreMap.State.MELTED ? "" : String.valueOf(c.percent());
+                        text(main, cx, cy - size * 0.22f, size * 0.3f, color, CENTRE, size * 0.6f);
+                        if (size >= 0.3f && c.state() != CoreMap.State.MELTED) {
+                            text(c.temperature() + "\u00b0", cx, cy + size * 0.1f, size * 0.17f, c.state() == CoreMap.State.HOT ? RED : DIM, CENTRE, size * 0.7f);
+                        }
+                    }
+                }
+                case CONTROL -> {
+                    boolean numbered = words && size >= 0.3f;
+                    float radius = size * (numbered ? 0.27f : 0.34f);
+                    float ry = numbered ? cy - size * 0.09f : cy;
+                    ring(cx, ry, radius, thin, DIM);
+                    float rod = radius * 0.7f * c.percent() / 100f;
+                    if (rod > thin) {
+                        poly(cx, ry - rod, cx - rod, ry, cx, ry + rod, cx + rod, ry, GREEN);
+                    }
+                    if (numbered) {
+                        text(String.valueOf(c.percent()), cx, ry + radius + size * 0.04f, size * 0.17f, GREEN, CENTRE, size * 0.5f);
+                    }
+                }
+                case COOLANT -> box(cx - size * 0.12f, cy - size * 0.12f, cx + size * 0.12f, cy + size * 0.12f, thin, GRID);
+                default -> {
+                }
+            }
+        }
+
+        private float fitted(float height, float room, String... keys) {
+            int widest = 1;
+            for (String key : keys) {
+                widest = Math.max(widest, font.width(Component.translatable(key).getString()));
+            }
+            return Math.min(height, room * 8f / widest);
+        }
+
+        private float fact(String key, String value, int color, float x0, float x1, float y, float size) {
+            text(Component.translatable(key).getString(), x0, y, size, DIM, LEFT, 0);
+            text(value, x1, y, size, color, RIGHT, (x1 - x0) * 0.36f);
+            return y + 0.22f * u;
+        }
+
+        private float legend(CoreMap.Cell sample, String key, float x0, float y, float size) {
+            float symbol = 0.16f * u;
+            cell(sample, x0, y, symbol, false);
+            text(Component.translatable(key).getString(), x0 + symbol * 1.4f, y + (symbol - size) / 2, size, DIM, LEFT, 0);
+            return y + 0.18f * u;
+        }
+
+        private void summary(CoreMap.Snapshot map, float x0, float y0, float x1, float y1) {
+            float y = y0;
+            float width = x1 - x0;
+            int columns = map.count(CoreMap.Kind.FUEL);
+            int lowest = map.lowest();
+            int hottest = map.hottest();
+            int caps = map.caps(false);
+            int unlocked = map.caps(true);
+            boolean free = map.handling() == CoreMap.Handling.FREE;
+            text(Component.translatable(map.handling().langKey()).getString(), x0, y, 0.2f * u, free ? GREEN : AMBER, LEFT, width);
+            y += 0.28f * u;
+            float size = fitted(0.19f * u, width * 0.6f, "criticalmass.screen.core.loaded", "criticalmass.screen.core.lowest", "criticalmass.screen.core.hottest", "criticalmass.screen.core.caps");
+            y = fact("criticalmass.screen.core.loaded", Component.translatable("criticalmass.screen.core.of", map.loaded(), columns).getString(), map.loaded() == columns ? GREEN : AMBER, x0, x1, y, size);
+            y = fact("criticalmass.screen.core.lowest", lowest < 0 ? "--" : lowest + " %", lowest >= 0 && lowest <= CoreMap.LOW_FUEL ? AMBER : GREEN, x0, x1, y, size);
+            y = fact("criticalmass.screen.core.hottest", hottest < 0 ? "--" : hottest + " \u00b0C", hottest >= com.criticalmass.content.thermal.CMThermal.HOT_SPOT_TEMPERATURE ? RED : GREEN, x0, x1, y, size);
+            if (caps > 0) {
+                y = fact("criticalmass.screen.core.caps", Component.translatable("criticalmass.screen.core.of", unlocked, caps).getString(), unlocked > 0 ? AMBER : GREEN, x0, x1, y, size);
+            }
+            y += 0.06f * u;
+            float pitch = 0.18f * u;
+            if (y + 0.1f * u + 4 * pitch > y1 + 0.02f * u) {
+                return;
+            }
+            line(x0, y, x1, y, 0.02f * u, DIM);
+            y += 0.1f * u;
+            float small = fitted(0.14f * u, width - 0.23f * u, "criticalmass.screen.core.legend.fuel", "criticalmass.screen.core.legend.low", "criticalmass.screen.core.legend.bad", "criticalmass.screen.core.legend.rod",
+                    "criticalmass.screen.core.legend.locked", "criticalmass.screen.core.legend.unlocked");
+            y = legend(new CoreMap.Cell(CoreMap.Kind.FUEL, CoreMap.State.ACTIVE, CoreMap.Cap.NONE, 70, 0), "criticalmass.screen.core.legend.fuel", x0, y, small);
+            y = legend(new CoreMap.Cell(CoreMap.Kind.FUEL, CoreMap.State.SPENT, CoreMap.Cap.NONE, 8, 0), "criticalmass.screen.core.legend.low", x0, y, small);
+            y = legend(new CoreMap.Cell(CoreMap.Kind.FUEL, CoreMap.State.DAMAGED, CoreMap.Cap.NONE, 40, 0), "criticalmass.screen.core.legend.bad", x0, y, small);
+            y = legend(new CoreMap.Cell(CoreMap.Kind.CONTROL, CoreMap.State.EMPTY, CoreMap.Cap.NONE, 60, 0), "criticalmass.screen.core.legend.rod", x0, y, small);
+            if (caps > 0 && y + 2 * pitch <= y1 + 0.02f * u) {
+                y = legend(new CoreMap.Cell(CoreMap.Kind.FUEL, CoreMap.State.EMPTY, CoreMap.Cap.LOCKED, 0, 0), "criticalmass.screen.core.legend.locked", x0, y, small);
+                legend(new CoreMap.Cell(CoreMap.Kind.FUEL, CoreMap.State.EMPTY, CoreMap.Cap.UNLOCKED, 0, 0), "criticalmass.screen.core.legend.unlocked", x0, y, small);
             }
         }
 

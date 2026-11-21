@@ -586,6 +586,11 @@ public final class ReactorCore {
         return fuel.containsKey(key);
     }
 
+    @Nullable
+    public FuelColumn column(long key) {
+        return fuel.get(key);
+    }
+
     public void setAssembly(long key, FuelState state) {
         assemblies.put(key, state);
     }
