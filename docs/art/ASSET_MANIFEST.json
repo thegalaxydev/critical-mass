@@ -199,6 +199,108 @@
    "item": true
   },
   {
+   "key": "chartrine",
+   "registry_id": "criticalmass:chartrine",
+   "type": "block",
+   "name": "Chartrine",
+   "art": "generated",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_0.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_1.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_2.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_3.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/chartrine_natural_0.json",
+    "src/main/resources/assets/criticalmass/models/block/chartrine_natural_1.json",
+    "src/main/resources/assets/criticalmass/models/block/chartrine_natural_2.json",
+    "src/main/resources/assets/criticalmass/models/block/chartrine_natural_3.json",
+    "src/main/resources/assets/criticalmass/models/item/chartrine.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/chartrine.json",
+   "item": true
+  },
+  {
+   "key": "chartrine_pillar",
+   "registry_id": "criticalmass:chartrine_pillar",
+   "type": "block",
+   "name": "Chartrine Pillar",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_cap.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_cap_connected.png",
+     "size": [
+      128,
+      128
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_pillar.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_pillar_connected.png",
+     "size": [
+      64,
+      64
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/chartrine_pillar.json",
+    "src/main/resources/assets/criticalmass/models/block/chartrine_pillar_horizontal.json",
+    "src/main/resources/assets/criticalmass/models/item/chartrine_pillar.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/chartrine_pillar.json",
+   "item": true
+  },
+  {
    "key": "circuit_breaker",
    "registry_id": "criticalmass:circuit_breaker",
    "type": "block",
@@ -520,6 +622,218 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/corium.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine",
+   "registry_id": "criticalmass:cut_chartrine",
+   "type": "block",
+   "name": "Cut Chartrine",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_brick_slab",
+   "registry_id": "criticalmass:cut_chartrine_brick_slab",
+   "type": "block",
+   "name": "Cut Chartrine Brick Slab",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_brick_slab.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_brick_slab_top.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_bricks.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_brick_slab.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_brick_slab.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_brick_stairs",
+   "registry_id": "criticalmass:cut_chartrine_brick_stairs",
+   "type": "block",
+   "name": "Cut Chartrine Brick Stairs",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_brick_stairs.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_brick_stairs_inner.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_brick_stairs_outer.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_brick_stairs.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_brick_stairs.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_brick_wall",
+   "registry_id": "criticalmass:cut_chartrine_brick_wall",
+   "type": "block",
+   "name": "Cut Chartrine Brick Wall",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_bricks_wall_post.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_bricks_wall_side.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_bricks_wall_side_tall.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_brick_wall.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_brick_wall.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_bricks",
+   "registry_id": "criticalmass:cut_chartrine_bricks",
+   "type": "block",
+   "name": "Cut Chartrine Bricks",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_bricks.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_bricks.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_bricks.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_slab",
+   "registry_id": "criticalmass:cut_chartrine_slab",
+   "type": "block",
+   "name": "Cut Chartrine Slab",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_slab.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_slab_top.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_slab.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_slab.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_stairs",
+   "registry_id": "criticalmass:cut_chartrine_stairs",
+   "type": "block",
+   "name": "Cut Chartrine Stairs",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_stairs.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_stairs_inner.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_stairs_outer.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_stairs.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_stairs.json",
+   "item": true
+  },
+  {
+   "key": "cut_chartrine_wall",
+   "registry_id": "criticalmass:cut_chartrine_wall",
+   "type": "block",
+   "name": "Cut Chartrine Wall",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_wall_post.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_wall_side.json",
+    "src/main/resources/assets/criticalmass/models/block/cut_chartrine_wall_side_tall.json",
+    "src/main/resources/assets/criticalmass/models/item/cut_chartrine_wall.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/cut_chartrine_wall.json",
    "item": true
   },
   {
@@ -1026,6 +1340,47 @@
    "item": true
   },
   {
+   "key": "layered_chartrine",
+   "registry_id": "criticalmass:layered_chartrine",
+   "type": "block",
+   "name": "Layered Chartrine",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_cap.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_layered.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_layered_connected.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/layered_chartrine.json",
+    "src/main/resources/assets/criticalmass/models/item/layered_chartrine.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/layered_chartrine.json",
+   "item": true
+  },
+  {
    "key": "meltdown_siren",
    "registry_id": "criticalmass:meltdown_siren",
    "type": "block",
@@ -1166,6 +1521,120 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/plant_screen.json",
+   "item": true
+  },
+  {
+   "key": "polished_cut_chartrine",
+   "registry_id": "criticalmass:polished_cut_chartrine",
+   "type": "block",
+   "name": "Polished Cut Chartrine",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_polished.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine.json",
+    "src/main/resources/assets/criticalmass/models/item/polished_cut_chartrine.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/polished_cut_chartrine.json",
+   "item": true
+  },
+  {
+   "key": "polished_cut_chartrine_slab",
+   "registry_id": "criticalmass:polished_cut_chartrine_slab",
+   "type": "block",
+   "name": "Polished Cut Chartrine Slab",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_polished.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_slab.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_slab.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_slab_double.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_slab_top.json",
+    "src/main/resources/assets/criticalmass/models/item/polished_cut_chartrine_slab.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/polished_cut_chartrine_slab.json",
+   "item": true
+  },
+  {
+   "key": "polished_cut_chartrine_stairs",
+   "registry_id": "criticalmass:polished_cut_chartrine_stairs",
+   "type": "block",
+   "name": "Polished Cut Chartrine Stairs",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_polished.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_stairs.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_stairs_inner.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_stairs_outer.json",
+    "src/main/resources/assets/criticalmass/models/item/polished_cut_chartrine_stairs.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/polished_cut_chartrine_stairs.json",
+   "item": true
+  },
+  {
+   "key": "polished_cut_chartrine_wall",
+   "registry_id": "criticalmass:polished_cut_chartrine_wall",
+   "type": "block",
+   "name": "Polished Cut Chartrine Wall",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_polished.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_wall_post.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_wall_side.json",
+    "src/main/resources/assets/criticalmass/models/block/polished_cut_chartrine_wall_side_tall.json",
+    "src/main/resources/assets/criticalmass/models/item/polished_cut_chartrine_wall.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/polished_cut_chartrine_wall.json",
    "item": true
   },
   {
@@ -1937,6 +2406,112 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/shielding_concrete.json",
+   "item": true
+  },
+  {
+   "key": "small_chartrine_brick_slab",
+   "registry_id": "criticalmass:small_chartrine_brick_slab",
+   "type": "block",
+   "name": "Small Chartrine Brick Slab",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_small_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_brick_slab.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_brick_slab_top.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_bricks.json",
+    "src/main/resources/assets/criticalmass/models/item/small_chartrine_brick_slab.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/small_chartrine_brick_slab.json",
+   "item": true
+  },
+  {
+   "key": "small_chartrine_brick_stairs",
+   "registry_id": "criticalmass:small_chartrine_brick_stairs",
+   "type": "block",
+   "name": "Small Chartrine Brick Stairs",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_small_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_brick_stairs.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_brick_stairs_inner.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_brick_stairs_outer.json",
+    "src/main/resources/assets/criticalmass/models/item/small_chartrine_brick_stairs.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/small_chartrine_brick_stairs.json",
+   "item": true
+  },
+  {
+   "key": "small_chartrine_brick_wall",
+   "registry_id": "criticalmass:small_chartrine_brick_wall",
+   "type": "block",
+   "name": "Small Chartrine Brick Wall",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_small_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_bricks_wall_post.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_bricks_wall_side.json",
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_bricks_wall_side_tall.json",
+    "src/main/resources/assets/criticalmass/models/item/small_chartrine_brick_wall.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/small_chartrine_brick_wall.json",
+   "item": true
+  },
+  {
+   "key": "small_chartrine_bricks",
+   "registry_id": "criticalmass:small_chartrine_bricks",
+   "type": "block",
+   "name": "Small Chartrine Bricks",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/chartrine_cut_small_brick.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/small_chartrine_bricks.json",
+    "src/main/resources/assets/criticalmass/models/item/small_chartrine_bricks.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/small_chartrine_bricks.json",
    "item": true
   },
   {
@@ -3528,6 +4103,16 @@
    ],
    "animated": false,
    "art": "script, cut from the author's casing sheet",
+   "used": true
+  },
+  {
+   "path": "src/main/resources/assets/criticalmass/textures/gui/banner/building.png",
+   "size": [
+    162,
+    432
+   ],
+   "animated": false,
+   "art": "script",
    "used": true
   },
   {

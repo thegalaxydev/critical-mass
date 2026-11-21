@@ -379,7 +379,35 @@ def fallout(frame, frames):
     return c
 
 
-BANNERS = {"reactor": (reactor, 24), "equipment": (equipment, 24), "console": (console, 24), "fallout": (fallout, 48), "electricity": (electricity, 16)}
+def building(frame, frames):
+    c = Canvas((59, 68, 18))
+    stone = [(85, 94, 21), (106, 119, 28), (119, 135, 32)]
+    lit = (154, 168, 48)
+    sweep = frame / float(frames) * (W - 60 + 48) - 24
+    for row in range(3):
+        y0 = row * 4
+        shift = 4 if row % 2 else 0
+        for x0 in range(56 + shift, W + 8, 8):
+            face = stone[(x0 * 7 + row * 5) % 3]
+            for y in range(y0, y0 + 3):
+                for x in range(x0, x0 + 7):
+                    near = abs((x - 60) + y * 2 - sweep)
+                    c.put(x, y, mix(face, lit, 0.9) if near < 2 else mix(face, lit, 0.4) if near < 5 else face)
+            for x in range(x0, x0 + 7):
+                c.put(x, y0, mix(c.get(x, y0), lit, 0.35))
+    c.box(56, 12, 159, 15, (38, 33, 32))
+    c.line(56, 12, 159, 12, (58, 50, 47))
+    for x in range(64, W, 20):
+        c.line(x, 13, x, 15, (22, 19, 20))
+    for i, x in enumerate(range(70, W, 13)):
+        glow = (frame + i * 7) % frames
+        if glow < 6:
+            c.put(x, 14, mix((116, 40, 20), (255, 208, 112), 1 - abs(glow - 3) / 3.0))
+    c.title((44, 52, 20))
+    return c
+
+
+BANNERS = {"reactor": (reactor, 24), "equipment": (equipment, 24), "console": (console, 24), "fallout": (fallout, 48), "electricity": (electricity, 16), "building": (building, 24)}
 
 
 def sheet(name):
@@ -395,7 +423,8 @@ def main():
         print("left alone; pass fresh to paint the creative tab's section banners again")
         return
     os.makedirs(OUT, exist_ok=True)
-    for name in BANNERS:
+    chosen = [name for name in BANNERS if name in sys.argv] or list(BANNERS)
+    for name in chosen:
         image = sheet(name)
         image.save(os.path.join(OUT, name + ".png"))
         print(name, image.size)

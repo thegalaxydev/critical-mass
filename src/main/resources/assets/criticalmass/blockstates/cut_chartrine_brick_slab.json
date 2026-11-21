@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "criticalmass:block/cut_chartrine_brick_slab"
+    },
+    "type=double": {
+      "model": "criticalmass:block/cut_chartrine_bricks"
+    },
+    "type=top": {
+      "model": "criticalmass:block/cut_chartrine_brick_slab_top"
+    }
+  }
+}

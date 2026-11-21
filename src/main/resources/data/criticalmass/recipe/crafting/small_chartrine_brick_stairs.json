@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "small_chartrine_brick_stairs",
+  "key": {
+    "X": {
+      "item": "criticalmass:small_chartrine_bricks"
+    }
+  },
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "id": "criticalmass:small_chartrine_brick_stairs"
+  }
+}

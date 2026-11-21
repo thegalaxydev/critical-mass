@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "criticalmass:cut_chartrine_brick_wall",
+    "criticalmass:cut_chartrine_wall",
+    "criticalmass:polished_cut_chartrine_wall",
+    "criticalmass:small_chartrine_brick_wall"
+  ]
+}

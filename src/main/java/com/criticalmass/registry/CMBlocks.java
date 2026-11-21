@@ -137,6 +137,15 @@ public final class CMBlocks {
     public static final DeferredBlock<BurntBlock> BURNT_EQUIPMENT = BLOCKS.register("burnt_equipment", () -> new BurntBlock(metal(3.0f)));
     public static final DeferredBlock<SurgeArresterBlock> SURGE_ARRESTER = register("surge_arrester", SurgeArresterBlock::new, metal(2.0f).noOcclusion());
 
+    public static final DeferredBlock<Block> CHARTRINE = register("chartrine", Block::new, chartrine());
+    public static final DeferredBlock<Block> CUT_CHARTRINE = cut("cut_chartrine", "cut_chartrine");
+    public static final DeferredBlock<Block> POLISHED_CUT_CHARTRINE = cut("polished_cut_chartrine", "polished_cut_chartrine");
+    public static final DeferredBlock<Block> CUT_CHARTRINE_BRICKS = cut("cut_chartrine_bricks", "cut_chartrine_brick");
+    public static final DeferredBlock<Block> SMALL_CHARTRINE_BRICKS = cut("small_chartrine_bricks", "small_chartrine_brick");
+    public static final DeferredBlock<com.simibubi.create.content.decoration.palettes.LayeredBlock> LAYERED_CHARTRINE = register("layered_chartrine",
+            com.simibubi.create.content.decoration.palettes.LayeredBlock::new, chartrine());
+    public static final DeferredBlock<com.simibubi.create.content.decoration.palettes.ConnectedPillarBlock> CHARTRINE_PILLAR = register("chartrine_pillar",
+            com.simibubi.create.content.decoration.palettes.ConnectedPillarBlock::new, chartrine());
     public static final DeferredBlock<Block> STEEL_BLOCK = register("steel_block", Block::new, metal(5.0f));
     public static final DeferredBlock<Block> REACTOR_ALLOY_BLOCK = register("reactor_alloy_block", Block::new, metal(5.0f));
 
@@ -144,6 +153,18 @@ public final class CMBlocks {
     public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = register("deepslate_uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 3.0f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
 
     private CMBlocks() {
+    }
+
+    static BlockBehaviour.Properties chartrine() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_LIGHT_GREEN).strength(1.25f, 6.0f).sound(SoundType.CALCITE).requiresCorrectToolForDrops();
+    }
+
+    static DeferredBlock<Block> cut(String name, String stem) {
+        DeferredBlock<Block> block = register(name, Block::new, chartrine());
+        register(stem + "_stairs", p -> new net.minecraft.world.level.block.StairBlock(block.get().defaultBlockState(), p), chartrine());
+        register(stem + "_slab", net.minecraft.world.level.block.SlabBlock::new, chartrine());
+        register(stem + "_wall", net.minecraft.world.level.block.WallBlock::new, chartrine().forceSolidOn());
+        return block;
     }
 
     static BlockBehaviour.Properties metal(float strength) {

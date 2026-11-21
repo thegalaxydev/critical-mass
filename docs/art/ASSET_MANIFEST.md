@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (65)
+## Blocks (84)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -16,6 +16,8 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:bus_bar` | Bus Bar | script | `block/bus_bar.png` 16x16 |  | 2 |
 | `criticalmass:centrifuge` | Centrifuge | script | `block/centrifuge.png` 32x32 |  | 4 |
 | `criticalmass:charred_log` | Charred Log | script | `block/charred_log.png` 16x16<br>`block/charred_log_top.png` 16x16 |  | 3 |
+| `criticalmass:chartrine` | Chartrine | generated | `block/chartrine_0.png` 16x16<br>`block/chartrine_1.png` 16x16<br>`block/chartrine_2.png` 16x16<br>`block/chartrine_3.png` 16x16 |  | 5 |
+| `criticalmass:chartrine_pillar` | Chartrine Pillar | script | `block/chartrine_cut_cap.png` 16x16<br>`block/chartrine_cut_cap_connected.png` 128x128<br>`block/chartrine_cut_pillar.png` 16x16<br>`block/chartrine_cut_pillar_connected.png` 64x64 |  | 3 |
 | `criticalmass:circuit_breaker` | Circuit Breaker | script | `block/circuit_breaker.png` 32x32<br>`block/steel_block.png` 16x16 |  | 3 |
 | `criticalmass:circulation_pump` | Circulation Pump | author | `block/circulation_pump.png` 32x32 |  | 5 |
 | `criticalmass:condenser` | Condenser | script | `block/condenser.png` 32x32<br>`block/reinforced_pipe.png` 32x32 |  | 3 |
@@ -25,6 +27,14 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:cooling_tower_packing` | Cooling Tower Packing | author | `block/cooling_tower_packing.png` 32x32<br>`block/cooling_tower_packing_bottom.png` 32x32<br>`block/cooling_tower_packing_middle.png` 32x32<br>`block/cooling_tower_packing_top.png` 32x32 |  | 5 |
 | `criticalmass:core_debris` | Core Debris | none of its own | `block/corium.png` 16x16<br>`block/corium_hot.png` 16x16<br>`block/ruined_channel.png` 32x32 |  | 2 |
 | `criticalmass:corium` | Corium | author's texture, script glow | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
+| `criticalmass:cut_chartrine` | Cut Chartrine | script | `block/chartrine_cut.png` 16x16 |  | 2 |
+| `criticalmass:cut_chartrine_brick_slab` | Cut Chartrine Brick Slab | script | `block/chartrine_cut_brick.png` 16x16 |  | 4 |
+| `criticalmass:cut_chartrine_brick_stairs` | Cut Chartrine Brick Stairs | script | `block/chartrine_cut_brick.png` 16x16 |  | 4 |
+| `criticalmass:cut_chartrine_brick_wall` | Cut Chartrine Brick Wall | script | `block/chartrine_cut_brick.png` 16x16 |  | 4 |
+| `criticalmass:cut_chartrine_bricks` | Cut Chartrine Bricks | script | `block/chartrine_cut_brick.png` 16x16 |  | 2 |
+| `criticalmass:cut_chartrine_slab` | Cut Chartrine Slab | script | `block/chartrine_cut.png` 16x16 |  | 4 |
+| `criticalmass:cut_chartrine_stairs` | Cut Chartrine Stairs | script | `block/chartrine_cut.png` 16x16 |  | 4 |
+| `criticalmass:cut_chartrine_wall` | Cut Chartrine Wall | script | `block/chartrine_cut.png` 16x16 |  | 4 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:demineralizer` | Demineralizer | script | `block/demineralizer_front_fresh.png` 16x16<br>`block/demineralizer_front_none.png` 16x16<br>`block/demineralizer_front_spent.png` 16x16<br>`block/demineralizer_front_used.png` 16x16<br>`block/demineralizer_side.png` 16x16<br>`block/demineralizer_top.png` 16x16<br>`block/steel_block.png` 16x16 |  | 5 |
 | `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 64x64 |  | 2 |
@@ -39,10 +49,15 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:heat_exchanger` | Heat Exchanger | script | `block/heat_exchanger.png` 32x32<br>`block/reinforced_pipe.png` 32x32 |  | 3 |
 | `criticalmass:insulator` | Insulator | script | `block/insulator.png` 16x16 |  | 2 |
+| `criticalmass:layered_chartrine` | Layered Chartrine | script | `block/chartrine_cut_cap.png` 16x16<br>`block/chartrine_cut_layered.png` 16x16<br>`block/chartrine_cut_layered_connected.png` 32x32 |  | 2 |
 | `criticalmass:meltdown_siren` | Meltdown Siren | author's model, script texture edited by the author | `block/meltdown_siren.png` 64x64 |  | 5 |
 | `criticalmass:open_waste_canister` | Open Waste Canister | author | `block/open_waste_canister.png` 32x32<br>`block/sealed_waste_canister.png` 32x32 |  | 3 |
 | `criticalmass:part_panel` | Dashboard Parts (no item) | none of its own | `block/steel_block.png` 16x16 |  | 1 |
 | `criticalmass:plant_screen` | Plant Screen | script | `block/plant_screen.png` 16x16<br>`block/plant_screen_back.png` 16x16<br>`block/plant_screen_inside.png` 16x16<br>`block/plant_screen_side.png` 16x16<br>`block/plant_screen_top.png` 16x16 |  | 2 |
+| `criticalmass:polished_cut_chartrine` | Polished Cut Chartrine | script | `block/chartrine_cut_polished.png` 16x16 |  | 2 |
+| `criticalmass:polished_cut_chartrine_slab` | Polished Cut Chartrine Slab | script | `block/chartrine_cut_polished.png` 16x16<br>`block/chartrine_cut_slab.png` 16x16 |  | 4 |
+| `criticalmass:polished_cut_chartrine_stairs` | Polished Cut Chartrine Stairs | script | `block/chartrine_cut_polished.png` 16x16 |  | 4 |
+| `criticalmass:polished_cut_chartrine_wall` | Polished Cut Chartrine Wall | script | `block/chartrine_cut_polished.png` 16x16 |  | 4 |
 | `criticalmass:pressurizer` | Pressurizer | script | `block/pressurizer.png` 32x32 |  | 3 |
 | `criticalmass:pressurizer_top` | Pressurizer (no item) | script | `block/pressurizer.png` 32x32 |  | 1 |
 | `criticalmass:primary_coolant_port` | Primary Coolant Port | script | `block/primary_coolant_port.png` 32x32<br>`block/reactor_vessel_casing.png` 16x16 |  | 3 |
@@ -64,6 +79,10 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:shielded_glass` | Shielded Glass | author | `block/shielded_glass.png` 16x16<br>`block/shielded_glass_connected.png` 128x128 |  | 2 |
 | `criticalmass:shielded_hatch` | Shielded Hatch | script | `block/shielded_hatch.png` 16x16 |  | 5 |
 | `criticalmass:shielding_concrete` | Shielding Concrete | author | `block/shielding_concrete.png` 16x16 |  | 2 |
+| `criticalmass:small_chartrine_brick_slab` | Small Chartrine Brick Slab | script | `block/chartrine_cut_small_brick.png` 16x16 |  | 4 |
+| `criticalmass:small_chartrine_brick_stairs` | Small Chartrine Brick Stairs | script | `block/chartrine_cut_small_brick.png` 16x16 |  | 4 |
+| `criticalmass:small_chartrine_brick_wall` | Small Chartrine Brick Wall | script | `block/chartrine_cut_small_brick.png` 16x16 |  | 4 |
+| `criticalmass:small_chartrine_bricks` | Small Chartrine Bricks | script | `block/chartrine_cut_small_brick.png` 16x16 |  | 2 |
 | `criticalmass:spent_fuel_rack` | Spent Fuel Rack | script | `block/spent_fuel_rack.png` 32x32<br>`block/steel_block.png` 16x16 |  | 7 |
 | `criticalmass:station_battery` | Station Battery | script | `block/station_battery.png` 32x32<br>`block/station_battery_cell.png` 16x16<br>`block/steel_block.png` 16x16 |  | 3 |
 | `criticalmass:steam_turbine` | Steam Turbine | author's model, script texture | `block/steam_turbine.png` 128x128 |  | 4 |
@@ -135,7 +154,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:primary_coolant` | Primary Coolant | generated | `fluid/primary_coolant_flow.png` 32x512<br>`fluid/primary_coolant_still.png` 16x256 |  | 0 |
 | `criticalmass:steam` | Steam | generated | `fluid/steam_flow.png` 32x512<br>`fluid/steam_still.png` 16x256 |  | 0 |
 
-## Other textures (21)
+## Other textures (22)
 
 Dashboard part sheets, the dashboard screen, the worn suit layers and effect sprites.
 
@@ -145,6 +164,7 @@ Dashboard part sheets, the dashboard screen, the worn suit layers and effect spr
 | `block/dashboard_part/big_button_atlas.png` 64x64 | Create: Loconautics, with permission |
 | `block/dashboard_part/glass.png` 16x16 | Create: Loconautics, with permission |
 | `gui/advancement_background.png` 16x16 | script, cut from the author's casing sheet |
+| `gui/banner/building.png` 162x432 | script |
 | `gui/banner/console.png` 162x432 | script |
 | `gui/banner/electricity.png` 162x288 | script |
 | `gui/banner/equipment.png` 162x432 | script |

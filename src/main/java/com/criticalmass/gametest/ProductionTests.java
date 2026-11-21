@@ -61,7 +61,7 @@ public final class ProductionTests {
             "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister", "sequenced_assembly/sheared_fuel", "mixing/reprocessed_fuel");
 
     private static final List<String> GEAR = List.of("crafting/survey_meter", "crafting/dosimeter", "crafting/protective_hood", "crafting/protective_suit", "crafting/protective_leggings", "crafting/protective_boots",
-            "crafting/area_radiation_monitor");
+            "crafting/area_radiation_monitor", "crushing/chartrine");
     private static final Set<String> NOT_CRAFTED = Set.of("uranium_ore", "deepslate_uranium_ore", "raw_uranium", "enriched_uranium", "depleted_uranium", "spent_fuel_assembly", "damaged_fuel_assembly",
             "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash", "used_resin_cartridge");
 

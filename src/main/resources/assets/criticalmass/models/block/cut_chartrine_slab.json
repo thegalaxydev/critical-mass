@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "criticalmass:block/chartrine_cut",
+    "side": "criticalmass:block/chartrine_cut",
+    "top": "criticalmass:block/chartrine_cut"
+  }
+}

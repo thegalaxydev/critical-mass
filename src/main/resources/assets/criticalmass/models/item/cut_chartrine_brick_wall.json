@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/wall_inventory",
+  "textures": {
+    "wall": "criticalmass:block/chartrine_cut_brick"
+  }
+}

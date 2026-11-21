@@ -31,7 +31,7 @@ ART = {
     "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
     "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": "author's texture, script glow",
     "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
-    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "core_debris": "none of its own", "wreckage": "none of its own", "charred_log": SCRIPT, "fallout_ash": "author's block textures, the glow animated by script; script item", "water_cannon": SCRIPT, "area_radiation_monitor": SCRIPT, "demineralizer": SCRIPT, "encased_reinforced_pipe": SCRIPT, "reinforced_straight_pipe": "none of its own", "resin_cartridge": SCRIPT, "used_resin_cartridge": SCRIPT, "meltdown_siren": "author's model, script texture edited by the author", "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
+    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "core_debris": "none of its own", "wreckage": "none of its own", "charred_log": SCRIPT, "fallout_ash": "author's block textures, the glow animated by script; script item", "water_cannon": SCRIPT, "area_radiation_monitor": SCRIPT, "demineralizer": SCRIPT, "chartrine": GENERATED, "encased_reinforced_pipe": SCRIPT, "reinforced_straight_pipe": "none of its own", "resin_cartridge": SCRIPT, "used_resin_cartridge": SCRIPT, "meltdown_siren": "author's model, script texture edited by the author", "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
     "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,
     "welding_torch": AUTHOR, "dosimeter": AUTHOR, "survey_meter": AUTHOR, "decontamination_compound": AUTHOR, "ceramic_fuel_pellet": AUTHOR,
     "reactor_alloy_ingot": AUTHOR, "reactor_alloy_sheet": AUTHOR,
@@ -42,12 +42,16 @@ ART = {
     "dashboard_alarm": UNRECORDED, "dashboard_button": LOCONAUTICS, "dashboard_switch": LOCONAUTICS, "dashboard_lever": LOCONAUTICS, "dashboard_gauge": LOCONAUTICS,
     "primary_coolant": GENERATED, "contaminated_coolant": GENERATED, "steam": GENERATED, "fuel_oil": SCRIPT, "boric_acid": SCRIPT, "borax": SCRIPT,
 }
+CHARTRINE_SET = ["cut_chartrine", "polished_cut_chartrine", "cut_chartrine_brick", "small_chartrine_brick"]
+ART.update({stem + part: SCRIPT for stem in CHARTRINE_SET for part in ("_stairs", "_slab", "_wall")})
+ART.update({name: SCRIPT for name in ("cut_chartrine", "polished_cut_chartrine", "cut_chartrine_bricks", "small_chartrine_bricks", "layered_chartrine", "chartrine_pillar")})
 OTHER_ART = [("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT), ("gui/banner/", SCRIPT),
              ("gui/advancement_background", "script, cut from the author's casing sheet")]
 OWNERS = {"block/control_rod_cap": "control_rod_drive", "block/control_rod_shaft": "control_rod_drive"}
 DIRECT = {
     "block/casing_crack_1": "reactor_vessel_casing", "block/casing_crack_2": "reactor_vessel_casing", "block/casing_crack_3": "reactor_vessel_casing",
     "block/reactor_vessel_casing_connected": "reactor_vessel_casing", "block/shielded_glass_connected": "shielded_glass",
+    "block/chartrine_cut_layered_connected": "layered_chartrine", "block/chartrine_cut_pillar_connected": "chartrine_pillar", "block/chartrine_cut_cap_connected": "chartrine_pillar",
 }
 NO_ITEM = {"burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure", "reinforced_straight_pipe", "encased_reinforced_pipe"}
 LEGEND = ("The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: "

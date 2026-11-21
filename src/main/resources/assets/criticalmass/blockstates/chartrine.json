@@ -1,0 +1,18 @@
+{
+ "variants": {
+  "": [
+   {
+    "model": "criticalmass:block/chartrine_natural_0"
+   },
+   {
+    "model": "criticalmass:block/chartrine_natural_1"
+   },
+   {
+    "model": "criticalmass:block/chartrine_natural_2"
+   },
+   {
+    "model": "criticalmass:block/chartrine_natural_3"
+   }
+  ]
+ }
+}

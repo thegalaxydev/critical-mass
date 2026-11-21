@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "group": "cut_chartrine_stairs",
+  "key": {
+    "X": {
+      "item": "criticalmass:cut_chartrine"
+    }
+  },
+  "pattern": [
+    "X  ",
+    "XX ",
+    "XXX"
+  ],
+  "result": {
+    "count": 4,
+    "id": "criticalmass:cut_chartrine_stairs"
+  }
+}

@@ -54,6 +54,8 @@ This table is the current state and overrides anything further down. Only the ro
 | Plant Screen | Script | `art/tools/screen_blocks.py`: the face is painted, the frame is Create's Display Board recoloured |
 | Reinforced Pipe | Script | Create's pipe sheets recoloured |
 | Uranium Ore, Deepslate Uranium Ore | Script | `art/tools/ore_paint.py`: vanilla's iron ore with its ore pixels in the Raw Uranium icon's greens |
+| Chartrine | Generated | `art/generated/chartrine-v1.png`, fitted to 16 pixels and four shades by `art/tools/chartrine_texture.py` |
+| Cut, Polished Cut, Brick, Small Brick, Layered and Pillar Chartrine with their stairs, slabs and walls | Script | `art/tools/chartrine_palette.py`, from the Chartrine texture and the layout Create's own cut stones share |
 | Reactor Alloy Dashboard texture, Dashboard Alarm | Not recorded | Their sections say hand-made without saying by whom |
 | Dashboard and its other parts | Create: Loconautics | Used with its authors' permission |
 | Steel Ingot, Nugget and Plate, Control Rod, Turbine Blade, Sealing Gasket, Welding Torch, Dosimeter, Survey Meter, Decontamination Compound, Ceramic Fuel Pellet, Reactor Alloy Ingot and Sheet | Author | `art/originals/` |
@@ -564,10 +566,10 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 
 ## creative tab section banners
 
-- Used by: `textures/gui/banner/reactor.png`, `equipment.png`, `console.png`, `fallout.png` and `electricity.png`, the animated strips over the five sections of the mod's creative tab.
-- Source: `art/tools/tab_banners.py` paints every frame from shapes and pixel maps in the script. Each file is 162 pixels wide with its 18 pixel frames stacked top to bottom: 24 frames for Reactor, Equipment and Console, 48 for Fallout and 16 for Electricity.
+- Used by: `textures/gui/banner/reactor.png`, `equipment.png`, `console.png`, `fallout.png`, `electricity.png` and `building.png`, the animated strips over the six sections of the mod's creative tab.
+- Source: `art/tools/tab_banners.py` paints every frame from shapes and pixel maps in the script. Each file is 162 pixels wide with its 18 pixel frames stacked top to bottom: 24 frames for Reactor, Equipment, Console and Building, 48 for Fallout and 16 for Electricity.
 - Status: script-painted placeholders, not yet approved.
-- Repainting: run the tool with `fresh`. The frame counts are also in `TabSection`, so change both together.
+- Repainting: run the tool with `fresh`, and name banners after it to repaint only those, as in `tab_banners.py fresh building`. The frame counts are also in `TabSection`, so change both together.
 - Date: 2026-11-19
 
 ## advancement tab background
@@ -577,3 +579,11 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Status: the author's art, cut by script.
 - Remaking: run the tool with `fresh` after the casing sheet changes.
 - Date: 2026-11-20
+
+## chartrine and its cut blocks
+
+- Used by: `textures/block/chartrine_0.png` to `chartrine_3.png`, the four shades of the natural stone, and `chartrine_cut.png`, `chartrine_cut_polished.png`, `chartrine_cut_brick.png`, `chartrine_cut_small_brick.png`, `chartrine_cut_layered.png`, `chartrine_cut_pillar.png`, `chartrine_cut_cap.png` and `chartrine_cut_slab.png` with the three `_connected` sheets of the layered, pillar and cap faces.
+- Source: the natural stone is a generated image, `art/generated/chartrine-v1.png`, made to sit beside Create's Crimsite, Asurine, Ochrum, Veridium and Scoria. `art/tools/chartrine_texture.py` reads its 32 by 32 grid, halves it to 16 pixels on a ramp of nine tones and darkens it in three steps for the other shades. `art/tools/chartrine_palette.py` makes the cut blocks from that: the fill is the natural stone softened and darkened, and the grooves and edges are the layout Create's fourteen cut stones have in common, read from Create's jar when the tool runs and taken as the middle value across those stones, so no one stone's own pattern comes through. No Create texture is stored in the project.
+- Status: a generated image and script-painted placeholders, not yet approved.
+- Repainting: run either tool with `fresh`. The palette tool takes a `.png` path to write a preview sheet and `dry` to write nothing else.
+- Date: 2026-11-21

@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    {
+      "item": "criticalmass:cut_chartrine_slab"
+    },
+    {
+      "item": "criticalmass:cut_chartrine_slab"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "criticalmass:cut_chartrine"
+  }
+}

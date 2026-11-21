@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "X": {
+      "item": "criticalmass:cut_chartrine_bricks"
+    }
+  },
+  "pattern": [
+    "XXX",
+    "XXX"
+  ],
+  "result": {
+    "count": 6,
+    "id": "criticalmass:cut_chartrine_brick_wall"
+  }
+}

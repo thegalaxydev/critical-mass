@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "criticalmass:block/cut_chartrine_slab"
+    },
+    "type=double": {
+      "model": "criticalmass:block/cut_chartrine"
+    },
+    "type=top": {
+      "model": "criticalmass:block/cut_chartrine_slab_top"
+    }
+  }
+}

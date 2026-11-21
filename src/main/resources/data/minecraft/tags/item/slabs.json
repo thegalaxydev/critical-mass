@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "criticalmass:cut_chartrine_brick_slab",
+    "criticalmass:cut_chartrine_slab",
+    "criticalmass:polished_cut_chartrine_slab",
+    "criticalmass:small_chartrine_brick_slab"
+  ]
+}
