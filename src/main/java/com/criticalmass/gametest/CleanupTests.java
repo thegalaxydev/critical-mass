@@ -153,6 +153,43 @@ public final class CleanupTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = "empty_large", timeoutTicks = 100)
+    public static void activityReadsOnEveryMachineThatHoldsCoolant(GameTestHelper h) {
+        TestVessels.standardVessel(h, TestVessels.STANDARD);
+        BlockPos tank = new BlockPos(8, 2, 8);
+        BlockPos exchanger = new BlockPos(8, 2, 6);
+        BlockPos cleaner = new BlockPos(8, 2, 4);
+        h.setBlock(tank, com.simibubi.create.AllBlocks.FLUID_TANK.getDefaultState());
+        h.setBlock(exchanger, CMBlocks.HEAT_EXCHANGER.get());
+        h.setBlock(cleaner, CMBlocks.DEMINERALIZER.get());
+        h.startSequence()
+                .thenIdle(5)
+                .thenExecute(() -> {
+                    com.criticalmass.content.thermal.ReactorControllerBlockEntity c = h.getBlockEntity(TestVessels.CONTROLLER);
+                    c.coolant().set(dirty(1000), 0);
+                    c.coolant().give(new CoolantBuffer.Packet(CoolantLoopTests.coolant(1000), 0));
+                    PlantChannel.Reading vessel = PlantChannel.ACTIVITY.read(h.getLevel(), h.absolutePos(TestVessels.CONTROLLER));
+                    h.assertTrue(vessel != null && near(vessel.value(), 50) && vessel.max() == 100 && vessel.unit().equals("%"), "The controller should read its coolant's share: " + vessel);
+                    h.assertTrue(com.criticalmass.content.control.ScreenBlockEntity.ROWS.contains(PlantChannel.ACTIVITY), "The reactor board should list the activity");
+                    IFluidHandler pipe = h.getLevel().getCapability(net.neoforged.neoforge.capabilities.Capabilities.FluidHandler.BLOCK, h.absolutePos(tank), Direction.NORTH);
+                    pipe.fill(CoolantLoopTests.coolant(900), IFluidHandler.FluidAction.EXECUTE);
+                    pipe.fill(dirty(100), IFluidHandler.FluidAction.EXECUTE);
+                    PlantChannel.Reading held = PlantChannel.ACTIVITY.read(h.getLevel(), h.absolutePos(tank));
+                    h.assertTrue(held != null && near(held.value(), 10), "A gauge on a tank should read the share of what it holds: " + held);
+                    com.criticalmass.content.thermal.HeatExchangerBlockEntity hx = h.getBlockEntity(exchanger);
+                    hx.primary().set(dirty(500), 0);
+                    hx.secondary().set(new FluidStack(Fluids.WATER, 400), 0);
+                    hx.secondary().give(new CoolantBuffer.Packet(new FluidStack(Fluids.WATER, 100), 0, 0, 25));
+                    PlantChannel.Reading steam = PlantChannel.ACTIVITY.read(h.getLevel(), h.absolutePos(exchanger));
+                    h.assertTrue(steam != null && near(steam.value(), 5), "A gauge on a Heat Exchanger should read its steam side: " + steam);
+                    DemineralizerBlockEntity resin = h.getBlockEntity(cleaner);
+                    resin.inlet().set(dirty(300), 0);
+                    PlantChannel.Reading waiting = PlantChannel.ACTIVITY.read(h.getLevel(), h.absolutePos(cleaner));
+                    h.assertTrue(waiting != null && near(waiting.value(), 100), "A gauge on a Demineralizer should read what is waiting: " + waiting);
+                })
+                .thenSucceed();
+    }
+
     @GameTest(template = EMPTY, timeoutTicks = 1400)
     public static void aCleanUpLineBringsALoopBackToPrimaryCoolant(GameTestHelper h) {
         h.setBlock(AT, CMBlocks.DEMINERALIZER.get());

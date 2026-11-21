@@ -48,7 +48,8 @@ public enum PlantChannel {
     VOLTAGE("voltage", "kV"),
     CURRENT("current", "kA"),
     SETPOINT("setpoint", "%"),
-    DOSE("dose", "mSv/min");
+    DOSE("dose", "mSv/min"),
+    ACTIVITY("activity", "%");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -92,6 +93,7 @@ public enum PlantChannel {
             case TEMPERATURE, COOLANT_TEMPERATURE -> of(b.temperature(), CMThermal.AMBIENT, COOLANT_SCALE_MAX);
             case PRESSURE -> of(b.pressure(), 0, CMThermal.RUPTURE_PRESSURE);
             case LEVEL -> of(100.0 * b.amount() / Math.max(1, b.capacity()), 0, 100);
+            case ACTIVITY -> of(b.activityShare() * 100, 0, 100);
             default -> null;
         };
     }
@@ -224,15 +226,18 @@ public enum PlantChannel {
             double ppm = com.criticalmass.content.thermal.TankFigure.carried(held.fluid()) ? held.boronPpm() : 0;
             return switch (this) {
                 case BORON -> of(ppm, 0, ppm > TANK_BORON_SCALE ? CMThermal.BORIC_ACID_PPM : TANK_BORON_SCALE);
-                case TEMPERATURE, LEVEL -> buffer(held);
+                case TEMPERATURE, LEVEL, ACTIVITY -> buffer(held);
                 default -> null;
             };
         }
         if (be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity resin) {
-            return this == LEVEL ? of(resin.resinLeft() * 100, 0, 100) : null;
+            return this == LEVEL ? of(resin.resinLeft() * 100, 0, 100) : this == ACTIVITY ? buffer(resin.inlet()) : null;
         }
         if (be instanceof AreaMonitorBlockEntity monitor) {
             return this == DOSE ? of(monitor.rate(), 0, monitor.setpoint() * 2) : null;
+        }
+        if (be instanceof com.criticalmass.content.thermal.HeatExchangerBlockEntity exchanger && this == ACTIVITY) {
+            return buffer(exchanger.secondary());
         }
         if (be instanceof CoolingTowerBlockEntity t) {
             return buffer(t.stackCoolant());

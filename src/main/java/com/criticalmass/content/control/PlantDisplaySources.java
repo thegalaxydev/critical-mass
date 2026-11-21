@@ -47,10 +47,10 @@ public final class PlantDisplaySources {
 
     public static void attach() {
         DisplayTarget.BY_BLOCK.register(CMBlocks.PLANT_SCREEN.get(), SCREEN.get());
-        PlantChannel[] buffer = {PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL};
+        PlantChannel[] buffer = {PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL, PlantChannel.ACTIVITY};
         PlantChannel[] reactor = {PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL, PlantChannel.FLOW,
                 PlantChannel.POWER, PlantChannel.RODS_A, PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D,
-                PlantChannel.NEUTRON, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.XENON, PlantChannel.BORON};
+                PlantChannel.NEUTRON, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.ACTIVITY};
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), STATUS.get());
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), ALARMS.get());
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.REACTOR_CONTROLLER.get(), NEUTRONICS.get());
@@ -62,7 +62,7 @@ public final class PlantDisplaySources {
             DisplaySource.BY_BLOCK.add(CMBlocks.REACTOR_SIGNAL_INTERFACE.get(), CHANNELS.get(c).get());
         }
         add(CMBlockEntities.PRESSURIZER.get(), PlantChannel.PRESSURE);
-        add(CMBlockEntities.STEAM_TURBINE.get(), PlantChannel.SPEED, PlantChannel.POWER, PlantChannel.OUTPUT, PlantChannel.FLOW, PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL);
+        add(CMBlockEntities.STEAM_TURBINE.get(), PlantChannel.SPEED, PlantChannel.POWER, PlantChannel.OUTPUT, PlantChannel.FLOW, PlantChannel.TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.LEVEL, PlantChannel.ACTIVITY);
         add(CMBlockEntities.CIRCULATION_PUMP.get(), PlantChannel.FLOW, PlantChannel.SPEED);
         add(CMBlockEntities.GENERATOR.get(), PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.FREQUENCY, PlantChannel.SYNC);
         add(CMBlockEntities.CIRCUIT_BREAKER.get(), PlantChannel.SYNC, PlantChannel.CURRENT);
@@ -73,8 +73,8 @@ public final class PlantDisplaySources {
         add(CMBlockEntities.STATION_BATTERY.get(), PlantChannel.LEVEL, PlantChannel.OUTPUT, PlantChannel.DEMAND);
         add(CMBlockEntities.DIESEL_ENGINE.get(), PlantChannel.LEVEL, PlantChannel.SPEED);
         add(CMBlockEntities.AREA_RADIATION_MONITOR.get(), PlantChannel.DOSE);
-        add(CMBlockEntities.DEMINERALIZER.get(), PlantChannel.LEVEL);
-        add(com.simibubi.create.AllBlockEntityTypes.FLUID_TANK.get(), PlantChannel.BORON, PlantChannel.TEMPERATURE);
+        add(CMBlockEntities.DEMINERALIZER.get(), PlantChannel.LEVEL, PlantChannel.ACTIVITY);
+        add(com.simibubi.create.AllBlockEntityTypes.FLUID_TANK.get(), PlantChannel.BORON, PlantChannel.TEMPERATURE, PlantChannel.ACTIVITY);
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ROD_INSERTION.get());
         add(CMBlockEntities.HEAT_EXCHANGER.get(), buffer);
         add(CMBlockEntities.CONDENSER.get(), buffer);

@@ -53,10 +53,10 @@ public class ScreenBlockEntity extends KineticBlockEntity {
     public static final int SAMPLE_TICKS = 20;
     public static final int EVENT_LIMIT = 5;
     public static final List<PlantChannel> ROWS = List.of(PlantChannel.NEUTRON, PlantChannel.POWER, PlantChannel.PERIOD, PlantChannel.REACTIVITY, PlantChannel.TEMPERATURE,
-            PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.RODS_A, PlantChannel.XENON, PlantChannel.BORON);
+            PlantChannel.COOLANT_TEMPERATURE, PlantChannel.PRESSURE, PlantChannel.FLOW, PlantChannel.RODS_A, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.ACTIVITY);
     private static final List<PlantChannel> TREND_ORDER = List.of(PlantChannel.DOSE, PlantChannel.NEUTRON, PlantChannel.OUTPUT, PlantChannel.DEMAND, PlantChannel.CURRENT, PlantChannel.SPEED, PlantChannel.FREQUENCY, PlantChannel.VOLTAGE,
             PlantChannel.SYNC, PlantChannel.FLOW, PlantChannel.PRESSURE, PlantChannel.TEMPERATURE, PlantChannel.COOLANT_TEMPERATURE, PlantChannel.LEVEL, PlantChannel.POWER, PlantChannel.RODS_A,
-            PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.REACTIVITY, PlantChannel.PERIOD);
+            PlantChannel.RODS_B, PlantChannel.RODS_C, PlantChannel.RODS_D, PlantChannel.XENON, PlantChannel.BORON, PlantChannel.REACTIVITY, PlantChannel.PERIOD, PlantChannel.ACTIVITY);
     private static final int SCAN_TICKS = 10;
     private static final int LINE_LIMIT = 160;
     private static final String NO_VESSEL = "criticalmass.service.no_vessel";
