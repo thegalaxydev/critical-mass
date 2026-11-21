@@ -10,7 +10,11 @@
    "gui": true
   },
   {
-   "ponder": "criticalmass:dashboard_lever",
+   "ponderLang": "build/ponder_lang.json",
+   "wait": 5
+  },
+  {
+   "ponder": "criticalmass:fuel_channel_cap",
    "wait": 40
   },
   {
@@ -18,7 +22,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_0",
+   "shot": "channel_cap_0",
    "wait": 2
   },
   {
@@ -26,7 +30,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_1",
+   "shot": "channel_cap_1",
    "wait": 2
   },
   {
@@ -34,7 +38,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_2",
+   "shot": "channel_cap_2",
    "wait": 2
   },
   {
@@ -42,7 +46,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_3",
+   "shot": "channel_cap_3",
    "wait": 2
   },
   {
@@ -50,7 +54,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_4",
+   "shot": "channel_cap_4",
    "wait": 2
   },
   {
@@ -58,7 +62,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_5",
+   "shot": "channel_cap_5",
    "wait": 2
   },
   {
@@ -66,7 +70,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_6",
+   "shot": "channel_cap_6",
    "wait": 2
   },
   {
@@ -74,7 +78,7 @@
    "wait": 30
   },
   {
-   "shot": "rod_control_7",
+   "shot": "channel_cap_7",
    "wait": 2
   },
   {
@@ -82,7 +86,7 @@
    "wait": 5
   },
   {
-   "ponder": "criticalmass:meltdown_siren",
+   "ponder": "criticalmass:area_radiation_monitor",
    "wait": 40
   },
   {
@@ -90,7 +94,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_0",
+   "shot": "area_monitor_0",
    "wait": 2
   },
   {
@@ -98,7 +102,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_1",
+   "shot": "area_monitor_1",
    "wait": 2
   },
   {
@@ -106,7 +110,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_2",
+   "shot": "area_monitor_2",
    "wait": 2
   },
   {
@@ -114,7 +118,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_3",
+   "shot": "area_monitor_3",
    "wait": 2
   },
   {
@@ -122,7 +126,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_4",
+   "shot": "area_monitor_4",
    "wait": 2
   },
   {
@@ -130,7 +134,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_5",
+   "shot": "area_monitor_5",
    "wait": 2
   },
   {
@@ -138,7 +142,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_6",
+   "shot": "area_monitor_6",
    "wait": 2
   },
   {
@@ -146,7 +150,7 @@
    "wait": 30
   },
   {
-   "shot": "siren_7",
+   "shot": "area_monitor_7",
    "wait": 2
   },
   {
@@ -154,7 +158,7 @@
    "wait": 5
   },
   {
-   "ponder": "criticalmass:power_wire",
+   "ponder": "criticalmass:demineralizer",
    "wait": 40
   },
   {
@@ -162,7 +166,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_0",
+   "shot": "cleanup_0",
    "wait": 2
   },
   {
@@ -170,7 +174,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_1",
+   "shot": "cleanup_1",
    "wait": 2
   },
   {
@@ -178,7 +182,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_2",
+   "shot": "cleanup_2",
    "wait": 2
   },
   {
@@ -186,7 +190,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_3",
+   "shot": "cleanup_3",
    "wait": 2
   },
   {
@@ -194,7 +198,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_4",
+   "shot": "cleanup_4",
    "wait": 2
   },
   {
@@ -202,7 +206,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_5",
+   "shot": "cleanup_5",
    "wait": 2
   },
   {
@@ -210,7 +214,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_6",
+   "shot": "cleanup_6",
    "wait": 2
   },
   {
@@ -218,7 +222,7 @@
    "wait": 30
   },
   {
-   "shot": "wires_7",
+   "shot": "cleanup_7",
    "wait": 2
   },
   {
@@ -226,7 +230,7 @@
    "wait": 5
   },
   {
-   "ponder": "criticalmass:circuit_breaker",
+   "ponder": "criticalmass:reactor_alloy_sheet",
    "wait": 40
   },
   {
@@ -234,7 +238,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_0",
+   "shot": "tube_leak_0",
    "wait": 2
   },
   {
@@ -242,7 +246,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_1",
+   "shot": "tube_leak_1",
    "wait": 2
   },
   {
@@ -250,7 +254,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_2",
+   "shot": "tube_leak_2",
    "wait": 2
   },
   {
@@ -258,7 +262,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_3",
+   "shot": "tube_leak_3",
    "wait": 2
   },
   {
@@ -266,7 +270,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_4",
+   "shot": "tube_leak_4",
    "wait": 2
   },
   {
@@ -274,7 +278,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_5",
+   "shot": "tube_leak_5",
    "wait": 2
   },
   {
@@ -282,7 +286,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_6",
+   "shot": "tube_leak_6",
    "wait": 2
   },
   {
@@ -290,1595 +294,7 @@
    "wait": 30
   },
   {
-   "shot": "breaker_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:generator",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "synchronising_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:transfer_switch",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "standby_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "standby_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "standby_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "standby_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "standby_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "standby_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "standby_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "standby_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:transformer",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "repair_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "repair_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "repair_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "repair_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "repair_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "repair_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "repair_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "repair_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:dashboard_switch",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "bypass_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:corium",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "meltdown_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:survey_meter",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "fallout_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:reactor_vessel_casing",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "reactor_vessel_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:control_rod_drive",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "rods_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "rods_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "rods_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "rods_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "rods_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "rods_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "rods_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "rods_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:circulation_pump",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "primary_loop_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:steam_turbine",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "steam_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "steam_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "steam_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "steam_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "steam_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "steam_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "steam_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "steam_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:cooling_tower_packing",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "cooling_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:spent_fuel_rack",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "refuelling_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:water_cannon",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "water_cannon_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "create:stockpile_switch",
-   "wait": 40
-  },
-  {
-   "ponderScroll": 1,
-   "wait": 20
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "feedwater_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:centrifuge",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "enrichment_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:ceramic_fuel_pellet",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "fuel_assembly_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:sheared_fuel",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "reprocessing_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:open_waste_canister",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "waste_canister_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:reactor_alloy_dashboard",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "control_desk_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:plant_screen",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "plant_screen_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:core_debris",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "recovery_7",
-   "wait": 2
-  },
-  {
-   "closeScreen": true,
-   "wait": 5
-  },
-  {
-   "ponder": "criticalmass:borax",
-   "wait": 40
-  },
-  {
-   "ponderSeek": 60,
-   "wait": 30
-  },
-  {
-   "shot": "boron_0",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 250,
-   "wait": 30
-  },
-  {
-   "shot": "boron_1",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 500,
-   "wait": 30
-  },
-  {
-   "shot": "boron_2",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 750,
-   "wait": 30
-  },
-  {
-   "shot": "boron_3",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1000,
-   "wait": 30
-  },
-  {
-   "shot": "boron_4",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1250,
-   "wait": 30
-  },
-  {
-   "shot": "boron_5",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1500,
-   "wait": 30
-  },
-  {
-   "shot": "boron_6",
-   "wait": 2
-  },
-  {
-   "ponderSeek": 1750,
-   "wait": 30
-  },
-  {
-   "shot": "boron_7",
+   "shot": "tube_leak_7",
    "wait": 2
   },
   {

@@ -52,6 +52,14 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("boron", BoronScenes::boron, REACTOR);
         scenes.forComponents(CMBlocks.PRIMARY_COOLANT_PORT, CMBlocks.REACTOR_CONTROLLER)
                 .addStoryBoard("boron", BoronScenes::boron);
+        scenes.forComponents(CMBlocks.FUEL_CHANNEL_CAP)
+                .addStoryBoard("channel_cap", ServiceScenes::channelCap, REACTOR);
+        scenes.forComponents(CMBlocks.AREA_RADIATION_MONITOR)
+                .addStoryBoard("area_monitor", ServiceScenes::areaMonitor, REACTOR);
+        scenes.forComponents(CMBlocks.DEMINERALIZER, CMItems.RESIN_CARTRIDGE, CMItems.USED_RESIN_CARTRIDGE)
+                .addStoryBoard("cleanup", ServiceScenes::cleanup, REACTOR);
+        scenes.forComponents(CMItems.REACTOR_ALLOY_SHEET, CMBlocks.HEAT_EXCHANGER)
+                .addStoryBoard("tube_leak", ServiceScenes::tubeLeak, REACTOR);
         scenes.forComponents(CMBlocks.WATER_CANNON)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon, ACCIDENTS);
         scenes.forComponents(CMBlocks.MELTDOWN_SIREN)
@@ -142,7 +150,7 @@ public class CMPonder implements PonderPlugin {
                 .add(CMBlocks.CONTROL_CHANNEL).add(CMBlocks.CONTROL_ROD_DRIVE).add(CMBlocks.PRIMARY_COOLANT_PORT).add(CMBlocks.REACTOR_SERVICE_PORT).add(CMBlocks.CIRCULATION_PUMP)
                 .add(CMBlocks.REINFORCED_PIPE).add(CMBlocks.HEAT_EXCHANGER).add(CMBlocks.PRESSURIZER).add(CMBlocks.STEAM_TURBINE).add(CMBlocks.CONDENSER).add(CMBlocks.RELIEF_VALVE)
                 .add(CMBlocks.COOLING_TOWER_PACKING).add(CMBlocks.RADIATOR_PANEL).add(CMBlocks.SPENT_FUEL_RACK).add(CMBlocks.SHIELDED_CASK).add(CMItems.DASHBOARD_PARTS.get(DashPart.Type.LEVER))
-                .add(CMItems.BORAX);
+                .add(CMItems.BORAX).add(CMBlocks.FUEL_CHANNEL_CAP).add(CMBlocks.DEMINERALIZER).add(CMBlocks.AREA_RADIATION_MONITOR);
         tags.addToTag(ELECTRICS)
                 .add(CMBlocks.GENERATOR).add(CMBlocks.TRANSFORMER).add(CMBlocks.CIRCUIT_BREAKER).add(CMBlocks.BUS_BAR).add(CMBlocks.INSULATOR)
                 .add(CMItems.POWER_WIRE).add(CMItems.POWER_CABLE).add(CMItems.TRANSMISSION_LINE).add(CMBlocks.GRID_CONNECTION)

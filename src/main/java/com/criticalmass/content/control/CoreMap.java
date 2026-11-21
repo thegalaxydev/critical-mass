@@ -60,7 +60,7 @@ public final class CoreMap {
     public record Cell(Kind kind, State state, Cap cap, int percent, int temperature) {
         public static final Cell BLANK = new Cell(Kind.NONE, State.EMPTY, Cap.NONE, 0, 0);
 
-        int pack() {
+        public int pack() {
             return kind.ordinal() | state.ordinal() << 2 | cap.ordinal() << 5 | Math.max(0, Math.min(100, percent)) << 7 | Math.max(0, Math.min(MAX_TEMPERATURE, temperature)) << 14;
         }
 

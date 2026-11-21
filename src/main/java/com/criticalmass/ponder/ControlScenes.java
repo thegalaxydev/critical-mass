@@ -180,7 +180,7 @@ public final class ControlScenes {
         return tag;
     }
 
-    private static void light(CreateSceneBuilder scene, Selection wall, boolean on) {
+    static void light(CreateSceneBuilder scene, Selection wall, boolean on) {
         scene.world().modifyBlockEntityNBT(wall, ScreenBlockEntity.class, nbt -> {
             nbt.putBoolean("Powered", on);
             nbt.putInt("Energy", on ? ScreenBlockEntity.CAPACITY : 0);
