@@ -109,7 +109,7 @@ public final class BoronScenes {
         }
         scene.world().setKineticSpeed(holdDrive, 0);
         chapter(scene, 130, util.vector().blockSurface(holdPort, Direction.NORTH), "A full vessel takes no more, so draw coolant off first. What is let down takes its share of the boron, and the reading stays where it was");
-        say(scene, 110, util.vector().blockSurface(holdTank, Direction.WEST), "A Fluid Tank keeps no boron figure. Coolant let down into one goes back in as clean coolant");
+        say(scene, 110, util.vector().blockSurface(holdTank, Direction.WEST), "A Fluid Tank keeps the boron of the coolant in it. Pumped back in, it brings the same figure with it");
         say(scene, 120, util.vector().blockSurface(controller, Direction.NORTH), "Boron goes round the loop with the coolant. A leak takes it out, and coolant that boils off leaves it behind");
         scene.markAsFinished();
     }

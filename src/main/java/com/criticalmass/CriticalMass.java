@@ -105,6 +105,8 @@ public class CriticalMass {
         modContainer.registerConfig(ModConfig.Type.SERVER, CMConfig.SPEC);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(CriticalMass::registerCapabilities);
+        modEventBus.addListener(net.neoforged.bus.api.EventPriority.HIGH, (RegisterCapabilitiesEvent event) -> event.registerBlockEntity(Capabilities.FluidHandler.BLOCK,
+                com.simibubi.create.AllBlockEntityTypes.FLUID_TANK.get(), com.criticalmass.content.thermal.TankFigure::of));
         modEventBus.addListener(DashPartEdit::register);
         modEventBus.addListener(DashLeverSet::register);
         modEventBus.addListener(DashOpenSettings::register);

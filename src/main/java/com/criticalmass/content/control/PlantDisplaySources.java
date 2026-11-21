@@ -74,6 +74,7 @@ public final class PlantDisplaySources {
         add(CMBlockEntities.DIESEL_ENGINE.get(), PlantChannel.LEVEL, PlantChannel.SPEED);
         add(CMBlockEntities.AREA_RADIATION_MONITOR.get(), PlantChannel.DOSE);
         add(CMBlockEntities.DEMINERALIZER.get(), PlantChannel.LEVEL);
+        add(com.simibubi.create.AllBlockEntityTypes.FLUID_TANK.get(), PlantChannel.BORON, PlantChannel.TEMPERATURE);
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ROD_INSERTION.get());
         add(CMBlockEntities.HEAT_EXCHANGER.get(), buffer);
         add(CMBlockEntities.CONDENSER.get(), buffer);

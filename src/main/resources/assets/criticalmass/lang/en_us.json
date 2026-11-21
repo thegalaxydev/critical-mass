@@ -903,7 +903,7 @@
   "criticalmass.ponder.boron.text_6": "Clean Primary Coolant pumped in the same way thins it out again. Another 1,000 mB brings it down to 875 ppm",
   "criticalmass.ponder.boron.text_7": "Diluting a critical reactor adds reactivity as surely as pulling rods. Do it a little at a time and read the reactivity",
   "criticalmass.ponder.boron.text_8": "A full vessel takes no more, so draw coolant off first. What is let down takes its share of the boron, and the reading stays where it was",
-  "criticalmass.ponder.boron.text_9": "A Fluid Tank keeps no boron figure. Coolant let down into one goes back in as clean coolant",
+  "criticalmass.ponder.boron.text_9": "A Fluid Tank keeps the boron of the coolant in it. Pumped back in, it brings the same figure with it",
   "criticalmass.ponder.breaker.header": "Protecting a feeder with a Circuit Breaker",
   "criticalmass.ponder.breaker.text_1": "A Circuit Breaker has two terminals on top. The line side is ringed in brass and the load side in copper",
   "criticalmass.ponder.breaker.text_2": "Use it to close or open it. The red lamp is lit while it is closed and the green one while it is open",

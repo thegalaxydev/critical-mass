@@ -52,6 +52,7 @@ public enum PlantChannel {
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
+    public static final double TANK_BORON_SCALE = 2500.0;
     public final String key;
     public final String unit;
 
@@ -73,7 +74,8 @@ public enum PlantChannel {
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
                 || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity || be instanceof BatteryBlockEntity || be instanceof DieselEngineBlockEntity
-                || be instanceof AreaMonitorBlockEntity || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity;
+                || be instanceof AreaMonitorBlockEntity || be instanceof com.criticalmass.content.thermal.DemineralizerBlockEntity
+                || be instanceof com.simibubi.create.content.fluids.tank.FluidTankBlockEntity;
     }
 
     private static double scale(double kilovolts) {
@@ -114,7 +116,7 @@ public enum PlantChannel {
                 case PERIOD -> of(Double.isInfinite(c.core().period()) ? STABLE_PERIOD : Math.max(-STABLE_PERIOD, Math.min(STABLE_PERIOD, c.core().period())), -STABLE_PERIOD, STABLE_PERIOD);
                 case REACTIVITY -> of(c.core().reactivity() * 1.0e5, -10000, 1000);
                 case XENON -> of(c.core().xenon() * 100, 0, 200);
-                case BORON -> of(c.boron(), 0, 2500);
+                case BORON -> of(c.boron(), 0, TANK_BORON_SCALE);
                 case SETPOINT -> of(c.regulatorSetpoint(), 0, 100);
                 default -> buffer(c.coolant());
             };
@@ -210,6 +212,19 @@ public enum PlantChannel {
                 case OUTPUT -> new Reading(tie.deliveredMw(), 0, scale, "MW");
                 case FREQUENCY -> of(tie.live() ? tie.hertz() : 0, 45, 55);
                 case VOLTAGE -> of(tie.live() ? tie.kilovolts() : 0, 0, 250);
+                default -> null;
+            };
+        }
+        if (be instanceof com.simibubi.create.content.fluids.tank.FluidTankBlockEntity) {
+            com.criticalmass.content.thermal.TankCoolant tank = com.criticalmass.content.thermal.TankCoolant.at(level, target);
+            if (tank == null) {
+                return null;
+            }
+            CoolantBuffer held = tank.coolant();
+            double ppm = com.criticalmass.content.thermal.TankFigure.carried(held.fluid()) ? held.boronPpm() : 0;
+            return switch (this) {
+                case BORON -> of(ppm, 0, ppm > TANK_BORON_SCALE ? CMThermal.BORIC_ACID_PPM : TANK_BORON_SCALE);
+                case TEMPERATURE, LEVEL -> buffer(held);
                 default -> null;
             };
         }

@@ -322,7 +322,7 @@ public final class CoolantBuffer {
 
         private Packet arriving(FluidStack resource, int n) {
             FluidStack in = resource.copyWithAmount(n);
-            if (level == null || flightTick != level.getGameTime() || flightAmount <= 0 || !sameMedium(flightFluid, resource)) {
+            if (level == null || flightTick != level.getGameTime() || flightAmount <= 0 || !sameMedium(flightFluid, resource) || CMThermal.isContaminated(flightFluid) != CMThermal.isContaminated(resource)) {
                 return new Packet(in, 0);
             }
             int k = Math.min(n, flightAmount);
