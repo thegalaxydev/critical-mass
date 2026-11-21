@@ -16,11 +16,24 @@ import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMComponents;
 import com.criticalmass.registry.CMItems;
+import com.simibubi.create.AllItems;
 import com.simibubi.create.AllRecipeTypes;
+import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 import com.simibubi.create.content.kinetics.deployer.DeployerApplicationRecipe;
 import com.simibubi.create.content.fluids.transfer.FillingRecipe;
 import com.simibubi.create.content.processing.sequenced.SequencedAssemblyRecipe;
+import com.simibubi.create.content.processing.recipe.ProcessingOutput;
+import com.simibubi.create.content.processing.recipe.ProcessingRecipe;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponents;
@@ -47,7 +60,71 @@ public final class ProductionTests {
             "sequenced_assembly/fuel_assembly", "mixing/steel_ingot", "pressing/steel_plate", "crafting/reactor_service_port", "mechanical_crafting/reactor_controller",
             "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister", "sequenced_assembly/sheared_fuel", "mixing/reprocessed_fuel");
 
+    private static final List<String> GEAR = List.of("crafting/survey_meter", "crafting/dosimeter", "crafting/protective_hood", "crafting/protective_suit", "crafting/protective_leggings", "crafting/protective_boots",
+            "crafting/area_radiation_monitor");
+    private static final Set<String> NOT_CRAFTED = Set.of("uranium_ore", "deepslate_uranium_ore", "raw_uranium", "enriched_uranium", "depleted_uranium", "spent_fuel_assembly", "damaged_fuel_assembly",
+            "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash");
+
     private ProductionTests() {
+    }
+
+    private static void crafts(GameTestHelper h, ItemLike result, int width, int height, ItemLike... grid) {
+        List<ItemStack> stacks = new java.util.ArrayList<>();
+        for (ItemLike item : grid) {
+            stacks.add(item == null ? ItemStack.EMPTY : new ItemStack(item));
+        }
+        ItemStack out = h.getLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, CraftingInput.of(width, height, stacks), h.getLevel())
+                .map(r -> r.value().getResultItem(h.getLevel().registryAccess())).orElse(ItemStack.EMPTY);
+        h.assertTrue(out.is(result.asItem()), "A crafting table should make " + BuiltInRegistries.ITEM.getKey(result.asItem()) + ", got " + out);
+    }
+
+    @GameTest(template = EMPTY)
+    public static void everyItemIsCraftedOrComesFromThePlant(GameTestHelper h) {
+        RecipeManager rm = h.getLevel().getRecipeManager();
+        for (String id : GEAR) {
+            h.assertTrue(rm.byKey(CriticalMass.asResource(id)).isPresent(), "Recipe should load: " + id);
+        }
+        ItemLike brass = AllItems.BRASS_SHEET.get();
+        ItemLike tube = AllItems.ELECTRON_TUBE.get();
+        ItemLike steel = CMItems.STEEL_PLATE.get();
+        ItemLike gasket = CMItems.SEALING_GASKET.get();
+        crafts(h, CMItems.SURVEY_METER.get(), 3, 3, null, tube, null, brass, Items.GLASS_PANE, brass, null, steel, null);
+        crafts(h, CMBlocks.AREA_RADIATION_MONITOR.get(), 3, 3, null, Items.REDSTONE_TORCH, null, brass, tube, brass, steel, AllItems.COPPER_SHEET.get(), steel);
+        crafts(h, CMItems.DOSIMETER.get(), 3, 1, steel, Items.QUARTZ, AllItems.BRASS_NUGGET.get());
+        crafts(h, CMItems.PROTECTIVE_HOOD.get(), 3, 1, Items.LEATHER_HELMET, gasket, Items.WHITE_WOOL);
+        crafts(h, CMItems.PROTECTIVE_SUIT.get(), 3, 1, Items.LEATHER_CHESTPLATE, gasket, Items.YELLOW_WOOL);
+        crafts(h, CMItems.PROTECTIVE_LEGGINGS.get(), 3, 1, Items.LEATHER_LEGGINGS, gasket, Items.WHITE_WOOL);
+        crafts(h, CMItems.PROTECTIVE_BOOTS.get(), 3, 1, Items.LEATHER_BOOTS, gasket, Items.WHITE_WOOL);
+        Set<Item> made = new HashSet<>();
+        for (RecipeHolder<?> holder : rm.getRecipes()) {
+            Recipe<?> recipe = holder.value();
+            made.add(recipe.getResultItem(h.getLevel().registryAccess()).getItem());
+            if (recipe instanceof ProcessingRecipe<?, ?> processing) {
+                for (ProcessingOutput output : processing.getRollableResults()) {
+                    made.add(output.getStack().getItem());
+                }
+            }
+            if (recipe instanceof SequencedAssemblyRecipe assembly) {
+                made.add(assembly.getTransitionalItem().getItem());
+            }
+        }
+        Set<String> missing = new TreeSet<>();
+        Set<String> stale = new TreeSet<>(NOT_CRAFTED);
+        for (Item item : BuiltInRegistries.ITEM) {
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(item);
+            if (!id.getNamespace().equals(CriticalMass.MODID)) {
+                continue;
+            }
+            if (made.contains(item)) {
+                continue;
+            }
+            if (!stale.remove(id.getPath())) {
+                missing.add(id.getPath());
+            }
+        }
+        h.assertTrue(missing.isEmpty(), "These items have no recipe and are not listed as coming from the plant: " + missing);
+        h.assertTrue(stale.isEmpty(), "These items are listed as not crafted but have a recipe or are gone: " + stale);
+        h.succeed();
     }
 
     @GameTest(template = EMPTY)

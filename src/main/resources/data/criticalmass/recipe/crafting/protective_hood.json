@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    {
+      "item": "minecraft:leather_helmet"
+    },
+    {
+      "item": "criticalmass:sealing_gasket"
+    },
+    {
+      "tag": "minecraft:wool"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:protective_hood",
+    "count": 1
+  }
+}

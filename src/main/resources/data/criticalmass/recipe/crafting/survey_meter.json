@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "E": {
+      "item": "create:electron_tube"
+    },
+    "B": {
+      "tag": "c:plates/brass"
+    },
+    "G": {
+      "tag": "c:glass_panes/colorless"
+    },
+    "S": {
+      "item": "criticalmass:steel_plate"
+    }
+  },
+  "pattern": [
+    " E ",
+    "BGB",
+    " S "
+  ],
+  "result": {
+    "id": "criticalmass:survey_meter",
+    "count": 1
+  }
+}
