@@ -309,4 +309,49 @@ public final class ServiceScenes {
         warn(scene, 100, tubes, "Used on an exchanger that is hot or flowing, it burns you and takes no sheet");
         scene.markAsFinished();
     }
+
+    public static void chartrine(SceneBuilder builder, SceneBuildingUtil util) {
+        CreateSceneBuilder scene = new CreateSceneBuilder(builder);
+        scene.title("chartrine", "Growing Chartrine from Contaminated Coolant");
+        scene.configureBasePlate(0, 0, 7);
+        scene.showBasePlate();
+        scene.idle(10);
+        BlockPos tank = util.grid().at(1, 2, 3);
+        BlockPos pump = util.grid().at(2, 2, 3);
+        BlockPos cell = util.grid().at(4, 1, 3);
+        BlockPos mouth = util.grid().at(4, 2, 3);
+        BlockPos drill = util.grid().at(5, 1, 3);
+        Selection line = util.select().fromTo(1, 1, 3, 3, 3, 3);
+        Selection pit = util.select().fromTo(3, 1, 2, 4, 1, 5).add(util.select().position(5, 1, 4));
+        Selection miner = util.select().fromTo(5, 1, 3, 6, 1, 3);
+        Vec3 drip = util.vector().centerOf(mouth);
+        scene.world().setKineticSpeed(util.select().everywhere(), 0);
+        scene.world().showSection(pit, Direction.DOWN);
+        scene.idle(20);
+        chapter(scene, 110, util.vector().topOf(cell), "Chartrine lies in layered veins underground. It can also be grown, from lava and the Contaminated Coolant of a failed core");
+        scene.world().showSection(line, Direction.DOWN);
+        scene.idle(20);
+        say(scene, 120, drip, "Leave a Fluid Pipe open a block above the lava and pump Contaminated Coolant to it. It leaves the pipe 1 mB a tick");
+        scene.world().setKineticSpeed(util.select().fromTo(2, 2, 3, 2, 3, 3), 32);
+        scene.effects().rotationSpeedIndicator(pump);
+        scene.idle(40);
+        scene.world().setBlock(cell, CMBlocks.CHARTRINE.get().defaultBlockState(), true);
+        scene.idle(20);
+        chapter(scene, 110, util.vector().topOf(cell), "About every 250 mB that lands on the lava turns it to stone");
+        say(scene, 130, util.vector().blockSurface(tank, Direction.NORTH), "How contaminated the coolant is sets the stone. Straight from the core it is always Chartrine. Watered down by half it is Chartrine half the time and tuff the rest");
+        scene.world().showSection(miner, Direction.WEST);
+        scene.idle(15);
+        scene.world().setKineticSpeed(miner, 32);
+        scene.idle(25);
+        scene.world().destroyBlock(cell);
+        scene.idle(15);
+        scene.world().setBlock(cell, net.minecraft.world.level.block.Blocks.LAVA.defaultBlockState(), false);
+        say(scene, 100, util.vector().blockSurface(drill, Direction.NORTH), "Break the stone and let the lava flow back in for the next block");
+        warn(scene, 140, util.vector().blockSurface(tank, Direction.NORTH), "Only contamination the reactor made counts, and only while a record of it is kept. A Fluid Tank keeps it. Coolant carried in a bucket stays dangerous but makes only tuff");
+        scene.world().setBlock(cell, net.minecraft.world.level.block.Blocks.TUFF.defaultBlockState(), true);
+        scene.idle(30);
+        warn(scene, 110, drip, "While stone fills the pit the coolant has no lava to land on. It dirties the floor instead, as any leak does");
+        say(scene, 100, util.vector().topOf(cell), "Crushing Wheels turn Chartrine into Crushed Raw Uranium 12 times in 100");
+        scene.markAsFinished();
+    }
 }

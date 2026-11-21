@@ -92,6 +92,14 @@ public final class BucketTests {
                             double share = TankCoolant.at(h.getLevel(), h.absolutePos(TANK)).coolant().activityShare();
                             h.assertTrue(share > 0.999, "A bucket keeps no record of how contaminated its coolant is, so it should count as fully contaminated: " + share);
                         }
+                        h.assertTrue(com.simibubi.create.content.fluids.transfer.GenericItemFilling.getRequiredAmountForItem(h.getLevel(), new ItemStack(Items.BUCKET), full.copy()) == 1000
+                                && com.simibubi.create.content.fluids.transfer.GenericItemFilling.fillItem(h.getLevel(), 1000, new ItemStack(Items.BUCKET), full.copy()).is(kind.bucket()),
+                                "A Spout should fill a bucket with " + name);
+                        ItemStack onDrain = new ItemStack(kind.bucket());
+                        h.assertTrue(com.simibubi.create.content.fluids.transfer.GenericItemEmptying.canItemBeEmptied(h.getLevel(), onDrain), "An Item Drain should take a bucket of " + name);
+                        net.createmod.catnip.data.Pair<FluidStack, ItemStack> drained = com.simibubi.create.content.fluids.transfer.GenericItemEmptying.emptyItem(h.getLevel(), onDrain, false);
+                        h.assertTrue(FluidStack.isSameFluid(drained.getFirst(), full) && drained.getFirst().getAmount() == 1000 && drained.getSecond().is(Items.BUCKET),
+                                "An Item Drain should empty a bucket of " + name + ": " + drained.getFirst() + ", " + drained.getSecond());
                         FluidActionResult drawn = FluidUtil.tryFillContainer(new ItemStack(Items.BUCKET), tank, 1000, null, true);
                         h.assertTrue(drawn.isSuccess() && drawn.getResult().is(kind.bucket()) && be.getTankInventory().isEmpty(), "An empty bucket should draw " + name + " back out of the tank: " + drawn.getResult());
                     }

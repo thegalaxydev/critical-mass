@@ -319,17 +319,25 @@ def tube_leak():
     return blocks + pipes, settle(pipes) + ["criticalmass desk 6 1 1 0 alarm 4 2 4 0 0 TUBE LEAK", "criticalmass desk 6 1 1 1 gauge 2 2 6 0 4 TURBINE HALL"]
 
 
+def chartrine():
+    blocks = plate(7)
+    blocks += [((1, 1, 3), STEEL), ((1, 2, 3), 'create:fluid_tank[top=true,bottom=true,shape=window]{Window:1b,Size:1,Height:1,TankContent:{Fluid:{id:"criticalmass:contaminated_coolant",amount:6000}}}'), ((2, 2, 3), "create:mechanical_pump[facing=east]"), ((2, 3, 3), "create:cogwheel[axis=x]"), ((3, 2, 3), pipe("east", "west")),
+               ((3, 1, 3), STEEL), ((3, 1, 4), STEEL), ((4, 1, 2), "minecraft:glass"), ((4, 1, 5), STEEL), ((5, 1, 4), STEEL), ((3, 1, 2), STEEL), ((3, 1, 5), STEEL),
+               ((4, 1, 4), "minecraft:lava"), ((4, 1, 3), "minecraft:lava"), ((5, 1, 3), "create:mechanical_drill[facing=west]"), ((6, 1, 3), "create:shaft[axis=x]")]
+    return blocks, []
+
+
 SCENES = {"rod_control": rod_control, "siren": siren, "wires": wires, "breaker": breaker, "synchronising": synchronising, "standby": standby, "repair": repair, "bypass": bypass, "meltdown": meltdown, "fallout": fallout,
           "reactor_vessel": reactor_vessel, "rods": rods, "primary_loop": primary_loop, "steam": steam, "cooling": cooling, "refuelling": refuelling, "water_cannon": water_cannon, "feedwater": feedwater,
           "enrichment": enrichment, "fuel_assembly": fuel_assembly, "reprocessing": reprocessing, "waste_canister": waste_canister, "control_desk": control_desk,
-          "plant_screen": plant_screen, "recovery": recovery, "boron": boron, "channel_cap": channel_cap, "area_monitor": area_monitor, "cleanup": cleanup, "tube_leak": tube_leak}
+          "plant_screen": plant_screen, "recovery": recovery, "boron": boron, "channel_cap": channel_cap, "area_monitor": area_monitor, "cleanup": cleanup, "tube_leak": tube_leak, "chartrine": chartrine}
 VIEW = {"rod_control": "criticalmass:dashboard_lever", "siren": "criticalmass:meltdown_siren", "wires": "criticalmass:power_wire", "breaker": "criticalmass:circuit_breaker", "synchronising": "criticalmass:generator", "standby": "criticalmass:transfer_switch",
         "repair": "criticalmass:transformer", "bypass": "criticalmass:dashboard_switch", "meltdown": "criticalmass:corium", "fallout": "criticalmass:survey_meter",
         "reactor_vessel": "criticalmass:reactor_vessel_casing", "rods": "criticalmass:control_rod_drive", "primary_loop": "criticalmass:circulation_pump",
         "steam": "criticalmass:steam_turbine", "cooling": "criticalmass:cooling_tower_packing", "refuelling": "criticalmass:spent_fuel_rack", "water_cannon": "criticalmass:water_cannon", "feedwater": "create:stockpile_switch",
         "enrichment": "criticalmass:centrifuge", "fuel_assembly": "criticalmass:ceramic_fuel_pellet", "reprocessing": "criticalmass:sheared_fuel",
         "waste_canister": "criticalmass:open_waste_canister", "control_desk": "criticalmass:reactor_alloy_dashboard", "plant_screen": "criticalmass:plant_screen", "recovery": "criticalmass:core_debris", "boron": "criticalmass:borax", "channel_cap": "criticalmass:fuel_channel_cap",
-        "area_monitor": "criticalmass:area_radiation_monitor", "cleanup": "criticalmass:demineralizer", "tube_leak": "criticalmass:reactor_alloy_sheet"}
+        "area_monitor": "criticalmass:area_radiation_monitor", "cleanup": "criticalmass:demineralizer", "tube_leak": "criticalmass:reactor_alloy_sheet", "chartrine": "criticalmass:chartrine"}
 SCROLL = {"feedwater": 1}
 
 

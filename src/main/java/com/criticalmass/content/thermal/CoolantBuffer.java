@@ -19,12 +19,14 @@ public final class CoolantBuffer {
     private static double flightHeat;
     private static double flightBoron;
     private static double flightActivity;
+    private static double flightProven;
     private final IntSupplier capacity;
     private final Runnable onChange;
     private FluidStack fluid = FluidStack.EMPTY;
     private double heat;
     private double boron;
     private double activity;
+    private double proven;
 
     public CoolantBuffer(int capacity, Runnable onChange) {
         this(() -> capacity, onChange);
@@ -75,13 +77,23 @@ public final class CoolantBuffer {
         return amount() == 0 ? 0 : Math.min(1, activity / amount());
     }
 
+    public double provenLoad() {
+        return proven;
+    }
+
+    public double provenShare() {
+        return amount() == 0 ? 0 : Math.min(1, proven / amount());
+    }
+
     public void decayActivity(double kept) {
         activity = activity * kept < 1e-6 ? 0 : activity * kept;
+        proven = Math.min(activity, proven * kept);
     }
 
     private void refreshActivity() {
         if (fluid.isEmpty()) {
             activity = 0;
+            proven = 0;
             return;
         }
         if (!CMThermal.isPrimaryMedium(fluid)) {
@@ -183,19 +195,22 @@ public final class CoolantBuffer {
         double h = n == amount() ? heat : heat * n / amount();
         double b = n == amount() ? boron : boron * n / amount();
         double a = n == amount() ? activity : activity * n / amount();
+        double p = n == amount() ? proven : proven * n / amount();
         FluidStack out = fluid.copyWithAmount(n);
         fluid.shrink(n);
         heat -= h;
         boron -= b;
         activity -= a;
+        proven -= p;
         if (fluid.isEmpty()) {
             fluid = FluidStack.EMPTY;
             heat = 0;
             boron = 0;
             activity = 0;
+            proven = 0;
         }
         onChange.run();
-        return new Packet(out, h, b, a);
+        return new Packet(out, h, b, a, p);
     }
 
     public void give(Packet packet) {
@@ -205,6 +220,7 @@ public final class CoolantBuffer {
         boolean acid = CMThermal.isBoricAcid(packet.fluid());
         boron += acid ? packet.amount() * CMThermal.BORIC_ACID_PPM : packet.boron();
         activity += packet.activity();
+        proven = Math.min(activity, proven + packet.proven());
         if (fluid.isEmpty()) {
             fluid = packet.fluid().copy();
         } else if (acid) {
@@ -240,18 +256,20 @@ public final class CoolantBuffer {
         this.heat = this.fluid.isEmpty() ? 0 : heat;
         this.boron = (CMThermal.isBoricAcid(this.fluid) ? CMThermal.BORIC_ACID_PPM : borated(this.fluid) ? ppm : 0) * amount();
         this.activity = CMThermal.isContaminated(this.fluid) ? amount() : 0;
+        this.proven = 0;
         refreshPhase();
         onChange.run();
     }
 
     public void contaminate() {
-        if (fluid.isEmpty() || CMThermal.isContaminated(fluid) && activity >= amount()) {
+        if (fluid.isEmpty() || CMThermal.isContaminated(fluid) && activity >= amount() && proven >= amount()) {
             return;
         }
         if (!CMThermal.isContaminated(fluid)) {
             fluid = new FluidStack(CMFluids.CONTAMINATED_COOLANT.source.get(), fluid.getAmount());
         }
         activity = amount();
+        proven = amount();
         onChange.run();
     }
 
@@ -267,6 +285,9 @@ public final class CoolantBuffer {
         if (activity > 0) {
             tag.putDouble("Activity", activity);
         }
+        if (proven > 0) {
+            tag.putDouble("Proven", proven);
+        }
         return tag;
     }
 
@@ -275,6 +296,7 @@ public final class CoolantBuffer {
         heat = fluid.isEmpty() ? 0 : tag.getDouble("Heat");
         boron = fluid.isEmpty() ? 0 : CMThermal.isBoricAcid(fluid) ? fluid.getAmount() * CMThermal.BORIC_ACID_PPM : tag.getDouble("Boron");
         activity = fluid.isEmpty() ? 0 : tag.contains("Activity") ? tag.getDouble("Activity") : CMThermal.isContaminated(fluid) ? fluid.getAmount() : 0;
+        proven = fluid.isEmpty() ? 0 : Math.min(activity, tag.getDouble("Proven"));
         refreshPhase();
     }
 
@@ -286,25 +308,33 @@ public final class CoolantBuffer {
         return new Handler(level, pos, side);
     }
 
-    public static double flightShare(Level level, FluidStack stack) {
+    public static Packet claim(Level level, FluidStack stack) {
         if (flightTick != level.getGameTime() || flightAmount <= 0 || !sameMedium(flightFluid, stack) || CMThermal.isContaminated(flightFluid) != CMThermal.isContaminated(stack)) {
-            return -1;
+            return new Packet(stack.copy(), 0, 0, CMThermal.isContaminated(stack) ? stack.getAmount() : 0, 0);
         }
-        double share = Math.min(1, flightActivity / flightAmount);
         int k = Math.min(stack.getAmount(), flightAmount);
-        flightHeat -= flightHeat * k / flightAmount;
-        flightBoron -= flightBoron * k / flightAmount;
-        flightActivity -= flightActivity * k / flightAmount;
+        double h = flightHeat * k / flightAmount;
+        double b = flightBoron * k / flightAmount;
+        double a = flightActivity * k / flightAmount;
+        double p = flightProven * k / flightAmount;
         flightAmount -= k;
-        return share;
+        flightHeat -= h;
+        flightBoron -= b;
+        flightActivity -= a;
+        flightProven -= p;
+        return new Packet(stack.copy(), h, b, a, p);
     }
 
     private static boolean sameMedium(FluidStack a, FluidStack b) {
         return (isSteamMedium(a) && isSteamMedium(b)) || (borated(a) && borated(b)) || FluidStack.isSameFluid(a, b);
     }
 
-    public record Packet(FluidStack fluid, double heat, double boron, double activity) {
-        public static final Packet EMPTY = new Packet(FluidStack.EMPTY, 0, 0, 0);
+    public record Packet(FluidStack fluid, double heat, double boron, double activity, double proven) {
+        public static final Packet EMPTY = new Packet(FluidStack.EMPTY, 0, 0, 0, 0);
+
+        public Packet(FluidStack fluid, double heat, double boron, double activity) {
+            this(fluid, heat, boron, activity, 0);
+        }
 
         public Packet(FluidStack fluid, double heat, double boron) {
             this(fluid, heat, boron, CMThermal.isContaminated(fluid) ? fluid.getAmount() : 0);
@@ -346,11 +376,13 @@ public final class CoolantBuffer {
             double h = flightHeat * k / flightAmount;
             double b = flightBoron * k / flightAmount;
             double a = flightActivity * k / flightAmount;
+            double p = flightProven * k / flightAmount;
             flightAmount -= k;
             flightHeat -= h;
             flightBoron -= b;
             flightActivity -= a;
-            return new Packet(in, h, b, a);
+            flightProven -= p;
+            return new Packet(in, h, b, a, p);
         }
 
         @Override
@@ -410,6 +442,7 @@ public final class CoolantBuffer {
                 flightHeat = p.heat();
                 flightBoron = p.boron();
                 flightActivity = p.activity();
+                flightProven = p.proven();
             }
             return p.fluid();
         }

@@ -60,6 +60,8 @@ public class CMPonder implements PonderPlugin {
                 .addStoryBoard("cleanup", ServiceScenes::cleanup, REACTOR);
         scenes.forComponents(CMItems.REACTOR_ALLOY_SHEET, CMBlocks.HEAT_EXCHANGER)
                 .addStoryBoard("tube_leak", ServiceScenes::tubeLeak, REACTOR);
+        scenes.forComponents(CMBlocks.CHARTRINE, CMItems.CONTAMINATED_COOLANT_BUCKET)
+                .addStoryBoard("chartrine", ServiceScenes::chartrine, REACTOR);
         scenes.forComponents(CMBlocks.WATER_CANNON)
                 .addStoryBoard("water_cannon", PlantScenes::waterCannon, ACCIDENTS);
         scenes.forComponents(CMBlocks.MELTDOWN_SIREN)

@@ -54,6 +54,8 @@ public final class LedgerCommand {
                         .executes(ctx -> probe(ctx.getSource(), Vec3Argument.getVec3(ctx, "pos")))))
                 .then(Commands.literal("contaminate").then(Commands.argument("pos", BlockPosArgument.blockPos()).then(Commands.argument("amount", DoubleArgumentType.doubleArg(0))
                         .executes(ctx -> contaminate(ctx.getSource(), BlockPosArgument.getBlockPos(ctx, "pos"), DoubleArgumentType.getDouble(ctx, "amount"))))))
+                .then(Commands.literal("taint").then(Commands.argument("tank", BlockPosArgument.blockPos())
+                        .executes(ctx -> taint(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "tank")))))
                 .then(Commands.literal("boron").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("ppm", DoubleArgumentType.doubleArg(0, 5000))
                         .executes(ctx -> boron(ctx.getSource(), BlockPosArgument.getLoadedBlockPos(ctx, "controller"), DoubleArgumentType.getDouble(ctx, "ppm"))))))
                 .then(Commands.literal("steady").then(Commands.argument("controller", BlockPosArgument.blockPos()).then(Commands.argument("power", DoubleArgumentType.doubleArg(0.001, 1))
@@ -147,6 +149,18 @@ public final class LedgerCommand {
     private static int contaminate(CommandSourceStack source, BlockPos pos, double amount) {
         ContaminationData.get(source.getLevel()).add(pos, amount);
         source.sendSuccess(() -> Component.literal("Contaminated " + pos.toShortString() + " by " + fmt(amount)), true);
+        return 1;
+    }
+
+    private static int taint(CommandSourceStack source, BlockPos pos) {
+        TankCoolant node = TankCoolant.at(source.getLevel(), pos);
+        if (node == null || node.coolant().amount() == 0 || !CMThermal.isPrimaryMedium(node.coolant().fluid())) {
+            source.sendFailure(Component.literal("No Fluid Tank holding coolant at " + pos.toShortString()));
+            return 0;
+        }
+        node.coolant().contaminate();
+        node.settle();
+        source.sendSuccess(() -> Component.literal("Coolant at " + pos.toShortString() + " contaminated as the reactor would, " + fmt(node.coolant().provenLoad()) + " mB on record"), true);
         return 1;
     }
 

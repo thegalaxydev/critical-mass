@@ -1,10 +1,12 @@
 package com.criticalmass.content.thermal;
 
+import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.registry.CMBlocks;
 import com.criticalmass.registry.CMFluids;
 import com.simibubi.create.api.effect.OpenPipeEffectHandler;
 import com.simibubi.create.api.event.PipeCollisionEvent;
 import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -32,25 +34,32 @@ public final class LavaReaction {
         return random.nextDouble() < share ? CMBlocks.CHARTRINE.get().defaultBlockState() : Blocks.TUFF.defaultBlockState();
     }
 
+    public static BlockPos mouth(AABB area) {
+        return new BlockPos(Mth.floor(area.minX + 0.5), Mth.floor(area.maxY - 0.5), Mth.floor(area.minZ + 0.5));
+    }
+
     private static void spill(Level level, AABB area, FluidStack fluid) {
-        if (level.isClientSide || fluid.isEmpty()) {
+        if (!(level instanceof ServerLevel server) || fluid.isEmpty()) {
             return;
         }
+        CoolantBuffer.Packet arrived = CoolantBuffer.claim(level, fluid);
         BlockPos lava = lavaIn(level, area);
-        if (lava == null || level.random.nextDouble() * CMThermal.CHARTRINE_COOLANT >= fluid.getAmount()) {
+        if (lava == null) {
+            ContaminationData.get(server).add(mouth(area), arrived.activity() * CMThermal.CONTAMINATED_SPILL + (fluid.getAmount() - arrived.activity()) * CMThermal.CLEAN_SPILL);
             return;
         }
-        double share = CoolantBuffer.flightShare(level, fluid);
-        level.setBlockAndUpdate(lava, stone(level.random, share < 0 ? CMThermal.CLEAN_ACTIVITY : share));
+        if (level.random.nextDouble() * CMThermal.CHARTRINE_COOLANT >= fluid.getAmount()) {
+            return;
+        }
+        level.setBlockAndUpdate(lava, stone(level.random, arrived.proven() / fluid.getAmount()));
         level.levelEvent(LevelEvent.LAVA_FIZZ, lava, 0);
     }
 
     @Nullable
     private static BlockPos lavaIn(Level level, AABB area) {
-        int x = Mth.floor(area.minX + 0.5);
-        int z = Mth.floor(area.minZ + 0.5);
-        for (int y = Mth.floor(area.maxY - 0.5); y >= Mth.floor(area.minY + 0.5); y--) {
-            BlockPos pos = new BlockPos(x, y, z);
+        BlockPos top = mouth(area);
+        for (int y = top.getY(); y >= Mth.floor(area.minY + 0.5); y--) {
+            BlockPos pos = new BlockPos(top.getX(), y, top.getZ());
             BlockState state = level.getBlockState(pos);
             if (state.getFluidState().is(FluidTags.LAVA)) {
                 return pos;
@@ -67,7 +76,7 @@ public final class LavaReaction {
         Fluid first = event.getFirstFluid();
         Fluid second = event.getSecondFluid();
         if (first == Fluids.LAVA && second == dirty || first == dirty && second == Fluids.LAVA) {
-            event.setState(stone(event.getLevel().random, CMThermal.CLEAN_ACTIVITY));
+            event.setState(Blocks.TUFF.defaultBlockState());
         }
     }
 }
