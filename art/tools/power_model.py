@@ -113,11 +113,6 @@ def emergency():
     multipart = [{"when": {"facing": side}, "apply": dict({"model": M + "station_battery"}, **turn)} for side, turn in FACING.items()]
     multipart += [{"when": {"facing": side, "cell": "true"}, "apply": dict({"model": M + "station_battery_cell"}, **turn)} for side, turn in FACING.items()]
     bbmodel.write(os.path.join(STATES, "station_battery.json"), {"multipart": multipart})
-    parts, textures = bbmodel.load("diesel_engine")
-    bbmodel.write(os.path.join(BLOCK, "diesel_engine.json"), bbmodel.model(parts["body"], textures, textures["0"]))
-    item("diesel_engine", "diesel_engine")
-    turns = dict(FACING, up={"x": 270}, down={"x": 90})
-    bbmodel.write(os.path.join(STATES, "diesel_engine.json"), {"variants": {"facing=" + side: dict({"model": M + "diesel_engine"}, **turn) for side, turn in turns.items()}})
     parts, textures = bbmodel.load("transfer_switch")
     variants = {}
     for position in ("normal", "standby", "off"):

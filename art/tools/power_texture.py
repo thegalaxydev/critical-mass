@@ -22,8 +22,6 @@ LINE_TONES = [(92, 99, 108), (142, 150, 160), (196, 202, 210)]
 SWITCH = {"base_top": (0, 0, 14, 6), "base_side": (0, 6, 14, 1), "post": (0, 7, 4, 8), "cap": (4, 7, 4, 4), "cap_side": (4, 11, 4, 1), "blade": (8, 7, 6, 2), "blade_side": (8, 9, 6, 1),
           "knob": (14, 7, 2, 2), "earth": (0, 15, 2, 9), "earth_top": (2, 15, 2, 2)}
 BATTERY = {"door": (0, 0, 14, 14), "wall": (14, 0, 14, 1), "top": (0, 14, 16, 16)}
-ENGINE = {"side": (0, 0, 13, 7), "head_top": (13, 0, 8, 10), "head_side": (0, 7, 10, 3), "front": (0, 10, 10, 8), "stack": (10, 10, 2, 4), "cap": (12, 10, 2, 2), "end": (14, 10, 12, 7),
-          "skid": (0, 18, 13, 2), "top": (0, 20, 12, 11)}
 TRANSFER = {"door": (0, 0, 14, 14), "wall": (14, 0, 14, 1), "handle": (14, 2, 4, 2), "hub": (18, 2, 2, 2), "green": (20, 2, 2, 2), "green_lit": (22, 2, 2, 2), "amber": (24, 2, 2, 2),
             "amber_lit": (26, 2, 2, 2), "top": (0, 14, 16, 16)}
 ARRESTER = {"base_top": (0, 0, 8, 8), "base_side": (8, 0, 8, 2), "body": (8, 2, 4, 11), "cap": (12, 2, 2, 2), "cap_side": (12, 4, 2, 2), "shed_top": (0, 8, 6, 6), "shed_side": (0, 14, 6, 1)}
@@ -286,37 +284,6 @@ def battery(casing, steel, tone):
     return sheet
 
 
-def engine(casing, steel, tone):
-    light, mid, shade, dark = navy(casing)
-    red = palette("red")
-    sheet = Sheet(32, ENGINE)
-    for y in range(7):
-        for x in range(13):
-            sheet.put("side", x, y, light if y == 0 else dark if y == 6 else shade if x % 4 == 3 else mid)
-        for x in range(12):
-            sheet.put("end", x, y, light if y == 0 else dark if y == 6 else mid)
-    sheet.fill("top", 0, 0, 11, 10, mid)
-    sheet.outline("top", 0, 0, 11, 10, shade)
-    sheet.paste("head_top", nine(steel, 8, 10))
-    for y in (1, 4, 7):
-        sheet.outline("head_top", 2, y, 5, y + 1, tone[1])
-    for x in range(10):
-        for y in range(3):
-            sheet.put("head_side", x, y, tone[5] if y == 0 else tone[2] if y == 2 else tone[3] if x % 3 == 2 else tone[4])
-    sheet.paste("front", nine(steel, 10, 8))
-    sheet.outline("front", 2, 1, 7, 6, tone[2])
-    sheet.fill("front", 3, 2, 6, 5, GLASS[0])
-    for y in range(4):
-        sheet.put("stack", 0, y, tone[2])
-        sheet.put("stack", 1, y, tone[1])
-    for x, y, c in ((0, 0, red[4]), (1, 0, red[3]), (0, 1, red[2]), (1, 1, red[1])):
-        sheet.put("cap", x, y, c)
-    for x in range(13):
-        sheet.put("skid", x, 0, tone[4])
-        sheet.put("skid", x, 1, tone[2])
-    return sheet
-
-
 def transfer(casing, steel, tone):
     copper, green, amber = palette("copper"), palette("green"), palette("amber")
     sheet = Sheet(32, TRANSFER)
@@ -361,7 +328,7 @@ def sheets():
     casing = source("reactor_vessel_casing")
     steel = source("steel_block")
     tone = ramp(steel)
-    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone), "switchgear": switchgear(steel, tone), "station_battery": battery(casing, steel, tone), "diesel_engine": engine(casing, steel, tone),
+    return {"insulator": insulator(steel, tone), "generator": generator(casing, steel, tone), "circuit_breaker": breaker(casing, steel, tone), "grid_connection": grid(steel, tone), "electric_motor": motor(casing, steel, tone), "bus_bar": bus(steel, tone), "transformer": transformer(steel, tone), "switchgear": switchgear(steel, tone), "station_battery": battery(casing, steel, tone),
             "transfer_switch": transfer(casing, steel, tone), "surge_arrester": arrester(steel, tone)}
 
 

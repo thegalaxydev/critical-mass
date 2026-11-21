@@ -23,6 +23,8 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity {
     public static final int TANK_MB = 4000;
+    public static final double STACK_EAST = 4.5 / 16.0;
+    public static final double STACK_SOUTH = 2.5 / 16.0;
     private static final int SYNC_TICKS = 10;
     private final FluidTank tank = new FluidTank(TANK_MB, stack -> stack.getFluid().isSame(CMFluids.FUEL_OIL.source.get())) {
         @Override
@@ -97,7 +99,22 @@ public class DieselEngineBlockEntity extends GeneratingKineticBlockEntity {
 
     private void smoke(int count, double speed) {
         if (level instanceof ServerLevel server) {
-            server.sendParticles(CMParticles.OIL_SMOKE.get(), worldPosition.getX() + 0.5, worldPosition.getY() + 1.1, worldPosition.getZ() + 0.5, count, 0.08, 0.05, 0.08, speed);
+            net.minecraft.core.Direction facing = getBlockState().getValue(DirectionalKineticBlock.FACING);
+            double dx = switch (facing) {
+                case NORTH -> STACK_EAST;
+                case EAST -> -STACK_SOUTH;
+                case SOUTH -> -STACK_EAST;
+                case WEST -> STACK_SOUTH;
+                default -> 0;
+            };
+            double dz = switch (facing) {
+                case NORTH -> STACK_SOUTH;
+                case EAST -> STACK_EAST;
+                case SOUTH -> -STACK_SOUTH;
+                case WEST -> -STACK_EAST;
+                default -> 0;
+            };
+            server.sendParticles(CMParticles.OIL_SMOKE.get(), worldPosition.getX() + 0.5 + dx, worldPosition.getY() + 1.1, worldPosition.getZ() + 0.5 + dz, count, 0.05, 0.05, 0.05, speed);
         }
     }
 

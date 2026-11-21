@@ -633,16 +633,8 @@
     {
      "path": "src/main/resources/assets/criticalmass/textures/block/diesel_engine.png",
      "size": [
-      32,
-      32
-     ],
-     "animated": false
-    },
-    {
-     "path": "src/main/resources/assets/criticalmass/textures/block/steel_block.png",
-     "size": [
-      16,
-      16
+      64,
+      64
      ],
      "animated": false
     }

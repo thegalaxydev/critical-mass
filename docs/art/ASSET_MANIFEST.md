@@ -27,7 +27,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:corium` | Corium | author's texture, script glow | `block/corium.png` 16x16<br>`block/corium_glow.png` 16x64<br>`block/corium_hot.png` 16x16 |  | 3 |
 | `criticalmass:deepslate_uranium_ore` | Deepslate Uranium Ore | script | `block/deepslate_uranium_ore.png` 16x16 |  | 2 |
 | `criticalmass:demineralizer` | Demineralizer | script | `block/demineralizer_front_fresh.png` 16x16<br>`block/demineralizer_front_none.png` 16x16<br>`block/demineralizer_front_spent.png` 16x16<br>`block/demineralizer_front_used.png` 16x16<br>`block/demineralizer_side.png` 16x16<br>`block/demineralizer_top.png` 16x16<br>`block/steel_block.png` 16x16 |  | 5 |
-| `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
+| `criticalmass:diesel_engine` | Diesel Engine | script | `block/diesel_engine.png` 64x64 |  | 2 |
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
