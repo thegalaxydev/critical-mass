@@ -91,6 +91,23 @@ public final class ProductionTests {
     }
 
     @GameTest(template = EMPTY)
+    public static void chartrineVeinsAreInTheOverworld(GameTestHelper h) {
+        net.minecraft.core.RegistryAccess access = h.getLevel().registryAccess();
+        net.minecraft.resources.ResourceKey<net.minecraft.world.level.levelgen.placement.PlacedFeature> vein = net.minecraft.resources.ResourceKey.create(
+                net.minecraft.core.registries.Registries.PLACED_FEATURE, CriticalMass.asResource("chartrine_vein"));
+        h.assertTrue(access.registryOrThrow(net.minecraft.core.registries.Registries.PLACED_FEATURE).containsKey(vein), "The Chartrine vein should load as a placed feature");
+        for (net.minecraft.resources.ResourceKey<net.minecraft.world.level.biome.Biome> biome : List.of(net.minecraft.world.level.biome.Biomes.PLAINS, net.minecraft.world.level.biome.Biomes.OCEAN)) {
+            boolean placed = access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME).getOrThrow(biome).getGenerationSettings().features().stream()
+                    .anyMatch(step -> step.stream().anyMatch(feature -> feature.is(vein)));
+            h.assertTrue(placed, "Chartrine veins should generate in " + biome.location());
+        }
+        boolean nether = access.registryOrThrow(net.minecraft.core.registries.Registries.BIOME).getOrThrow(net.minecraft.world.level.biome.Biomes.NETHER_WASTES).getGenerationSettings().features().stream()
+                .anyMatch(step -> step.stream().anyMatch(feature -> feature.is(vein)));
+        h.assertTrue(!nether, "Chartrine veins should not generate in the Nether");
+        h.succeed();
+    }
+
+    @GameTest(template = EMPTY)
     public static void charredWoodIsSawnAndStripped(GameTestHelper h) {
         net.minecraft.core.Direction.Axis lying = net.minecraft.core.Direction.Axis.X;
         net.minecraft.core.BlockPos logAt = new net.minecraft.core.BlockPos(1, 2, 1);
