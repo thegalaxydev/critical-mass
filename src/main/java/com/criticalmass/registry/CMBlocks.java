@@ -95,7 +95,30 @@ public final class CMBlocks {
     public static final DeferredBlock<com.criticalmass.content.thermal.CoreDebrisBlock> CORE_DEBRIS = register("core_debris", com.criticalmass.content.thermal.CoreDebrisBlock::new,
             metal(2.5f).noOcclusion().lightLevel(s -> 6));
     public static final DeferredBlock<Block> WRECKAGE = register("wreckage", Block::new, metal(4.0f).noOcclusion().noLootTable());
-    public static final DeferredBlock<RotatedPillarBlock> CHARRED_LOG = register("charred_log", RotatedPillarBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0f).sound(SoundType.WOOD));
+    public static final DeferredBlock<RotatedPillarBlock> CHARRED_LOG = register("charred_log", p -> new com.criticalmass.content.StrippableLogBlock(p, () -> CMBlocks.STRIPPED_CHARRED_LOG.get()), charred());
+    public static final DeferredBlock<RotatedPillarBlock> CHARRED_WOOD = register("charred_wood", p -> new com.criticalmass.content.StrippableLogBlock(p, () -> CMBlocks.STRIPPED_CHARRED_WOOD.get()), charred());
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_CHARRED_LOG = register("stripped_charred_log", RotatedPillarBlock::new, charred());
+    public static final DeferredBlock<RotatedPillarBlock> STRIPPED_CHARRED_WOOD = register("stripped_charred_wood", RotatedPillarBlock::new, charred());
+    public static final DeferredBlock<Block> CHARRED_PLANKS = register("charred_planks", Block::new, charred());
+    public static final DeferredBlock<net.minecraft.world.level.block.StairBlock> CHARRED_STAIRS = register("charred_stairs",
+            p -> new net.minecraft.world.level.block.StairBlock(CMBlocks.CHARRED_PLANKS.get().defaultBlockState(), p), charred());
+    public static final DeferredBlock<net.minecraft.world.level.block.SlabBlock> CHARRED_SLAB = register("charred_slab", net.minecraft.world.level.block.SlabBlock::new, charred());
+    public static final DeferredBlock<net.minecraft.world.level.block.FenceBlock> CHARRED_FENCE = register("charred_fence", net.minecraft.world.level.block.FenceBlock::new, charred());
+    public static final DeferredBlock<net.minecraft.world.level.block.FenceGateBlock> CHARRED_FENCE_GATE = register("charred_fence_gate",
+            p -> new net.minecraft.world.level.block.FenceGateBlock(net.minecraft.world.level.block.state.properties.WoodType.OAK, p), charred().forceSolidOn());
+    public static final DeferredBlock<net.minecraft.world.level.block.DoorBlock> CHARRED_DOOR = register("charred_door",
+            p -> new net.minecraft.world.level.block.DoorBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK, p),
+            charred().strength(3.0f).noOcclusion().pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY),
+            b -> new net.minecraft.world.item.DoubleHighBlockItem(b, new net.minecraft.world.item.Item.Properties()));
+    public static final DeferredBlock<net.minecraft.world.level.block.TrapDoorBlock> CHARRED_TRAPDOOR = register("charred_trapdoor",
+            p -> new net.minecraft.world.level.block.TrapDoorBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK, p),
+            charred().strength(3.0f).noOcclusion().isValidSpawn((s, l, pos, e) -> false));
+    public static final DeferredBlock<net.minecraft.world.level.block.PressurePlateBlock> CHARRED_PRESSURE_PLATE = register("charred_pressure_plate",
+            p -> new net.minecraft.world.level.block.PressurePlateBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK, p),
+            charred().forceSolidOn().noCollission().strength(0.5f).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
+    public static final DeferredBlock<net.minecraft.world.level.block.ButtonBlock> CHARRED_BUTTON = register("charred_button",
+            p -> new net.minecraft.world.level.block.ButtonBlock(net.minecraft.world.level.block.state.properties.BlockSetType.OAK, 30, p),
+            charred().noCollission().strength(0.5f).pushReaction(net.minecraft.world.level.material.PushReaction.DESTROY));
     public static final DeferredBlock<com.criticalmass.content.radiation.WaterCannonBlock> WATER_CANNON = register("water_cannon", com.criticalmass.content.radiation.WaterCannonBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.control.MeltdownSirenBlock> MELTDOWN_SIREN = register("meltdown_siren", com.criticalmass.content.control.MeltdownSirenBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.radiation.AreaMonitorBlock> AREA_RADIATION_MONITOR = register("area_radiation_monitor", com.criticalmass.content.radiation.AreaMonitorBlock::new,
@@ -153,6 +176,10 @@ public final class CMBlocks {
     public static final DeferredBlock<Block> DEEPSLATE_URANIUM_ORE = register("deepslate_uranium_ore", Block::new, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).strength(4.5f, 3.0f).sound(SoundType.DEEPSLATE).requiresCorrectToolForDrops());
 
     private CMBlocks() {
+    }
+
+    static BlockBehaviour.Properties charred() {
+        return BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0f).sound(SoundType.WOOD);
     }
 
     static BlockBehaviour.Properties chartrine() {

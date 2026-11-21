@@ -165,6 +165,136 @@
    "item": true
   },
   {
+   "key": "charred_button",
+   "registry_id": "criticalmass:charred_button",
+   "type": "block",
+   "name": "Charred Button",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_button.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_button_inventory.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_button_pressed.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_button.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_button.json",
+   "item": true
+  },
+  {
+   "key": "charred_door",
+   "registry_id": "criticalmass:charred_door",
+   "type": "block",
+   "name": "Charred Door",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_door_bottom.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_door_top.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/charred_door.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_door_bottom_left.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_bottom_left_open.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_bottom_right.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_bottom_right_open.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_top_left.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_top_left_open.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_top_right.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_door_top_right_open.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_door.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_door.json",
+   "item": true
+  },
+  {
+   "key": "charred_fence",
+   "registry_id": "criticalmass:charred_fence",
+   "type": "block",
+   "name": "Charred Fence",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_inventory.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_post.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_side.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_fence.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_fence.json",
+   "item": true
+  },
+  {
+   "key": "charred_fence_gate",
+   "registry_id": "criticalmass:charred_fence_gate",
+   "type": "block",
+   "name": "Charred Fence Gate",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_gate.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_gate_open.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_gate_wall.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_fence_gate_wall_open.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_fence_gate.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_fence_gate.json",
+   "item": true
+  },
+  {
    "key": "charred_log",
    "registry_id": "criticalmass:charred_log",
    "type": "block",
@@ -196,6 +326,163 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_log.json",
+   "item": true
+  },
+  {
+   "key": "charred_planks",
+   "registry_id": "criticalmass:charred_planks",
+   "type": "block",
+   "name": "Charred Planks",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_planks.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_planks.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_planks.json",
+   "item": true
+  },
+  {
+   "key": "charred_pressure_plate",
+   "registry_id": "criticalmass:charred_pressure_plate",
+   "type": "block",
+   "name": "Charred Pressure Plate",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_pressure_plate.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_pressure_plate_down.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_pressure_plate.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_pressure_plate.json",
+   "item": true
+  },
+  {
+   "key": "charred_slab",
+   "registry_id": "criticalmass:charred_slab",
+   "type": "block",
+   "name": "Charred Slab",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_planks.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_slab.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_slab_top.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_slab.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_slab.json",
+   "item": true
+  },
+  {
+   "key": "charred_stairs",
+   "registry_id": "criticalmass:charred_stairs",
+   "type": "block",
+   "name": "Charred Stairs",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_planks.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_stairs.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_stairs_inner.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_stairs_outer.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_stairs.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_stairs.json",
+   "item": true
+  },
+  {
+   "key": "charred_trapdoor",
+   "registry_id": "criticalmass:charred_trapdoor",
+   "type": "block",
+   "name": "Charred Trapdoor",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_trapdoor.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_trapdoor_bottom.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_trapdoor_open.json",
+    "src/main/resources/assets/criticalmass/models/block/charred_trapdoor_top.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_trapdoor.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_trapdoor.json",
+   "item": true
+  },
+  {
+   "key": "charred_wood",
+   "registry_id": "criticalmass:charred_wood",
+   "type": "block",
+   "name": "Charred Wood",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/charred_log.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/charred_wood.json",
+    "src/main/resources/assets/criticalmass/models/item/charred_wood.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/charred_wood.json",
    "item": true
   },
   {
@@ -2668,6 +2955,65 @@
    ],
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/steel_block.json",
+   "item": true
+  },
+  {
+   "key": "stripped_charred_log",
+   "registry_id": "criticalmass:stripped_charred_log",
+   "type": "block",
+   "name": "Stripped Charred Log",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/stripped_charred_log.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/stripped_charred_log_top.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/stripped_charred_log.json",
+    "src/main/resources/assets/criticalmass/models/block/stripped_charred_log_horizontal.json",
+    "src/main/resources/assets/criticalmass/models/item/stripped_charred_log.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/stripped_charred_log.json",
+   "item": true
+  },
+  {
+   "key": "stripped_charred_wood",
+   "registry_id": "criticalmass:stripped_charred_wood",
+   "type": "block",
+   "name": "Stripped Charred Wood",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/stripped_charred_log.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/stripped_charred_wood.json",
+    "src/main/resources/assets/criticalmass/models/item/stripped_charred_wood.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/stripped_charred_wood.json",
    "item": true
   },
   {

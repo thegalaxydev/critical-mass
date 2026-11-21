@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (84)
+## Blocks (96)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -15,7 +15,17 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:burnt_equipment` | Burnt-Out Equipment (no item) | script | `block/burnt_equipment.png` 16x16<br>`block/burnt_equipment_bottom.png` 16x16<br>`block/burnt_equipment_top.png` 16x16 |  | 1 |
 | `criticalmass:bus_bar` | Bus Bar | script | `block/bus_bar.png` 16x16 |  | 2 |
 | `criticalmass:centrifuge` | Centrifuge | script | `block/centrifuge.png` 32x32 |  | 4 |
+| `criticalmass:charred_button` | Charred Button | script | `block/charred_planks.png` 16x16 |  | 4 |
+| `criticalmass:charred_door` | Charred Door | script | `block/charred_door_bottom.png` 16x16<br>`block/charred_door_top.png` 16x16<br>`item/charred_door.png` 16x16 |  | 9 |
+| `criticalmass:charred_fence` | Charred Fence | script | `block/charred_planks.png` 16x16 |  | 4 |
+| `criticalmass:charred_fence_gate` | Charred Fence Gate | script | `block/charred_planks.png` 16x16 |  | 5 |
 | `criticalmass:charred_log` | Charred Log | script | `block/charred_log.png` 16x16<br>`block/charred_log_top.png` 16x16 |  | 3 |
+| `criticalmass:charred_planks` | Charred Planks | script | `block/charred_planks.png` 16x16 |  | 2 |
+| `criticalmass:charred_pressure_plate` | Charred Pressure Plate | script | `block/charred_planks.png` 16x16 |  | 3 |
+| `criticalmass:charred_slab` | Charred Slab | script | `block/charred_planks.png` 16x16 |  | 4 |
+| `criticalmass:charred_stairs` | Charred Stairs | script | `block/charred_planks.png` 16x16 |  | 4 |
+| `criticalmass:charred_trapdoor` | Charred Trapdoor | script | `block/charred_trapdoor.png` 16x16 |  | 4 |
+| `criticalmass:charred_wood` | Charred Wood | script | `block/charred_log.png` 16x16 |  | 2 |
 | `criticalmass:chartrine` | Chartrine | generated | `block/chartrine_0.png` 16x16<br>`block/chartrine_1.png` 16x16<br>`block/chartrine_2.png` 16x16<br>`block/chartrine_3.png` 16x16 |  | 5 |
 | `criticalmass:chartrine_pillar` | Chartrine Pillar | script | `block/chartrine_cut_cap.png` 16x16<br>`block/chartrine_cut_cap_connected.png` 128x128<br>`block/chartrine_cut_pillar.png` 16x16<br>`block/chartrine_cut_pillar_connected.png` 64x64 |  | 3 |
 | `criticalmass:circuit_breaker` | Circuit Breaker | script | `block/circuit_breaker.png` 32x32<br>`block/steel_block.png` 16x16 |  | 3 |
@@ -88,6 +98,8 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:steam_turbine` | Steam Turbine | author's model, script texture | `block/steam_turbine.png` 128x128 |  | 4 |
 | `criticalmass:steam_turbine_structure` | Steam Turbine (no item) | author's model, script texture | `block/steam_turbine.png` 128x128 |  | 1 |
 | `criticalmass:steel_block` | Block of Steel | author | `block/steel_block.png` 16x16 |  | 2 |
+| `criticalmass:stripped_charred_log` | Stripped Charred Log | script | `block/stripped_charred_log.png` 16x16<br>`block/stripped_charred_log_top.png` 16x16 |  | 3 |
+| `criticalmass:stripped_charred_wood` | Stripped Charred Wood | script | `block/stripped_charred_log.png` 16x16 |  | 2 |
 | `criticalmass:surge_arrester` | Surge Arrester | script | `block/surge_arrester.png` 16x16 |  | 2 |
 | `criticalmass:transfer_switch` | Transfer Switch | script | `block/steel_block.png` 16x16<br>`block/transfer_switch.png` 32x32 |  | 4 |
 | `criticalmass:transformer` | Transformer | script | `block/transformer.png` 32x32 |  | 2 |

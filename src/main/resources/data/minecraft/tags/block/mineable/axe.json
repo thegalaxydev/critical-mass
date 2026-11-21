@@ -1,6 +1,18 @@
 {
   "values": [
     "criticalmass:cooling_tower_packing",
-    "criticalmass:charred_log"
+    "criticalmass:charred_log",
+    "criticalmass:charred_wood",
+    "criticalmass:stripped_charred_log",
+    "criticalmass:stripped_charred_wood",
+    "criticalmass:charred_planks",
+    "criticalmass:charred_stairs",
+    "criticalmass:charred_slab",
+    "criticalmass:charred_fence",
+    "criticalmass:charred_fence_gate",
+    "criticalmass:charred_door",
+    "criticalmass:charred_trapdoor",
+    "criticalmass:charred_pressure_plate",
+    "criticalmass:charred_button"
   ]
 }

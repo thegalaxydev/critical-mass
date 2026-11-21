@@ -61,7 +61,7 @@ public final class ProductionTests {
             "crafting/open_waste_canister", "sequenced_assembly/sealed_waste_canister", "sequenced_assembly/sheared_fuel", "mixing/reprocessed_fuel");
 
     private static final List<String> GEAR = List.of("crafting/survey_meter", "crafting/dosimeter", "crafting/protective_hood", "crafting/protective_suit", "crafting/protective_leggings", "crafting/protective_boots",
-            "crafting/area_radiation_monitor", "crushing/chartrine");
+            "crafting/area_radiation_monitor", "crushing/chartrine", "crafting/charred_planks");
     private static final Set<String> NOT_CRAFTED = Set.of("uranium_ore", "deepslate_uranium_ore", "raw_uranium", "enriched_uranium", "depleted_uranium", "spent_fuel_assembly", "damaged_fuel_assembly",
             "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash", "used_resin_cartridge");
 
@@ -76,6 +76,49 @@ public final class ProductionTests {
         ItemStack out = h.getLevel().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, CraftingInput.of(width, height, stacks), h.getLevel())
                 .map(r -> r.value().getResultItem(h.getLevel().registryAccess())).orElse(ItemStack.EMPTY);
         h.assertTrue(out.is(result.asItem()), "A crafting table should make " + BuiltInRegistries.ITEM.getKey(result.asItem()) + ", got " + out);
+    }
+
+    private static Set<Item> sawn(GameTestHelper h, ItemLike in) {
+        Set<Item> out = new HashSet<>();
+        for (RecipeHolder<?> holder : h.getLevel().getRecipeManager().getRecipes()) {
+            if (holder.value() instanceof com.simibubi.create.content.kinetics.saw.CuttingRecipe cutting && cutting.getIngredients().get(0).test(new ItemStack(in))) {
+                for (ProcessingOutput output : cutting.getRollableResults()) {
+                    out.add(output.getStack().getItem());
+                }
+            }
+        }
+        return out;
+    }
+
+    @GameTest(template = EMPTY)
+    public static void charredWoodIsSawnAndStripped(GameTestHelper h) {
+        net.minecraft.core.Direction.Axis lying = net.minecraft.core.Direction.Axis.X;
+        net.minecraft.core.BlockPos logAt = new net.minecraft.core.BlockPos(1, 2, 1);
+        net.minecraft.core.BlockPos woodAt = new net.minecraft.core.BlockPos(3, 2, 1);
+        h.setBlock(logAt, CMBlocks.CHARRED_LOG.get().defaultBlockState().setValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS, lying));
+        h.setBlock(woodAt, CMBlocks.CHARRED_WOOD.get().defaultBlockState());
+        net.minecraft.world.entity.player.Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        ItemStack axe = new ItemStack(Items.IRON_AXE);
+        player.setItemInHand(net.minecraft.world.InteractionHand.MAIN_HAND, axe);
+        for (net.minecraft.core.BlockPos at : List.of(logAt, woodAt)) {
+            net.minecraft.core.BlockPos abs = h.absolutePos(at);
+            axe.useOn(new net.minecraft.world.item.context.UseOnContext(h.getLevel(), player, net.minecraft.world.InteractionHand.MAIN_HAND, axe,
+                    new net.minecraft.world.phys.BlockHitResult(net.minecraft.world.phys.Vec3.atCenterOf(abs), net.minecraft.core.Direction.UP, abs, false)));
+        }
+        net.minecraft.world.level.block.state.BlockState bare = h.getBlockState(logAt);
+        h.assertTrue(bare.is(CMBlocks.STRIPPED_CHARRED_LOG.get()) && bare.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == lying,
+                "An axe should strip a Charred Log and keep the way it lies, got " + bare);
+        h.assertBlockPresent(CMBlocks.STRIPPED_CHARRED_WOOD.get(), woodAt);
+        Set<Item> fromLog = sawn(h, CMBlocks.CHARRED_LOG.get());
+        h.assertTrue(fromLog.equals(Set.of(CMBlocks.STRIPPED_CHARRED_LOG.get().asItem())), "A saw should strip a Charred Log and do nothing else to it, got " + fromLog);
+        Set<Item> fromWood = sawn(h, CMBlocks.CHARRED_WOOD.get());
+        h.assertTrue(fromWood.equals(Set.of(CMBlocks.STRIPPED_CHARRED_WOOD.get().asItem())), "A saw should strip Charred Wood and do nothing else to it, got " + fromWood);
+        Set<Item> fromBare = sawn(h, CMBlocks.STRIPPED_CHARRED_LOG.get());
+        h.assertTrue(fromBare.contains(CMBlocks.CHARRED_PLANKS.get().asItem()), "A saw should cut a Stripped Charred Log into Charred Planks, got " + fromBare);
+        crafts(h, CMBlocks.CHARRED_PLANKS.get(), 1, 1, CMBlocks.STRIPPED_CHARRED_LOG.get());
+        crafts(h, CMBlocks.CHARRED_DOOR.get(), 2, 3, CMBlocks.CHARRED_PLANKS.get(), CMBlocks.CHARRED_PLANKS.get(), CMBlocks.CHARRED_PLANKS.get(), CMBlocks.CHARRED_PLANKS.get(),
+                CMBlocks.CHARRED_PLANKS.get(), CMBlocks.CHARRED_PLANKS.get());
+        h.succeed();
     }
 
     @GameTest(template = EMPTY)

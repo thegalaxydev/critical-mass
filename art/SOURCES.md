@@ -43,6 +43,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Creative tab section banners | Script | `art/tools/tab_banners.py` |
 | Advancement tab background | Script, from the author's casing sheet | `art/tools/advancement_background.py` |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
+| Stripped Charred Log, Charred Planks, Charred Door and Trapdoor, and the stairs, slab, fence, gate, plate and button that use the planks | Script | `art/tools/charred_texture.py`: vanilla's oak sheets repainted in burnt timber tones |
 | Fuel, Control and Coolant Channel, Ruined Fuel Channel | Script | `art/tools/channel_texture.py`, in the tones of the author's Control Rod icon and Reactor Vessel Casing |
 | Spent Fuel Rack | Script | `art/tools/rack_texture.py` |
 | Shielded Cask | Script | `art/tools/cask_texture.py` |
@@ -586,4 +587,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: the natural stone is a generated image, `art/generated/chartrine-v1.png`, made to sit beside Create's Crimsite, Asurine, Ochrum, Veridium and Scoria. `art/tools/chartrine_texture.py` reads its 32 by 32 grid, halves it to 16 pixels on a ramp of nine tones and darkens it in three steps for the other shades. `art/tools/chartrine_palette.py` makes the cut blocks from that: the fill is the natural stone softened and darkened, and the grooves and edges are the layout Create's fourteen cut stones have in common, read from Create's jar when the tool runs and taken as the middle value across those stones, so no one stone's own pattern comes through. No Create texture is stored in the project.
 - Status: a generated image and script-painted placeholders, not yet approved.
 - Repainting: run either tool with `fresh`. The palette tool takes a `.png` path to write a preview sheet and `dry` to write nothing else.
+- Date: 2026-11-21
+
+## charred wood
+
+- Used by: `textures/block/stripped_charred_log.png`, `stripped_charred_log_top.png`, `charred_planks.png`, `charred_door_top.png`, `charred_door_bottom.png`, `charred_trapdoor.png` and `textures/item/charred_door.png`. Charred Wood uses the Charred Log's bark on every side, Stripped Charred Wood uses the stripped log's side, and the stairs, slab, fence, fence gate, pressure plate and button use the planks.
+- Source: `art/tools/charred_texture.py` takes vanilla's oak sheets from the game's own resources when it runs and repaints each one by rank of tone: the bark in the Corium's crust tones, the rest in five burnt timber tones in the script. Clear pixels stay clear, so the door and trapdoor keep their windows. No vanilla texture is stored in the project.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`, and name sheets after it to repaint only those, as in `charred_texture.py fresh charred_planks`.
 - Date: 2026-11-21

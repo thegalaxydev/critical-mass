@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "criticalmass:block/stripped_charred_log",
+    "side": "criticalmass:block/stripped_charred_log"
+  }
+}

@@ -25,7 +25,7 @@ public enum TabSection {
             "reactor_signal_interface", "meltdown_siren"),
     FALLOUT("fallout", 0xFFD8FF9A, 48, 3,
             "survey_meter", "dosimeter", "area_radiation_monitor", "protective_hood", "protective_suit", "protective_leggings", "protective_boots", "decontamination_compound", "water_cannon", "fallout_ash",
-            "strontium_90", "corium", "ruined_channel", "core_debris", "wreckage", "charred_log"),
+            "strontium_90", "corium", "ruined_channel", "core_debris", "wreckage"),
     ELECTRICITY("electricity", 0xFFBFE6FF, 16, 2,
             "generator", "power_wire", "power_cable", "transmission_line", "insulator", "bus_bar", "circuit_breaker", "disconnect_switch", "earthing_switch", "transformer",
             "grid_connection", "electric_motor", "station_battery", "radioisotope_cell", "diesel_engine", "transfer_switch", "surge_arrester"),
@@ -34,7 +34,9 @@ public enum TabSection {
             "polished_cut_chartrine", "polished_cut_chartrine_stairs", "polished_cut_chartrine_slab", "polished_cut_chartrine_wall",
             "cut_chartrine_bricks", "cut_chartrine_brick_stairs", "cut_chartrine_brick_slab", "cut_chartrine_brick_wall",
             "small_chartrine_bricks", "small_chartrine_brick_stairs", "small_chartrine_brick_slab", "small_chartrine_brick_wall",
-            "layered_chartrine", "chartrine_pillar");
+            "layered_chartrine", "chartrine_pillar",
+            "charred_log", "charred_wood", "stripped_charred_log", "stripped_charred_wood", "charred_planks", "charred_stairs", "charred_slab", "charred_fence", "charred_fence_gate",
+            "charred_door", "charred_trapdoor", "charred_pressure_plate", "charred_button");
 
     public static final int WIDTH = 162;
     public static final int HEIGHT = 18;

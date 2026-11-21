@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "criticalmass:block/charred_slab"
+    },
+    "type=double": {
+      "model": "criticalmass:block/charred_planks"
+    },
+    "type=top": {
+      "model": "criticalmass:block/charred_slab_top"
+    }
+  }
+}
