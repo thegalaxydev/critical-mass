@@ -24,7 +24,7 @@ ART = {
     "circulation_pump": AUTHOR, "radiator_panel": AUTHOR, "cooling_tower_packing": AUTHOR,
     "steam_turbine": "author's model, script texture", "steam_turbine_structure": "author's model, script texture",
     "relief_valve": "script, approved",
-    "reactor_controller": SCRIPT, "reactor_signal_interface": SCRIPT, "primary_coolant_port": SCRIPT, "shielded_hatch": SCRIPT, "reactor_service_port": SCRIPT,
+    "reactor_controller": SCRIPT, "reactor_signal_interface": SCRIPT, "primary_coolant_port": SCRIPT, "fuel_channel_cap": SCRIPT, "shielded_hatch": SCRIPT, "reactor_service_port": SCRIPT,
     "heat_exchanger": SCRIPT, "condenser": SCRIPT, "boiler_heating_plate": SCRIPT, "generator": SCRIPT, "circuit_breaker": SCRIPT, "grid_connection": SCRIPT,
     "insulator": SCRIPT, "electric_motor": SCRIPT, "bus_bar": SCRIPT, "transformer": SCRIPT, "disconnect_switch": SCRIPT, "earthing_switch": SCRIPT,
     "station_battery": SCRIPT, "diesel_engine": SCRIPT, "transfer_switch": SCRIPT, "surge_arrester": SCRIPT, "burnt_equipment": SCRIPT,

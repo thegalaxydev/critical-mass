@@ -26,6 +26,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Reactor Controller | Script | `art/tools/controller_texture.py` |
 | Reactor Signal Interface | Script | `art/tools/signal_interface_texture.py` |
 | Primary Coolant Port, Shielded Hatch | Script | `art/tools/handmade.py` |
+| Fuel Channel Cap | Script | `art/tools/cap_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Reactor Service Port | Script | `art/tools/service_port_texture.py`; its sides are the author's Reactor Vessel Casing itself |
 | Heat Exchanger, Condenser | Script | `art/tools/exchanger_texture.py` |
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |

@@ -12,6 +12,7 @@
     "criticalmass:radiator_panel",
     "criticalmass:reactor_controller",
     "criticalmass:reactor_service_port",
+    "criticalmass:fuel_channel_cap",
     "criticalmass:reactor_signal_interface",
     "criticalmass:reactor_vessel_casing",
     "criticalmass:relief_valve",

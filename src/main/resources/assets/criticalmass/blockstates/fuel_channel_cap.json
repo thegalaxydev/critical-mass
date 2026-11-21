@@ -1,0 +1,10 @@
+{
+ "variants": {
+  "open=false": {
+   "model": "criticalmass:block/fuel_channel_cap"
+  },
+  "open=true": {
+   "model": "criticalmass:block/fuel_channel_cap_open"
+  }
+ }
+}

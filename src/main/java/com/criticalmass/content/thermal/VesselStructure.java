@@ -94,7 +94,7 @@ public final class VesselStructure {
 
     public static boolean isShell(Block b) {
         return b instanceof VesselCasingBlock || b == CMBlocks.REACTOR_CONTROLLER.get() || b == CMBlocks.PRIMARY_COOLANT_PORT.get()
-                || b == CMBlocks.REACTOR_SERVICE_PORT.get() || b == CMBlocks.REACTOR_SIGNAL_INTERFACE.get();
+                || b == CMBlocks.REACTOR_SERVICE_PORT.get() || b == CMBlocks.REACTOR_SIGNAL_INTERFACE.get() || b == CMBlocks.FUEL_CHANNEL_CAP.get();
     }
 
     public static Kind channelKind(Block b) {
@@ -164,6 +164,8 @@ public final class VesselStructure {
         boolean inlet = false;
         boolean outlet = false;
         boolean service = false;
+        boolean capOpen = false;
+        List<BlockPos> caps = new ArrayList<>();
         java.util.Map<BlockPos, Integer> cracked = new java.util.HashMap<>();
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
@@ -192,6 +194,9 @@ public final class VesselStructure {
                         }
                     } else if (b == CMBlocks.REACTOR_SERVICE_PORT.get()) {
                         service = true;
+                    } else if (b == CMBlocks.FUEL_CHANNEL_CAP.get()) {
+                        caps.add(p);
+                        capOpen |= s.getValue(com.criticalmass.content.fuel.ChannelCapBlock.OPEN);
                     }
                 }
             }
@@ -228,7 +233,19 @@ public final class VesselStructure {
                 }
             }
         }
+        for (BlockPos cap : caps) {
+            boolean overFuel = false;
+            for (Column c : columns) {
+                overFuel |= c.kind() == Kind.FUEL && c.x() == cap.getX() && c.z() == cap.getZ();
+            }
+            if (!overFuel) {
+                add(problems, cap, "criticalmass.vessel.problem.cap_fuel");
+            }
+        }
         List<String> missing = new ArrayList<>();
+        if (capOpen) {
+            missing.add("criticalmass.vessel.missing.cap_open");
+        }
         if (!inlet) {
             missing.add("criticalmass.vessel.missing.inlet");
         }
@@ -309,6 +326,9 @@ public final class VesselStructure {
         }
         if (b == CMBlocks.REACTOR_SIGNAL_INTERFACE.get()) {
             return s.getValue(HorizontalBlock.FACING) == normal ? null : "criticalmass.vessel.problem.facing";
+        }
+        if (b == CMBlocks.FUEL_CHANNEL_CAP.get()) {
+            return normal == Direction.UP ? null : "criticalmass.vessel.problem.cap_top";
         }
         if (b == CMBlocks.REACTOR_SERVICE_PORT.get()) {
             if (normal != Direction.UP) {

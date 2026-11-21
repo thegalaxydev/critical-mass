@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (60)
+## Blocks (61)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:fallout_ash` | Fallout Ash | author's block textures, the glow animated by script; script item | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x160<br>`item/fallout_ash.png` 16x16 |  | 2 |
 | `criticalmass:fuel_channel` | Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/fuel_channel_glow_1.png` 32x32<br>`block/fuel_channel_glow_2.png` 32x32<br>`block/fuel_channel_glow_3.png` 32x32 |  | 5 |
+| `criticalmass:fuel_channel_cap` | Fuel Channel Cap | script | `block/fuel_channel_cap.png` 32x32<br>`block/reactor_vessel_casing.png` 16x16 |  | 3 |
 | `criticalmass:generator` | Generator | script | `block/generator.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:grid_connection` | Grid Connection | script | `block/grid_connection.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
 | `criticalmass:heat_exchanger` | Heat Exchanger | script | `block/heat_exchanger.png` 32x32<br>`block/reinforced_pipe.png` 32x32 |  | 3 |

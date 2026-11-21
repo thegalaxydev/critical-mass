@@ -738,6 +738,40 @@
    "item": true
   },
   {
+   "key": "fuel_channel_cap",
+   "registry_id": "criticalmass:fuel_channel_cap",
+   "type": "block",
+   "name": "Fuel Channel Cap",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/fuel_channel_cap.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reactor_vessel_casing.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/fuel_channel_cap.json",
+    "src/main/resources/assets/criticalmass/models/block/fuel_channel_cap_open.json",
+    "src/main/resources/assets/criticalmass/models/item/fuel_channel_cap.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/fuel_channel_cap.json",
+   "item": true
+  },
+  {
    "key": "generator",
    "registry_id": "criticalmass:generator",
    "type": "block",

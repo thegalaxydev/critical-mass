@@ -101,6 +101,15 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 5. If you plan to restart, do it within a couple of minutes or wait out the xenon peak.
 6. For a long shutdown, borate. A core that boron holds below critical with its rods out stays shut down whatever the rods and the xenon do.
 
+## Refuelling
+
+1. Shut down and wait for the controller to read Cold.
+2. For a full reload, turn the Service Port's hatch open. It hands out each spent assembly and takes fresh ones into whichever column is free.
+3. To choose columns, fit Fuel Channel Caps over them and unlock each with a Wrench. Goggles on a cap show what its column has left.
+4. Lift out the assemblies that are spent, move the part-burnt ones from the middle to the edge, and put fresh fuel where it will do the most work.
+5. Lock every cap again. The reactor will not start while one is unlocked.
+6. Stand spent fuel in a flooded Spent Fuel Rack. It is hot and gives a strong dose, and so does an unlocked cap over a loaded column.
+
 ## Faults and recovery
 
 | Sign | Cause | Action |

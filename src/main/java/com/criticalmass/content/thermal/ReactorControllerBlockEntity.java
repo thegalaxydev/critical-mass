@@ -790,6 +790,36 @@ public class ReactorControllerBlockEntity extends SmartBlockEntity implements Th
         return true;
     }
 
+    @Nullable
+    public String capBlocker(long key, boolean inserting) {
+        if (frozen) {
+            return "criticalmass.service.frozen";
+        }
+        if (reacting || startingUp) {
+            return "criticalmass.service.running";
+        }
+        if (structure == null || !structure.valid()) {
+            return "criticalmass.service.invalid";
+        }
+        if (!core.hasColumn(key)) {
+            return "criticalmass.cap.no_column";
+        }
+        boolean loaded = core.assembly(key) != null;
+        if (inserting && loaded) {
+            return "criticalmass.cap.loaded";
+        }
+        return !inserting && !loaded ? "criticalmass.cap.empty_column" : null;
+    }
+
+    public boolean insertFuelAt(long key, FuelState state) {
+        if (state == null || state.damaged() || capBlocker(key, true) != null || !core.insert(key, state)) {
+            return false;
+        }
+        syncPending = true;
+        setChanged();
+        return true;
+    }
+
     public boolean defuelAllowed() {
         return !frozen && !reacting && !startingUp;
     }

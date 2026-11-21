@@ -17,7 +17,7 @@ public final class VesselLookup {
     public static boolean isVesselPart(BlockState state) {
         Block b = state.getBlock();
         return b instanceof VesselCasingBlock || b == CMBlocks.REACTOR_CONTROLLER.get() || b == CMBlocks.PRIMARY_COOLANT_PORT.get()
-                || b == CMBlocks.REACTOR_SERVICE_PORT.get() || b == CMBlocks.FUEL_CHANNEL.get() || b == CMBlocks.CONTROL_CHANNEL.get()
+                || b == CMBlocks.REACTOR_SERVICE_PORT.get() || b == CMBlocks.FUEL_CHANNEL_CAP.get() || b == CMBlocks.FUEL_CHANNEL.get() || b == CMBlocks.CONTROL_CHANNEL.get()
                 || b == CMBlocks.COOLANT_CHANNEL.get();
     }
 

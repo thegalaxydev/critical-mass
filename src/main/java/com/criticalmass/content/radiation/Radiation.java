@@ -1,5 +1,6 @@
 package com.criticalmass.content.radiation;
 
+import com.criticalmass.content.fuel.ChannelCapBlock;
 import com.criticalmass.content.fuel.FuelAssemblyItem;
 import com.criticalmass.content.fuel.FuelState;
 import com.criticalmass.content.fuel.SealedWasteCanisterBlockEntity;
@@ -162,6 +163,9 @@ public final class Radiation {
         }
         if (state.getBlock() instanceof VesselCasingBlock) {
             return CMConfig.get(CMConfig.SHIELD_CASING);
+        }
+        if (state.is(CMBlocks.FUEL_CHANNEL_CAP.get())) {
+            return CMConfig.get(CMConfig.SHIELD_CASING) * (state.getValue(ChannelCapBlock.OPEN) ? ChannelCapBlock.OPEN_SHIELDING : 1);
         }
         if (state.is(CMBlocks.SHIELDED_GLASS.get())) {
             return CMConfig.get(CMConfig.SHIELD_GLASS);

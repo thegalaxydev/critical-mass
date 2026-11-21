@@ -55,6 +55,13 @@ Values live in `content/thermal/CMThermal.java`.
 - Exactly one Reactor Controller sits on a side face and faces outward.
 - A Primary Coolant Port set to inlet and one set to outlet go on faces, facing outward (toggle with a wrench).
 - A Reactor Service Port goes on the top face, facing up. Its hatch is shut until it is turned open: put a Valve Handle on top and use it to open the hatch, and sneak-use it to shut it again. A shaft from above does the same, by its direction. Fuel goes in and comes out only while the hatch is open, by hand, by a funnel or hopper, or by a Mechanical Arm, which can pick the port as a target.
+- A Fuel Channel Cap takes the place of a casing block in the top face, over a fuel column, and gives that one column its own way in and out. Craft it from a Reactor Vessel Casing, a Steel Plate and a Sealing Gasket.
+  - **Locking:** it is locked until a Wrench turns it, and a Wrench locks it again. A redstone signal also holds it unlocked.
+  - **By hand:** with the cap unlocked, use an assembly on it to lower it into that column, and an empty hand to lift the column's assembly out, spent or not.
+  - **By machine:** funnels, hoppers and Mechanical Arms work a cap the way they work the Service Port, and an arm can pick it as a target. A Deployer does what a hand does, so a Deployer on a Gantry Carriage over a row of caps is a refuelling machine.
+  - **Rules:** fuel moves only while the reactor is shut down. An unlocked cap keeps the reactor from starting and stops one that is running, and it shields a quarter as well as casing, so the head of an open core is no place to stand.
+  - **Reading:** goggles on a cap show how much fuel its column has left, and a comparator gives the same, with 0 for an empty column.
+  - **Shuffling:** columns do not burn evenly. A column makes 25% more for each fuel column beside it and burns down that much faster. Caps let part-burnt assemblies change places, the fresher ones into the middle and the tired ones to the edge, so a core is used up evenly. The Service Port only hands out what is already spent and loads whichever column is free.
 - Only casing may sit on edges and corners.
 - The inside holds vertical columns of fuel, control or coolant channels, one type per column; empty columns are allowed. Each channel is an open bundle of rods between two end plates, so you can see through a column to the ones behind it.
 

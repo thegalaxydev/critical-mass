@@ -1,0 +1,298 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/fuel_channel_cap",
+  "1": "criticalmass:block/reactor_vessel_casing",
+  "particle": "criticalmass:block/reactor_vessel_casing"
+ },
+ "elements": [
+  {
+   "name": "shell",
+   "from": [
+    0,
+    0,
+    0
+   ],
+   "to": [
+    16,
+    13,
+    16
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      0,
+      3,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      0,
+      3,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "south": {
+     "uv": [
+      0,
+      3,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      0,
+      3,
+      16,
+      16
+     ],
+     "texture": "#1"
+    },
+    "down": {
+     "uv": [
+      0,
+      0,
+      16,
+      16
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "ring_north",
+   "from": [
+    0,
+    13,
+    0
+   ],
+   "to": [
+    16,
+    16,
+    3
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0,
+      0,
+      8,
+      1.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      8,
+      8,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "north": {
+     "uv": [
+      0,
+      0,
+      16,
+      3
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      13,
+      0,
+      16,
+      3
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      0,
+      0,
+      3,
+      3
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "ring_south",
+   "from": [
+    0,
+    13,
+    13
+   ],
+   "to": [
+    16,
+    16,
+    16
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0,
+      6.5,
+      8,
+      8
+     ],
+     "texture": "#0"
+    },
+    "north": {
+     "uv": [
+      0,
+      8,
+      8,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      0,
+      0,
+      16,
+      3
+     ],
+     "texture": "#1"
+    },
+    "east": {
+     "uv": [
+      0,
+      0,
+      3,
+      3
+     ],
+     "texture": "#1"
+    },
+    "west": {
+     "uv": [
+      13,
+      0,
+      16,
+      3
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "ring_west",
+   "from": [
+    0,
+    13,
+    3
+   ],
+   "to": [
+    3,
+    16,
+    13
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      0,
+      1.5,
+      1.5,
+      6.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      1.5,
+      8,
+      6.5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      3,
+      0,
+      13,
+      3
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "ring_east",
+   "from": [
+    13,
+    13,
+    3
+   ],
+   "to": [
+    16,
+    16,
+    13
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      6.5,
+      1.5,
+      8,
+      6.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      1.5,
+      8,
+      6.5,
+      9.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      3,
+      0,
+      13,
+      3
+     ],
+     "texture": "#1"
+    }
+   }
+  },
+  {
+   "name": "well",
+   "from": [
+    3,
+    12,
+    3
+   ],
+   "to": [
+    13,
+    13,
+    13
+   ],
+   "faces": {
+    "up": {
+     "uv": [
+      8,
+      5,
+      13,
+      10
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "criticalmass:reactor_vessel_casing"
+    },
+    {
+      "item": "criticalmass:steel_plate"
+    },
+    {
+      "item": "criticalmass:sealing_gasket"
+    }
+  ],
+  "result": {
+    "id": "criticalmass:fuel_channel_cap"
+  }
+}

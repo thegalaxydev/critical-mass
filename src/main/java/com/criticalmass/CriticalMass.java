@@ -162,6 +162,7 @@ public class CriticalMass {
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SPENT_FUEL_RACK.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.CENTRIFUGE.get(), (be, side) -> be.automation());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SERVICE_PORT.get(), (be, side) -> be.handler());
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.FUEL_CHANNEL_CAP.get(), (be, side) -> be.handler());
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, CMBlockEntities.SHIELDED_CASK.get(), (be, side) -> be.handler());
     }
 

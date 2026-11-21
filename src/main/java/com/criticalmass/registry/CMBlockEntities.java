@@ -115,6 +115,8 @@ public final class CMBlockEntities {
 
     public static final Supplier<BlockEntityType<ServicePortBlockEntity>> SERVICE_PORT = BLOCK_ENTITIES.register("reactor_service_port",
             () -> BlockEntityType.Builder.of((pos, state) -> new ServicePortBlockEntity(CMBlockEntities.SERVICE_PORT.get(), pos, state), CMBlocks.REACTOR_SERVICE_PORT.get()).build(null));
+    public static final Supplier<BlockEntityType<com.criticalmass.content.fuel.ChannelCapBlockEntity>> FUEL_CHANNEL_CAP = BLOCK_ENTITIES.register("fuel_channel_cap",
+            () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.fuel.ChannelCapBlockEntity(CMBlockEntities.FUEL_CHANNEL_CAP.get(), pos, state), CMBlocks.FUEL_CHANNEL_CAP.get()).build(null));
     public static final Supplier<BlockEntityType<DashboardBlockEntity>> DASHBOARD = BLOCK_ENTITIES.register("dashboard",
             () -> BlockEntityType.Builder.of((pos, state) -> new DashboardBlockEntity(CMBlockEntities.DASHBOARD.get(), pos, state), CMBlocks.REACTOR_ALLOY_DASHBOARD.get(), CMBlocks.PART_PANEL.get()).build(null));
     public static final Supplier<BlockEntityType<ScreenBlockEntity>> PLANT_SCREEN = BLOCK_ENTITIES.register("plant_screen",
