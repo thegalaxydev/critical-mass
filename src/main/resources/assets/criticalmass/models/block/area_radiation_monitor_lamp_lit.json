@@ -1,0 +1,75 @@
+{
+ "parent": "minecraft:block/block",
+ "textures": {
+  "0": "criticalmass:block/area_radiation_monitor",
+  "particle": "criticalmass:block/area_radiation_monitor"
+ },
+ "elements": [
+  {
+   "name": "lamp_lit",
+   "from": [
+    7,
+    14,
+    13
+   ],
+   "to": [
+    9,
+    16,
+    15
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      8,
+      4,
+      9,
+      5
+     ],
+     "texture": "#0"
+    }
+   },
+   "shade": false,
+   "neoforge_data": {
+    "block_light": 15,
+    "sky_light": 15,
+    "ambient_occlusion": false
+   }
+  }
+ ]
+}

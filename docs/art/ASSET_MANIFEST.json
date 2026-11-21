@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-20",
+ "generated": "2026-11-21",
  "minecraft": "1.21.1",
  "neoforge": "21.1.262",
  "create": "6.0.10-280",
@@ -8,6 +8,35 @@
  "flywheel": "1.0.6",
  "loconautics": "0.1.2BETA",
  "records": [
+  {
+   "key": "area_radiation_monitor",
+   "registry_id": "criticalmass:area_radiation_monitor",
+   "type": "block",
+   "name": "Area Radiation Monitor",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/area_radiation_monitor.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/area_radiation_monitor.json",
+    "src/main/resources/assets/criticalmass/models/block/area_radiation_monitor_item.json",
+    "src/main/resources/assets/criticalmass/models/block/area_radiation_monitor_lamp.json",
+    "src/main/resources/assets/criticalmass/models/block/area_radiation_monitor_lamp_lit.json",
+    "src/main/resources/assets/criticalmass/models/block/area_radiation_monitor_needle.json",
+    "src/main/resources/assets/criticalmass/models/item/area_radiation_monitor.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/area_radiation_monitor.json",
+   "item": true
+  },
   {
    "key": "boiler_heating_plate",
    "registry_id": "criticalmass:boiler_heating_plate",

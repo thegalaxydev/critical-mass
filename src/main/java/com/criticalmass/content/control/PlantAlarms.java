@@ -25,7 +25,7 @@ public final class PlantAlarms {
         return be instanceof ReactorControllerBlockEntity || be instanceof com.criticalmass.content.power.BreakerBlockEntity || be instanceof com.criticalmass.content.power.GridTieBlockEntity || be instanceof com.criticalmass.content.power.TransformerBlockEntity
                 || be instanceof com.criticalmass.content.power.GeneratorBlockEntity || be instanceof com.criticalmass.content.power.BatteryBlockEntity || be instanceof com.criticalmass.content.power.DieselEngineBlockEntity || be instanceof com.criticalmass.content.power.TransferSwitchBlockEntity
                 || be instanceof com.criticalmass.content.power.MotorBlockEntity || be instanceof com.criticalmass.content.power.BusBarBlockEntity || be instanceof com.criticalmass.content.power.BurntBlockEntity
-                || be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity;
+                || be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity || be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity;
     }
 
     public static boolean trouble(@org.jetbrains.annotations.Nullable net.minecraft.world.level.block.entity.BlockEntity be) {
@@ -62,6 +62,9 @@ public final class PlantAlarms {
         }
         if (be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity pump) {
             return pump.cavitating() || pump.flow() == 0;
+        }
+        if (be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity monitor) {
+            return monitor.alarm();
         }
         return false;
     }

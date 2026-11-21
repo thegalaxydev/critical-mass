@@ -127,6 +127,8 @@ public final class CMBlockEntities {
             () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.radiation.WaterCannonBlockEntity(CMBlockEntities.WATER_CANNON.get(), pos, state), CMBlocks.WATER_CANNON.get()).build(null));
     public static final Supplier<BlockEntityType<com.criticalmass.content.control.MeltdownSirenBlockEntity>> MELTDOWN_SIREN = BLOCK_ENTITIES.register("meltdown_siren",
             () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.control.MeltdownSirenBlockEntity(CMBlockEntities.MELTDOWN_SIREN.get(), pos, state), CMBlocks.MELTDOWN_SIREN.get()).build(null));
+    public static final Supplier<BlockEntityType<com.criticalmass.content.radiation.AreaMonitorBlockEntity>> AREA_RADIATION_MONITOR = BLOCK_ENTITIES.register("area_radiation_monitor",
+            () -> BlockEntityType.Builder.of((pos, state) -> new com.criticalmass.content.radiation.AreaMonitorBlockEntity(CMBlockEntities.AREA_RADIATION_MONITOR.get(), pos, state), CMBlocks.AREA_RADIATION_MONITOR.get()).build(null));
     public static final Supplier<BlockEntityType<PressurizerBlockEntity>> PRESSURIZER = BLOCK_ENTITIES.register("pressurizer",
             () -> BlockEntityType.Builder.of((pos, state) -> new PressurizerBlockEntity(CMBlockEntities.PRESSURIZER.get(), pos, state), CMBlocks.PRESSURIZER.get()).build(null));
     public static final Supplier<BlockEntityType<Corium.Entity_>> CORIUM = BLOCK_ENTITIES.register("corium",

@@ -1,0 +1,77 @@
+{
+ "textures": {
+  "0": "criticalmass:block/area_radiation_monitor",
+  "particle": "criticalmass:block/area_radiation_monitor"
+ },
+ "elements": [
+  {
+   "name": "needle",
+   "from": [
+    7.75,
+    9.25,
+    11.3
+   ],
+   "to": [
+    8.25,
+    12,
+    11.45
+   ],
+   "faces": {
+    "north": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    },
+    "south": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    },
+    "east": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    },
+    "west": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    },
+    "up": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    },
+    "down": {
+     "uv": [
+      5,
+      6,
+      5.5,
+      7.5
+     ],
+     "texture": "#0"
+    }
+   }
+  }
+ ]
+}

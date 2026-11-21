@@ -1,0 +1,30 @@
+{
+ "type": "minecraft:crafting_shaped",
+ "category": "misc",
+ "key": {
+  "T": {
+   "item": "minecraft:redstone_torch"
+  },
+  "B": {
+   "tag": "c:plates/brass"
+  },
+  "E": {
+   "item": "create:electron_tube"
+  },
+  "S": {
+   "item": "criticalmass:steel_plate"
+  },
+  "C": {
+   "tag": "c:plates/copper"
+  }
+ },
+ "pattern": [
+  " T ",
+  "BEB",
+  "SCS"
+ ],
+ "result": {
+  "id": "criticalmass:area_radiation_monitor",
+  "count": 1
+ }
+}

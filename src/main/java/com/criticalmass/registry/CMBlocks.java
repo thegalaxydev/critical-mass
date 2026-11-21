@@ -93,6 +93,8 @@ public final class CMBlocks {
     public static final DeferredBlock<RotatedPillarBlock> CHARRED_LOG = register("charred_log", RotatedPillarBlock::new, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(2.0f).sound(SoundType.WOOD));
     public static final DeferredBlock<com.criticalmass.content.radiation.WaterCannonBlock> WATER_CANNON = register("water_cannon", com.criticalmass.content.radiation.WaterCannonBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.control.MeltdownSirenBlock> MELTDOWN_SIREN = register("meltdown_siren", com.criticalmass.content.control.MeltdownSirenBlock::new, metal(3.0f).noOcclusion());
+    public static final DeferredBlock<com.criticalmass.content.radiation.AreaMonitorBlock> AREA_RADIATION_MONITOR = register("area_radiation_monitor", com.criticalmass.content.radiation.AreaMonitorBlock::new,
+            metal(3.0f).noOcclusion().lightLevel(s -> s.getValue(com.criticalmass.content.radiation.AreaMonitorBlock.ALARM) ? com.criticalmass.content.radiation.AreaMonitorBlock.ALARM_LIGHT : 0));
     public static final DeferredBlock<SteamTurbineBlock> STEAM_TURBINE = register("steam_turbine", SteamTurbineBlock::new, metal(4.0f).noOcclusion(), b -> new SteamTurbineItem(b, new Item.Properties()));
     public static final DeferredBlock<SteamTurbineStructuralBlock> STEAM_TURBINE_STRUCTURE = BLOCKS.register("steam_turbine_structure",
             () -> new SteamTurbineStructuralBlock(metal(4.0f).noOcclusion().noLootTable()));

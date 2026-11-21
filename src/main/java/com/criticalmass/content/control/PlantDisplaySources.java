@@ -72,6 +72,7 @@ public final class PlantDisplaySources {
         add(CMBlockEntities.TRANSFORMER.get(), PlantChannel.VOLTAGE, PlantChannel.DEMAND, PlantChannel.TEMPERATURE);
         add(CMBlockEntities.STATION_BATTERY.get(), PlantChannel.LEVEL, PlantChannel.OUTPUT, PlantChannel.DEMAND);
         add(CMBlockEntities.DIESEL_ENGINE.get(), PlantChannel.LEVEL, PlantChannel.SPEED);
+        add(CMBlockEntities.AREA_RADIATION_MONITOR.get(), PlantChannel.DOSE);
         DisplaySource.BY_BLOCK_ENTITY.add(CMBlockEntities.CONTROL_ROD_DRIVE.get(), ROD_INSERTION.get());
         add(CMBlockEntities.HEAT_EXCHANGER.get(), buffer);
         add(CMBlockEntities.CONDENSER.get(), buffer);

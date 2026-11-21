@@ -1,15 +1,16 @@
 # Asset manifest
 
-Made 2026-11-20 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
+Made 2026-11-21 by `art/tools/manifest.py` from the blockstates, models, textures, sounds and names in `src/main/resources/assets/criticalmass`. The same list with every model path is in `ASSET_MANIFEST.json`.
 
 Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21.1, Sable 2.0.6, Loconautics 0.1.2BETA.
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (61)
+## Blocks (62)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
+| `criticalmass:area_radiation_monitor` | Area Radiation Monitor | script | `block/area_radiation_monitor.png` 32x32 |  | 6 |
 | `criticalmass:boiler_heating_plate` | Boiler Heating Plate | script | `block/boiler_heating_plate.png` 32x32<br>`block/steel_block.png` 16x16 |  | 4 |
 | `criticalmass:burnt_equipment` | Burnt-Out Equipment (no item) | script | `block/burnt_equipment.png` 16x16<br>`block/burnt_equipment_bottom.png` 16x16<br>`block/burnt_equipment_top.png` 16x16 |  | 1 |
 | `criticalmass:bus_bar` | Bus Bar | script | `block/bus_bar.png` 16x16 |  | 2 |

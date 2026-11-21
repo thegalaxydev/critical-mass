@@ -17,6 +17,7 @@ public final class CMPartialModels {
     public static final PartialModel WATER_CANNON_HEAD = block("water_cannon_head");
     public static final PartialModel CONTROL_ROD_CAP = block("control_rod_cap");
     public static final PartialModel MELTDOWN_SIREN_SPINDLE = block("meltdown_siren_spindle");
+    public static final PartialModel AREA_MONITOR_NEEDLE = block("area_radiation_monitor_needle");
     public static final PartialModel SERVICE_PORT_DOOR_WEST = block("reactor_service_port_door_west");
     public static final PartialModel SERVICE_PORT_DOOR_EAST = block("reactor_service_port_door_east");
     public static final Map<String, PartialModel> DASH = pieces("dashboard_part/", "back", "body", "big_body", "slim_body", "plate", "slim_plate", "face", "button_cap", "button_big_cap",

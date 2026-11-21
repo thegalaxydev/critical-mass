@@ -10,6 +10,7 @@ import com.criticalmass.content.power.GridTieBlockEntity;
 import com.criticalmass.content.power.MotorBlockEntity;
 import com.criticalmass.content.power.Power;
 import com.criticalmass.content.power.TransformerBlockEntity;
+import com.criticalmass.content.radiation.AreaMonitorBlockEntity;
 import com.criticalmass.content.kinetics.ControlRodDriveBlockEntity;
 import com.criticalmass.content.kinetics.SteamTurbineBlockEntity;
 import com.criticalmass.content.thermal.CMThermal;
@@ -46,7 +47,8 @@ public enum PlantChannel {
     DEMAND("demand", "MW"),
     VOLTAGE("voltage", "kV"),
     CURRENT("current", "kA"),
-    SETPOINT("setpoint", "%");
+    SETPOINT("setpoint", "%"),
+    DOSE("dose", "mSv/min");
 
     public static final double COOLANT_SCALE_MAX = 400.0;
     public static final double STABLE_PERIOD = 999.0;
@@ -70,7 +72,8 @@ public enum PlantChannel {
 
     public static boolean isTarget(@Nullable BlockEntity be) {
         return be instanceof ThermalNode || be instanceof PressurizerBlockEntity || be instanceof CirculationPumpBlockEntity || be instanceof ControlRodDriveBlockEntity
-                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity || be instanceof BatteryBlockEntity || be instanceof DieselEngineBlockEntity;
+                || be instanceof GeneratorBlockEntity || be instanceof BreakerBlockEntity || be instanceof GridTieBlockEntity || be instanceof MotorBlockEntity || be instanceof BusBarBlockEntity || be instanceof TransformerBlockEntity || be instanceof BatteryBlockEntity || be instanceof DieselEngineBlockEntity
+                || be instanceof AreaMonitorBlockEntity;
     }
 
     private static double scale(double kilovolts) {
@@ -209,6 +212,9 @@ public enum PlantChannel {
                 case VOLTAGE -> of(tie.live() ? tie.kilovolts() : 0, 0, 250);
                 default -> null;
             };
+        }
+        if (be instanceof AreaMonitorBlockEntity monitor) {
+            return this == DOSE ? of(monitor.rate(), 0, monitor.setpoint() * 2) : null;
         }
         if (be instanceof CoolingTowerBlockEntity t) {
             return buffer(t.stackCoolant());

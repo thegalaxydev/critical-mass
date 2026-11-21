@@ -1,0 +1,117 @@
+{
+ "multipart": [
+  {
+   "when": {
+    "facing": "north"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor"
+   }
+  },
+  {
+   "when": {
+    "facing": "north",
+    "alarm": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp"
+   }
+  },
+  {
+   "when": {
+    "facing": "north",
+    "alarm": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp_lit"
+   }
+  },
+  {
+   "when": {
+    "facing": "east"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "facing": "east",
+    "alarm": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "facing": "east",
+    "alarm": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp_lit",
+    "y": 90
+   }
+  },
+  {
+   "when": {
+    "facing": "south"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "south",
+    "alarm": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "south",
+    "alarm": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp_lit",
+    "y": 180
+   }
+  },
+  {
+   "when": {
+    "facing": "west"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "facing": "west",
+    "alarm": "false"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp",
+    "y": 270
+   }
+  },
+  {
+   "when": {
+    "facing": "west",
+    "alarm": "true"
+   },
+   "apply": {
+    "model": "criticalmass:block/area_radiation_monitor_lamp_lit",
+    "y": 270
+   }
+  }
+ ]
+}

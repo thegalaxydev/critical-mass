@@ -40,6 +40,7 @@ A wall you have not linked shows Display Link text instead, three green lines to
 | Reactor Controller or a Reactor Signal Interface | Active alarms |
 | Turbine | Speed |
 | Primary pump | Flow |
+| Area Radiation Monitor | Dose rate |
 
 The controller has one free face, so put Reactor Signal Interfaces in the vessel wall when you want more links to the same reactor. A Display Board only flips while it turns at 30 RPM or more; a cogwheel beside it drives it.
 
@@ -52,6 +53,7 @@ The control desk is a Reactor Alloy Dashboard with Dashboard parts on it. Sneak-
 | Dashboard Button, Switch, Lever | A receiving Redstone Link | A one second pulse, on or off, or any strength from 0 to 15 |
 | Dashboard Gauge | Any plant machine | One reading of that machine on a needle, chosen in its settings |
 | Dashboard Alarm | Reactor Controller, or electrical equipment | Lights while an alarm is active, or while the equipment is in trouble. A new alarm flashes and sounds until you press it |
+| Dashboard Gauge, Dashboard Alarm | Area Radiation Monitor | The dose rate in a hall on a needle, and a lamp that lights while the monitor is in alarm |
 | Meltdown Siren | Reactor Controller, with the Plant Linker | Growls once the hottest fuel passes 1,100 °C, higher as it nears melting, and wails once fuel has melted or the vessel is breached. Use it to silence it. A redstone signal sounds it too |
 
 For redstone instead of direct binding, set Reactor Signal Interfaces in the vessel wall and use a wrench on each to choose its job. Use one with an empty hand to see what it is set to.
@@ -149,6 +151,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **More exchange area:** stack Heat Exchangers into a taller steam generator and set Condensers end to end. Each block adds its own area, so the two loops run closer in temperature.
 - **More heat rejection first:** add fill blocks and a fan before raising power. A tower that cannot keep up shows as a hot condenser and a venting relief valve.
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
+- **Radiation monitors:** hang an Area Radiation Monitor on a wall of each hall where fuel or waste is handled, and set its alarm level on its value box. It ticks with the rate, lights and sounds at its level and gives a redstone signal, so it can close a Shielded Hatch. Link a Plant Screen wall, a Dashboard Gauge or a Dashboard Alarm lamp to it to watch the hall from the control room.
 - **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose. It also outlasts a nuclear explosion and shelters what is behind it, so a containment sealed on every side, under the vessel too, keeps the blast in. Each doorway and each pipe through the wall lets a jet of it out.
 
 ## The reference plant

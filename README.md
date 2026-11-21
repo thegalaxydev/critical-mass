@@ -144,7 +144,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - A comparator on the Reactor Controller reads the hottest fuel column against the 1,100 °C trip temperature (0 to 15).
 - **Plant Linker:** the tool that links a Plant Screen wall to its machines. Use it on a machine to remember it, then on a screen of the wall. Sneak-use in the air to clear it.
 - **Plant Screen:** a screen with green text, built like Create's Display Board in a steel frame. A wall of them shows a display of its own for whatever machine it is linked to, or Display Link text like a Display Board.
-  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers, Station Batteries, Diesel Engines and the Grid Connection.
+  - **Machine display:** use the Plant Linker on any machine a gauge can read, then on any screen of a wall at least 3 wide and 2 high. That covers the reactor, turbine, pumps, pressurizer, heat exchangers, condenser, tanks, rod drives, generators, motors, breakers, bus bars, transformers, Station Batteries, Diesel Engines, the Grid Connection and Area Radiation Monitors.
     - The wall shows the machine's name and its state, trend graphs of its readings over the last two minutes, and a table of every reading.
     - How much it shows depends on its size. Three by two is one graph. A bigger wall fits more graphs, up to six, and from 5 wide the table stands beside them. A narrow wall 4 or more high puts the table under them.
     - Readings that start at zero scale themselves to what they have seen. Frequency, phase angle and temperature are graphed on a fixed window, so 50 Hz sits in the middle of 45 to 55.
@@ -459,6 +459,13 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
   - A player in creative or spectator takes none of it: no dose, no contamination on skin or suit, no sickness and no grain on the screen. A dose already stored is kept as it is, without recovering, and counts again in survival. The Survey Meter still reads and ticks, and a Dosimeter reads a rate of zero.
 - **Survey Meter:** hold it to read the dose rate in the action bar, to two decimal places below 10. Use it to switch to contamination (around you and on you). It clicks with whichever it is reading.
 - **Dosimeter:** hold it for your dose. Use it for a summary, and sneak-use to reset its reading (the lifetime dose stays).
+- **Area Radiation Monitor:** a fixed instrument for a hall. It hangs on a wall and reads the dose rate where it hangs, once a second, the way a Survey Meter held there would.
+  - **Dial and sound:** its needle sweeps from 0.01 to 100 mSv/min, with a tenfold step to each quarter of the dial. It ticks like a Survey Meter, faster as the rate climbs.
+  - **Alarm level:** set on its value box, from 0.1 to 10 mSv/min in tenths on the first row and from 1 to 100 in whole numbers on the second. It starts at 10.
+  - **In alarm:** at or over the level its lamp lights and a horn sounds. It gives a redstone signal to the blocks around it and through the block it hangs on, so it can close a Shielded Hatch or sound a Meltdown Siren. It stays in alarm until the rate is a tenth under the level. Use it to silence the horn until the alarm clears.
+  - **Comparator:** reads the rate against the alarm level, from 0 to 14 below it and 15 in alarm.
+  - **Control room:** the Plant Linker remembers a monitor. A Plant Screen wall linked to one shows and graphs its rate, a Dashboard Gauge shows it on a needle with the alarm level at the middle of the scale, a Dashboard Alarm lamp lights while it alarms, and a Display Link gives the rate as text.
+  - **Goggles:** its state, its rate and its alarm level.
 - **Contamination:**
   - A breach leaks coolant out of each broken casing block and leaves contamination there that never fades.
   - Standing in it gives dose and contaminates you.
