@@ -286,6 +286,19 @@ public final class CoolantBuffer {
         return new Handler(level, pos, side);
     }
 
+    public static double flightShare(Level level, FluidStack stack) {
+        if (flightTick != level.getGameTime() || flightAmount <= 0 || !sameMedium(flightFluid, stack) || CMThermal.isContaminated(flightFluid) != CMThermal.isContaminated(stack)) {
+            return -1;
+        }
+        double share = Math.min(1, flightActivity / flightAmount);
+        int k = Math.min(stack.getAmount(), flightAmount);
+        flightHeat -= flightHeat * k / flightAmount;
+        flightBoron -= flightBoron * k / flightAmount;
+        flightActivity -= flightActivity * k / flightAmount;
+        flightAmount -= k;
+        return share;
+    }
+
     private static boolean sameMedium(FluidStack a, FluidStack b) {
         return (isSteamMedium(a) && isSteamMedium(b)) || (borated(a) && borated(b)) || FluidStack.isSameFluid(a, b);
     }

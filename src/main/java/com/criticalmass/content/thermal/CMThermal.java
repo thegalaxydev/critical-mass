@@ -185,6 +185,7 @@ public final class CMThermal {
     public static final double CLEAN_SPILL = 0.05;
     public static final double CONTAMINATED_SPILL = 0.2;
     public static final double CLEAN_ACTIVITY = 0.01;
+    public static final double CHARTRINE_COOLANT = 250.0;
     public static final double TUBE_WEAR = 1.0 / 720000.0;
     public static final double TUBE_DRY_WEAR = 1.0 / 36000.0;
     public static final double TUBE_STRESS_GAP = 150.0;

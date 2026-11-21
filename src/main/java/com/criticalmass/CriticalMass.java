@@ -133,6 +133,7 @@ public class CriticalMass {
     private void commonSetup(FMLCommonSetupEvent event) {
         event.enqueueWork(CMStress::register);
         event.enqueueWork(PlantDisplaySources::attach);
+        event.enqueueWork(com.criticalmass.content.thermal.LavaReaction::register);
         event.enqueueWork(() -> BoilerHeater.REGISTRY.register(CMBlocks.BOILER_HEATING_PLATE.get(),
                 (level, pos, state) -> level.getBlockEntity(pos) instanceof BoilerPlateBlockEntity plate ? plate.heatForBoiler() : BoilerHeater.NO_HEAT));
         ModList mods = ModList.get();
