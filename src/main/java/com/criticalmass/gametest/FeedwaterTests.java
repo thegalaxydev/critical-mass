@@ -92,6 +92,49 @@ public final class FeedwaterTests {
     }
 
     @GameTest(template = EMPTY, timeoutTicks = 300)
+    public static void wornSealsLeakAtThePumpAndAGasketMendsThem(GameTestHelper h) {
+        CirculationPumpBlockEntity pump = pump(h, PUMP, Direction.EAST, true);
+        TestVessels.pipes(h, RING);
+        for (BlockPos p : RING) {
+            PipeCoolant.at(h.getLevel(), h.absolutePos(p)).coolant().set(CoolantLoopTests.coolant(CMThermal.PIPE_CAPACITY), 0);
+        }
+        int volume = RING.size() * CMThermal.PIPE_CAPACITY;
+        BlockPos abs = h.absolutePos(PUMP);
+        com.criticalmass.content.radiation.ContaminationData spilled = com.criticalmass.content.radiation.ContaminationData.get(h.getLevel());
+        net.minecraft.world.entity.player.Player player = h.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        net.minecraft.world.item.ItemStack gaskets = new net.minecraft.world.item.ItemStack(com.criticalmass.registry.CMItems.SEALING_GASKET.get(), 3);
+        double rate = CirculationPumpBlockEntity.leakAt(0.875);
+        h.startSequence()
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    h.assertTrue(pump.flow() > 0 && pump.wear() > 0 && pump.wear() <= 41 * CMThermal.SEAL_WEAR, "A running pump should wear its seals slowly: " + pump.wear());
+                    h.assertTrue(!pump.leaking() && TestVessels.pipeVolume(h, RING) == volume && spilled.get(abs) == 0 && !PlantAlarms.trouble(pump), "Sound seals should hold");
+                    pump.setWear(0.875);
+                })
+                .thenIdle(40)
+                .thenExecute(() -> {
+                    int lost = volume - TestVessels.pipeVolume(h, RING);
+                    h.assertTrue(lost >= 38 * rate && lost <= 42 * rate && pump.leaked() == lost, "Worn seals should leak at their rate: " + lost + " at " + rate);
+                    h.assertTrue(pump.leaking() && Math.abs(pump.leakRate() - rate) < 0.01 && PlantAlarms.trouble(pump), "A leaking pump should say so");
+                    h.assertTrue(Math.abs(spilled.get(abs) - lost * CMThermal.CLEAN_SPILL) < 1e-6, "Leaked primary coolant should contaminate the floor at the pump: " + spilled.get(abs));
+                    double before = pump.wear();
+                    h.assertTrue(pump.reseal(gaskets, player) == net.minecraft.world.ItemInteractionResult.SUCCESS && pump.wear() == before && gaskets.getCount() == 3, "A turning pump should not be worked on");
+                    h.setBlock(PUMP.below(), net.minecraft.world.level.block.Blocks.AIR);
+                })
+                .thenIdle(10)
+                .thenExecute(() -> {
+                    double before = pump.wear();
+                    java.util.List<net.minecraft.world.item.ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(h.getBlockState(PUMP), h.getLevel(), abs, pump);
+                    h.assertTrue(drops.size() == 1 && Math.abs(com.criticalmass.content.power.Wear.of(drops.get(0)) - before) < 1e-9, "A broken pump should keep its wear: " + drops);
+                    h.assertTrue(pump.getSpeed() == 0 && pump.reseal(gaskets, player) == net.minecraft.world.ItemInteractionResult.SUCCESS && Math.abs(pump.wear() - (before - CMThermal.SEAL_STEP)) < 1e-9 && gaskets.getCount() == 2,
+                            "A Sealing Gasket should take a quarter off a stopped pump's wear: " + pump.wear());
+                    h.assertTrue(!pump.leaking(), "Under three quarters worn the seals should hold again");
+                    spilled.clear(abs);
+                })
+                .thenSucceed();
+    }
+
+    @GameTest(template = EMPTY, timeoutTicks = 300)
     public static void aLoopCrossingOneHeatExchangerOnBothSidesHeatsItsOwnFeedwater(GameTestHelper h) {
         h.setBlock(HEATER, CMBlocks.HEAT_EXCHANGER.get().defaultBlockState().setValue(HorizontalDirectionalBlock.FACING, Direction.NORTH));
         CirculationPumpBlockEntity pump = pump(h, HEATER_PUMP, Direction.NORTH, false);

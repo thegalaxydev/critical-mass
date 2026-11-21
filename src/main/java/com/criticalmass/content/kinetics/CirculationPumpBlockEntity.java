@@ -39,6 +39,10 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
     private boolean syncPending;
     private final LerpedFloat wheelSpeed = LerpedFloat.linear().chase(0, 1 / 64f, LerpedFloat.Chaser.EXP);
     private float wheelAngle;
+    private double wear;
+    private double leakDebt;
+    private double leakRate;
+    private long leaked;
 
     public CirculationPumpBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -80,6 +84,89 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
 
     public int flow() {
         return flow;
+    }
+
+    public double wear() {
+        return wear;
+    }
+
+    public void setWear(double value) {
+        wear = Math.max(0, Math.min(1, value));
+        syncPending = true;
+        setChanged();
+    }
+
+    public boolean leaking() {
+        return wear >= CMThermal.SEAL_LEAK_AT;
+    }
+
+    public double leakRate() {
+        return leakRate;
+    }
+
+    public long leaked() {
+        return leaked;
+    }
+
+    public static double leakAt(double wear) {
+        return wear < CMThermal.SEAL_LEAK_AT ? 0 : CMThermal.SEAL_LEAK_MAX * (wear - CMThermal.SEAL_LEAK_AT) / (1 - CMThermal.SEAL_LEAK_AT);
+    }
+
+    public net.minecraft.world.ItemInteractionResult reseal(net.minecraft.world.item.ItemStack stack, net.minecraft.world.entity.player.Player player) {
+        if (!stack.is(com.criticalmass.registry.CMItems.SEALING_GASKET.get()) || wear < 0.01 || level == null) {
+            return net.minecraft.world.ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+        if (level.isClientSide) {
+            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        }
+        if (getSpeed() != 0) {
+            player.hurt(level.damageSources().generic(), CMThermal.SEAL_HURT);
+            player.displayClientMessage(Component.translatable("criticalmass.pump.turning"), true);
+            return net.minecraft.world.ItemInteractionResult.SUCCESS;
+        }
+        setWear(wear - CMThermal.SEAL_STEP);
+        if (!player.getAbilities().instabuild) {
+            stack.shrink(1);
+        }
+        level.playSound(null, worldPosition, CMSounds.SERVICE.get(), net.minecraft.sounds.SoundSource.BLOCKS, 1.0f, 1.1f);
+        player.displayClientMessage(Component.translatable("criticalmass.service.done", com.criticalmass.content.power.Wear.percent(wear)), true);
+        return net.minecraft.world.ItemInteractionResult.SUCCESS;
+    }
+
+    private void seep() {
+        double rate = circuit != null && circuit.ok() ? leakAt(wear) : 0;
+        double now = 0;
+        if (rate > 0) {
+            leakDebt = Math.min(leakDebt + rate, CMThermal.SEAL_LEAK_MAX * 2);
+            int want = (int) leakDebt;
+            for (ThermalNode node : pipeContents()) {
+                if (!(node instanceof PipeCoolant pipe) || pipe.coolant().amount() == 0) {
+                    continue;
+                }
+                now = rate;
+                int n = Math.min(want, pipe.coolant().amount());
+                if (n > 0) {
+                    leakDebt -= n;
+                    com.criticalmass.content.thermal.CoolantBuffer.Packet lost = pipe.coolant().take(n);
+                    boolean primary = CMThermal.isPrimaryMedium(lost.fluid());
+                    pipe.sinks().vent(lost);
+                    leaked += n;
+                    if (primary && level instanceof net.minecraft.server.level.ServerLevel server) {
+                        com.criticalmass.content.radiation.ContaminationData.get(server).add(worldPosition, (n - lost.activity()) * CMThermal.CLEAN_SPILL + lost.activity() * CMThermal.CONTAMINATED_SPILL);
+                    }
+                    if (level.getGameTime() % 10 == 0) {
+                        com.criticalmass.content.thermal.ThermalSafety.steamPuff(level, worldPosition, 0, 0.2, 0);
+                    }
+                }
+                break;
+            }
+        } else {
+            leakDebt = 0;
+        }
+        if (now != leakRate) {
+            leakRate = now;
+            syncPending = true;
+        }
     }
 
     public int movedTotal() {
@@ -173,6 +260,13 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
             getOrCreateNetwork().updateStressFor(this, calculateStressApplied());
             getOrCreateNetwork().updateStress();
         }
+        if (flow > 0) {
+            wear = Math.min(1, wear + CMThermal.SEAL_WEAR * (starved ? CMThermal.SEAL_CAVITATION : 1));
+            if (level.getGameTime() % 200 == 0) {
+                syncPending = true;
+            }
+        }
+        seep();
         if (syncCooldown > 0) {
             syncCooldown--;
         } else if (syncPending) {
@@ -197,9 +291,32 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         super.write(tag, registries, clientPacket);
         tag.putInt("Flow", flow);
         tag.putInt("Moved", movedTotal);
+        tag.putDouble("Wear", wear);
+        tag.putDouble("LeakRate", leakRate);
         if (clientPacket) {
             tag.putString("Status", status);
+        } else {
+            tag.putDouble("LeakDebt", leakDebt);
+            tag.putLong("Leaked", leaked);
         }
+    }
+
+    @Override
+    protected void collectImplicitComponents(net.minecraft.core.component.DataComponentMap.Builder components) {
+        super.collectImplicitComponents(components);
+        com.criticalmass.content.power.Wear.collect(components, wear);
+    }
+
+    @Override
+    protected void applyImplicitComponents(DataComponentInput input) {
+        super.applyImplicitComponents(input);
+        wear = com.criticalmass.content.power.Wear.read(input.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY));
+    }
+
+    @Override
+    public void removeComponentsFromTag(CompoundTag tag) {
+        super.removeComponentsFromTag(tag);
+        tag.remove("Wear");
     }
 
     @Override
@@ -207,8 +324,13 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         super.read(tag, registries, clientPacket);
         flow = tag.getInt("Flow");
         movedTotal = tag.getInt("Moved");
+        wear = tag.getDouble("Wear");
+        leakRate = tag.getDouble("LeakRate");
         if (clientPacket) {
             status = tag.getString("Status");
+        } else {
+            leakDebt = tag.getDouble("LeakDebt");
+            leaked = tag.getLong("Leaked");
         }
     }
 
@@ -219,6 +341,11 @@ public class CirculationPumpBlockEntity extends KineticBlockEntity {
         ThermalTooltips.status(tooltip, status, flow > 0 && !status.equals(CAVITATING) ? ChatFormatting.GREEN : ChatFormatting.GOLD);
         ThermalTooltips.label(tooltip, "criticalmass.goggles.label.flow");
         ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.flow", flow > 0 ? ChatFormatting.AQUA : ChatFormatting.GRAY, ThermalTooltips.number(flow)));
+        com.criticalmass.content.power.Wear.goggles(tooltip, wear);
+        if (leakRate > 0) {
+            ThermalTooltips.label(tooltip, "criticalmass.goggles.label.seal_leak");
+            ThermalTooltips.value(tooltip, ThermalTooltips.reading("criticalmass.unit.flow", ChatFormatting.RED, String.format(java.util.Locale.ROOT, "%.1f", leakRate)));
+        }
         return true;
     }
 }

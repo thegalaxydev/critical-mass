@@ -194,6 +194,12 @@ public final class CMThermal {
     public static final double TUBE_COOL = 60.0;
     public static final float TUBE_HURT = 4.0f;
     public static final double LEAK_ACTIVITY = PLAIN_PIPE_DOSE / CONTAMINATED_PIPE_DOSE;
+    public static final double SEAL_WEAR = 1.0 / 720000.0;
+    public static final double SEAL_CAVITATION = 10.0;
+    public static final double SEAL_LEAK_AT = 0.75;
+    public static final double SEAL_LEAK_MAX = 1.0;
+    public static final double SEAL_STEP = 0.25;
+    public static final float SEAL_HURT = 4.0f;
     public static final double DECAY_FACTOR = Math.pow(0.5, 1.0 / DECAY_HALF_LIFE_TICKS);
 
     private CMThermal() {

@@ -31,6 +31,12 @@ public class CirculationPumpBlock extends DirectionalAxisKineticBlock implements
     }
 
     @Override
+    protected net.minecraft.world.ItemInteractionResult useItemOn(net.minecraft.world.item.ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, net.minecraft.world.InteractionHand hand,
+            net.minecraft.world.phys.BlockHitResult hit) {
+        return onBlockEntityUseItemOn(level, pos, be -> be.reseal(stack, player));
+    }
+
+    @Override
     protected Direction getFacingForPlacement(BlockPlaceContext context) {
         Direction facing = super.getFacingForPlacement(context);
         Player player = context.getPlayer();

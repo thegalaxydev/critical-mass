@@ -720,6 +720,8 @@
   "criticalmass.goggles.label.steel_plates": "Steel Plates:",
   "criticalmass.goggles.label.condition": "Condition:",
   "criticalmass.goggles.label.tube_leak": "Tube leak:",
+  "criticalmass.goggles.label.seal_leak": "Seal leak:",
+  "criticalmass.pump.turning": "Still turning. Stop the pump before working on its seals",
   "criticalmass.exchanger.hot": "Hot. Stop both loops and let it cool before working on the tubes",
   "criticalmass.service.live": "Live. Make it dead before working on it",
   "criticalmass.service.done": "Serviced: condition %s%%",

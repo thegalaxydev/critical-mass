@@ -62,7 +62,7 @@ public final class PlantAlarms {
             return !bus.live();
         }
         if (be instanceof com.criticalmass.content.kinetics.CirculationPumpBlockEntity pump) {
-            return pump.cavitating() || pump.flow() == 0;
+            return pump.cavitating() || pump.flow() == 0 || pump.leaking();
         }
         if (be instanceof com.criticalmass.content.radiation.AreaMonitorBlockEntity monitor) {
             return monitor.alarm();
