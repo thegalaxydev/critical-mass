@@ -281,6 +281,52 @@ public final class PipeTests {
                 .thenSucceed();
     }
 
+    @GameTest(template = EMPTY, timeoutTicks = 40)
+    public static void shieldingConcreteEncasesAStraightReinforcedPipe(GameTestHelper h) {
+        BlockPos mid = new BlockPos(2, 1, 2);
+        BlockPos corner = new BlockPos(0, 1, 0);
+        List<BlockPos> pipes = List.of(mid.west(), mid, mid.east(), corner, corner.east(), corner.south());
+        for (BlockPos p : pipes) {
+            h.setBlock(p, CMBlocks.REINFORCED_PIPE.get());
+        }
+        for (BlockPos p : pipes) {
+            TestVessels.connect(h, p);
+        }
+        BlockPos abs = h.absolutePos(mid);
+        PipeCoolant.at(h.getLevel(), abs).coolant().set(CoolantLoopTests.coolant(80), 0);
+        Player player = h.makeMockPlayer(GameType.SURVIVAL);
+        ItemStack concrete = new ItemStack(CMBlocks.SHIELDING_CONCRETE.get(), 3);
+        player.setItemInHand(InteractionHand.MAIN_HAND, concrete);
+        BlockHitResult hit = new BlockHitResult(Vec3.atCenterOf(abs).add(0, 0.5, 0), Direction.UP, abs, false);
+        h.assertTrue(h.getBlockState(mid).useItemOn(concrete, h.getLevel(), player, InteractionHand.MAIN_HAND, hit).consumesAction(), "Shielding Concrete should encase a straight Reinforced Pipe");
+        BlockState cased = h.getBlockState(mid);
+        h.assertTrue(cased.is(CMBlocks.ENCASED_REINFORCED_PIPE.get()) && cased.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == Direction.Axis.X && concrete.getCount() == 2,
+                "It should be encased along its run and use one block: " + cased);
+        h.assertTrue(Radiation.mu(h.getLevel(), abs, cased) == com.criticalmass.registry.CMConfig.get(com.criticalmass.registry.CMConfig.SHIELD_CONCRETE), "An encased pipe should shield like Shielding Concrete");
+        h.assertTrue(cased.is(com.criticalmass.content.thermal.Detonation.BLAST_PROOF) && com.criticalmass.content.thermal.Corium.resists(cased, h.getLevel(), abs) && cased.isCollisionShapeFullBlock(h.getLevel(), abs),
+                "An encased pipe should be a full block that stops the blast and corium");
+        h.assertTrue(PipeCoolant.open(h.getLevel(), abs, cased, Direction.EAST) && PipeCoolant.open(h.getLevel(), abs, cased, Direction.WEST) && !PipeCoolant.open(h.getLevel(), abs, cased, Direction.UP),
+                "An encased pipe should still run along its one way");
+        h.assertTrue(PipeCoolant.isReinforced(cased) && PipeCoolant.at(h.getLevel(), abs).coolant().amount() == 80, "It should stay reinforced and keep its coolant");
+        List<ItemStack> drops = net.minecraft.world.level.block.Block.getDrops(cased, h.getLevel(), abs, h.getLevel().getBlockEntity(abs), player, new ItemStack(net.minecraft.world.item.Items.IRON_PICKAXE));
+        h.assertTrue(drops.size() == 2 && drops.stream().anyMatch(s -> s.is(CMBlocks.REINFORCED_PIPE.get().asItem())) && drops.stream().anyMatch(s -> s.is(CMBlocks.SHIELDING_CONCRETE.get().asItem())),
+                "Broken, it should give back the pipe and the concrete: " + drops);
+        BlockPos bend = h.absolutePos(corner);
+        BlockHitResult onBend = new BlockHitResult(Vec3.atCenterOf(bend).add(0, 0.5, 0), Direction.UP, bend, false);
+        h.assertTrue(!h.getBlockState(corner).useItemOn(concrete, h.getLevel(), player, InteractionHand.MAIN_HAND, onBend).consumesAction() && h.getBlockState(corner).is(CMBlocks.REINFORCED_PIPE.get()),
+                "A bend should not be encased: " + h.getBlockState(corner));
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(com.simibubi.create.AllItems.WRENCH.get()));
+        UseOnContext wrench = new UseOnContext(player, InteractionHand.MAIN_HAND, hit);
+        h.assertTrue(CMBlocks.ENCASED_REINFORCED_PIPE.get().onWrenched(cased, wrench).consumesAction(), "A wrench should take the casing off");
+        BlockState bare = h.getBlockState(mid);
+        h.assertTrue(bare.is(CMBlocks.REINFORCED_STRAIGHT_PIPE.get()) && bare.getValue(net.minecraft.world.level.block.RotatedPillarBlock.AXIS) == Direction.Axis.X && player.getInventory().countItem(CMBlocks.SHIELDING_CONCRETE.get().asItem()) == 1,
+                "It should leave a locked pipe and give the concrete back: " + bare);
+        h.assertTrue(PipeCoolant.at(h.getLevel(), abs).coolant().amount() == 80, "Taking the casing off should keep the coolant");
+        player.setItemInHand(InteractionHand.MAIN_HAND, concrete);
+        h.assertTrue(bare.useItemOn(concrete, h.getLevel(), player, InteractionHand.MAIN_HAND, hit).consumesAction() && h.getBlockState(mid).is(CMBlocks.ENCASED_REINFORCED_PIPE.get()), "A locked pipe should be encased the same way");
+        h.succeed();
+    }
+
     private static void apply(GameTestHelper h, Player player, BlockPos pos) {
         BlockPos abs = h.absolutePos(pos);
         CommonHooks.onRightClickBlock(player, InteractionHand.MAIN_HAND, abs, new BlockHitResult(Vec3.atCenterOf(abs), Direction.UP, abs, false));

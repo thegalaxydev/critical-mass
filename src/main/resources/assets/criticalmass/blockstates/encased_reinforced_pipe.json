@@ -1,0 +1,31 @@
+{
+ "multipart": [
+  {
+   "when": {
+    "axis": "y"
+   },
+   "apply": {
+    "model": "criticalmass:block/encased_reinforced_pipe"
+   }
+  },
+  {
+   "when": {
+    "axis": "z"
+   },
+   "apply": {
+    "model": "criticalmass:block/encased_reinforced_pipe",
+    "x": 90
+   }
+  },
+  {
+   "when": {
+    "axis": "x"
+   },
+   "apply": {
+    "model": "criticalmass:block/encased_reinforced_pipe",
+    "x": 90,
+    "y": 90
+   }
+  }
+ ]
+}

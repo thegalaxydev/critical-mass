@@ -126,6 +126,10 @@ public class ReinforcedPipeBlock extends FluidPipeBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        Direction.Axis axis = EncasedReinforcedPipeBlock.casing(stack) ? FluidPropagator.getStraightPipeAxis(state) : null;
+        if (axis != null) {
+            return EncasedReinforcedPipeBlock.encase(level, pos, axis, player, stack);
+        }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 

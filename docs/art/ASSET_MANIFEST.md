@@ -6,7 +6,7 @@ Minecraft 1.21.1, NeoForge 21.1.262, Create 6.0.10-280, Aeronautics 1.3.2+mc1.21
 
 The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. `not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.
 
-## Blocks (63)
+## Blocks (65)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
@@ -31,6 +31,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:disconnect_switch` | Disconnect Switch | script | `block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:earthing_switch` | Earthing Switch | script | `block/steel_block.png` 16x16<br>`block/switchgear.png` 32x32 |  | 3 |
 | `criticalmass:electric_motor` | Electric Motor | script | `block/electric_motor.png` 32x32<br>`block/steel_block.png` 16x16 |  | 2 |
+| `criticalmass:encased_reinforced_pipe` | Encased Reinforced Pipe (no item) | script | `block/encased_reinforced_pipe_end.png` 16x16<br>`block/shielding_concrete.png` 16x16 |  | 1 |
 | `criticalmass:fallout_ash` | Fallout Ash | author's block textures, the glow animated by script; script item | `block/fallout_ash.png` 16x16<br>`block/fallout_ash_glow.png` 16x160<br>`item/fallout_ash.png` 16x16 |  | 2 |
 | `criticalmass:fuel_channel` | Fuel Channel | script | `block/fuel_channel.png` 32x32<br>`block/fuel_channel_glow_1.png` 32x32<br>`block/fuel_channel_glow_2.png` 32x32<br>`block/fuel_channel_glow_3.png` 32x32 |  | 5 |
 | `criticalmass:fuel_channel_cap` | Fuel Channel Cap | script | `block/fuel_channel_cap.png` 32x32<br>`block/reactor_vessel_casing.png` 16x16 |  | 3 |
@@ -54,6 +55,7 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:reactor_vessel_casing` | Reactor Vessel Casing | author | `block/casing_crack_1.png` 16x16<br>`block/casing_crack_2.png` 16x16<br>`block/casing_crack_3.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/reactor_vessel_casing_connected.png` 128x128 |  | 5 |
 | `criticalmass:reactor_viewport` | Reactor Viewport | script | `block/reactor_viewport.png` 32x32<br>`block/reactor_viewport_crack_1.png` 32x32<br>`block/reactor_viewport_crack_2.png` 32x32<br>`block/reactor_viewport_crack_3.png` 32x32 |  | 5 |
 | `criticalmass:reinforced_pipe` | Reinforced Pipe | script | `block/reinforced_pipe.png` 32x32<br>`block/reinforced_pipe_connected.png` 32x32 |  | 57 |
+| `criticalmass:reinforced_straight_pipe` | Straight Reinforced Pipe (no item) | none of its own | `block/reinforced_pipe.png` 32x32<br>`block/reinforced_pipe_connected.png` 32x32 |  | 12 |
 | `criticalmass:reinforced_valve` | Reinforced Valve | author | `block/reinforced_valve.png` 32x32<br>`block/reinforced_valve_closed.png` 16x16<br>`block/reinforced_valve_open.png` 16x16 |  | 7 |
 | `criticalmass:relief_valve` | Relief Valve | script, approved | `block/reinforced_pipe.png` 32x32<br>`block/relief_valve.png` 32x32 |  | 4 |
 | `criticalmass:ruined_channel` | Ruined Fuel Channel | script | `block/ruined_channel.png` 32x32 |  | 2 |

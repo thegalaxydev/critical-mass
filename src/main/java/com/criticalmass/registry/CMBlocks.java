@@ -78,6 +78,8 @@ public final class CMBlocks {
     public static final DeferredBlock<ReinforcedPipeBlock> REINFORCED_PIPE = register("reinforced_pipe", ReinforcedPipeBlock::new, metal(3.0f).noOcclusion());
     public static final DeferredBlock<com.criticalmass.content.ReinforcedStraightPipeBlock> REINFORCED_STRAIGHT_PIPE = BLOCKS.register("reinforced_straight_pipe",
             () -> new com.criticalmass.content.ReinforcedStraightPipeBlock(metal(3.0f).noOcclusion()));
+    public static final DeferredBlock<com.criticalmass.content.EncasedReinforcedPipeBlock> ENCASED_REINFORCED_PIPE = BLOCKS.register("encased_reinforced_pipe",
+            () -> new com.criticalmass.content.EncasedReinforcedPipeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.STONE).strength(6.0f, 12.0f).sound(SoundType.STONE).requiresCorrectToolForDrops()));
     public static final DeferredBlock<CirculationPumpBlock> CIRCULATION_PUMP = register("circulation_pump", CirculationPumpBlock::new, metal(3.5f).noOcclusion());
     public static final DeferredBlock<HeatExchangerBlock> HEAT_EXCHANGER = register("heat_exchanger", HeatExchangerBlock::new, metal(4.0f).noOcclusion());
     public static final DeferredBlock<CentrifugeBlock> CENTRIFUGE = register("centrifuge", CentrifugeBlock::new, metal(3.5f).noOcclusion());

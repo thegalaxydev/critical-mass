@@ -750,6 +750,38 @@
    "item": true
   },
   {
+   "key": "encased_reinforced_pipe",
+   "registry_id": "criticalmass:encased_reinforced_pipe",
+   "type": "block",
+   "name": "Encased Reinforced Pipe",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/encased_reinforced_pipe_end.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/shielding_concrete.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/encased_reinforced_pipe.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/encased_reinforced_pipe.json",
+   "item": false
+  },
+  {
    "key": "fallout_ash",
    "registry_id": "criticalmass:fallout_ash",
    "type": "block",
@@ -1619,6 +1651,49 @@
    "missing": [],
    "blockstate": "src/main/resources/assets/criticalmass/blockstates/reinforced_pipe.json",
    "item": true
+  },
+  {
+   "key": "reinforced_straight_pipe",
+   "registry_id": "criticalmass:reinforced_straight_pipe",
+   "type": "block",
+   "name": "Straight Reinforced Pipe",
+   "art": "none of its own",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reinforced_pipe.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    },
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/block/reinforced_pipe_connected.png",
+     "size": [
+      32,
+      32
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/down.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/east.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/north.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/south.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/up.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/connection/west.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/lr_x.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/lr_y.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/lr_z.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/ud_x.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/ud_y.json",
+    "src/main/resources/assets/criticalmass/models/block/reinforced_pipe/ud_z.json"
+   ],
+   "missing": [],
+   "blockstate": "src/main/resources/assets/criticalmass/blockstates/reinforced_straight_pipe.json",
+   "item": false
   },
   {
    "key": "reinforced_valve",

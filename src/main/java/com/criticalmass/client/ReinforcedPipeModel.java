@@ -75,6 +75,9 @@ public class ReinforcedPipeModel extends BakedModelWrapperWithData {
                 return false;
             }
             BlockState next = world.getBlockState(pos.relative(d));
+            if (next.getBlock() instanceof com.criticalmass.content.EncasedReinforcedPipeBlock) {
+                return true;
+            }
             if (next.getBlock() instanceof ReinforcedStraightPipeBlock && next.getValue(ReinforcedStraightPipeBlock.AXIS) == axis) {
                 return d.getAxisDirection() == Direction.AxisDirection.POSITIVE;
             }

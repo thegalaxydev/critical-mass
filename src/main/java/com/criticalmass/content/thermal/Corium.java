@@ -35,7 +35,7 @@ public final class Corium {
 
     public static boolean resists(BlockState state, Level level, BlockPos pos) {
         Block b = state.getBlock();
-        return b == CMBlocks.SHIELDING_CONCRETE.get() || b == CMBlocks.CORIUM.get() || state.getDestroySpeed(level, pos) < 0 || state.is(Blocks.OBSIDIAN);
+        return b == CMBlocks.SHIELDING_CONCRETE.get() || b == CMBlocks.ENCASED_REINFORCED_PIPE.get() || b == CMBlocks.CORIUM.get() || state.getDestroySpeed(level, pos) < 0 || state.is(Blocks.OBSIDIAN);
     }
 
     public static class CoriumBlock extends Block implements IBE<Entity_> {

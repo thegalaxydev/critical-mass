@@ -39,6 +39,7 @@
     "criticalmass:centrifuge",
     "criticalmass:reinforced_pipe",
     "criticalmass:reinforced_straight_pipe",
+    "criticalmass:encased_reinforced_pipe",
     "criticalmass:reinforced_valve",
     "criticalmass:cooling_tower_packing",
     "criticalmass:reactor_alloy_dashboard",

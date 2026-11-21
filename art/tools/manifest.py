@@ -31,7 +31,7 @@ ART = {
     "fuel_channel": SCRIPT, "control_channel": SCRIPT, "coolant_channel": SCRIPT, "ruined_channel": SCRIPT, "spent_fuel_rack": SCRIPT, "shielded_cask": SCRIPT,
     "control_rod_drive": SCRIPT, "pressurizer": SCRIPT, "pressurizer_top": SCRIPT, "centrifuge": SCRIPT, "reactor_viewport": SCRIPT, "corium": "author's texture, script glow",
     "plant_screen": SCRIPT, "reinforced_pipe": SCRIPT, "uranium_ore": SCRIPT, "deepslate_uranium_ore": SCRIPT,
-    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "core_debris": "none of its own", "wreckage": "none of its own", "charred_log": SCRIPT, "fallout_ash": "author's block textures, the glow animated by script; script item", "water_cannon": SCRIPT, "area_radiation_monitor": SCRIPT, "demineralizer": SCRIPT, "resin_cartridge": SCRIPT, "used_resin_cartridge": SCRIPT, "meltdown_siren": "author's model, script texture edited by the author", "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
+    "reactor_alloy_dashboard": UNRECORDED, "part_panel": "none of its own", "core_debris": "none of its own", "wreckage": "none of its own", "charred_log": SCRIPT, "fallout_ash": "author's block textures, the glow animated by script; script item", "water_cannon": SCRIPT, "area_radiation_monitor": SCRIPT, "demineralizer": SCRIPT, "encased_reinforced_pipe": SCRIPT, "reinforced_straight_pipe": "none of its own", "resin_cartridge": SCRIPT, "used_resin_cartridge": SCRIPT, "meltdown_siren": "author's model, script texture edited by the author", "strontium_90": SCRIPT, "radioisotope_cell": SCRIPT, "sheared_fuel": SCRIPT, "incomplete_sheared_fuel": GENERATED,
     "steel_ingot": AUTHOR, "steel_nugget": AUTHOR, "steel_plate": AUTHOR, "control_rod": AUTHOR, "turbine_blade": AUTHOR, "sealing_gasket": AUTHOR,
     "welding_torch": AUTHOR, "dosimeter": AUTHOR, "survey_meter": AUTHOR, "decontamination_compound": AUTHOR, "ceramic_fuel_pellet": AUTHOR,
     "reactor_alloy_ingot": AUTHOR, "reactor_alloy_sheet": AUTHOR,
@@ -49,7 +49,7 @@ DIRECT = {
     "block/casing_crack_1": "reactor_vessel_casing", "block/casing_crack_2": "reactor_vessel_casing", "block/casing_crack_3": "reactor_vessel_casing",
     "block/reactor_vessel_casing_connected": "reactor_vessel_casing", "block/shielded_glass_connected": "shielded_glass",
 }
-NO_ITEM = {"burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure"}
+NO_ITEM = {"burnt_equipment", "part_panel", "pressurizer_top", "steam_turbine_structure", "reinforced_straight_pipe", "encased_reinforced_pipe"}
 LEGEND = ("The Art column says whose work each texture is. Only `author` is the author's own art. `script` was drawn by a script in `art/tools/` and `generated` is a cleaned generated image: "
           "both are placeholders waiting for the author's art, and neither is hand-made. `approved` marks a placeholder the author has accepted as it is. "
           "`not recorded` means the record does not say who made it. How each one was made is in `art/SOURCES.md`.")

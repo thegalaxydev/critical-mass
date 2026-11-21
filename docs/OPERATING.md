@@ -155,7 +155,7 @@ Never hold a lever to pull the rods. Continuous withdrawal goes straight through
 - **More pressure:** a hotter primary loop makes more steam but depends on the Blaze Burner under the Pressurizer. Keep it fed.
 - **Coolant clean-up:** build the Demineralizer line before you need it, on a spare outlet port and a spare inlet port, with a clutch on the pumps. Keep Resin Cartridges to hand, since one takes up 4,000 mB of wholly contaminated coolant.
 - **Radiation monitors:** hang an Area Radiation Monitor on a wall of each hall where fuel or waste is handled, and set its alarm level on its value box. It ticks with the rate, lights and sounds at its level and gives a redstone signal, so it can close a Shielded Hatch. Link a Plant Screen wall, a Dashboard Gauge or a Dashboard Alarm lamp to it to watch the hall from the control room.
-- **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose. It also outlasts a nuclear explosion and shelters what is behind it, so a containment sealed on every side, under the vessel too, keeps the blast in. Each doorway and each pipe through the wall lets a jet of it out.
+- **Containment:** Shielding Concrete under and around the vessel stops corium and cuts dose. It also outlasts a nuclear explosion and shelters what is behind it, so a containment sealed on every side, under the vessel too, keeps the blast in. Each doorway and each pipe through the wall lets a jet of it out, and lets radiation through, unless the pipe is encased: use Shielding Concrete on a straight Reinforced Pipe where it passes through the wall.
 
 ## The reference plant
 

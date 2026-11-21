@@ -162,7 +162,7 @@ public final class Radiation {
     }
 
     public static double mu(Level level, BlockPos pos, BlockState state) {
-        if (state.is(CMBlocks.SHIELDING_CONCRETE.get())) {
+        if (state.is(CMBlocks.SHIELDING_CONCRETE.get()) || state.is(CMBlocks.ENCASED_REINFORCED_PIPE.get())) {
             return CMConfig.get(CMConfig.SHIELD_CONCRETE);
         }
         if (state.getBlock() instanceof VesselCasingBlock) {

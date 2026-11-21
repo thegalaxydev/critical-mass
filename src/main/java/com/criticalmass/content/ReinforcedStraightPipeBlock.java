@@ -94,6 +94,9 @@ public class ReinforcedStraightPipeBlock extends GlassFluidPipeBlock {
 
     @Override
     protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (EncasedReinforcedPipeBlock.casing(stack) && !(state.getBlock() instanceof EncasedReinforcedPipeBlock)) {
+            return EncasedReinforcedPipeBlock.encase(level, pos, state.getValue(AXIS), player, stack);
+        }
         return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
