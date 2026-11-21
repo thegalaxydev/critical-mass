@@ -3513,7 +3513,8 @@
     "/setblock 319 -54 318 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=true,join_ccw=false]",
     "/setblock 319 -54 319 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=true,join_ccw=true]",
     "/setblock 319 -54 320 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=true,join_ccw=true]",
-    "/setblock 319 -54 321 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=false,join_ccw=true]",
+    "/setblock 319 -54 321 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=true,join_ccw=true]",
+    "/setblock 319 -54 322 criticalmass:reactor_alloy_dashboard[facing=east,join_cw=false,join_ccw=true]",
     "/setblock 296 -60 296 criticalmass:reactor_vessel_casing",
     "/setblock 296 -60 297 criticalmass:reactor_vessel_casing",
     "/setblock 296 -60 298 criticalmass:reactor_vessel_casing",
@@ -6733,6 +6734,8 @@
     "/criticalmass desk 319 -54 320 1 button 354 -60 291 0 2 B FEEDER CLOSE",
     "/criticalmass desk 319 -54 321 0 button 356 -60 291 1 1 FUEL FEEDER OPEN",
     "/criticalmass desk 319 -54 321 1 button 356 -60 291 0 2 FUEL FEEDER CLOSE",
+    "/criticalmass desk 319 -54 322 0 gauge 293 -58 323 0 4 FUEL POOL DOSE",
+    "/criticalmass desk 319 -54 322 1 alarm 308 -56 337 0 0 HOT CELL",
     "/data merge block 337 -49 334 {Reactor:[I;0,0,0]}",
     "/summon minecraft:marker 296 -56 300 {Tags:[\"cm_facility_bind\"]}",
     "/execute store result block 337 -49 334 Reactor[0] int 1 run data get entity @e[type=minecraft:marker,tag=cm_facility_bind,limit=1] Pos[0]",
@@ -6853,46 +6856,24 @@
   },
   {
    "cmds": [
-    "/tp @p 306.50 -60.00 323.50 facing 293.50 -62.12 328.50"
+    "/tp @p 322.50 -54.00 320.50 facing 319.50 -55.12 320.50"
    ],
    "wait": 30,
    "gui": false
   },
   {
-   "shot": "cold_fuel_pool",
+   "shot": "cold_desk_feeders",
    "wait": 2
   },
   {
    "cmds": [
-    "/tp @p 308.50 -60.00 341.50 facing 300.50 -60.12 339.50"
+    "/tp @p 333.50 -54.00 320.50 facing 331.50 -52.12 328.50"
    ],
    "wait": 30,
    "gui": false
   },
   {
-   "shot": "cold_hot_cell",
-   "wait": 2
-  },
-  {
-   "cmds": [
-    "/tp @p 295.50 -60.00 335.50 facing 292.50 -60.12 337.50"
-   ],
-   "wait": 30,
-   "gui": false
-  },
-  {
-   "shot": "cold_canning",
-   "wait": 2
-  },
-  {
-   "cmds": [
-    "/tp @p 316.50 -60.00 319.50 facing 290.50 -60.12 319.50"
-   ],
-   "wait": 30,
-   "gui": false
-  },
-  {
-   "shot": "cold_corridor",
+   "shot": "cold_control_room",
    "wait": 2
   }
  ]

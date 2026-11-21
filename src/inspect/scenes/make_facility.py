@@ -288,9 +288,11 @@ BENCH = [[("supply", "alarm", TRANSFER, 0, 0, "STATION SUPPLY"), ("battery", "al
        breaker_desk(GRID_BREAKER, "GRID BKR"), breaker_desk(STATION_BREAKER, "STN SUPPLY")]
 DESKS = {19 + i: parts for i, parts in enumerate(BENCH)}
 SIDE_X = 19
+MONITORS = [((-7, 3, 23), "south", 10), ((3, 3, 23), "south", 10), ((3, 3, 32), "north", 10), ((1, 3, 18), "south", 10), ((8, 5, CELL_Z - 1), "north", 20), ((-7, 5, BENCH_Z), "north", 20)]
 SIRENS = [((37, 12, AUX[3] + 1), "south", True), ((SIDE_X, 11, 20), "east", True)]
 SIDE_DESKS = {18 + i: parts for i, parts in enumerate([breaker_desk(FEED_REACTOR, "RX FEEDER"), breaker_desk(FEED_A, "A FEEDER"), breaker_desk(FEED_B, "B FEEDER"),
-                                                       breaker_desk(FEED_FUEL, "FUEL FEEDER")])}
+                                                       breaker_desk(FEED_FUEL, "FUEL FEEDER"),
+                                                       [("pool_dose", "gauge", MONITORS[0][0], 0, 4, "FUEL POOL DOSE"), ("cell_alarm", "alarm", MONITORS[4][0], 0, 0, "HOT CELL")]])}
 FILL_BELOW, FILL_ABOVE = 10000, 12000
 RACKS = [(x, -1, z) for x in (-8, -6) for z in (26, 28)]
 
@@ -1260,7 +1262,7 @@ BEHIND = {"south": (0, -1), "north": (0, 1), "east": (-1, 0), "west": (1, 0)}
 
 
 def monitors():
-    for pos, facing, tenths in ((-7, 3, 23), "south", 10), ((3, 3, 23), "south", 10), ((3, 3, 32), "north", 10), ((1, 3, 18), "south", 10), ((8, 5, CELL_Z - 1), "north", 20), ((-7, 5, BENCH_Z), "north", 20):
+    for pos, facing, tenths in MONITORS:
         dx, dz = BEHIND[facing]
         assert not taken(pos), "a monitor is in the way at %s" % (pos,)
         assert (pos[0] + dx, pos[1], pos[2] + dz) in blocks, "no wall behind the monitor at %s" % (pos,)
