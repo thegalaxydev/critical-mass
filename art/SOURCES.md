@@ -32,6 +32,7 @@ This table is the current state and overrides anything further down. Only the ro
 | Boiler Heating Plate | Script | `art/tools/boiler_plate_texture.py` |
 | Generator, Circuit Breaker, Grid Connection, Insulator, Electric Motor, Bus Bar, Transformer, Disconnect Switch, Earthing Switch, Station Battery, Diesel Engine, Transfer Switch, Surge Arrester, Power Wire, Power Cable, Transmission Line | Script | `art/tools/power_texture.py` |
 | Fuel Oil | Script | `art/tools/fuel_texture.py` |
+| Primary Coolant, Contaminated Coolant, Boric Acid and Fuel Oil Buckets | Script | `art/tools/bucket_texture.py`: vanilla's bucket with its water repainted in each fluid's own tones |
 | Borax, Boric Acid | Script | `art/tools/boron_texture.py`; the acid is the Primary Coolant fluid recoloured |
 | Burnt-Out Equipment | Script | `art/tools/burnt_texture.py` darkens the author's Steel Block and cuts a blown-out panel into it |
 | Effect sprites: steam, glow, shockwave ring, spark, mote and arc streak | Script | `art/tools/effect_texture.py` |
@@ -595,4 +596,12 @@ All block textures except the pipe, ores and crack overlays were cleaned by `art
 - Source: `art/tools/charred_texture.py` takes vanilla's oak sheets from the game's own resources when it runs and repaints each one by rank of tone: the bark in the Corium's crust tones, the rest in five burnt timber tones in the script. Clear pixels stay clear, so the door and trapdoor keep their windows. No vanilla texture is stored in the project.
 - Status: script-painted placeholders, not yet approved.
 - Repainting: run the tool with `fresh`, and name sheets after it to repaint only those, as in `charred_texture.py fresh charred_planks`.
+- Date: 2026-11-21
+
+## fluid buckets
+
+- Used by: `textures/item/primary_coolant_bucket.png`, `contaminated_coolant_bucket.png`, `boric_acid_bucket.png` and `fuel_oil_bucket.png`.
+- Source: `art/tools/bucket_texture.py` takes vanilla's empty bucket and water bucket from the game's own resources when it runs. The pixels that differ between the two are the water, and each is repainted by rank of tone in four tones taken from the first frame of that fluid's own still texture. No vanilla texture is stored in the project.
+- Status: script-painted placeholders, not yet approved.
+- Repainting: run the tool with `fresh`, and name fluids after it to repaint only those, as in `bucket_texture.py fresh fuel_oil`. Without `fresh` it paints only the icons that are missing.
 - Date: 2026-11-21

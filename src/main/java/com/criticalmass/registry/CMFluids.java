@@ -14,11 +14,15 @@ public final class CMFluids {
     public static final DeferredRegister<FluidType> TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.FLUID_TYPES, CriticalMass.MODID);
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(Registries.FLUID, CriticalMass.MODID);
 
-    public static final Entry PRIMARY_COOLANT = entry("primary_coolant", FluidType.Properties.create().density(1100).viscosity(1200).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
+    public static final Entry PRIMARY_COOLANT = entry("primary_coolant", FluidType.Properties.create().density(1100).viscosity(1200).temperature(300).canPushEntity(true).canSwim(false).canDrown(false))
+            .bucket(() -> CMItems.PRIMARY_COOLANT_BUCKET.get());
     public static final Entry STEAM = entry("steam", FluidType.Properties.create().density(-500).viscosity(200).temperature(400).canPushEntity(false).canSwim(false).canDrown(false));
-    public static final Entry CONTAMINATED_COOLANT = entry("contaminated_coolant", FluidType.Properties.create().density(1150).viscosity(1400).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
-    public static final Entry BORIC_ACID = entry("boric_acid", FluidType.Properties.create().density(1050).viscosity(1100).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
-    public static final Entry FUEL_OIL = entry("fuel_oil", FluidType.Properties.create().density(900).viscosity(2500).temperature(300).canPushEntity(true).canSwim(false).canDrown(false));
+    public static final Entry CONTAMINATED_COOLANT = entry("contaminated_coolant", FluidType.Properties.create().density(1150).viscosity(1400).temperature(300).canPushEntity(true).canSwim(false).canDrown(false))
+            .bucket(() -> CMItems.CONTAMINATED_COOLANT_BUCKET.get());
+    public static final Entry BORIC_ACID = entry("boric_acid", FluidType.Properties.create().density(1050).viscosity(1100).temperature(300).canPushEntity(true).canSwim(false).canDrown(false))
+            .bucket(() -> CMItems.BORIC_ACID_BUCKET.get());
+    public static final Entry FUEL_OIL = entry("fuel_oil", FluidType.Properties.create().density(900).viscosity(2500).temperature(300).canPushEntity(true).canSwim(false).canDrown(false))
+            .bucket(() -> CMItems.FUEL_OIL_BUCKET.get());
 
     private CMFluids() {
     }
@@ -38,11 +42,20 @@ public final class CMFluids {
         public DeferredHolder<Fluid, BaseFlowingFluid.Source> source;
         public DeferredHolder<Fluid, BaseFlowingFluid.Flowing> flowing;
         private BaseFlowingFluid.Properties props;
+        private Supplier<? extends net.minecraft.world.item.Item> bucket;
+
+        Entry bucket(Supplier<? extends net.minecraft.world.item.Item> item) {
+            bucket = item;
+            return this;
+        }
 
         BaseFlowingFluid.Properties properties() {
             if (props == null) {
                 Supplier<FluidType> t = type;
                 props = new BaseFlowingFluid.Properties(t, source, flowing);
+                if (bucket != null) {
+                    props.bucket(bucket);
+                }
             }
             return props;
         }

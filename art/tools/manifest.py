@@ -47,6 +47,7 @@ ART.update({stem + part: SCRIPT for stem in CHARTRINE_SET for part in ("_stairs"
 ART.update({name: SCRIPT for name in ("cut_chartrine", "polished_cut_chartrine", "cut_chartrine_bricks", "small_chartrine_bricks", "layered_chartrine", "chartrine_pillar")})
 ART.update({name: SCRIPT for name in ("charred_wood", "stripped_charred_log", "stripped_charred_wood", "charred_planks", "charred_stairs", "charred_slab", "charred_fence", "charred_fence_gate",
                                       "charred_door", "charred_trapdoor", "charred_pressure_plate", "charred_button")})
+ART.update({name + "_bucket": SCRIPT for name in ("primary_coolant", "contaminated_coolant", "boric_acid", "fuel_oil")})
 OTHER_ART = [("block/dashboard_part/alarm", UNRECORDED), ("block/dashboard_part/", LOCONAUTICS), ("gui/dashboard_part", LOCONAUTICS), ("models/armor/", GENERATED), ("particle/", SCRIPT), ("gui/banner/", SCRIPT),
              ("gui/advancement_background", "script, cut from the author's casing sheet")]
 OWNERS = {"block/control_rod_cap": "control_rod_drive", "block/control_rod_shaft": "control_rod_drive"}

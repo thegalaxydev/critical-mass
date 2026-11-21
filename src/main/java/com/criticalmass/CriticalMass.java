@@ -150,6 +150,8 @@ public class CriticalMass {
     }
 
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> new net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper(stack),
+                CMItems.PRIMARY_COOLANT_BUCKET.get(), CMItems.CONTAMINATED_COOLANT_BUCKET.get(), CMItems.BORIC_ACID_BUCKET.get(), CMItems.FUEL_OIL_BUCKET.get());
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.CONDENSER.get(), (be, side) -> side == null ? be.primary().handler() : pipeFace(be.getBlockState(), side) ? be.bufferFor(side).handler(be.getLevel(), be.getBlockPos(), side) : null);
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.COOLING_TOWER.get(), (be, side) -> be.stackHandler(side));
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, CMBlockEntities.RADIATOR.get(), CriticalMass::coolantFace);

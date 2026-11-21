@@ -37,6 +37,10 @@ public final class CMItems {
     public static final DeferredItem<Item> RAW_URANIUM = simple("raw_uranium", new Item.Properties());
     public static final DeferredItem<Item> URANIUM_CONCENTRATE = simple("uranium_concentrate", new Item.Properties());
     public static final DeferredItem<Item> BORAX = simple("borax", new Item.Properties());
+    public static final DeferredItem<com.criticalmass.content.FluidBucketItem> PRIMARY_COOLANT_BUCKET = bucket("primary_coolant_bucket", () -> CMFluids.PRIMARY_COOLANT.source.get());
+    public static final DeferredItem<com.criticalmass.content.FluidBucketItem> CONTAMINATED_COOLANT_BUCKET = bucket("contaminated_coolant_bucket", () -> CMFluids.CONTAMINATED_COOLANT.source.get());
+    public static final DeferredItem<com.criticalmass.content.FluidBucketItem> BORIC_ACID_BUCKET = bucket("boric_acid_bucket", () -> CMFluids.BORIC_ACID.source.get());
+    public static final DeferredItem<com.criticalmass.content.FluidBucketItem> FUEL_OIL_BUCKET = bucket("fuel_oil_bucket", () -> CMFluids.FUEL_OIL.source.get());
     public static final DeferredItem<Item> ENRICHED_URANIUM = simple("enriched_uranium", new Item.Properties());
     public static final DeferredItem<Item> DEPLETED_URANIUM = simple("depleted_uranium", new Item.Properties());
     public static final DeferredItem<Item> CERAMIC_FUEL_PELLET = simple("ceramic_fuel_pellet", new Item.Properties());
@@ -104,6 +108,10 @@ public final class CMItems {
         DeferredItem<ProtectiveArmorItem> item = ITEMS.register(name, () -> new ProtectiveArmorItem(CMArmorMaterials.PROTECTIVE, type, new Item.Properties().durability(type.getDurability(12))));
         TAB_ORDER.add(item);
         return item;
+    }
+
+    static DeferredItem<com.criticalmass.content.FluidBucketItem> bucket(String name, Supplier<? extends net.minecraft.world.level.material.Fluid> fluid) {
+        return custom(name, () -> new com.criticalmass.content.FluidBucketItem(fluid.get(), new Item.Properties().craftRemainder(net.minecraft.world.item.Items.BUCKET).stacksTo(1)));
     }
 
     static void blockItem(String name, Supplier<? extends Block> block) {

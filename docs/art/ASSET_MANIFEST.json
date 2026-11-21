@@ -3217,6 +3217,28 @@
    "missing": []
   },
   {
+   "key": "boric_acid_bucket",
+   "registry_id": "criticalmass:boric_acid_bucket",
+   "type": "item",
+   "name": "Boric Acid Bucket",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/boric_acid_bucket.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/boric_acid_bucket.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "ceramic_fuel_pellet",
    "registry_id": "criticalmass:ceramic_fuel_pellet",
    "type": "item",
@@ -3235,6 +3257,28 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/item/ceramic_fuel_pellet.json"
+   ],
+   "missing": []
+  },
+  {
+   "key": "contaminated_coolant_bucket",
+   "registry_id": "criticalmass:contaminated_coolant_bucket",
+   "type": "item",
+   "name": "Contaminated Coolant Bucket",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/contaminated_coolant_bucket.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/contaminated_coolant_bucket.json"
    ],
    "missing": []
   },
@@ -3644,6 +3688,28 @@
    "missing": []
   },
   {
+   "key": "fuel_oil_bucket",
+   "registry_id": "criticalmass:fuel_oil_bucket",
+   "type": "item",
+   "name": "Fuel Oil Bucket",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/fuel_oil_bucket.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/fuel_oil_bucket.json"
+   ],
+   "missing": []
+  },
+  {
    "key": "incomplete_fuel_assembly",
    "registry_id": "criticalmass:incomplete_fuel_assembly",
    "type": "item",
@@ -3782,6 +3848,28 @@
    "borrowed_textures": [],
    "models": [
     "src/main/resources/assets/criticalmass/models/item/power_wire.json"
+   ],
+   "missing": []
+  },
+  {
+   "key": "primary_coolant_bucket",
+   "registry_id": "criticalmass:primary_coolant_bucket",
+   "type": "item",
+   "name": "Primary Coolant Bucket",
+   "art": "script",
+   "textures": [
+    {
+     "path": "src/main/resources/assets/criticalmass/textures/item/primary_coolant_bucket.png",
+     "size": [
+      16,
+      16
+     ],
+     "animated": false
+    }
+   ],
+   "borrowed_textures": [],
+   "models": [
+    "src/main/resources/assets/criticalmass/models/item/primary_coolant_bucket.json"
    ],
    "missing": []
   },

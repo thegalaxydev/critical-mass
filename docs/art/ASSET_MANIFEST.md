@@ -107,12 +107,14 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:water_cannon` | Water Cannon | script | `block/water_cannon.png` 32x32 |  | 4 |
 | `criticalmass:wreckage` | Wreckage | none of its own | `block/burnt_equipment.png` 16x16<br>`block/reactor_vessel_casing.png` 16x16<br>`block/steel_block.png` 16x16 |  | 2 |
 
-## Items (44)
+## Items (48)
 
 | Registry ID | Name | Art | Textures | Other mods' textures | Models |
 |---|---|---|---|---|---|
 | `criticalmass:borax` | Borax | script | `item/borax.png` 16x16 |  | 1 |
+| `criticalmass:boric_acid_bucket` | Boric Acid Bucket | script | `item/boric_acid_bucket.png` 16x16 |  | 1 |
 | `criticalmass:ceramic_fuel_pellet` | Ceramic Fuel Pellet | author | `item/ceramic_fuel_pellet.png` 16x16 |  | 1 |
+| `criticalmass:contaminated_coolant_bucket` | Contaminated Coolant Bucket | script | `item/contaminated_coolant_bucket.png` 16x16 |  | 1 |
 | `criticalmass:control_rod` | Control Rod | author | `item/control_rod.png` 16x16 |  | 1 |
 | `criticalmass:damaged_fuel_assembly` | Damaged Fuel Assembly | generated | `item/damaged_fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:dashboard_alarm` | Dashboard Alarm | not recorded | `block/dashboard_part/alarm_atlas.png` 64x64<br>`block/dashboard_part/big_body_atlas.png` 64x64<br>`block/dashboard_part/body_atlas.png` 64x64<br>`block/dashboard_part/button_atlas.png` 64x64<br>`block/dashboard_part/plate_atlas.png` 64x64 |  | 2 |
@@ -127,12 +129,14 @@ The Art column says whose work each texture is. Only `author` is the author's ow
 | `criticalmass:enriched_uranium` | Enriched Uranium | script | `item/enriched_uranium.png` 16x16 |  | 1 |
 | `criticalmass:fuel_assembly` | Fresh Fuel Assembly | generated | `item/fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:fuel_cladding` | Fuel Cladding | generated | `item/fuel_cladding.png` 16x16 |  | 1 |
+| `criticalmass:fuel_oil_bucket` | Fuel Oil Bucket | script | `item/fuel_oil_bucket.png` 16x16 |  | 1 |
 | `criticalmass:incomplete_fuel_assembly` | Incomplete Fuel Assembly | generated | `item/empty_fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:incomplete_sheared_fuel` | Partly Sheared Fuel Assembly | generated | `item/spent_fuel_assembly.png` 16x16 |  | 1 |
 | `criticalmass:incomplete_waste_canister` | Incomplete Waste Canister | author | `block/open_waste_canister.png` 32x32<br>`block/sealed_waste_canister.png` 32x32 |  | 3 |
 | `criticalmass:plant_linker` | Plant Linker | script | `item/plant_linker.png` 16x16 |  | 1 |
 | `criticalmass:power_cable` | Power Cable | script | `item/power_cable.png` 16x16 |  | 1 |
 | `criticalmass:power_wire` | Power Wire | script | `item/power_wire.png` 16x16 |  | 1 |
+| `criticalmass:primary_coolant_bucket` | Primary Coolant Bucket | script | `item/primary_coolant_bucket.png` 16x16 |  | 1 |
 | `criticalmass:protective_boots` | Protective Boots | generated | `item/protective_boots.png` 16x16 |  | 1 |
 | `criticalmass:protective_hood` | Protective Hood | generated | `item/protective_hood.png` 16x16 |  | 1 |
 | `criticalmass:protective_leggings` | Protective Leggings | generated | `item/protective_leggings.png` 16x16 |  | 1 |

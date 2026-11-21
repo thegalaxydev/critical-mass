@@ -63,7 +63,7 @@ public final class ProductionTests {
     private static final List<String> GEAR = List.of("crafting/survey_meter", "crafting/dosimeter", "crafting/protective_hood", "crafting/protective_suit", "crafting/protective_leggings", "crafting/protective_boots",
             "crafting/area_radiation_monitor", "crushing/chartrine", "crafting/charred_planks");
     private static final Set<String> NOT_CRAFTED = Set.of("uranium_ore", "deepslate_uranium_ore", "raw_uranium", "enriched_uranium", "depleted_uranium", "spent_fuel_assembly", "damaged_fuel_assembly",
-            "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash", "used_resin_cartridge");
+            "corium", "ruined_channel", "core_debris", "wreckage", "charred_log", "fallout_ash", "used_resin_cartridge", "primary_coolant_bucket", "contaminated_coolant_bucket", "boric_acid_bucket", "fuel_oil_bucket");
 
     private ProductionTests() {
     }

@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 public enum TabSection {
     REACTOR("reactor", 0xFFFFE9B0, 24, 2,
             "reactor_vessel_casing", "reactor_controller", "reactor_viewport", "fuel_channel", "control_channel", "coolant_channel", "control_rod_drive", "control_rod",
-            "reactor_service_port", "fuel_channel_cap", "primary_coolant_port", "reinforced_pipe", "reinforced_valve", "circulation_pump", "heat_exchanger", "pressurizer", "borax", "demineralizer", "resin_cartridge", "used_resin_cartridge", "steam_turbine", "turbine_blade",
+            "reactor_service_port", "fuel_channel_cap", "primary_coolant_port", "reinforced_pipe", "reinforced_valve", "circulation_pump", "heat_exchanger", "pressurizer", "borax", "boric_acid_bucket", "primary_coolant_bucket", "contaminated_coolant_bucket", "demineralizer", "resin_cartridge", "used_resin_cartridge", "steam_turbine", "turbine_blade",
             "condenser", "relief_valve", "cooling_tower_packing", "radiator_panel", "boiler_heating_plate", "shielding_concrete", "shielded_glass", "shielded_hatch"),
     EQUIPMENT("equipment", 0xFFFFDFA6, 24, 2,
             "uranium_ore", "deepslate_uranium_ore", "raw_uranium", "uranium_concentrate", "centrifuge", "enriched_uranium", "depleted_uranium", "ceramic_fuel_pellet", "fuel_cladding",
@@ -28,7 +28,7 @@ public enum TabSection {
             "strontium_90", "corium", "ruined_channel", "core_debris", "wreckage"),
     ELECTRICITY("electricity", 0xFFBFE6FF, 16, 2,
             "generator", "power_wire", "power_cable", "transmission_line", "insulator", "bus_bar", "circuit_breaker", "disconnect_switch", "earthing_switch", "transformer",
-            "grid_connection", "electric_motor", "station_battery", "radioisotope_cell", "diesel_engine", "transfer_switch", "surge_arrester"),
+            "grid_connection", "electric_motor", "station_battery", "radioisotope_cell", "diesel_engine", "fuel_oil_bucket", "transfer_switch", "surge_arrester"),
     BUILDING("building", 0xFFE4EE9A, 24, 2,
             "chartrine", "cut_chartrine", "cut_chartrine_stairs", "cut_chartrine_slab", "cut_chartrine_wall",
             "polished_cut_chartrine", "polished_cut_chartrine_stairs", "polished_cut_chartrine_slab", "polished_cut_chartrine_wall",
