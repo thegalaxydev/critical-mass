@@ -688,7 +688,7 @@
   "item.criticalmass.contaminated_coolant_bucket": "Contaminated Coolant Bucket",
   "item.criticalmass.boric_acid_bucket": "Boric Acid Bucket",
   "item.criticalmass.fuel_oil_bucket": "Fuel Oil Bucket",
-  "item.criticalmass.fluid_bucket.hint": "Empties into tanks and machines, not onto the ground",
+  "item.criticalmass.fluid_bucket.hint": "Spills and is lost when emptied onto the ground",
   "criticalmass.battery.flat": "Flat",
   "criticalmass.battery.charging": "Charging",
   "criticalmass.battery.standby": "Standing by",

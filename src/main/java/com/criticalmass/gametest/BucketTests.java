@@ -2,6 +2,7 @@ package com.criticalmass.gametest;
 
 import com.criticalmass.CriticalMass;
 import com.criticalmass.content.FluidBucketItem;
+import com.criticalmass.content.radiation.ContaminationData;
 import com.criticalmass.content.thermal.TankCoolant;
 import com.criticalmass.registry.CMFluids;
 import com.criticalmass.registry.CMItems;
@@ -14,6 +15,7 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,10 +45,10 @@ public final class BucketTests {
     }
 
     @GameTest(template = EMPTY)
-    public static void everyLiquidHasABucketThatFillsTanksAndIsNotPouredOut(GameTestHelper h) {
+    public static void everyLiquidHasABucketThatFillsTanksAndSpillsOnTheGround(GameTestHelper h) {
         List<Kind> kinds = List.of(new Kind(CMFluids.PRIMARY_COOLANT, CMItems.PRIMARY_COOLANT_BUCKET.get()), new Kind(CMFluids.CONTAMINATED_COOLANT, CMItems.CONTAMINATED_COOLANT_BUCKET.get()),
                 new Kind(CMFluids.BORIC_ACID, CMItems.BORIC_ACID_BUCKET.get()), new Kind(CMFluids.FUEL_OIL, CMItems.FUEL_OIL_BUCKET.get()));
-        h.setBlock(FLOOR, Blocks.SHORT_GRASS);
+        h.setBlock(FLOOR.below(), Blocks.STONE);
         h.startSequence()
                 .thenExecute(() -> h.setBlock(TANK, AllBlocks.FLUID_TANK.getDefaultState()))
                 .thenIdle(5)
@@ -61,11 +63,25 @@ public final class BucketTests {
                         IFluidHandlerItem inside = held.getCapability(Capabilities.FluidHandler.ITEM);
                         h.assertTrue(inside != null && FluidStack.isSameFluid(inside.getFluidInTank(0), full) && inside.getFluidInTank(0).getAmount() == 1000, "The bucket should hold a bucket of " + name);
 
+                        BlockPos tankTop = h.absolutePos(TANK).above();
+                        player.moveTo(tankTop.getX() + 0.5, tankTop.getY(), tankTop.getZ() + 0.5, 0, 90);
                         player.setItemInHand(InteractionHand.MAIN_HAND, held);
                         h.assertTrue(held.use(h.getLevel(), player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.PASS && player.getMainHandItem().is(kind.bucket()),
-                                "Using a bucket of " + name + " in the open should do nothing");
-                        h.assertTrue(!((FluidBucketItem) kind.bucket()).emptyContents(player, h.getLevel(), h.absolutePos(FLOOR), null, held), "A bucket of " + name + " should not pour onto the ground");
-                        h.assertBlockPresent(Blocks.SHORT_GRASS, FLOOR);
+                                "A bucket of " + name + " used on a tank that will not take it by hand should stay full");
+                        BlockPos spot = h.absolutePos(FLOOR);
+                        ContaminationData floor = ContaminationData.get(h.getLevel());
+                        floor.clear(spot);
+                        ItemStack spare = new ItemStack(kind.bucket());
+                        player.moveTo(spot.getX() + 0.5, spot.getY(), spot.getZ() + 0.5, 0, 90);
+                        player.setItemInHand(InteractionHand.MAIN_HAND, spare);
+                        InteractionResultHolder<ItemStack> spilt = spare.use(h.getLevel(), player, InteractionHand.MAIN_HAND);
+                        h.assertTrue(spilt.getResult().consumesAction() && spilt.getObject().is(Items.BUCKET), "A bucket of " + name + " emptied on the ground should come back empty: " + spilt.getObject());
+                        double dirt = ((FluidBucketItem) kind.bucket()).spillDirt();
+                        boolean coolant = kind.fluid() == CMFluids.PRIMARY_COOLANT || kind.fluid() == CMFluids.CONTAMINATED_COOLANT;
+                        h.assertTrue(coolant == dirt > 0 && Math.abs(floor.get(spot) - dirt) < 1e-6, "Spilled " + name + " should dirty the ground as a leak of it does: " + floor.get(spot) + " for " + dirt);
+                        floor.clear(spot);
+                        h.assertBlockPresent(Blocks.AIR, FLOOR);
+                        h.assertTrue(!((FluidBucketItem) kind.bucket()).emptyContents(player, h.getLevel(), spot, null, held), "A bucket of " + name + " should leave no liquid block");
 
                         IFluidHandler tank = h.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, h.absolutePos(TANK), Direction.NORTH);
                         FluidActionResult poured = FluidUtil.tryEmptyContainer(held, tank, 1000, null, true);
