@@ -120,6 +120,11 @@ public class CriticalMassClient {
 
     private void clientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> net.minecraft.client.renderer.Sheets.addWoodType(CMBlocks.CHARRED_TYPE));
+        event.enqueueWork(JeiHints::register);
+        event.enqueueWork(() -> com.simibubi.create.foundation.item.TooltipModifier.REGISTRY.registerProvider(item -> net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item).getNamespace().equals(CriticalMass.MODID)
+                ? new com.simibubi.create.foundation.item.ItemDescription.Modifier(item, net.createmod.catnip.lang.FontHelper.Palette.STANDARD_CREATE)
+                        .andThen(com.simibubi.create.foundation.item.TooltipModifier.mapNull(com.simibubi.create.foundation.item.KineticStats.create(item)))
+                : null));
         net.createmod.ponder.foundation.PonderIndex.addPlugin(new com.criticalmass.ponder.CMPonder());
         SimpleBlockEntityVisualizer.builder(CMBlockEntities.CONTROL_ROD_DRIVE.get())
                 .factory(SingleAxisRotatingVisual.of(AllPartialModels.SHAFTLESS_COGWHEEL))

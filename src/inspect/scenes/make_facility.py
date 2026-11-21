@@ -1256,6 +1256,17 @@ def wiring():
                 late.remove(entry)
 
 
+BEHIND = {"south": (0, -1), "north": (0, 1), "east": (-1, 0), "west": (1, 0)}
+
+
+def monitors():
+    for pos, facing, tenths in ((-7, 3, 23), "south", 10), ((3, 3, 23), "south", 10), ((3, 3, 32), "north", 10), ((1, 3, 18), "south", 10), ((8, 5, CELL_Z - 1), "north", 20), ((-7, 5, BENCH_Z), "north", 20):
+        dx, dz = BEHIND[facing]
+        assert not taken(pos), "a monitor is in the way at %s" % (pos,)
+        assert (pos[0] + dx, pos[1], pos[2] + dz) in blocks, "no wall behind the monitor at %s" % (pos,)
+        attach(pos, "criticalmass:area_radiation_monitor[facing=%s,alarm=false]{ScrollValue:%d}" % (facing, tenths))
+
+
 def validate():
     owner = {}
     for index, loop in enumerate(LOOPS):
@@ -1326,6 +1337,7 @@ def design():
                     blocks.pop((x + dx, y + dy, z + dz), None)
     for p in list(PIPES) + list(reserved):
         blocks.pop(p, None)
+    monitors()
     wiring()
     validate()
 
