@@ -218,17 +218,18 @@ Things to try from here:
 
 ## The fuel works
 
-`src/inspect/scenes/make_factory.py <world>/datapacks/criticalmass_factory` writes a second datapack, which builds a factory that makes Fuel Assemblies from Chartrine, iron, charcoal, zinc, quartz and kelp with no hands on the line. Stand on open flat ground with about 80 blocks clear to the east and 50 to the south and run:
+`src/inspect/scenes/make_factory.py <world>/datapacks/criticalmass_factory` writes a second datapack, which builds a factory that makes Fuel Assemblies from Chartrine, iron, charcoal, zinc, quartz and kelp with no hands on the line, with a wing that makes Primary Coolant, Boric Acid, Fuel Oil, Shielding Concrete, Resin Cartridges and Open Waste Canisters. Stand on open flat ground with about 80 blocks clear to the east and 70 to the south and run:
 
 ```
 /reload
 /function criticalmass_factory:factory/build
 ```
 
-It is left running, on its own Grid Connection. `docs/FACTORY.md` describes the line bay by bay, what has to arrive from outside and how it is powered.
+It is left running, on its own Grid Connection. `docs/FACTORY.md` describes the line and the wing bay by bay, what has to arrive from outside and how it is powered.
 
 Things to try in it:
 - Walk the gallery from the stairs at the west end and follow a batch down the hall: Chartrine into the Crushing Wheels, concentrate through the Centrifuges, pellets down the long belt, and the frame going round the loop four times.
+- Go through the doorway beside the receiving doors into the chemistry wing. Watch the steel cross the main aisle in the floor and come out under the canister shop's arm, and look at the three tanks through the south windows.
 - Open a feeder breaker at the switchgear by the south wall. That bay's motors stop and the bays after it run on what is in their stores, then stop one by one as the stores empty. Close it and the line picks up where it left off.
-- Look at the Transformer and a Bus Bar with Engineer's Goggles on to see what the works draws.
+- Look at the Transformer and a Bus Bar with Engineer's Goggles on to see what the works draws. Open a feeder and close it again, and watch the current jump as that bay's motors start and then settle.
 - Take a bin away. The tunnels in the melt shop stop passing the other parts of the set, so nothing piles up while it is gone.

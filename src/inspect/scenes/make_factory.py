@@ -35,9 +35,13 @@ VAULT = "create:item_vault[axis=x,large=false]"
 SINK = "create:creative_crate"
 SIDES = {"north": (0, -1), "south": (0, 1), "east": (1, 0), "west": (-1, 0)}
 OPPOSITE = {"north": "south", "south": "north", "east": "west", "west": "east"}
+TUNNEL_Z = "create:brass_tunnel[axis=z,shape=straight]{ScrollValue:6}"
+TANK = "create:fluid_tank"
 LABELS = {"criticalmass:chartrine": "Chartrine", "minecraft:iron_ingot": "Iron", "minecraft:charcoal": "Charcoal", "create:zinc_ingot": "Zinc", "minecraft:quartz": "Quartz",
-          "minecraft:dried_kelp": "Dried Kelp", "minecraft:iron_nugget": "Iron Nuggets"}
-BAYS = ["mill", "enrichment", "melt", "assembly"]
+          "minecraft:dried_kelp": "Dried Kelp", "minecraft:iron_nugget": "Iron Nuggets", "minecraft:lapis_lazuli": "Lapis", "create:scoria": "Scoria", "minecraft:coal": "Coal",
+          "minecraft:gravel": "Gravel"}
+BAYS = ["mill", "enrichment", "melt", "assembly", "fluids", "shops"]
+WING = ("fluids", "shops")
 
 machines = {}
 drives = []
@@ -102,6 +106,11 @@ def dock(pos, item, facing, amount=0):
     bins.append((pos, LABELS[item], "Bin"))
 
 
+def lip(pos, facing):
+    machine(off(pos, facing), "create:andesite_belt_funnel[facing=%s,shape=retracted]" % facing)
+    return (pos[0] + SIDES[facing][0], pos[1] - 1, pos[2] + SIDES[facing][1])
+
+
 def take(end, facing):
     machine(up(end), "create:andesite_belt_funnel[facing=%s,shape=retracted]" % OPPOSITE[facing])
     return up(off(end, facing))
@@ -145,9 +154,9 @@ def press(cell, side, name):
     drive(head, side, 64, name)
 
 
-def sync(cells):
+def sync(cells, tunnel=TUNNEL):
     for cell in cells:
-        machine(up(cell), TUNNEL)
+        machine(up(cell), tunnel)
         late.append((up(cell), "{ScrollValue:6}"))
 
 
@@ -159,7 +168,15 @@ def rel(arm, target):
     return "[I;%d,%d,%d]" % tuple(target[i] - arm[i] for i in range(3))
 
 
-def arm(pos, takes, gives, cog_side, name):
+def within(name, part, *args):
+    was = bay[0]
+    bay[0] = name
+    out = part(*args)
+    bay[0] = was
+    return out
+
+
+def arm(pos, takes, gives, cog_side, name, speed=128):
     for target, _ in takes + gives:
         assert math.dist(pos, target) < 5, "the %s arm cannot reach %s" % (name, target)
     points = ['{Type:"create:%s",Pos:%s,Mode:"TAKE"}' % (kind, rel(pos, t)) for t, kind in takes] + ['{Type:"create:%s",Pos:%s,Mode:"DEPOSIT"}' % (kind, rel(pos, t)) for t, kind in gives]
@@ -167,12 +184,12 @@ def arm(pos, takes, gives, cog_side, name):
     cog = off(pos, cog_side)
     if cog not in machines:
         machine(cog, "create:cogwheel[axis=y]")
-        motor(up(cog), "down", 128, name)
+        motor(up(cog), "down", speed, name)
 
 
 U, MZ = 0, -10
 ORE = (2, 6, U)
-CLAY, GLOW = (7, 2, U + 1), (8, 2, U + 1)
+CLAY, GLOW, CLAY_SINK = (7, 2, U + 1), (8, 2, U + 1), (9, 2, U + 1)
 CONCENTRATE = (12, 2, U)
 CENTRIFUGES = [(x, 2, U + 1) for x in (15, 16, 17, 18)]
 DEPLETED = (20, 2, U + 3)
@@ -202,8 +219,10 @@ def mill():
     stop((6, 5, U))
     m1 = belt(run((5, 1, U), (11, 1, U)), "east", "south", 32, "mill belt")
     assert pull(m1[2], "south", "minecraft:clay_ball") == CLAY and pull(m1[3], "south", "minecraft:glowstone_dust") == GLOW
-    store(CLAY, SINK, ("Clay", "Dispatch"))
+    assert pull(m1[4], "south", "minecraft:clay_ball") == CLAY_SINK
+    store(CLAY, VAULT, ("Clay", "Store"))
     store(GLOW, SINK, ("Glowstone", "Dispatch"))
+    store(CLAY_SINK, SINK, ("Clay", "Dispatch"))
     assert take(m1[-1], "east") == CONCENTRATE
     basin(CONCENTRATE, "east", "mixer", None, "west", "concentrate mixer")
     pump = off(CONCENTRATE, "south")
@@ -327,23 +346,156 @@ def assembly():
     arm((43, 1, -8), [(PELLETS, "depot")], [(p, "deployer") for p in pellets], "north", "pellet arm")
 
 
+AX0, AX1, AZ0, AZ1 = -1, 25, 8, 28
+A_EAVE, A_ROOF = 7, 8
+ROW = 25
+FARM = 29
+COOLANT, BORIC, OIL = (5, 2, ROW), (14, 2, ROW), (22, 2, ROW)
+TANKS = [(COOLANT, "primary_coolant", "Primary", "Coolant"), (BORIC, "boric_acid", "Boric", "Acid"), (OIL, "fuel_oil", "Fuel", "Oil")]
+CONCRETE, CONCRETE_STORE = (20, 2, 15), (24, 2, 15)
+STEEL_END = (14, 0, 9)
+CANISTER_X, CANISTER_Z = 16, 11
+CANISTERS = (18, 2, 11)
+PLATES, CLAYS, COALS = (6, 1, 12), (7, 1, 12), (8, 1, 12)
+RESIN_X, RESIN_Z = 10, 15
+CARTRIDGES = (13, 2, 15)
+HIGH_BINS = [ORE, (7, 6, ROW)]
+
+
+def fluid(pos, heat, product, name):
+    x, _, z = pos
+    basin(pos, "down", "mixer", heat, "west", name + " mixer", speed=64)
+    machine((x, 2, z - 1), "create:mechanical_pump[facing=south]")
+    machine((x, 2, z - 2), WATER_TANK)
+    machine((x, 3, z - 1), "create:cogwheel[axis=z]")
+    motor((x, 3, z - 2), "south", 32, name + " water pump")
+    machine((x, 2, z + 1), 'create:smart_fluid_pipe[face=floor,facing=south]{Filter:{id:"criticalmass:%s_bucket",count:1}}' % product)
+    machine((x, 2, z + 2), "create:mechanical_pump[facing=south]")
+    machine((x, 3, z + 2), "create:cogwheel[axis=z]")
+    motor((x, 3, z + 1), "south", 32, name + " transfer pump")
+    machine((x, 2, z + 3), "create:fluid_pipe")
+
+
+def fluids():
+    dock((0, 2, ROW), "minecraft:lapis_lazuli", "east")
+    c = belt(run((1, 1, ROW), (4, 1, ROW)), "east", "north", -32, "lapis belt")
+    assert take(c[-1], "east") == COOLANT
+    fluid(COOLANT, None, "primary_coolant", "coolant")
+    dock(HIGH_BINS[1], "create:scoria", "east", 16)
+    belt(run((8, 5, ROW), (9, 5, ROW)), "east", "south", 32, "scoria feed")
+    for x, speed in ((9, 64), (11, -64)):
+        machine((x, 3, ROW), "create:crushing_wheel[axis=z]")
+        drive((x, 3, ROW), "south", speed, "borax crusher")
+    stop((11, 4, ROW))
+    stop((11, 5, ROW))
+    b = belt(run((10, 1, ROW), (13, 1, ROW)), "east", "north", -32, "borax belt")
+    assert take(b[-1], "east") == BORIC
+    fluid(BORIC, KINDLED, "boric_acid", "boric acid")
+    dock((18, 2, ROW), "minecraft:coal", "east")
+    f = belt(run((19, 1, ROW), (21, 1, ROW)), "east", "north", -32, "coal belt")
+    assert take(f[-1], "east") == OIL
+    fluid(OIL, KINDLED, "fuel_oil", "fuel oil")
+
+
+def concrete():
+    trunk = run(lip(DEPLETED, "south"), (20, 1, 14))
+    within("enrichment", belt, trunk, "south", "west", 32, "depleted belt")
+    dock((21, 2, 9), "minecraft:gravel", "south", 2)
+    side = belt(run((21, 1, 10), (21, 1, 12)), "south", "east", -32, "gravel feed")
+    sync([trunk[8], side[2]], TUNNEL_Z)
+    assert trunk[8][2] == side[2][2]
+    stop((21, 1, 13))
+    assert take(trunk[-1], "south") == CONCRETE
+    basin(CONCRETE, "east", "mixer", None, "north", "concrete mixer", speed=64)
+    machine((19, 2, 15), "create:mechanical_pump[facing=east]")
+    machine((18, 2, 15), WATER_TANK)
+    machine((19, 3, 15), "create:cogwheel[axis=x]")
+    motor((18, 3, 15), "east", 32, "concrete water pump")
+    out = belt(run((21, 1, 15), (23, 1, 15)), "east", "south", 32, "concrete belt")
+    assert take(out[-1], "east") == CONCRETE_STORE
+    store(CONCRETE_STORE, VAULT, ("Shielding", "Concrete"))
+
+
+def canisters():
+    under = (STEEL_STORE[0], 1, STEEL_STORE[2])
+    machines[under] = 'create:brass_funnel[facing=down,extracting=true]{Filter:{id:"criticalmass:steel_ingot",count:1},FilterAmount:1,UpTo:0b}'
+    floor = run((under[0], 0, under[2]), STEEL_END)
+    assert len(floor) <= 20
+    within("melt", belt, floor, "south", "west", 32, "steel conveyor")
+    head = (14, 2, 6)
+    machine(head, "create:mechanical_press[facing=west]")
+    within("mill", drive, head, "west", 64, "plate press")
+    x, z = CANISTER_X, CANISTER_Z
+    left, middle, right, bottom = (x, 3, z - 1), (x, 3, z), (x, 3, z + 1), (x, 2, z)
+    craft = "create:mechanical_crafter[facing=west,pointing=%s]"
+    machine(left, craft % "right")
+    machine(middle, craft % "down" + "{Cover:1b}")
+    machine(right, craft % "left")
+    machine(bottom, craft % "down")
+    machine((x, 3, z + 2), "create:cogwheel[axis=x]")
+    motor((x + 1, 3, z + 2), "west", 64, "canister crafters")
+    arm((15, 1, 10), [(STEEL_END, "belt")], [(p, "crafter") for p in (left, right, bottom)], "south", "canister arm", 12)
+    out = belt(run((x, 1, z), (x + 1, 1, z)), "east", "north", -32, "canister belt")
+    assert take(out[-1], "east") == CANISTERS
+    store(CANISTERS, VAULT, ("Waste", "Canisters"))
+
+
+def cartridges():
+    clay = run(lip(CLAY, "south"), (7, 1, 11))
+    within("mill", belt, clay, "south", "east", -32, "clay belt")
+    machine(CLAYS, "create:depot")
+    dock((2, 2, 12), "minecraft:iron_ingot", "east")
+    i = belt(run((3, 1, 12), (5, 1, 12)), "east", "south", 32, "iron belt")
+    press(i[1], "north", "iron press")
+    machine(PLATES, "create:depot")
+    machine(COALS, "create:depot")
+    machine(up(COALS), "create:andesite_funnel[facing=down,extracting=true]")
+    machine(up(COALS, 2), 'create:creative_crate{Filter:{id:"minecraft:coal",count:1}}')
+    bins.append((up(COALS, 2), "Coal", "Bin"))
+    x, z = RESIN_X, RESIN_Z
+    top, north, centre, south, bottom = (x, 4, z), (x, 3, z - 1), (x, 3, z), (x, 3, z + 1), (x, 2, z)
+    craft = "create:mechanical_crafter[facing=west,pointing=%s]"
+    machine(top, craft % "down")
+    machine(centre, craft % "down")
+    machine(bottom, craft % "down")
+    machine(north, craft % "right")
+    machine(south, craft % "left")
+    machine((x, 3, z + 2), "create:cogwheel[axis=x]")
+    motor((x + 1, 3, z + 2), "west", 64, "cartridge crafters")
+    arm((8, 1, 14), [(PLATES, "depot")], [(top, "crafter"), (bottom, "crafter")], "east", "cartridge arms")
+    arm((9, 1, 13), [(COALS, "depot")], [(centre, "crafter")], "south", "cartridge arms")
+    arm((9, 1, 15), [(CLAYS, "depot")], [(north, "crafter"), (south, "crafter")], "north", "cartridge arms")
+    out = belt(run((x, 1, z), (x + 2, 1, z)), "east", "south", 32, "cartridge belt")
+    assert take(out[-1], "east") == CARTRIDGES
+    store(CARTRIDGES, VAULT, ("Resin", "Cartridges"))
+
+
 HX0, HX1, HZ0, HZ1 = -1, 53, -16, 8
 EAVE, ROOF, LIGHT = 9, 10, 13
 LX0, LX1, LZ0, LZ1 = 2, 50, -9, 0
 HANG = 9
 DECK = 5
 GRID, ARRESTER, GRID_BREAKER, MAIN_T = (38, 1, 18), (40, 1, 15), (38, 1, 15), (34, 1, 12)
-INCOMERS = [((33, 3, 9), (33, 3, 7), 1), ((35, 3, 9), (35, 3, 7), 3)]
-BUS6 = [(32 + i, 1, 7) for i in range(4)]
-FEEDERS = {name: (32 + i, 1, 6) for i, name in enumerate(BAYS)}
-RISERS = {name: (32 + i, HANG, 5) for i, name in enumerate(BAYS)}
+INCOMERS = [((31, 3, 9), (31, 3, 7), 1), ((33, 3, 9), (33, 3, 7), 3), ((35, 3, 9), (35, 3, 7), 5)]
+BUS6 = [(30 + i, 1, 7) for i in range(6)]
+SLOTS = {"shops": 0, "fluids": 1, "mill": 2, "enrichment": 3, "melt": 4, "assembly": 5}
+FEEDERS = {name: (30 + i, 1, 6) for name, i in SLOTS.items()}
+RISERS = {name: (30 + i, HANG, 5) for name, i in SLOTS.items()}
+BUSHINGS = {"shops": ((24, 5, 7), (24, 5, 9)), "fluids": ((22, 5, 7), (22, 5, 9))}
+RISERS["shops"] = BUSHINGS["shops"][1]
+RISERS["fluids"] = (23, A_EAVE, 22)
+HANGS = {name: A_EAVE for name in WING}
+TAP = 4
+STAGGER = 60
 HIGH, LOW, LINE, LOAD = 0, 1, 0, 1
 STACK = [(9, -18), (10, -18), (9, -17), (10, -17)]
 MONITOR = (52, 3, -4)
 SIGNS = [((8, 1, -1), 8, "Mill", "Crushing and", "washing"), ((17, 1, -1), 8, "Enrichment", "Centrifuges"), ((24, 1, -1), 8, "Pelleting", "Ceramic Fuel", "Pellets"),
          ((8, 1, -6), 0, "Melt Shop", "Steel and", "Reactor Alloy"), ((24, 1, -7), 0, "Rolling", "Sheet and", "Fuel Cladding"), ((30, 1, -7), 0, "Frame Shop", "Gaskets and", "frames"),
          ((40, 1, -4), 0, "Assembly Hall", "Fuel", "Assemblies"), ((1, 1, -6), 12, "Receiving"), ((38, 1, 5), 8, "6 kV", "Switchgear"),
-         ((32, 1, 13), 12, "Works", "Transformer", "220 / 6 kV"), ((36, 1, 14), 12, "Grid", "Breaker"), ((36, 1, 19), 12, "220 kV", "Grid")]
+         ((32, 1, 13), 12, "Works", "Transformer", "220 / 6 kV"), ((36, 1, 14), 12, "Grid", "Breaker"), ((36, 1, 19), 12, "220 kV", "Grid"),
+         ((4, 1, 18), 0, "Cartridge Shop", "Resin", "Cartridges"), ((15, 1, 18), 0, "Canister Shop", "Open Waste", "Canisters"), ((22, 1, 18), 0, "Concrete Plant", "Shielding", "Concrete"),
+         ((3, 1, 22), 8, "Coolant", "Primary", "Coolant"), ((11, 1, 22), 8, "Boron", "Borax and", "Boric Acid"), ((20, 1, 22), 8, "Fuel Oil", "for the", "Diesel Engines")]
 INSULATORS = []
 
 
@@ -387,7 +539,7 @@ def post(pos, rotation, *lines):
 
 def wall(x, z, pillar, glazed, top=EAVE):
     for y in range(1, top + 1):
-        block = LAMP if pillar and y == 7 else PLINTH if y == 1 or pillar else BAND if y == 8 else SHELL
+        block = LAMP if pillar and y == top - 2 else PLINTH if y == 1 or pillar else BAND if y == top - 1 else SHELL
         if not pillar and glazed and glazed[0] <= y <= glazed[1]:
             block = WINDOW
         put(x, y, z, block)
@@ -437,11 +589,67 @@ def shell():
             put(x, ROOF, z, LAMP)
 
 
+def annex():
+    box(AX0, 0, AZ0 + 1, AX1, 0, AZ1, FLOOR)
+    box(0, 0, 19, AX1 - 1, 0, 21, CLEAN)
+    box(0, 0, 18, AX1 - 1, 0, 18, YELLOW)
+    box(0, 0, 22, AX1 - 1, 0, 22, YELLOW)
+    for x in range(AX0, AX1 + 1):
+        wall(x, AZ1, (x - AX0) % 6 == 0 or x == AX1, (3, 5) if (x - AX0) % 6 in (2, 3, 4) else None, A_EAVE)
+    for z in range(AZ0 + 1, AZ1 + 1):
+        pillar = (z - AZ0) % 6 == 0 or z == AZ1
+        glazed = (3, 5) if (z - AZ0) % 6 in (2, 3, 4) else None
+        wall(AX0, z, pillar, glazed, A_EAVE)
+        wall(AX1, z, pillar, glazed, A_EAVE)
+    box(AX0, A_ROOF, AZ0 + 1, AX1, A_ROOF, AZ1, PLINTH)
+    for x in range(AX0, AX1 + 1):
+        put(x, A_ROOF, AZ1, SHELL)
+    for z in range(AZ0 + 1, AZ1 + 1):
+        put(AX0, A_ROOF, z, SHELL)
+        put(AX1, A_ROOF, z, SHELL)
+    for x in range(AX0 + 3, AX1 - 2):
+        for z in (19, 20, 21):
+            put(x, A_ROOF, z, IRON if (x - AX0) % 6 == 0 else WINDOW)
+    for x in range(AX0 + 3, AX1, 6):
+        for z in (13, 25):
+            put(x, A_ROOF, z, LAMP)
+    carve(1, 1, AZ0, 2, 3, AZ0)
+    for x, y in ((CLAY[0], 1), (CLAY[0], 2), (DEPLETED[0], 1), (DEPLETED[0], 2), (STEEL_END[0], 1)):
+        carve(x, y, AZ0, x, y, AZ0)
+    carve(AX0, 1, 19, AX0, 4, 21)
+    box(AX0, 0, 19, AX0, 0, 21, PLINTH)
+    for y in range(1, 6):
+        for z in (18, 22):
+            put(AX0, y, z, YELLOW if y % 2 else BLACK)
+    for z in (19, 20, 21):
+        put(AX0, 5, z, YELLOW if z % 2 else BLACK)
+    box(AX0 - 2, 6, 18, AX0 - 1, 6, 22, IRON)
+    for z in range(18, 23):
+        put(AX0 - 2, 0, z, YELLOW if z % 2 else BLACK)
+    post((-3, 1, 23), 4, "Chemistry", "Wing")
+
+
+def farm():
+    box(2, 0, FARM, AX1, 0, FARM + 4, GRAVEL)
+    for x in range(2, AX1 + 1):
+        put(x, 1, FARM + 4, PLINTH)
+    for z in range(FARM, FARM + 5):
+        put(2, 1, z, PLINTH)
+        put(AX1, 1, z, PLINTH)
+    for pos, _, *label in TANKS:
+        box(pos[0] - 1, 1, FARM, pos[0] + 1, 6, FARM + 2, TANK)
+        post((pos[0], 2, FARM + 4), 0, *label)
+    for x in (2, 9, 18, AX1):
+        box(x, 2, FARM + 4, x, 4, FARM + 4, BARS)
+        put(x, 5, FARM + 4, LAMP)
+
+
 def docks():
-    for x in range(-12, HX1 + 4):
-        for z in range(HZ0 - 3, HZ1 + 4):
-            if (x, 0, z) not in world:
-                put(x, 0, z, PLINTH if x < HX0 or x in (HX1 + 3, -12) or z in (HZ0 - 3, HZ1 + 3) else "minecraft:stone_bricks")
+    ground = {(x, z) for x in range(-12, HX1 + 4) for z in range(HZ0 - 3, HZ1 + 4)} | {(x, z) for x in range(-12, AX1 + 4) for z in range(HZ1 + 4, FARM + 9)}
+    for x, z in ground:
+        if (x, 0, z) not in world:
+            edge = any(n not in ground for n in ((x + 1, z), (x - 1, z), (x, z + 1), (x, z - 1)))
+            put(x, 0, z, PLINTH if x < HX0 or edge else "minecraft:stone_bricks")
     for z0, z1 in ((-14, -12), (-2, 0)):
         carve(HX0, 1, z0, HX0, 4, z1)
         box(HX0, 0, z0, HX0, 0, z1, PLINTH)
@@ -482,7 +690,7 @@ def gallery():
 
 
 def stands():
-    for pos in [d[0] for d in drives] + [ORE, up(ORE, -1)]:
+    for pos in [d[0] for d in drives] + HIGH_BINS + [up(b, -1) for b in HIGH_BINS]:
         for y in range(pos[1] - 1, 0, -1):
             if taken((pos[0], y, pos[2])):
                 break
@@ -512,7 +720,7 @@ def yard():
     machine(GRID, "criticalmass:grid_connection")
     machine(GRID_BREAKER, "criticalmass:circuit_breaker[facing=north,closed=false]")
     machine(ARRESTER, "criticalmass:surge_arrester")
-    machine(MAIN_T, "criticalmass:transformer[facing=north]{ScrollValue:1}")
+    machine(MAIN_T, "criticalmass:transformer[facing=north]{ScrollValue:1,Tap:%d}" % TAP)
     for pos in BUS6:
         machine(pos, "criticalmass:bus_bar[axis=x]")
     for pos in FEEDERS.values():
@@ -522,34 +730,45 @@ def yard():
         put(outside[0], outside[1], HZ1, IRON)
         INSULATORS.extend([(outside, "south"), (inside, "north")])
         wires.extend([("cable", MAIN_T, LOW, outside, 0), ("cable", outside, 0, inside, 0), ("cable", inside, 0, BUS6[bar], 0)])
-    for i, name in enumerate(BAYS):
-        wires.extend([("cable", BUS6[i], 0, FEEDERS[name], LINE), ("cable", FEEDERS[name], LOAD, RISERS[name], 0)])
-        INSULATORS.append((RISERS[name], "down"))
-        post((32 + i, 1, 5), 8, name.capitalize(), "Feeder")
+    for name, i in SLOTS.items():
+        wires.append(("cable", BUS6[i], 0, FEEDERS[name], LINE))
+        post((30 + i, 1, 5), 8, name.capitalize(), "Feeder")
+        if name in BUSHINGS:
+            inside, outside = BUSHINGS[name]
+            put(inside[0], inside[1], HZ1, IRON)
+            INSULATORS.extend([(inside, "north"), (outside, "south")])
+            wires.extend([("cable", FEEDERS[name], LOAD, inside, 0), ("cable", inside, 0, outside, 0)])
+            if RISERS[name] != outside:
+                wires.append(("cable", outside, 0, RISERS[name], 0))
+                INSULATORS.append((RISERS[name], "down"))
+        else:
+            wires.append(("cable", FEEDERS[name], LOAD, RISERS[name], 0))
+            INSULATORS.append((RISERS[name], "down"))
 
 
 def feed(name):
     motors = sorted([d for d in drives if d[4] == name], key=lambda d: (d[0][0], d[0][2]))
     hangers = []
+    high = HANGS.get(name, HANG)
     for i in range(0, len(motors), 2):
         pair = motors[i:i + 2]
-        pos = (round(sum(d[0][0] for d in pair) / len(pair)), HANG, round(sum(d[0][2] for d in pair) / len(pair)))
+        pos = (round(sum(d[0][0] for d in pair) / len(pair)), high, round(sum(d[0][2] for d in pair) / len(pair)))
         while pos in spare or taken(pos):
-            pos = (pos[0] + 1, HANG, pos[2])
+            pos = (pos[0] + 1, high, pos[2])
         spare[pos] = 4 - len(pair)
         hangers.append(pos)
         INSULATORS.append((pos, "down"))
         for d in pair:
             wires.append(("cable" if d[5] else "wire", pos, 0, d[0], 0))
     riser = RISERS[name]
-    spare[riser] = 2
-    linked = [riser]
+    spare[riser] = 3 if name in WING else 2
+    reach = {riser: 0}
     for pos in sorted(hangers, key=lambda p: math.dist(p, riser)):
-        near = min((p for p in linked if spare[p] > 0), key=lambda p: math.dist(p, pos))
+        near = min((p for p in reach if spare[p] > 0), key=lambda p: math.dist(p, pos) + (reach[p] if name in WING else 0))
         wires.append(("cable", near, 0, pos, 0))
         spare[near] -= 1
         spare[pos] -= 1
-        linked.append(pos)
+        reach[pos] = reach[near] + math.dist(near, pos)
 
 
 def hang():
@@ -575,7 +794,7 @@ def signs():
     for pos, rotation, *lines in SIGNS:
         post(pos, rotation, *lines)
     for pos, *lines in bins:
-        post(up(pos), 0 if pos[2] <= -4 else 8, *lines)
+        post(up(pos), 0 if pos[2] <= -4 or AZ0 < pos[2] < 18 else 8, *lines)
 
 
 motor_cells = set()
@@ -583,7 +802,7 @@ spare = {}
 
 
 def design():
-    for name, parts in (("mill", [mill]), ("enrichment", [enrichment]), ("melt", [melt_shop]), ("assembly", [frame_shop, assembly])):
+    for name, parts in (("mill", [mill]), ("enrichment", [enrichment]), ("melt", [melt_shop]), ("assembly", [frame_shop, assembly]), ("fluids", [fluids]), ("shops", [concrete, canisters, cartridges])):
         bay[0] = name
         for part in parts:
             part()
@@ -591,6 +810,8 @@ def design():
         machine(pos, "minecraft:glass")
     motor_cells.update(d[0] for d in drives)
     shell()
+    annex()
+    farm()
     docks()
     yard()
     stands()
@@ -652,10 +873,18 @@ def place(w, creative=False):
 
 def start(w):
     cmds = ["criticalmass wire %s %d %s %d %s" % (w(*a), ta, w(*b), tb, kind) for kind, a, ta, b, tb in wires]
-    return cmds + ["criticalmass breaker %s close" % w(*pos) for pos in [GRID_BREAKER] + list(FEEDERS.values())]
+    return cmds + ["criticalmass breaker %s close" % w(*GRID_BREAKER)]
 
 
-SPOTS = [("fuel", FUEL, "Inventory"), ("depleted", DEPLETED, "Inventory"), ("steel store", STEEL_STORE, "Inventory"), ("sheet store", SHEET_STORE, "Inventory"), ("sheets", SHEETS, "HeldItem.Item"),
+def energise(w, name):
+    return "criticalmass breaker %s close" % w(*FEEDERS[name])
+
+
+SPOTS = [("coolant tank", (COOLANT[0] - 1, 1, FARM), "TankContent"), ("boric acid tank", (BORIC[0] - 1, 1, FARM), "TankContent"), ("fuel oil tank", (OIL[0] - 1, 1, FARM), "TankContent"),
+         ("concrete", CONCRETE_STORE, "Inventory"), ("canisters", CANISTERS, "Inventory"), ("cartridges", CARTRIDGES, "Inventory"), ("clay store", CLAY, "Inventory"),
+         ("plates", PLATES, "HeldItem.Item"), ("clays", CLAYS, "HeldItem.Item"), ("coals", COALS, "HeldItem.Item"), ("steel end", STEEL_END, "Inventory"),
+         ("coolant basin", COOLANT, "InputItems.Items"), ("boric basin", BORIC, "InputItems.Items"), ("oil basin", OIL, "InputItems.Items"), ("concrete basin", CONCRETE, "InputItems.Items"),
+         ("fuel", FUEL, "Inventory"), ("depleted", DEPLETED, "Inventory"), ("steel store", STEEL_STORE, "Inventory"), ("sheet store", SHEET_STORE, "Inventory"), ("sheets", SHEETS, "HeldItem.Item"),
          ("gaskets", GASKETS, "HeldItem.Item"), ("cladding", CLADDING, "HeldItem.Item"), ("pellets", PELLETS, "HeldItem.Item"), ("pellet store", PELLET_STORE, "Inventory"), ("pellet sets", PELLET_SETS, "Inventory"), ("loop", (RX, 1, RZ), "Inventory"), ("pellet deployer", (RX + 4, 3, RZ + 1), "HeldItem"),
          ("concentrate basin", CONCENTRATE, "InputItems.Items"), ("pellet basin", PELLET, "InputItems.Items"), ("steel basin", STEEL, "InputItems.Items"), ("alloy basin", ALLOY, "InputItems.Items"),
          ("gasket basin", GASKET, "InputItems.Items")]
@@ -676,8 +905,16 @@ VIEWS = {
     "loop": ((50, 8, -14), (43, 1, -8), True),
     "loop_floor": ((50, 1, -5), (43, 2, -8), False),
     "switchgear": ((38, 1, 3), (33, 2, 7), False),
+    "wing_aerial": ((-22, 24, 52), (12, 3, 20), True),
+    "tanks": ((13, 7, 46), (13, 3, 30), True),
+    "wing": ((0, 1, 20), (24, 3, 19), False),
+    "fluids": ((12, 6, 20), (12, 2, 26), True),
+    "cartridges": ((4, 6, 17), (9, 2, 14), True),
+    "canisters": ((12, 5, 14), (16, 2, 11), True),
+    "concrete": ((16, 6, 18), (20, 2, 13), True),
+    "crossing": ((18, 2, -2), (14, 0, -2), False),
 }
-NIGHT = ("aerial_se", "hall_west", "loop")
+NIGHT = ("aerial_se", "hall_west", "loop", "wing_aerial", "wing")
 
 
 def look(origin, name):
@@ -693,23 +930,24 @@ def shots(origin, names, tag):
     return out
 
 
-def scene(minutes, names, creative=False, night=False, probe=False, origin=(300, -61, 300)):
+def scene(minutes, names, creative=False, night=False, probe=False, origin=(300, -61, 300), pause=1200):
     w = absolute(origin)
     low, high = bounds()
     checks = [("data get block %s %s" % (w(*pos), path)).strip() for _, pos, path in SPOTS]
     checks += ["data get block %s Demand" % w(*d[0]) for d in drives if d[3] in ("crusher", "centrifuges", "loop press")]
     checks += ["execute if block %s create:metal_girder[axis=x,x=true,z=false]" % w(35, 8, 18), "execute if block %s create:metal_girder[axis=z,x=false,z=true]" % w(LX0 + 3, ROOF, -4)]
     if probe:
-        checks += ["data get block %s" % w(*pos) for pos in ((37, 2, -6), (37, 2, -5))] + ["data get block %s Inventory" % w(*pos) for pos in ((34, 1, -6), (36, 1, -5), (39, 1, -5))]
-        checks += ["data get block %s OutputItems" % w(*GASKET), "data get block %s" % w(*GASKET)]
-        checks += ["data get block %s" % w(*pos) for pos in (drives[0][0], FEEDERS["enrichment"], MAIN_T, BUS6[1])]
+        checks += ["data get block %s" % w(*pos) for pos in (COOLANT, BORIC, OIL, CONCRETE, (CANISTER_X, 3, CANISTER_Z), (RESIN_X, 3, RESIN_Z), (20, 2, 12), (21, 2, 12), FEEDERS["fluids"], FEEDERS["shops"], MAIN_T)]
+        checks += ["data get block %s Inventory" % w(*pos) for pos in ((20, 1, 12), (21, 1, 12), (10, 1, ROW), (16, 1, CANISTER_Z), (RESIN_X, 1, RESIN_Z))]
+        checks += ["data get block %s Demand" % w(*d[0]) for d in drives if d[4] in WING]
     perches = ["/setblock %s minecraft:barrier" % w(pos[0], pos[1] - 1, pos[2]) for pos, _, high_up in VIEWS.values() if high_up]
     steps = [{"cmds": ["/time set 6000", "/gamerule doDaylightCycle false", "/weather clear", "/gamemode creative", "/clear @p", "/tp @p %d %d %d" % (origin[0] + 25, origin[1] + 1, origin[2] + 30),
                        "/forceload add %d %d %d %d" % (origin[0] + low[0] - 2, origin[2] + low[2] - 2, origin[0] + high[0] + 2, origin[2] + high[2] + 2)], "wait": 80, "gui": False, "camera": "first", "slot": 1},
              {"cmds": ["/" + c for c in place(w, creative)] + perches, "wait": 60},
              {"cmds": ["/" + c for c in start(w)], "wait": 40}]
+    steps += [{"cmds": ["/" + energise(w, name)], "wait": STAGGER} for name in BAYS]
     for _ in range(minutes):
-        steps += [{"wait": 1200}, {"cmds": ["/" + c for c in checks], "closeScreen": True, "wait": 5}]
+        steps += [{"wait": pause}, {"cmds": ["/" + c for c in checks], "closeScreen": True, "wait": 5}]
     steps += [{"cmds": ["/execute as @e[type=item,distance=..120,limit=8] run data get entity @s Pos", "/execute as @e[type=item,distance=..120,limit=8] run data get entity @s Item.id"], "wait": 5}]
     steps += shots(origin, names, "run")
     if night:
@@ -730,9 +968,11 @@ def write(root):
                   "execute at %s run forceload add %s" % (marker, span), "schedule function %s:factory/place 20t replace" % NS,
                   "tellraw @s {\"text\":\"Building the fuel works. Its line starts in five seconds.\",\"color\":\"yellow\"}"],
         "place_here": place(relative) + ["schedule function %s:factory/start 60t replace" % NS],
-        "start_here": start(relative) + ["forceload remove %s" % span,
-                                         "tellraw @a {\"text\":\"Fuel works built and on grid power. The first Fuel Assemblies reach the Fuel Store in about five minutes.\",\"color\":\"green\"}"],
+        "start_here": start(relative) + ["schedule function %s:factory/feed_%s %dt replace" % (NS, BAYS[0], STAGGER)],
     }
+    for i, name in enumerate(BAYS):
+        last = ["forceload remove %s" % span, "tellraw @a {\"text\":\"Fuel works built and on grid power. The first Fuel Assemblies reach the Fuel Store in about five minutes.\",\"color\":\"green\"}"]
+        files["feed_%s_here" % name] = [energise(relative, name)] + (["schedule function %s:factory/feed_%s %dt replace" % (NS, BAYS[i + 1], STAGGER)] if i + 1 < len(BAYS) else last)
     for name in [n[:-5] for n in list(files) if n.endswith("_here")]:
         files[name] = ["execute as %s at @s run function %s:factory/%s_here" % (marker, NS, name)]
     for name, cmds in files.items():
@@ -748,7 +988,7 @@ if __name__ == "__main__":
     if args and args[0] == "scene":
         minutes = int(args[1]) if len(args) > 1 else 3
         names = [n for n in args[2].split(",") if n] if len(args) > 2 and args[2] != "all" else list(VIEWS)
-        json.dump({"name": "factory", "steps": scene(minutes, names, "creative" in args, "night" in args, "probe" in args)}, open(os.path.join(here, "factory.json"), "w", newline="\n"), indent=1)
+        json.dump({"name": "factory", "steps": scene(minutes, names, "creative" in args, "night" in args, "probe" in args, pause=100 if "quick" in args else 1200)}, open(os.path.join(here, "factory.json"), "w", newline="\n"), indent=1)
     else:
         for target in args:
             write(target)
