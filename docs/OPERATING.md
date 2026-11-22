@@ -215,3 +215,20 @@ Things to try from here:
 - Run `/weather thunder` and stay a while. The grid dips, swings and now and then goes altogether. When it goes, the grid breaker trips, the generators carry the plant if they are on, and otherwise the batteries and the Diesel Engine do. Reset the grid breaker and close it again once the grid is back. Every motor is under a roof, so rain alone trips nothing.
 - Break the Lightning Rods and the Surge Arrester in the switchyard and run `/criticalmass strike` on the line between the grid breaker and the main Transformer.
 - Do the same with the batteries' wires cut, or the engine's tank empty. The bus goes dead, the pumps stop, the rod drives lose power and drop the rods, and the reactor trips on loss of flow.
+
+## The fuel works
+
+`src/inspect/scenes/make_factory.py <world>/datapacks/criticalmass_factory` writes a second datapack, which builds a factory that makes Fuel Assemblies from Chartrine, iron, charcoal, zinc, quartz and kelp with no hands on the line. Stand on open flat ground with about 80 blocks clear to the east and 50 to the south and run:
+
+```
+/reload
+/function criticalmass_factory:factory/build
+```
+
+It is left running, on its own Grid Connection. `docs/FACTORY.md` describes the line bay by bay, what has to arrive from outside and how it is powered.
+
+Things to try in it:
+- Walk the gallery from the stairs at the west end and follow a batch down the hall: Chartrine into the Crushing Wheels, concentrate through the Centrifuges, pellets down the long belt, and the frame going round the loop four times.
+- Open a feeder breaker at the switchgear by the south wall. That bay's motors stop and the bays after it run on what is in their stores, then stop one by one as the stores empty. Close it and the line picks up where it left off.
+- Look at the Transformer and a Bus Bar with Engineer's Goggles on to see what the works draws.
+- Take a bin away. The tunnels in the melt shop stop passing the other parts of the set, so nothing piles up while it is gone.
