@@ -155,6 +155,12 @@ dependencies {
     // so pull it without transitives and add its real runtime needs explicitly.
     implementation("dev.ryanhcode.sable:sable-neoforge-${minecraft_version}:${sable_version}") { transitive = false }
     implementation("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}:${sable_companion_version}")
+    jarJar("dev.ryanhcode.sable-companion:sable-companion-common-${minecraft_version}") {
+        version {
+            strictly "[${sable_companion_version},)"
+            prefer sable_companion_version
+        }
+    }
     implementation("foundry.veil:veil-neoforge-${minecraft_version}:${veil_version}") {
         exclude group: 'maven.modrinth'
         exclude group: 'me.fallenbreath'
@@ -206,6 +212,10 @@ publishing {
             url "file://${project.projectDir}/repo"
         }
     }
+}
+
+tasks.named('jar') {
+    exclude 'com/criticalmass/gametest/**'
 }
 
 tasks.withType(JavaCompile).configureEach {
