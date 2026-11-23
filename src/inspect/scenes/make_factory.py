@@ -111,6 +111,13 @@ def lip(pos, facing):
     return (pos[0] + SIDES[facing][0], pos[1] - 1, pos[2] + SIDES[facing][1])
 
 
+def hopper(pos, item):
+    machine(pos, 'create:creative_crate{Filter:{id:"%s",count:1}}' % item)
+    machine(up(pos, -1), "create:chute")
+    machine(up(pos, -2), "create:chute")
+    bins.append((pos, LABELS[item], "Bin"))
+
+
 def take(end, facing):
     machine(up(end), "create:andesite_belt_funnel[facing=%s,shape=retracted]" % OPPOSITE[facing])
     return up(off(end, facing))
@@ -188,7 +195,7 @@ def arm(pos, takes, gives, cog_side, name, speed=128):
 
 
 U, MZ = 0, -10
-ORE = (2, 6, U)
+ORE = (5, 6, U)
 CLAY, GLOW, CLAY_SINK = (7, 2, U + 1), (8, 2, U + 1), (9, 2, U + 1)
 CONCENTRATE = (12, 2, U)
 CENTRIFUGES = [(x, 2, U + 1) for x in (15, 16, 17, 18)]
@@ -210,13 +217,10 @@ FUEL = (43, 2, -5)
 
 
 def mill():
-    dock(ORE, M + "chartrine", "east", 16)
-    belt(run((3, 5, U), (4, 5, U)), "east", "south", 32, "ore feed")
+    hopper(ORE, M + "chartrine")
     for x, speed in ((4, 128), (6, -128)):
         machine((x, 3, U), "create:crushing_wheel[axis=z]")
         drive((x, 3, U), "south", speed, "crusher")
-    stop((6, 4, U))
-    stop((6, 5, U))
     m1 = belt(run((5, 1, U), (11, 1, U)), "east", "south", 32, "mill belt")
     assert pull(m1[2], "south", "minecraft:clay_ball") == CLAY and pull(m1[3], "south", "minecraft:glowstone_dust") == GLOW
     assert pull(m1[4], "south", "minecraft:clay_ball") == CLAY_SINK
@@ -359,7 +363,7 @@ CANISTERS = (18, 2, 11)
 PLATES, CLAYS, COALS = (6, 1, 12), (7, 1, 12), (8, 1, 12)
 RESIN_X, RESIN_Z = 10, 15
 CARTRIDGES = (13, 2, 15)
-HIGH_BINS = [ORE, (7, 6, ROW)]
+SCORIA = (10, 6, ROW)
 
 
 def fluid(pos, heat, product, name):
@@ -381,13 +385,10 @@ def fluids():
     c = belt(run((1, 1, ROW), (4, 1, ROW)), "east", "north", -32, "lapis belt")
     assert take(c[-1], "east") == COOLANT
     fluid(COOLANT, None, "primary_coolant", "coolant")
-    dock(HIGH_BINS[1], "create:scoria", "east", 16)
-    belt(run((8, 5, ROW), (9, 5, ROW)), "east", "south", 32, "scoria feed")
-    for x, speed in ((9, 64), (11, -64)):
+    hopper(SCORIA, "create:scoria")
+    for x, speed in ((9, 16), (11, -16)):
         machine((x, 3, ROW), "create:crushing_wheel[axis=z]")
         drive((x, 3, ROW), "south", speed, "borax crusher")
-    stop((11, 4, ROW))
-    stop((11, 5, ROW))
     b = belt(run((10, 1, ROW), (13, 1, ROW)), "east", "north", -32, "borax belt")
     assert take(b[-1], "east") == BORIC
     fluid(BORIC, KINDLED, "boric_acid", "boric acid")
@@ -690,7 +691,7 @@ def gallery():
 
 
 def stands():
-    for pos in [d[0] for d in drives] + HIGH_BINS + [up(b, -1) for b in HIGH_BINS]:
+    for pos in [d[0] for d in drives]:
         for y in range(pos[1] - 1, 0, -1):
             if taken((pos[0], y, pos[2])):
                 break

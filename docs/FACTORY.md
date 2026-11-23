@@ -53,7 +53,7 @@ Iron, Nether Quartz, charcoal, Dried Kelp, Iron Nuggets, Lapis Lazuli, Scoria, g
 
 It runs west to east down one hall, in two rows either side of a gallery. The south row makes the pellets and the north row makes the metal parts, and they meet at the assembly loop in the east end.
 
-1. **Mill.** Chartrine drops sixteen at a time between two Crushing Wheels. A belt carries what falls out past three filtered funnels to a Basin under a Mechanical Mixer, where a pump adds water and the Crushed Raw Uranium is washed into Uranium Concentrate. The first funnel takes clay into the Clay Store, the second takes the glowstone, and the third takes the clay that passes the first when the store is full.
+1. **Mill.** A chute under the Chartrine bin feeds two Crushing Wheels, sixteen at a time and only when the wheels are clear. A belt carries what falls out past three filtered funnels to a Basin under a Mechanical Mixer, where a pump adds water and the Crushed Raw Uranium is washed into Uranium Concentrate. The first funnel takes clay into the Clay Store, the second takes the glowstone, and the third takes the clay that passes the first when the store is full.
 2. **Enrichment.** The concentrate passes a row of four Centrifuges on one line of Encased Chain Drives. Each takes what it needs off the belt and puts Enriched and Depleted Uranium on a second belt. A filtered funnel takes the Depleted Uranium to its store.
 3. **Pelleting.** The Enriched Uranium drops into a heated Basin under a Mechanical Press. The Ceramic Fuel Pellets ride a belt east and then north across the aisle, under the gallery, to the pellet store beside the frame shop.
 4. **Melt shop.** Iron and charcoal pass a pair of Brass Tunnels one of each at a time into a superheated mixer for steel, and the steel waits in a store. Two steel, one zinc and one quartz pass a second set of tunnels into a heated mixer for the alloy. The tunnels are set to synchronise, so they pass a set only when every part of it is waiting, and no mixer fills with the wrong thing.
@@ -77,35 +77,36 @@ North of the wing's aisle are three shops that make solid things:
 South of the aisle are three mixing bays that make liquids. Each has a bin, a belt, a Basin under a Mechanical Mixer with a pump bringing water in on one side, and a second pump taking the product out on the other, through the south wall to a Fluid Tank in the tank farm.
 
 4. **Coolant.** Lapis Lazuli and water, mixed cold, make Primary Coolant.
-5. **Boron.** Scoria drops sixteen at a time between two Crushing Wheels, and the Borax that falls out is mixed with water over a Blaze Burner into Boric Acid.
+5. **Boron.** A chute under the Scoria bin feeds two Crushing Wheels, and the Borax that falls out is mixed with water over a Blaze Burner into Boric Acid. The wheels turn at 16 RPM, which makes Borax about as fast as the mixer uses it.
 6. **Fuel Oil.** Coal and water over a Blaze Burner make Fuel Oil for the Diesel Engines.
 
 The tank farm stands outside the south wall inside a low bund: three Fluid Tanks three wide and six high, of 432 buckets each. When a tank is full its mixer stops and the bin waits.
 
 ## Worth knowing before changing it
 
-Eight things about Create decided the layout:
+Nine things about Create decided the layout:
 
 - A Brass Tunnel forgets its mode when it joins another on being placed by a command, so the builder sets the mode afterwards.
 - A belt that ends at a Basin throws items over it as often as into it. Every belt here ends under a funnel instead.
 - A short feeder belt has to end under its tunnel with a solid block after it, or half of what it carries falls off the end.
 - A Basin pours onto any belt or Depot that touches it, and picks one if there are two. Each Basin here has only one it can reach.
 - A Mechanical Crafter drops what it makes whether or not there is room for it, so what has to be held back is an ingredient, not the product.
+- Crushing Wheels fed by a belt that drops onto them take what they can and leave the rest lying on top, where it is lost after five minutes. A chute hands them a stack only when they are empty, so the bin gives no more than the wheels crush.
 - A pump on a Basin draws out the water going in as readily as the product. Each transfer line starts with a Smart Fluid Pipe filtered to the product.
 - A group of Mechanical Crafters waits until every one of them holds something. The empty corner of the canister's pattern has a Crafter Slot Cover.
 - A belt runs the way its shaft turns it, whichever way it was laid. A belt laid south and driven from its east side needs the opposite speed to one driven from its west side.
 
 ## Power
 
-The works has its own substation in a fenced yard on the south side: a Grid Connection, a Surge Arrester, a Circuit Breaker and a 220 / 6 kV Transformer. The whole works draws about 84 MW, which is more than two Power Cables carry at 6 kV, so three cables in parallel run from the Transformer through bushings in the wall to a bus of six Bus Bars. Six feeder breakers stand in front of the bus, one each for the mill, enrichment, the melt shop, assembly, the wing's mixing bays and the wing's shops, so a bay can be shut down by itself.
+The works has its own substation in a fenced yard on the south side: a Grid Connection, a Surge Arrester, a Circuit Breaker and a 220 / 6 kV Transformer. The whole works draws about 81 MW, which is more than two Power Cables carry at 6 kV, so three cables in parallel run from the Transformer through bushings in the wall to a bus of six Bus Bars. Six feeder breakers stand in front of the bus, one each for the mill, enrichment, the melt shop, assembly, the wing's mixing bays and the wing's shops, so a bay can be shut down by itself.
 
-From each feeder a Power Cable climbs to the roof and runs from insulator to insulator over its bay. The two wing feeders pass through bushings in the shared wall first. Power Wire drops from the insulators to the 75 Electric Motors, two to an insulator. The two motors on the Centrifuge row take about 8.6 MW each and are fed with Power Cable. The builder lays this out by itself and checks that no run is longer than a wire reaches and no terminal has more than four wires.
+From each feeder a Power Cable climbs to the roof and runs from insulator to insulator over its bay. The two wing feeders pass through bushings in the shared wall first. Power Wire drops from the insulators to the 73 Electric Motors, two to an insulator. The two motors on the Centrifuge row take about 8.6 MW each and are fed with Power Cable. The builder lays this out by itself and checks that no run is longer than a wire reaches and no terminal has more than four wires.
 
 Three things about the electrical system shaped it:
 
-- **The feeders are closed one at a time, three seconds apart.** A motor draws up to three times its running current for two seconds as it starts. All 75 starting together burnt out the Transformer.
-- **The wing has two feeders, not one.** On one feeder its 27 motors hung on a single run of cable 65 blocks long. The motors at the far end kept dropping out and starting again, as they do when their voltage falls below nine tenths of 6 kV, and each start pulled the voltage down for the rest, until the feeder cable burnt. With two feeders no motor is more than 29 blocks of cable from its riser.
-- **The Transformer's tap is four steps up,** which is 5%, so that the bus stands at 5.94 kV under the full load.
+- **The feeders are closed one at a time, three seconds apart.** A motor draws up to three times its running current for two seconds as it starts. All of them starting together burnt out the Transformer.
+- **The wing has two feeders, not one.** On one feeder its motors hung on a single run of cable 65 blocks long. The motors at the far end kept dropping out and starting again, as they do when their voltage falls below nine tenths of 6 kV, and each start pulled the voltage down for the rest, until the feeder cable burnt. With two feeders no motor is more than 29 blocks of cable from its riser.
+- **The Transformer's tap is four steps up,** which is 5%, so that the bus stands at about 5.9 kV under the full load.
 
 ## How it looks
 
@@ -119,12 +120,13 @@ Outside, the west end has two receiving doors under canopies, an apron, and stoc
 
 In one run of eight minutes from a cold start, read from the stores and tanks each minute:
 
-- The Fuel Store was empty at four minutes, held 2 Fuel Assemblies at five and 8 at eight. Once the line is full that is about one a minute, four times what the reference station burns. Assemblies do not stack, so the store holds 20.
-- The tanks held 63 buckets of Primary Coolant, 62 of Boric Acid and 73 of Fuel Oil. That is about 8 buckets a minute each, so a tank fills in a little under an hour.
-- The concrete store held 312 Shielding Concrete and gained about 50 a minute at the end, which is all the Depleted Uranium the Centrifuges make. A small vault holds 1,280, so it wants emptying every half hour or so.
+- The Fuel Store held its first Fuel Assembly between five and six minutes, and 4 at eight. Other runs of the same line held 8 at eight minutes: the loop finishes them in groups. Once the line is full that is about one a minute, four times what the reference station burns. Assemblies do not stack, so the store holds 20.
+- The tanks held 63 buckets of Primary Coolant, 44 of Boric Acid and 72 of Fuel Oil. That is about 8 buckets a minute of coolant and Fuel Oil, so those tanks fill in a little under an hour, and about 6 of Boric Acid, which is as fast as the slow wheels make Borax.
+- The concrete store held 248 Shielding Concrete and gained 48 a minute at the end, which is all the Depleted Uranium the Centrifuges make. A small vault holds 1,280, so it wants emptying every half hour or so.
 - The cartridge store held 79 Resin Cartridges, about 10 a minute, and the canister store 10 Open Waste Canisters, a little over one a minute.
-- The Clay Store was full at six minutes. The sheet store held 49 sheets.
-- The Transformer carried 84.3 MW with 6.01 kV at its terminals. The main hall takes about 62 MW of that, the mixing bays 10.4 MW and the shops 11.5 MW. The two Crushing Wheels in the mill took about 4.3 MW each and each Centrifuge motor 8.6 MW.
+- The Clay Store held 708 Clay Balls and gained about 90 a minute. The sheet store held 64 sheets.
+- The Transformer carried 81.1 MW with 6.02 kV at its terminals. The main hall takes about 62 MW of that, the mixing bays 7.3 MW and the shops 11.5 MW. The two Crushing Wheels in the mill took about 4.3 MW each and each Centrifuge motor 8.6 MW.
+- Two item stacks lay loose at the end, one Steel Ingot waiting under the Steel Store's funnel and one coal over its Depot. Nothing else was on the floor.
 
 Built from the datapack in a new world, the works ran the same way.
 
