@@ -181,6 +181,11 @@ public final class Fallout extends SavedData {
         net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(p.x - span, p.y - 48, p.z - span, p.x + span, p.y + 96, p.z + span);
         for (net.minecraft.world.entity.LivingEntity entity : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, box, e -> !(e instanceof net.minecraft.world.entity.player.Player))) {
             if (p.share(entity.getX(), entity.getZ(), now) * p.strength(now) > SICKENS && !sheltered(level, entity.getEyePosition())) {
+                if (entity instanceof net.minecraft.world.entity.monster.Creeper creeper && creeper.getType() == net.minecraft.world.entity.EntityType.CREEPER
+                        && level.random.nextFloat() < IrradiatedCreeper.MUTATION_CHANCE) {
+                    IrradiatedCreeper.mutate(creeper);
+                    continue;
+                }
                 entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, SICKEN_TICKS * 3, 0));
             }
         }
@@ -190,6 +195,7 @@ public final class Fallout extends SavedData {
         if (!(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
+        IrradiatedCreeper.mutateOnGround(level);
         Fallout data = get(level);
         if (data.plumes.isEmpty()) {
             return;
@@ -223,21 +229,26 @@ public final class Fallout extends SavedData {
                 continue;
             }
             cursor.set(x, level.getHeight(Heightmap.Types.MOTION_BLOCKING, x, z), z);
-            BlockState here = level.getBlockState(cursor);
-            if (!here.isAir() && !(here.canBeReplaced() && here.getFluidState().isEmpty())) {
-                continue;
-            }
-            BlockPos under = cursor.below();
-            BlockState ground = level.getBlockState(under);
-            if (!ground.isCollisionShapeFullBlock(level, under) || ground.is(CMBlocks.FALLOUT_ASH.get()) || ground.is(Blocks.MAGMA_BLOCK) || ground.is(CMBlocks.CORIUM.get()) || !ground.getFluidState().isEmpty() || !ground.isFaceSturdy(level, under, Direction.UP)) {
-                continue;
-            }
-            level.setBlock(cursor, CMBlocks.FALLOUT_ASH.get().defaultBlockState(), Block.UPDATE_ALL);
-            ContaminationData.get(level).add(cursor.immutable(), ASH_CONTAMINATION);
-            if (ground.is(Blocks.GRASS_BLOCK) || ground.is(Blocks.PODZOL) || ground.is(Blocks.MYCELIUM)) {
-                level.setBlock(under, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
-            }
+            dust(level, cursor, ASH_CONTAMINATION);
         }
+    }
+
+    public static boolean dust(ServerLevel level, BlockPos.MutableBlockPos cursor, double contamination) {
+        BlockState here = level.getBlockState(cursor);
+        if (!here.isAir() && !(here.canBeReplaced() && here.getFluidState().isEmpty())) {
+            return false;
+        }
+        BlockPos under = cursor.below();
+        BlockState ground = level.getBlockState(under);
+        if (!ground.isCollisionShapeFullBlock(level, under) || ground.is(CMBlocks.FALLOUT_ASH.get()) || ground.is(Blocks.MAGMA_BLOCK) || ground.is(CMBlocks.CORIUM.get()) || !ground.getFluidState().isEmpty() || !ground.isFaceSturdy(level, under, Direction.UP)) {
+            return false;
+        }
+        level.setBlock(cursor, CMBlocks.FALLOUT_ASH.get().defaultBlockState(), Block.UPDATE_ALL);
+        ContaminationData.get(level).add(cursor.immutable(), contamination);
+        if (ground.is(Blocks.GRASS_BLOCK) || ground.is(Blocks.PODZOL) || ground.is(Blocks.MYCELIUM)) {
+            level.setBlock(under, Blocks.DIRT.defaultBlockState(), Block.UPDATE_CLIENTS);
+        }
+        return true;
     }
 
     public static Fallout load(CompoundTag tag, HolderLookup.Provider registries) {

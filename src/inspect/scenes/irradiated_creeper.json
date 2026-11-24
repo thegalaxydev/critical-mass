@@ -1,0 +1,281 @@
+{
+ "name": "irradiated_creeper",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamerule doMobSpawning false",
+    "/weather clear",
+    "/difficulty normal",
+    "/gamemode creative",
+    "/kill @e[type=!player]",
+    "/tp @p 46 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 36 -61 30 58 -61 52 minecraft:smooth_stone",
+    "/fill 36 -60 30 58 -52 52 minecraft:air",
+    "/kill @e[type=item]",
+    "/summon criticalmass:irradiated_creeper 44.5 -60 40.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f]}",
+    "/summon minecraft:creeper 47.5 -60 40.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f]}"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/tp @p 46.00 -60.00 35.50 facing 46.00 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "beside_a_creeper",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 44.50 -60.00 37.60 facing 44.50 -59.82 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "front",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 42.40 -60.00 38.20 facing 44.50 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "front_right",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 46.40 -60.00 38.40 facing 44.50 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "front_left",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 41.40 -60.00 40.50 facing 44.50 -60.22 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "right_side",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 43.00 -60.00 43.40 facing 44.50 -60.22 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "back_right",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 46.20 -60.00 43.20 facing 44.50 -60.22 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "back_left",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 44 -58 38 minecraft:barrier",
+    "/tp @p 44.50 -57.00 38.50 facing 44.50 -60.42 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "from_above",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/setblock 44 -58 38 minecraft:air",
+    "/time set 18000",
+    "/tp @p 46.00 -60.00 36.50 facing 46.00 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 40
+  },
+  {
+   "shot": "night_beside_a_creeper",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 44.50 -60.00 38.00 facing 44.50 -59.82 40.50"
+   ]
+  },
+  {
+   "wait": 20
+  },
+  {
+   "shot": "night_front",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/time set 6000",
+    "/data merge entity @e[type=criticalmass:irradiated_creeper,limit=1] {Fuse:300,ignited:1b}",
+    "/tp @p 46.00 -60.00 37.00 facing 44.50 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 150
+  },
+  {
+   "shot": "swelling_half",
+   "wait": 2
+  },
+  {
+   "wait": 110
+  },
+  {
+   "shot": "swelling_most",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/kill @e[type=criticalmass:irradiated_creeper]",
+    "/kill @e[type=minecraft:creeper]"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/kill @e[type=item]",
+    "/summon criticalmass:irradiated_creeper 44.5 -60 40.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],powered:1b}",
+    "/tp @p 44.50 -60.00 37.20 facing 44.50 -60.02 40.50"
+   ]
+  },
+  {
+   "wait": 30
+  },
+  {
+   "shot": "charged",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/kill @e[type=criticalmass:irradiated_creeper]"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/kill @e[type=item]",
+    "/fill 38 -60 45 56 -59 45 minecraft:barrier",
+    "/fill 38 -60 47 56 -59 47 minecraft:barrier",
+    "/fill 38 -60 46 38 -59 46 minecraft:barrier",
+    "/summon minecraft:cat 39.5 -60 46.5 {NoAI:1b}",
+    "/summon criticalmass:irradiated_creeper 42.5 -60 46.5 {PersistenceRequired:1b,Rotation:[-90f,0f]}",
+    "/tp @p 46.50 -60.00 42.20 facing 46.00 -60.42 46.50"
+   ]
+  },
+  {
+   "wait": 22
+  },
+  {
+   "shot": "walking_a",
+   "wait": 2
+  },
+  {
+   "wait": 3
+  },
+  {
+   "shot": "walking_b",
+   "wait": 2
+  },
+  {
+   "wait": 3
+  },
+  {
+   "shot": "walking_c",
+   "wait": 2
+  },
+  {
+   "wait": 3
+  },
+  {
+   "shot": "walking_d",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/kill @e[type=criticalmass:irradiated_creeper]",
+    "/kill @e[type=minecraft:cat]",
+    "/fill 38 -60 45 56 -59 47 minecraft:air"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/kill @e[type=item]",
+    "/fill 38 -60 42 52 -60 42 minecraft:grass_block",
+    "/summon criticalmass:irradiated_creeper 45.5 -60 45.5 {NoAI:1b,ignited:1b}",
+    "/setblock 45 -57 36 minecraft:barrier",
+    "/tp @p 45.50 -56.00 36.50 facing 45.50 -61.62 45.50"
+   ]
+  },
+  {
+   "wait": 70
+  },
+  {
+   "shot": "burst",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/execute positioned 45.5 -60 45.5 run fill ~-7 ~-3 ~-7 ~7 ~3 ~7 minecraft:air replace criticalmass:fallout_ash",
+    "/item replace entity @p hotbar.0 with criticalmass:irradiated_creeper_spawn_egg",
+    "/data get entity @p Inventory"
+   ],
+   "wait": 10
+  },
+  {
+   "slot": 0,
+   "gui": true,
+   "wait": 5
+  },
+  {
+   "shot": "spawn_egg",
+   "wait": 2
+  }
+ ]
+}

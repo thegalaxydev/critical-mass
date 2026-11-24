@@ -25,7 +25,7 @@ public enum TabSection {
             "reactor_signal_interface", "meltdown_siren"),
     FALLOUT("fallout", 0xFFD8FF9A, 48, 3,
             "survey_meter", "dosimeter", "area_radiation_monitor", "protective_hood", "protective_suit", "protective_leggings", "protective_boots", "decontamination_compound", "water_cannon", "fallout_ash",
-            "strontium_90", "corium", "ruined_channel", "core_debris", "wreckage"),
+            "strontium_90", "corium", "ruined_channel", "core_debris", "wreckage", "irradiated_creeper_spawn_egg"),
     ELECTRICITY("electricity", 0xFFBFE6FF, 16, 2,
             "generator", "power_wire", "power_cable", "transmission_line", "insulator", "bus_bar", "circuit_breaker", "disconnect_switch", "earthing_switch", "transformer",
             "grid_connection", "electric_motor", "station_battery", "radioisotope_cell", "diesel_engine", "fuel_oil_bucket", "transfer_switch", "surge_arrester"),

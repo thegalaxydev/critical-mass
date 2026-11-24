@@ -304,6 +304,9 @@ public final class Radiation {
                 out.add(new Source(p.position().add(0, 1, 0), s, null, null, p));
             }
         }
+        for (IrradiatedCreeper creeper : level.getEntitiesOfClass(IrradiatedCreeper.class, box)) {
+            out.add(new Source(creeper.position().add(0, 0.9, 0), IrradiatedCreeper.DOSE, null, null, null));
+        }
         ContainerSources.near(level, receiver, RANGE / 2, out);
         return out;
     }

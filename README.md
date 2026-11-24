@@ -267,6 +267,12 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
       - On a Sable body it washes the ground under where the body is now, so a vehicle with a tank, a pump and a cannon aboard clears a plume as it goes.
       - Goggles show its state and its water.
       - Recipe: a Fluid Pipe over a Fluid Pipe between two Brass Sheets, over a Cogwheel between two Steel Plates.
+    - **Irradiated Creeper:** a Creeper caught in the open under the plume, or standing on Fallout Ash, turns into an Irradiated Creeper within about half a minute.
+      - It has 26 health against a Creeper's 20, is a little larger and slower, and fallout does not sicken it.
+      - It is a radiation source, so a Survey Meter ticks faster as one comes near.
+      - It crackles like a Geiger counter when it starts to swell. When it goes off it does a Creeper's damage and also throws Fallout Ash over about five blocks round it, and anyone close takes a dose and is dusted with contamination. A charged one reaches twice as far. With the `mobGriefing` rule off it leaves no ash.
+      - It drops gunpowder and 1 to 3 Fallout Ash. Its spawn egg is in the Fallout section of the tab.
+      - Its model is `art/blockbench/irradiated_creeper.bbmodel`, which also holds its skin and its glow texture. `art/tools/irradiated_creeper.py` reads that file, writes the model's parts as `client/entity/IrradiatedCreeperParts.java` and copies the two textures into the mod. Run with `fresh` it builds the Blockbench file again and repaints both textures, which are generated art in the style of the Creepers Refreshed resource pack, with none of that pack's pixels. The animation in `client/entity/IrradiatedCreeperModel.java` finds parts by the group names in the Blockbench file.
     - **Fallout Ash:** the item is weakly radioactive, a full stack about as strong as four fresh assemblies. It has three uses.
       - Shielding Concrete: in a Mixer, 4 Fallout Ash take the place of the iron nuggets, with 2 gravel and 250 mB of water, for 2 blocks. That is the concrete to bury the crater's corium under.
       - Strontium-90: reprocessing spent fuel also gives it (see Reprocessing under the fuel chain). A heated Mixer leaches 1 from 8 Fallout Ash and 500 mB of water, and leaves 250 mB of Contaminated Coolant, which goes into waste canisters like decontamination runoff. Strontium-90 is radioactive too, half as strong as a fresh assembly.

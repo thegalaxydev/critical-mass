@@ -51,6 +51,7 @@ public class CriticalMassClient {
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_PIPE.getId(), ReinforcedPipeModel::new);
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_STRAIGHT_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
+        modEventBus.addListener(com.criticalmass.client.entity.IrradiatedCreeperRenderer::layers);
         modEventBus.addListener(this::addSkinPack);
         modEventBus.addListener(this::hideDuplicateParts);
         modEventBus.addListener(this::clientSetup);
@@ -88,6 +89,7 @@ public class CriticalMassClient {
     }
 
     private void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(com.criticalmass.registry.CMEntities.IRRADIATED_CREEPER.get(), com.criticalmass.client.entity.IrradiatedCreeperRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.CIRCULATION_PUMP.get(), PumpRenderer::new);
         event.registerBlockEntityRenderer(CMBlockEntities.STEAM_TURBINE.get(), ctx -> new AxialRotorRenderer<SteamTurbineBlockEntity>(ctx, CMPartialModels.STEAM_TURBINE_ROTOR, 2, state -> TurbineStructure.facing(state).getOpposite()));
         event.registerBlockEntityRenderer(CMBlockEntities.REINFORCED_VALVE.get(), ReinforcedValveRenderer::new);

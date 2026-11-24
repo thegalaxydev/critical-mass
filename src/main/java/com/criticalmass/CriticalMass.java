@@ -89,6 +89,8 @@ public class CriticalMass {
             CMBlocks.BLOCKS.addAlias(asResource(block), asResource("reactor_alloy_dashboard"));
         }
         CMBlockEntities.BLOCK_ENTITIES.addAlias(asResource("control_panel"), asResource("dashboard"));
+        com.criticalmass.registry.CMEntities.ENTITIES.register(modEventBus);
+        modEventBus.addListener(com.criticalmass.registry.CMEntities::attributes);
         CMArmorMaterials.MATERIALS.register(modEventBus);
         CMSounds.SOUNDS.register(modEventBus);
         com.criticalmass.registry.CMTriggers.TRIGGERS.register(modEventBus);
