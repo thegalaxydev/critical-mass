@@ -1,0 +1,564 @@
+{
+ "name": "irradiated_mobs",
+ "steps": [
+  {
+   "cmds": [
+    "/time set 6000",
+    "/gamerule doDaylightCycle false",
+    "/gamerule doMobSpawning false",
+    "/weather clear",
+    "/difficulty normal",
+    "/gamemode creative",
+    "/kill @e[type=!player]",
+    "/tp @p 46 -60 34"
+   ],
+   "wait": 40,
+   "gui": false,
+   "camera": "first"
+  },
+  {
+   "cmds": [
+    "/fill 34 -61 30 122 -61 56 minecraft:smooth_stone",
+    "/fill 34 -60 30 122 -52 56 minecraft:air",
+    "/kill @e[type=item]"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/summon minecraft:pig 38.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:pig 38.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:cow 42.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:cow 42.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:sheep 46.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:sheep 46.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:chicken 50.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:chicken 50.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:wolf 54.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:wolf 54.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:zombie 58.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:zombie 58.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:skeleton 62.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:skeleton 62.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:spider 66.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:spider 66.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:enderman 70.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:enderman 70.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:villager 74.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:villager 74.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:horse 78.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:horse 78.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:rabbit 82.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:rabbit 82.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:cat 86.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:cat 86.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:husk 90.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:husk 90.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:witch 94.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:witch 94.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:pillager 98.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:pillager 98.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:goat 102.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:goat 102.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:fox 106.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:fox 106.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:llama 110.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"]}",
+    "/summon minecraft:llama 110.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}]}",
+    "/summon minecraft:slime 114.5 -60 44.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Tags:[\"rad\"],Size:2}",
+    "/summon minecraft:slime 114.5 -60 49.5 {NoAI:1b,PersistenceRequired:1b,Rotation:[180f,0f],ArmorItems:[{},{},{},{id:\"minecraft:stone_button\",count:1}],Size:2}"
+   ],
+   "wait": 20
+  },
+  {
+   "cmds": [
+    "/criticalmass irradiate @e[tag=rad]",
+    "/data get entity @e[type=minecraft:pig,tag=rad,limit=1] attributes"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/tp @p 37.10 -59.75 39.40 facing 38.50 -60.87 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "pig",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 41.10 -59.65 38.80 facing 42.50 -60.57 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "cow",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 45.10 -59.67 38.95 facing 46.50 -60.64 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "sheep",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 49.10 -59.80 39.70 facing 50.50 -61.02 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "chicken",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 53.10 -59.77 39.55 facing 54.50 -60.95 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "wolf",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 57.10 -59.52 38.05 facing 58.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "zombie",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 61.10 -59.52 38.05 facing 62.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "skeleton",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 65.10 -59.77 39.55 facing 66.50 -60.95 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "spider",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 69.10 -59.27 36.55 facing 70.50 -59.45 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "enderman",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 73.10 -59.52 38.05 facing 74.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "villager",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 77.10 -59.60 38.50 facing 78.50 -60.42 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "horse",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 81.10 -59.85 40.00 facing 82.50 -61.17 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "rabbit",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 85.10 -59.83 39.85 facing 86.50 -61.09 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "cat",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 89.10 -59.52 38.05 facing 90.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "husk",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 93.10 -59.52 38.05 facing 94.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "witch",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 97.10 -59.52 38.05 facing 98.50 -60.20 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "pillager",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 101.10 -59.67 38.95 facing 102.50 -60.64 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "goat",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 105.10 -59.83 39.85 facing 106.50 -61.09 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "fox",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 109.10 -59.55 38.20 facing 110.50 -60.27 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "llama",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 113.10 -59.75 39.40 facing 114.50 -60.87 46.00"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "slime",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 41.20 -59.50 41.40 facing 38.50 -60.87 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "pig_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 35.60 -59.40 47.70 facing 38.50 -60.87 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "pig_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 74.53 -58.55 39.69 facing 70.50 -59.45 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "enderman_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 66.27 -58.26 49.22 facing 70.50 -59.45 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "enderman_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 45.48 -59.30 41.04 facing 42.50 -60.57 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "cow_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 39.32 -59.16 48.02 facing 42.50 -60.57 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "cow_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 65.83 -59.05 40.59 facing 62.50 -60.20 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "skeleton_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 58.97 -58.86 48.42 facing 62.50 -60.20 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "skeleton_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 53.06 -59.60 41.58 facing 50.50 -61.02 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "chicken_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 47.74 -59.52 47.54 facing 50.50 -61.02 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "chicken_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 61.83 -59.05 40.59 facing 58.50 -60.20 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "zombie_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 54.97 -58.86 48.42 facing 58.50 -60.20 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "zombie_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 69.13 -59.55 41.49 facing 66.50 -60.95 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "spider_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 63.67 -59.46 47.62 facing 66.50 -60.95 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "spider_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 57.13 -59.55 41.49 facing 54.50 -60.95 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "wolf_close",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/tp @p 51.67 -59.46 47.62 facing 54.50 -60.95 44.50"
+   ]
+  },
+  {
+   "wait": 12
+  },
+  {
+   "shot": "wolf_behind",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/time set 18000",
+    "/tp @p 54.50 -58.00 35.50 facing 54.50 -60.62 44.50"
+   ]
+  },
+  {
+   "wait": 40
+  },
+  {
+   "shot": "night_row",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/time set 6000",
+    "/kill @e[type=!player]"
+   ],
+   "wait": 30
+  },
+  {
+   "cmds": [
+    "/kill @e[type=item]",
+    "/fill 34 -60 30 122 -58 56 minecraft:air replace criticalmass:fallout_ash",
+    "/gamemode survival",
+    "/tp @p 46.5 -60 36.5 0 0",
+    "/summon minecraft:pig 46.5 -60 44.5 {Tags:[\"rad\"]}",
+    "/summon minecraft:cow 49.5 -60 44.5 {Tags:[\"rad\"]}",
+    "/summon minecraft:chicken 43.5 -60 44.5 {Tags:[\"rad\"]}",
+    "/criticalmass irradiate @e[tag=rad]"
+   ],
+   "wait": 50
+  },
+  {
+   "shot": "attack_a",
+   "wait": 2
+  },
+  {
+   "wait": 30
+  },
+  {
+   "shot": "attack_b",
+   "wait": 2
+  },
+  {
+   "cmds": [
+    "/data get entity @p Health",
+    "/gamemode creative",
+    "/kill @e[type=!player]"
+   ],
+   "wait": 20
+  }
+ ]
+}

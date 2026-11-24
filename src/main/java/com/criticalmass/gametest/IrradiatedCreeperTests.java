@@ -86,7 +86,6 @@ public final class IrradiatedCreeperTests {
         near.setPos(stand.x, stand.y, stand.z);
         h.getLevel().addFreshEntity(near);
         ContaminationData cells = ContaminationData.get(h.getLevel());
-        double before = cells.total();
         h.startSequence()
                 .thenIdle(2)
                 .thenExecute(creeper::ignite)
@@ -95,7 +94,17 @@ public final class IrradiatedCreeperTests {
                 .thenExecute(() -> {
                     int laid = ash(h);
                     h.assertTrue(laid >= 6, "The burst should scatter Fallout Ash: " + laid);
-                    h.assertTrue(cells.total() - before > laid * IrradiatedCreeper.BURST_CONTAMINATION * 0.9, "Its ash should be contamination: " + (cells.total() - before));
+                    double held = 0;
+                    for (int x = 0; x <= 15; x++) {
+                        for (int z = 0; z <= 15; z++) {
+                            for (int y = 1; y <= 4; y++) {
+                                if (h.getBlockState(new BlockPos(x, y, z)).is(CMBlocks.FALLOUT_ASH.get())) {
+                                    held += cells.get(h.absolutePos(new BlockPos(x, y, z)));
+                                }
+                            }
+                        }
+                    }
+                    h.assertTrue(held > laid * IrradiatedCreeper.BURST_CONTAMINATION * 0.9, "Its ash should be contamination: " + held);
                     h.assertTrue(RadiationEvents.data(near).contamination > 0 && RadiationEvents.data(near).body > 0, "Someone beside it should be dosed and dusted");
                     near.discard();
                     for (int x = 0; x <= 15; x++) {
@@ -126,8 +135,8 @@ public final class IrradiatedCreeperTests {
         h.startSequence()
                 .thenIdle(2)
                 .thenExecute(() -> {
-                    h.assertTrue(cells.near(exposed.position().add(0, 0.5, 0), 2) > IrradiatedCreeper.MUTATING_GROUND, "The ash should be enough to mutate on");
-                    h.assertTrue(cells.near(clean.position().add(0, 0.5, 0), 2) < IrradiatedCreeper.MUTATING_GROUND, "Clean ground should not be");
+                    h.assertTrue(cells.near(exposed.position().add(0, 0.5, 0), 2) > com.criticalmass.content.radiation.Irradiation.GROUND, "The ash should be enough to mutate on");
+                    h.assertTrue(cells.near(clean.position().add(0, 0.5, 0), 2) < com.criticalmass.content.radiation.Irradiation.GROUND, "Clean ground should not be");
                     IrradiatedCreeper made = IrradiatedCreeper.mutate(exposed);
                     h.assertTrue(made != null && !exposed.isAlive(), "A Creeper should turn into an Irradiated Creeper");
                     h.assertTrue(IrradiatedCreeper.mutate(made) == null, "One that has turned should not turn again");

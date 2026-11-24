@@ -52,6 +52,9 @@ public class CriticalMassClient {
         CreateClient.MODEL_SWAPPER.getCustomBlockModels().register(CMBlocks.REINFORCED_STRAIGHT_PIPE.getId(), ReinforcedPipeModel::new);
         modEventBus.addListener(this::registerRenderers);
         modEventBus.addListener(com.criticalmass.client.entity.IrradiatedCreeperRenderer::layers);
+        modEventBus.addListener(com.criticalmass.client.entity.Mutants::addLayers);
+        modEventBus.addListener((net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent event) -> event.registerReloadListener(
+                (net.minecraft.server.packs.resources.ResourceManagerReloadListener) manager -> com.criticalmass.client.entity.MutantSkins.clear()));
         modEventBus.addListener(this::addSkinPack);
         modEventBus.addListener(this::hideDuplicateParts);
         modEventBus.addListener(this::clientSetup);

@@ -128,6 +128,12 @@ public class CriticalMass {
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.Aftermath::tick);
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.thermal.SteamActivity::tick);
         NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Fallout::tick);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onJoin);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onEffect);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onDrops);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onDeath);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onHit);
+        NeoForge.EVENT_BUS.addListener(com.criticalmass.content.radiation.Irradiation::onInteract);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onPlayerTick);
         NeoForge.EVENT_BUS.addListener(RadiationEvents::onClone);
     }

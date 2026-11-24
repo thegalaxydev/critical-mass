@@ -27,9 +27,6 @@ public class IrradiatedCreeper extends Creeper {
     public static final double BURST_CONTAMINATION = 0.6;
     public static final double BURST_DOSE = 30.0;
     public static final double BURST_UPTAKE = 6.0;
-    public static final double MUTATING_GROUND = 0.3;
-    public static final float MUTATION_CHANCE = 0.15F;
-    public static final int MUTATION_TICKS = 100;
 
     public IrradiatedCreeper(EntityType<? extends IrradiatedCreeper> type, Level level) {
         super(type, level);
@@ -125,20 +122,5 @@ public class IrradiatedCreeper extends Creeper {
         level.playSound(null, made.getX(), made.getY(), made.getZ(), CMSounds.CREEPER_CRACKLE.get(), SoundSource.HOSTILE, 1.0F, 0.6F);
         level.sendParticles(CMParticles.FALLOUT.get(), made.getX(), made.getY() + 1.0, made.getZ(), 24, 0.4, 0.7, 0.4, 0.01);
         return made;
-    }
-
-    public static void mutateOnGround(ServerLevel level) {
-        if (level.getGameTime() % MUTATION_TICKS != 0 || !CMConfig.effects()) {
-            return;
-        }
-        ContaminationData ground = ContaminationData.get(level);
-        if (ground.size() == 0) {
-            return;
-        }
-        for (Creeper creeper : level.getEntities(EntityType.CREEPER, Creeper::isAlive)) {
-            if (level.random.nextFloat() < MUTATION_CHANCE && ground.near(creeper.position().add(0, 0.5, 0), 2) > MUTATING_GROUND) {
-                mutate(creeper);
-            }
-        }
     }
 }

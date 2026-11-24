@@ -63,6 +63,8 @@
   "item.criticalmass.fallout_ash": "Fallout Ash",
   "item.criticalmass.irradiated_creeper_spawn_egg": "Irradiated Creeper Spawn Egg",
   "entity.criticalmass.irradiated_creeper": "Irradiated Creeper",
+  "entity.criticalmass.irradiated": "Irradiated %s",
+  "criticalmass.command.irradiated": "Irradiated %s mobs",
   "item.criticalmass.strontium_90": "Strontium-90",
   "item.criticalmass.sheared_fuel": "Sheared Spent Fuel",
   "item.criticalmass.incomplete_sheared_fuel": "Partly Sheared Fuel Assembly",

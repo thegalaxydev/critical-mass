@@ -267,7 +267,16 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
       - On a Sable body it washes the ground under where the body is now, so a vehicle with a tank, a pump and a cannon aboard clears a plume as it goes.
       - Goggles show its state and its water.
       - Recipe: a Fluid Pipe over a Fluid Pipe between two Brass Sheets, over a Cogwheel between two Steel Plates.
-    - **Irradiated Creeper:** a Creeper caught in the open under the plume, or standing on Fallout Ash, turns into an Irradiated Creeper within about half a minute.
+    - **Irradiated mobs:** fallout does not only kill. A mob caught in the open under the plume sickens, and when it is down to half its health it turns into an irradiated one instead of dying. A mob standing on Fallout Ash turns within about half a minute. Its name becomes Irradiated Pig, Irradiated Zombie and so on.
+      - It is bigger, has more health and is healed when it turns. It hunts players, including animals that never did: they stop fleeing, breeding and following food. Mobs that could already attack hit about a third harder.
+      - It is a radiation source that a Survey Meter picks up, fallout no longer sickens it, and its blows dose the player and leave contamination on them.
+      - It drops 1 or 2 Fallout Ash besides its own loot and leaves a layer of ash where it dies. With the `mobGriefing` rule off it leaves none.
+      - Its skin is made from the mob's own texture when the game runs, so it follows resource packs and works on other mods' mobs: sickly green, with dead patches, wounds, and veins and boils that glow. One limb is swollen and another withered, the head is enlarged and tilted, and boils and bone spurs grow from the head and body, different on each mob.
+      - Some have a shape of their own. The Pig is a boar with tusks and a bristled back. The Cow and Mooshroom have long horns and a hump. The Sheep has ram's horns. The Chicken and the skeletons have a second head. The Wolf has fangs and a crest. The zombies have a club arm and a withered one. The Spiders have a bloated abdomen. The Villager has a swollen head. The Enderman is broad, with a second pair of arms.
+      - How much bigger and tougher each kind is, and the damage of those that had no attack, is the table at the top of `content/radiation/Irradiation.java`. The shapes are in `client/entity/Mutants.java`, and their horns, tusks, boils and spurs are textured from `textures/entity/mutation_growths.png`, generated art painted by `art/tools/mutation_growths.py fresh`.
+      - Pets and mounts with an owner, mobs being ridden, and the types in the entity tag `criticalmass:cannot_irradiate` do not turn: the Ender Dragon, the Wither, the Warden, the Elder Guardian, golems, the Allay, the Vex and the Shulker. A data pack can add to the tag. An irradiated villager does not trade.
+      - `/criticalmass irradiate <targets>` turns mobs by command. The config option `accidents.mutations` turns the whole thing off, and mobs then only sicken as before.
+    - **Irradiated Creeper:** a Creeper turns in the same two ways, but into a mob of its own.
       - It has 26 health against a Creeper's 20, is a little larger and slower, and fallout does not sicken it.
       - It is a radiation source, so a Survey Meter ticks faster as one comes near.
       - It crackles like a Geiger counter when it starts to swell. When it goes off it does a Creeper's damage and also throws Fallout Ash over about five blocks round it, and anyone close takes a dose and is dusted with contamination. A charged one reaches twice as far. With the `mobGriefing` rule off it leaves no ash.
@@ -277,7 +286,7 @@ With goggles on, invalid blocks are outlined in red, and the controller lists pr
       - Shielding Concrete: in a Mixer, 4 Fallout Ash take the place of the iron nuggets, with 2 gravel and 250 mB of water, for 2 blocks. That is the concrete to bury the crater's corium under.
       - Strontium-90: reprocessing spent fuel also gives it (see Reprocessing under the fuel chain). A heated Mixer leaches 1 from 8 Fallout Ash and 500 mB of water, and leaves 250 mB of Contaminated Coolant, which goes into waste canisters like decontamination runoff. Strontium-90 is radioactive too, half as strong as a fresh assembly.
       - Radioisotope Cell: 2 Strontium-90 in a column over a Copper Sheet, with 3 Reactor Alloy Sheets down each side. Sealed, it gives no dose. It goes in a Station Battery.
-    - **Wildlife:** animals and monsters caught in the open in the thick of it sicken and die.
+    - **Wildlife:** animals and monsters caught in the open in the thick of it sicken, and those that would have died turn into irradiated mobs.
     - **Commands:** `/criticalmass fallout <position> [radius]` starts a plume by itself and `/criticalmass fallout clear` ends every plume. The ash stays.
   - **What it leaves inside:** the blast does not take everything with it.
     - **Core Debris:** pieces of the core are thrown outward until they meet something that survived, so a sealed building keeps them in along its walls and floor, and an opening lets some out. A 40-block explosion throws 20. Each glows faintly and gives 8 mSv/min at one block, more than a spent assembly, lying there or carried. Break one with a pickaxe to take it up. A Shielded Cask takes four.

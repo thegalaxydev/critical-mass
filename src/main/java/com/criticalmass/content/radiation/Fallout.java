@@ -181,9 +181,7 @@ public final class Fallout extends SavedData {
         net.minecraft.world.phys.AABB box = new net.minecraft.world.phys.AABB(p.x - span, p.y - 48, p.z - span, p.x + span, p.y + 96, p.z + span);
         for (net.minecraft.world.entity.LivingEntity entity : level.getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, box, e -> !(e instanceof net.minecraft.world.entity.player.Player))) {
             if (p.share(entity.getX(), entity.getZ(), now) * p.strength(now) > SICKENS && !sheltered(level, entity.getEyePosition())) {
-                if (entity instanceof net.minecraft.world.entity.monster.Creeper creeper && creeper.getType() == net.minecraft.world.entity.EntityType.CREEPER
-                        && level.random.nextFloat() < IrradiatedCreeper.MUTATION_CHANCE) {
-                    IrradiatedCreeper.mutate(creeper);
+                if (Irradiation.is(entity) || CMConfig.mutations() && entity.getHealth() <= entity.getMaxHealth() * Irradiation.TURNS_BELOW && Irradiation.apply(entity)) {
                     continue;
                 }
                 entity.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.WITHER, SICKEN_TICKS * 3, 0));
@@ -195,7 +193,7 @@ public final class Fallout extends SavedData {
         if (!(event.getLevel() instanceof ServerLevel level)) {
             return;
         }
-        IrradiatedCreeper.mutateOnGround(level);
+        Irradiation.groundTick(level);
         Fallout data = get(level);
         if (data.plumes.isEmpty()) {
             return;

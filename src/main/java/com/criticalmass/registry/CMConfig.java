@@ -26,6 +26,7 @@ public final class CMConfig {
     public static final ModConfigSpec.IntValue EXPLOSION_RADIUS;
     public static final ModConfigSpec.BooleanValue BLAST_SHELTER;
     public static final ModConfigSpec.BooleanValue FALLOUT;
+    public static final ModConfigSpec.BooleanValue MUTATIONS;
     public static final ModConfigSpec.DoubleValue FALLOUT_HALF_LIFE;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_FIRES;
     public static final ModConfigSpec.BooleanValue ELECTRICAL_BLASTS_BREAK_BLOCKS;
@@ -52,6 +53,7 @@ public final class CMConfig {
         EXPLOSION_RADIUS = b.comment("Radius in blocks of the crater a 15-block core leaves; bigger cores leave bigger ones, and fire and blast reach about twice as far").defineInRange("explosionRadius", 40, 4, 96);
         BLAST_SHELTER = b.comment("Whether blast-proof blocks shelter what is behind them from a nuclear explosion; turned off, they only survive it themselves").define("blastShelter", true);
         FALLOUT = b.comment("Whether a nuclear explosion leaves a plume of fallout downwind").define("fallout", true);
+        MUTATIONS = b.comment("Whether fallout and contaminated ground turn mobs into irradiated ones").define("mutations", true);
         FALLOUT_HALF_LIFE = b.comment("Minutes for the fallout in the air to lose half its strength; the ash on the ground stays until it is cleared").defineInRange("falloutHalfLifeMinutes", 5.0, 0.5, 600.0);
         b.pop();
         b.push("electrical");
@@ -102,6 +104,10 @@ public final class CMConfig {
 
     public static boolean nuclearExplosion() {
         return !SPEC.isLoaded() || NUCLEAR_EXPLOSION.get();
+    }
+
+    public static boolean mutations() {
+        return !SPEC.isLoaded() || MUTATIONS.get();
     }
 
     public static boolean fallout() {
