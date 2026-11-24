@@ -37,23 +37,9 @@ public final class LedgerCommand {
     private LedgerCommand() {
     }
 
-    private static int irradiate(CommandSourceStack source, java.util.Collection<? extends net.minecraft.world.entity.Entity> targets) {
-        int turned = 0;
-        for (net.minecraft.world.entity.Entity target : targets) {
-            if (com.criticalmass.content.radiation.Irradiation.apply(target)) {
-                turned++;
-            }
-        }
-        int count = turned;
-        source.sendSuccess(() -> Component.translatable("criticalmass.command.irradiated", count), true);
-        return turned;
-    }
-
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("criticalmass").requires(s -> s.hasPermission(2))
                 .then(Commands.literal("ledger").executes(ctx -> report(ctx.getSource())))
-                .then(Commands.literal("irradiate").then(Commands.argument("targets", net.minecraft.commands.arguments.EntityArgument.entities())
-                        .executes(ctx -> irradiate(ctx.getSource(), net.minecraft.commands.arguments.EntityArgument.getEntities(ctx, "targets")))))
                 .then(Commands.literal("desk").then(Commands.argument("desk", BlockPosArgument.blockPos()).then(Commands.argument("slot", IntegerArgumentType.integer(0, 1))
                         .then(Commands.argument("part", StringArgumentType.word()).then(Commands.argument("target", BlockPosArgument.blockPos())
                                 .then(Commands.argument("mode", IntegerArgumentType.integer(0)).then(Commands.argument("color", IntegerArgumentType.integer(0, 34))

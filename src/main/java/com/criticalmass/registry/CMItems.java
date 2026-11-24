@@ -71,8 +71,6 @@ public final class CMItems {
     public static final DeferredItem<ProtectiveArmorItem> PROTECTIVE_BOOTS = armor("protective_boots", ArmorItem.Type.BOOTS);
     public static final DeferredItem<DecontaminationCompoundItem> DECONTAMINATION_COMPOUND = custom("decontamination_compound", () -> new DecontaminationCompoundItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<Item> FALLOUT_ASH = simple("fallout_ash", new Item.Properties());
-    public static final DeferredItem<net.neoforged.neoforge.common.DeferredSpawnEggItem> IRRADIATED_CREEPER_SPAWN_EGG = custom("irradiated_creeper_spawn_egg",
-            () -> new net.neoforged.neoforge.common.DeferredSpawnEggItem(CMEntities.IRRADIATED_CREEPER, 0x60863D, 0xCBE448, new Item.Properties()));
     public static final DeferredItem<Item> STRONTIUM_90 = simple("strontium_90", new Item.Properties());
     public static final DeferredItem<Item> RADIOISOTOPE_CELL = simple("radioisotope_cell", new Item.Properties().stacksTo(16));
     public static final DeferredItem<PlantLinkerItem> PLANT_LINKER = custom("plant_linker", () -> new PlantLinkerItem(new Item.Properties().stacksTo(1)));

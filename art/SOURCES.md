@@ -42,9 +42,6 @@ This table is the current state and overrides anything further down. Only the ro
 | Fallout Ash (item), Strontium-90, Radioisotope Cell and the cell marker on the Station Battery | Script | `art/tools/isotope_art.py` |
 | Water Cannon | Script | `art/tools/water_cannon_texture.py`, on `art/blockbench/water_cannon.bbmodel` |
 | Creative tab section banners | Script | `art/tools/tab_banners.py` |
-| Growths on irradiated mobs (bone, boils, hide) | Script | `art/tools/mutation_growths.py` |
-| Skins and glow of irradiated mobs | Made in the game from each mob's own texture | `client/entity/MutantSkins.java` |
-| Irradiated Creeper: model, skin and glow | Script | `art/tools/irradiated_creeper.py`, which builds `art/blockbench/irradiated_creeper.bbmodel` |
 | Advancement tab background | Script, from the author's casing sheet | `art/tools/advancement_background.py` |
 | Charred Log | Script | `art/tools/charred_texture.py`: vanilla's oak log repainted in the Corium's crust tones |
 | Stripped Charred Log, Charred Planks, Charred Door and Trapdoor, and the stairs, slab, fence, gate, plate and button that use the planks | Script | `art/tools/charred_texture.py`: vanilla's oak sheets repainted in burnt timber tones |

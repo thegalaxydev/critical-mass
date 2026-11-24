@@ -5,15 +5,11 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "ArmBlockEntityAccessor",
-    "EntityNameMixin",
     "SequencedAssemblyRecipeMixin"
   ],
   "client": [
-    "AgeableListModelAccessor",
     "CreativeScreenMixin",
-    "LivingEntityRendererMixin",
-    "MouseHandlerMixin",
-    "RenderLayerMixin"
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

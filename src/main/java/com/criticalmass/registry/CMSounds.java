@@ -26,7 +26,6 @@ public final class CMSounds {
     public static final DeferredHolder<SoundEvent, SoundEvent> STEAM_VENT = sound("steam_vent");
     public static final DeferredHolder<SoundEvent, SoundEvent> PIPE_BURST = sound("pipe_burst");
     public static final DeferredHolder<SoundEvent, SoundEvent> GEIGER = sound("geiger");
-    public static final DeferredHolder<SoundEvent, SoundEvent> CREEPER_CRACKLE = sound("creeper_crackle");
     public static final DeferredHolder<SoundEvent, SoundEvent> ORDER_PLACED = sound("order_placed");
     public static final DeferredHolder<SoundEvent, SoundEvent> ORDER_MET = sound("order_met");
     public static final DeferredHolder<SoundEvent, SoundEvent> ORDER_MISSED = sound("order_missed");

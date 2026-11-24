@@ -304,9 +304,6 @@ public final class Radiation {
                 out.add(new Source(p.position().add(0, 1, 0), s, null, null, p));
             }
         }
-        for (net.minecraft.world.entity.Mob mob : level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, box, Irradiation::is)) {
-            out.add(new Source(mob.position().add(0, mob.getBbHeight() * 0.5, 0), Irradiation.strength(mob), null, null, null));
-        }
         ContainerSources.near(level, receiver, RANGE / 2, out);
         return out;
     }
