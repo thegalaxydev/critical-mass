@@ -580,5 +580,12 @@ Maven sources: `maven.createmod.net` (Create, Ponder, Flywheel), `mvn.devos.one/
 
 ## License
 
-All Rights Reserved until a license is chosen (`mod_license` in `gradle.properties`).
+MIT, in [LICENSE](LICENSE). The jar carries a copy as `LICENSE_criticalmass`.
+
+That covers this project's own code and art. What was taken from other works stays under its owners' terms:
+
+- The dashboard and part models and textures imported from Create: Loconautics, used with its authors' permission.
+- The textures recoloured from Create's, listed in `art/SOURCES.md`.
+- The sounds cut from recordings, listed in `art/SOURCES.md`.
+
 Create Aeronautics code is MIT, its assets are All Rights Reserved; this project compiles against it and does not redistribute it.

@@ -215,6 +215,9 @@ publishing {
 }
 
 tasks.named('jar') {
+    from('LICENSE') {
+        rename { 'LICENSE_criticalmass' }
+    }
     exclude 'com/criticalmass/gametest/**'
 }
 
